@@ -1,0 +1,121 @@
+{
+  "meta": { "title": "Riverside Project - Deliverable 3", "slideCount": 29, "version": "Review v1" },
+  "scorecard": {
+    "overall": 3.6,
+    "verdict": "Needs revision",
+    "effort": "1-2 hrs",
+    "confidence": "Medium",
+    "criteria": [
+      { "name": "Action Titles", "result": "partial", "checksPassed": 2, "checksTotal": 4 },
+      { "name": "Governing Insight", "result": "partial", "checksPassed": 3, "checksTotal": 4 },
+      { "name": "Recommendation Specificity", "result": "partial", "checksPassed": 3, "checksTotal": 4 },
+      { "name": "Evidence Sourcing", "result": "fail", "checksPassed": 1, "checksTotal": 4 },
+      { "name": "Actionability", "result": "pass", "checksPassed": 4, "checksTotal": 4 }
+    ]
+  },
+  "timeline": {
+    "sections": [
+      { "label": "Opening", "span": 4 },
+      { "label": "New Livelihoods", "span": 12 },
+      { "label": "Current Livelihoods", "span": 10 },
+      { "label": "Milestones", "span": 2 },
+      { "label": "Takeaways", "span": 1 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "critical" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "pass" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "pass" },
+      { "slide": 8, "state": "pass" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "pass" },
+      { "slide": 11, "state": "pass" },
+      { "slide": 12, "state": "pass" },
+      { "slide": 13, "state": "pass" },
+      { "slide": 14, "state": "pass" },
+      { "slide": 15, "state": "pass" },
+      { "slide": 16, "state": "pass" },
+      { "slide": 17, "state": "pass" },
+      { "slide": 18, "state": "pass" },
+      { "slide": 19, "state": "partial" },
+      { "slide": 20, "state": "pass" },
+      { "slide": 21, "state": "pass" },
+      { "slide": 22, "state": "pass" },
+      { "slide": 23, "state": "pass" },
+      { "slide": 24, "state": "pass" },
+      { "slide": 25, "state": "partial" },
+      { "slide": 26, "state": "pass" },
+      { "slide": 27, "state": "pass" },
+      { "slide": 28, "state": "critical" },
+      { "slide": 29, "state": "pass" }
+    ],
+    "callouts": [
+      { "at": 3, "state": "critical", "label": "Unsourced income target" },
+      { "at": 25, "state": "partial", "label": "Copy-paste leftover" },
+      { "at": 28, "state": "critical", "label": "Placeholder metrics" }
+    ],
+    "connectors": [
+      { "from": 19, "to": 25, "label": "Duplicated paragraph" }
+    ]
+  },
+  "mainIssue": "The plan's own success metrics are unfinished: slide 28 ships literal x placeholders for target volumes and the 20-30% income promise on slides 3 and 28 has no baseline, method or source.",
+  "criticalFixes": [
+    "Replace the x placeholders on slide 28 with one computed target volume per livelihood.",
+    "Anchor the 20-30% income target to a stated baseline of current household income and name the source.",
+    "Remove the beekeeping paragraph from the bio-charcoal slide and run one full proofing pass."
+  ],
+  "findings": [
+    {
+      "short": "Placeholder metrics",
+      "title": "The success metrics the whole plan answers to are placeholders and unsourced targets",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "principle": "Evidence Grounding: every headline number needs a source",
+      "diagnosis": "Slide 3 promises an income increase and slide 28 sets the accountability frame for 36 months of work, but the volume targets still contain the letter x where numbers should be and the income figure carries no baseline, no method and no source.",
+      "evidence": [
+        { "slide": 28, "quote": "volume (e.g. x kg of salt, x" },
+        { "slide": 28, "quote": "household sees about 20 -30%" },
+        { "slide": 3, "quote": "average household can see about 20 -30% income increase" }
+      ],
+      "why": "The milestone slide is the contract between Riverside and the client. A funder who reads x kg of salt concludes the targets were never computed, and every other number in the deck inherits that doubt.",
+      "reflect": "Take one livelihood, say salt. What data would you need to set a real 36 month volume target, and where would the income baseline come from to defend the 20 to 30% claim?",
+      "fix": "Compute one real target per livelihood from the pilot scale already chosen on slide 16, state the current household income baseline next to the percentage and name a source for both. Where a number cannot be grounded yet, label it an assumption to validate in phase 1 instead of shipping an x.",
+      "tags": [ "Evidence Grounding", "Actionability", "Deliberate Practice" ]
+    },
+    {
+      "short": "Copy-paste leftover",
+      "title": "A beekeeping paragraph ships twice on slide 19 and again on the bio-charcoal slide",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "principle": "ERIP Performance: the deck is the product",
+      "diagnosis": "The same beekeeping training paragraph appears twice on slide 19 and then reappears word for word on slide 25, whose title is about scaling bio-charcoal production. The body of a cost slide opens with bee colony lifecycle content.",
+      "evidence": [
+        { "slide": 25, "quote": "Scaling bio-charcoal production can be costly" },
+        { "slide": 25, "quote": "Beekeeping training includes understanding the entire bee colony lifecycle, hive management," }
+      ],
+      "why": "A client who spots one pasted leftover stops trusting the slides they cannot verify. A single visible QA miss taxes every claim in the deck, and this one sits on a cost slide where trust matters most.",
+      "reflect": "What end of project check would have caught this before the client did, and who on the team owns that pass?",
+      "fix": "Strip the duplicated paragraph, then run one full proofing pass where a teammate who did not build the slides reads every body block against its title.",
+      "tags": [ "ERIP Performance", "Deliberate Practice" ]
+    },
+    {
+      "short": "Costs without a budget",
+      "title": "Unit costs are quoted but never become a budget or a decision",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "principle": "ERIP Performance: does it change outcomes?",
+      "diagnosis": "Slide 19 prices beekeeping per person and slide 25 prices bio-charcoal per ton with a range spanning more than four times, yet no slide multiplies these into a program budget, names a funding source or sets the ceiling at which a livelihood is too expensive to pilot.",
+      "evidence": [
+        { "slide": 19, "quote": "around $213 - $422 per person." },
+        { "slide": 25, "quote": "$448.78 to $2077 per ton." }
+      ],
+      "why": "Riverside cannot allocate capital from a unit cost range. Without a total and a funding plan the cost research stays trivia and the go or no go decision lands back on the client.",
+      "reflect": "At the pilot scale you would recommend for bio-charcoal, what do the low and high ends of that per ton range mean in total dollars, and at which number would you advise against the pilot?",
+      "fix": "Add one cost roll-up per livelihood: pilot scale times unit cost, the funding source it maps to and the ceiling above which Riverside should defer that livelihood. Ranges are fine, a missing total is not.",
+      "tags": [ "ERIP Performance", "Actionability", "Deliberate Practice" ]
+    }
+  ]
+}

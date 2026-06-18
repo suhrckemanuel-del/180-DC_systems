@@ -1,0 +1,298 @@
+{
+  "meta": {
+    "title": "Vantage IP Licensing Strategy",
+    "slideCount": 20,
+    "version": "Review v1"
+  },
+  "scorecard": {
+    "overall": 3.6,
+    "verdict": "Needs revision",
+    "effort": "3-4 hrs",
+    "confidence": "Medium",
+    "criteria": [
+      {
+        "name": "Action Titles",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4
+      },
+      {
+        "name": "Governing Insight",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4
+      },
+      {
+        "name": "Recommendation Specificity",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4
+      },
+      {
+        "name": "Evidence Sourcing",
+        "result": "fail",
+        "checksPassed": 1,
+        "checksTotal": 4
+      },
+      {
+        "name": "Actionability",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4
+      }
+    ]
+  },
+  "timeline": {
+    "sections": [
+      {
+        "label": "Opening",
+        "span": 4
+      },
+      {
+        "label": "Targets and scoring",
+        "span": 3
+      },
+      {
+        "label": "Technical reads",
+        "span": 5
+      },
+      {
+        "label": "Revenue model",
+        "span": 4
+      },
+      {
+        "label": "Recommendations",
+        "span": 4
+      }
+    ],
+    "tiles": [
+      {
+        "slide": 1,
+        "state": "pass"
+      },
+      {
+        "slide": 2,
+        "state": "pass"
+      },
+      {
+        "slide": 3,
+        "state": "pass"
+      },
+      {
+        "slide": 4,
+        "state": "pass"
+      },
+      {
+        "slide": 5,
+        "state": "pass"
+      },
+      {
+        "slide": 6,
+        "state": "partial"
+      },
+      {
+        "slide": 7,
+        "state": "partial"
+      },
+      {
+        "slide": 8,
+        "state": "pass"
+      },
+      {
+        "slide": 9,
+        "state": "pass"
+      },
+      {
+        "slide": 10,
+        "state": "partial"
+      },
+      {
+        "slide": 11,
+        "state": "pass"
+      },
+      {
+        "slide": 12,
+        "state": "pass"
+      },
+      {
+        "slide": 13,
+        "state": "partial"
+      },
+      {
+        "slide": 14,
+        "state": "partial"
+      },
+      {
+        "slide": 15,
+        "state": "pass"
+      },
+      {
+        "slide": 16,
+        "state": "pass"
+      },
+      {
+        "slide": 17,
+        "state": "pass"
+      },
+      {
+        "slide": 18,
+        "state": "pass"
+      },
+      {
+        "slide": 19,
+        "state": "pass"
+      },
+      {
+        "slide": 20,
+        "state": "pass"
+      }
+    ],
+    "callouts": [
+      {
+        "at": 6,
+        "state": "partial",
+        "label": "Volley vs sequence"
+      },
+      {
+        "at": 7,
+        "state": "partial",
+        "label": "Scores lack a method"
+      },
+      {
+        "at": 13,
+        "state": "partial",
+        "label": "Precedent figure clash"
+      }
+    ],
+    "connectors": [
+      {
+        "from": 6,
+        "to": 14,
+        "label": "Volley vs sequence"
+      },
+      {
+        "from": 10,
+        "to": 13,
+        "label": "Verdict figure clash"
+      }
+    ]
+  },
+  "strengths": [
+    {
+      "point": "Most content titles state a full insight, so a partner could follow the argument from the titles alone.",
+      "slide": 9,
+      "quote": "Zoom: exposure is concentrated in Zoom Mesh eCDN and inter-MMR"
+    },
+    {
+      "point": "The recommendation commits to a measurable target state, a book of 8 to 12 active licenses, rather than vague advice.",
+      "slide": 14,
+      "quote": "A book of 8 to 12 active licenses beats reliance"
+    },
+    {
+      "point": "The analysis marks where its own infringement read is weak instead of overclaiming, the rigor a client actually trusts.",
+      "slide": 9,
+      "quote": "Where the patents do NOT apply: the MCU / selective-forwarding logic is a hub-and-spoke server pattern, not an m-regular peer graph."
+    }
+  ],
+  "mainIssue": "The precedent that anchors the whole case is stated two ways: the AWS verdict reads $29.5M on slides 6, 9 and 10 but $30.5M on slide 13, and Akamai's score and the slide 15 pricing both lean on it.",
+  "criticalFixes": [
+    "Reconcile the precedent verdict the case leans on: it reads $29.5M on slides 6, 9 and 10 but $30.5M on slide 13.",
+    "Make the opening agree with the recommendation: state Akamai first on slide 6 the way slides 14 and 16 already do.",
+    "Source the headline numbers and run one proofing pass: the slide 7 scores, the figures behind them and the agenda line that repeats three times on slide 4."
+  ],
+  "findings": [
+    {
+      "short": "Volley vs sequence",
+      "title": "The opening frames all three targets as one volley but the recommendation requires winning Akamai first",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "principle": "Pyramid Principle: Internal Consistency",
+      "diagnosis": "Slide 6 presents Akamai, Zoom and Netflix as a single opening volley across three sectors. Slide 14 then prescribes a strict sequence: win low risk Akamai first to bank precedent, then use that win to convert Zoom and Netflix. A reader cannot tell whether Vantage should open on all three at once or pursue them one at a time, and the two slides imply very different capital and litigation commitments.",
+      "evidence": [
+        {
+          "slide": 6,
+          "quote": "Three top-scoring sector winners; CDN, video conference and streaming covered in one opening volley"
+        },
+        {
+          "slide": 14,
+          "quote": "Start with low-risk, high-value Akamai (score"
+        },
+        {
+          "slide": 14,
+          "quote": "Use each win to convert medium-risk Zoom"
+        }
+      ],
+      "why": "When the opening and the recommendation disagree on the single most important question, what to do first, the client is left to resolve the strategy the team was hired to set. The team looks like it did not reconcile its own slides.",
+      "reflect": "If Vantage can only fund one filing this quarter, which target do your own slides say to file first, and which sentence on slide 6 would you change to match slide 14?",
+      "fix": "Pick one sequencing logic and make every slide obey it. If Akamai first is the real recommendation, reframe the opening as a sequenced program anchored on the precedent target rather than a simultaneous volley.",
+      "solution": "The deck's own scoring already settles this. Akamai is the only lowest-risk target (slide 16) and the only one with a near-identical precedent (slide 10), so it has to go first to set the price for everything after it. Make the opening say exactly that and let slides 14 and 16 inherit it unchanged. Recommended sequence, every step sourced to the deck: 1. Akamai first. Score 92, lowest risk, file on the CloudFront analog to bank precedent. 2. Zoom second. Score 87, medium risk, open once the Akamai win exists as leverage and lean on the documented Zoom Mesh and inter-MMR evidence. 3. Netflix third. Score 85, medium-high risk, pursue a structured license rather than litigation. A clean opening title that carries this: \"Sequence enforcement Akamai first, then Zoom, then Netflix: bank the precedent before the harder reads.\" One logic on every slide.",
+      "tags": [
+        "Pyramid Principle",
+        "Minto",
+        "Deliberate Practice"
+      ]
+    },
+    {
+      "short": "Precedent figure clash",
+      "title": "The precedent verdict the whole case is built on is stated two different ways",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "principle": "Pyramid Principle: Internal Consistency",
+      "diagnosis": "The AWS CloudFront verdict is the anchor for Akamai's score 92, the maps almost 1:1 read on slide 10 and the slide 15 pricing. It appears as $29.5M on slides 6, 9 and 10, then as $30.5M on slide 13. The one number the lead recommendation leans on does not agree with itself.",
+      "evidence": [
+        {
+          "slide": 10,
+          "quote": "$29.5M in damages"
+        },
+        {
+          "slide": 13,
+          "quote": "$30.5M (AWS) and $23.4M"
+        }
+      ],
+      "why": "The precedent is the single most repeated fact in the deck and the basis for the lead recommendation. A defendant's counsel who finds the team citing two different numbers for the same verdict will question every other figure, and the willfulness and pricing math built on it inherits the doubt.",
+      "reflect": "Which figure is the real AWS verdict, $29.5M or $30.5M, and once you fix it which later numbers that depend on it have to change?",
+      "fix": "Lock the verdict to one sourced figure and propagate it everywhere the precedent or the pricing references it.",
+      "solution": "Pull the actual AWS judgment and pick one figure, then use it everywhere. The deck cites $29.5M three times (slides 6, 9 and 10) and $30.5M once (slide 13), so the likely correction is slide 13, but verify against the court record rather than the majority count. Whatever the real number, put its source next to the first use on slide 10, then re-check that the willfulness line that could triple the payout (slide 10) and the slide 15 settlement ranges still follow from the corrected figure. One number, one source, every dependent calculation reconciled.",
+      "tags": [
+        "Pyramid Principle",
+        "Evidence Grounding",
+        "Deliberate Practice"
+      ]
+    },
+    {
+      "short": "Scores lack a method",
+      "title": "The target scores that drive the whole prioritization arrive with no visible method",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "principle": "Evidence Grounding: every headline number needs a source",
+      "diagnosis": "Slide 7 ranks six targets on a 0 to 100 composite score and the entire sequence on slide 14 follows that ranking, yet the slide names only two qualitative inputs and never shows the weighting, the underlying data or why Zoom is an 87 and Epic a 65. The supporting figures are not grounded either: Akamai's edge-server count appears as about 365k on slide 6 and as 240,000 plus on slide 10, with no source on either. The scores read as precise but cannot be audited or reproduced.",
+      "evidence": [
+        {
+          "slide": 7,
+          "quote": "Dot size reflects composite score (0–100)"
+        },
+        {
+          "slide": 7,
+          "quote": "Akamai, Zoom, and Netflix score highest on our framework"
+        },
+        {
+          "slide": 6,
+          "quote": "~365k-server"
+        },
+        {
+          "slide": 10,
+          "quote": "Akamai maintains a global network of 240,000+"
+        }
+      ],
+      "why": "A client counsel deciding where to spend litigation budget will ask how each score was built. A number with no method behind it is the first thing a defendant attacks and the first thing a partner stops trusting.",
+      "reflect": "For one target, what two or three measurable inputs produced its score, and could a teammate recompute the same number from your data?",
+      "fix": "Expose the scoring rubric: the factors, their weights and the source for each input, even as a small backup table. Let the reader trace a single score from raw evidence to the final number.",
+      "solution": "Add one backup slide that turns each score into something a defendant's counsel cannot wave away. Show the two axes the deck already names, revenue potential and enforcement difficulty, the inputs that feed each axis and a named source for every input. Worked from the deck's own evidence: Akamai 92 = the largest damages base (240,000 plus edge servers, slide 10) plus the strongest precedent (the $29.5M CloudFront verdict maps almost 1:1, slide 10) plus the lowest invalidation risk (slide 16). Zoom 87 = a $623M to $4.1B revenue base inside the liability window (slide 6) against a medium claim-construction risk that Zoom Mesh is selective forwarding (slide 12). Netflix 85 = 270M plus subscribers (slide 6) and about 37% of peak US traffic (slide 11) against a medium-high risk that the m-regular limitation does not fit the last mile (slide 11). Then close the two grounding gaps: reconcile the Akamai server count (about 365k on slide 6 versus 240,000 plus on slide 10) and attach a source to the Zoom revenue, the Netflix figures and the slide 15 settlement ranges.",
+      "tags": [
+        "Evidence Grounding",
+        "ERIP Performance",
+        "Deliberate Practice"
+      ]
+    }
+  ]
+}

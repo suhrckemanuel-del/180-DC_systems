@@ -1,0 +1,125 @@
+{
+  "meta": { "title": "Vantage IP Patent Strategy", "slideCount": 33, "version": "Review v1" },
+  "scorecard": {
+    "overall": 2.6,
+    "verdict": "Needs revision",
+    "effort": "3-4 hrs",
+    "confidence": "High",
+    "criteria": [
+      { "name": "Action Titles", "result": "partial", "checksPassed": 2, "checksTotal": 4 },
+      { "name": "Governing Insight", "result": "fail", "checksPassed": 1, "checksTotal": 4 },
+      { "name": "Recommendation Specificity", "result": "fail", "checksPassed": 1, "checksTotal": 4 },
+      { "name": "Evidence Sourcing", "result": "partial", "checksPassed": 3, "checksTotal": 4 },
+      { "name": "Actionability", "result": "fail", "checksPassed": 1, "checksTotal": 4 }
+    ]
+  },
+  "timeline": {
+    "sections": [
+      { "label": "Opening", "span": 5 },
+      { "label": "Landscape & Timing", "span": 8 },
+      { "label": "Scoring Framework", "span": 6 },
+      { "label": "Risk Assessment", "span": 6 },
+      { "label": "Recommendations", "span": 8 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "critical" },
+      { "slide": 5, "state": "critical" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "pass" },
+      { "slide": 8, "state": "pass" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "pass" },
+      { "slide": 11, "state": "critical" },
+      { "slide": 12, "state": "pass" },
+      { "slide": 13, "state": "pass" },
+      { "slide": 14, "state": "pass" },
+      { "slide": 15, "state": "pass" },
+      { "slide": 16, "state": "pass" },
+      { "slide": 17, "state": "pass" },
+      { "slide": 18, "state": "pass" },
+      { "slide": 19, "state": "pass" },
+      { "slide": 20, "state": "pass" },
+      { "slide": 21, "state": "pass" },
+      { "slide": 22, "state": "pass" },
+      { "slide": 23, "state": "pass" },
+      { "slide": 24, "state": "pass" },
+      { "slide": 25, "state": "pass" },
+      { "slide": 26, "state": "pass" },
+      { "slide": 27, "state": "pass" },
+      { "slide": 28, "state": "partial" },
+      { "slide": 29, "state": "critical" },
+      { "slide": 30, "state": "pass" },
+      { "slide": 31, "state": "pass" },
+      { "slide": 32, "state": "pass" },
+      { "slide": 33, "state": "pass" }
+    ],
+    "callouts": [
+      { "at": 4.5, "state": "critical", "label": "No governing insight" },
+      { "at": 11, "state": "critical", "label": "Peer collection risk" },
+      { "at": 29, "state": "critical", "label": "Contradicting recommendation" }
+    ],
+    "connectors": [
+      { "from": 11, "to": 29, "label": "Unresolved contradiction" }
+    ]
+  },
+  "mainIssue": "The peer evidence on slide 11 shows hyperscaler verdicts get overturned and go uncollected, yet slide 29 extends enforcement to Netflix, YouTube and AWS CloudFront with no answer to that risk.",
+  "criticalFixes": [
+    "State the governing insight on one opening slide: what to acquire, why now and in what order.",
+    "Resolve the slide 11 vs slide 29 contradiction by sequencing targets by litigation capacity.",
+    "Turn the six patent profiles into a ranked action table with cost ranges and deadlines."
+  ],
+  "findings": [
+    {
+      "short": "Contradicts own evidence",
+      "title": "The recommendation targets the same hyperscaler class the peer evidence proves does not pay",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "principle": "Pyramid Principle: Internal Consistency",
+      "diagnosis": "Slide 11 documents the peer pattern: VLSI won a record verdict against Intel and collected nothing, and Optis saw its Apple verdict reduced then overturned. Slide 29 then extends enforcement to Netflix, YouTube and AWS CloudFront, the same class of defendant that beat those comparable patent firms on appeal.",
+      "evidence": [
+        { "slide": 11, "quote": "Won $2.18B verdict vs Intel (2021) — the largest PAE verdict ever — but collected nothing." },
+        { "slide": 11, "quote": "Won $506M vs Apple (2020), reduced to $300M, then overturned." },
+        { "slide": 29, "quote": "Extends enforcement scope to streaming platforms such as Netflix, YouTube and AWS CloudFront" }
+      ],
+      "why": "The most damaging objection is the one the deck itself raises. A client counsel reading slide 11 and then slide 29 will conclude the team did not connect its own analysis, and trust in every other slide drops with it.",
+      "reflect": "Slide 11 also contains a peer that did collect from a hyperscaler. Which one is it, and how would you use that case to sequence the enforcement targets?",
+      "fix": "Sequence the targets by litigation capacity and anchor the hyperscaler step on the one peer case where the verdict survived appeal. Make the contradiction impossible by stating on the recommendation slide why this portfolio avoids the VLSI and Optis outcome.",
+      "tags": [ "Pyramid Principle", "Evidence Grounding", "Deliberate Practice" ]
+    },
+    {
+      "short": "No governing insight",
+      "title": "The deck never states its answer in the opening slides",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "principle": "Pyramid Principle: Answer First (Minto)",
+      "diagnosis": "The opening runs title, team, agenda and client introduction with no answer. Slide 5 introduces the client and the first real verdict only appears at slide 16, which names the strongest strategic fit. A reader gets the recommendation only after sitting through the full landscape.",
+      "evidence": [
+        { "slide": 5, "quote": "WHO IS Vantage IP?" },
+        { "slide": 16, "quote": "Video streaming and real time communications offer the strongest strategic fit" }
+      ],
+      "why": "A partner reads the first three slides and a client CEO often reads nothing else. If the answer first appears at slide 16, the busiest person in the room is doing the synthesis the team was hired to do.",
+      "reflect": "If a partner read only slides 1 to 5 and closed the deck, could they say which patents to acquire and why now? What single sentence would let them?",
+      "fix": "Add one executive summary slide in the opening that states the single answer: which patent categories to acquire, why the window is now and in what order. Make every later section a proof of that sentence.",
+      "tags": [ "Pyramid Principle", "Minto", "Deliberate Practice" ]
+    },
+    {
+      "short": "Targets without a sequence",
+      "title": "Six patent profiles read as a menu with no order, cost or first step",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "principle": "ERIP Performance: does it change outcomes?",
+      "diagnosis": "Slides 28 to 33 profile six acquisitions in parallel and the potential stays qualitative. No profile carries an acquisition cost, an owner, a deadline or a success metric, and the slide 16 ranking is never carried into the section.",
+      "evidence": [
+        { "slide": 28, "quote": "Many possible licensing targets in video calls, live streaming, and collaboration tools" },
+        { "slide": 29, "quote": "Large and visible infringer pool: any platform using adaptive streaming" }
+      ],
+      "why": "A small firm with limited capital cannot act on a menu. Analysis that stops one step short of a priority order forces the client to redo the ranking work the team already did on slide 16.",
+      "reflect": "For the single highest priority patent, what should the client do in the next 90 days, roughly what would it cost and what licensing signal would prove it worked?",
+      "fix": "Carry the slide 16 ranking into the recommendation section as a sequenced action table: patent, estimated cost, first enforcement target and decision deadline. Rough ranges beat adjectives.",
+      "tags": [ "ERIP Performance", "Actionability", "Deliberate Practice" ]
+    }
+  ]
+}

@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>180DC AI Quality Reviewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --green:#16A66A;
+    --green-deep:#0F8455;
+    --green-soft:#E8F6EF;
+    --green-tint:#F1FAF5;
+    --panel:#F5F7F6;
+    --ink:#111827;
+    --ink-2:#1F2933;
+    --muted:#6B7280;
+    --muted-2:#9AA3AF;
+    --border:#DADDE3;
+    --border-soft:#E7EAEE;
+    --amber:#E8910C;
+    --amber-soft:#FDF4E3;
+    --amber-border:#F4C77E;
+    --red:#E5534B;
+    --red-soft:#FEF2F2;
+    --red-border:#F6B6B1;
+    --shadow:0 1px 2px rgba(17,24,39,.04), 0 8px 28px rgba(17,24,39,.06);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:#EDEFF2;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:24px;
+  }
+  /* 16:9 product stage */
+  .stage{
+    width:100%;
+    max-width:1200px;
+    aspect-ratio:16/9;
+    background:#fff;
+    border-radius:18px;
+    border:1px solid var(--border-soft);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+  .view{display:none;height:100%;flex-direction:column}
+  .view.active{display:flex}
+
+  /* ---------- shared header ---------- */
+  .topbar{
+    display:flex;align-items:center;gap:18px;
+    padding:18px 26px;border-bottom:1px solid var(--border-soft);
+    flex-shrink:0;
+  }
+  .brand{font-weight:700;font-size:22px;color:var(--green);letter-spacing:-.5px}
+  .vrule{width:1px;height:30px;background:var(--border)}
+  .hgroup{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .hgroup .row1{display:flex;align-items:center;gap:10px}
+  .mode-title{font-weight:600;font-size:16px;color:var(--ink)}
+  .badge-coach{
+    font-size:11px;font-weight:600;color:var(--green);
+    border:1px solid var(--green);border-radius:999px;padding:2px 9px;background:#fff;
+  }
+  .subtitle{font-size:12.5px;color:var(--muted)}
+  .meta{margin-left:auto;font-size:12.5px;color:var(--muted-2);text-align:right;white-space:nowrap}
+  .meta b{color:var(--muted);font-weight:600}
+
+  .modeswitch{display:flex;gap:4px;background:var(--panel);border:1px solid var(--border-soft);border-radius:10px;padding:3px;margin-left:18px}
+  .modeswitch button{
+    border:0;background:transparent;font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);
+    padding:6px 12px;border-radius:7px;cursor:pointer;transition:.15s;
+  }
+  .modeswitch button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+  .newbtn{margin-left:8px;border:1px solid var(--border);background:#fff;border-radius:9px;padding:7px 11px;font:inherit;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px}
+  .newbtn:hover{color:var(--ink);border-color:var(--muted-2)}
+
+  /* ---------- PROMPT / chat intro ---------- */
+  #prompt .body{flex:1;display:flex;justify-content:center;padding:30px;overflow:auto}
+  .prompt-card{width:100%;max-width:660px;text-align:center;margin:auto}
+  .prompt-kicker{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:14px}
+  .prompt-h{font-size:26px;font-weight:700;letter-spacing:-.6px;margin:0 0 8px}
+  .prompt-sub{font-size:14px;color:var(--muted);margin:0 0 26px}
+  .chatbox{
+    display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);
+    border-radius:14px;padding:8px 8px 8px 16px;box-shadow:var(--shadow);text-align:left;
+  }
+  .chatbox .clip{color:var(--muted-2);flex-shrink:0}
+  .chatbox input{flex:1;border:0;outline:0;font:inherit;font-size:14.5px;color:var(--ink);background:transparent;padding:10px 0}
+  .chatbox input::placeholder{color:var(--muted-2)}
+  .run{
+    background:var(--green);color:#fff;border:0;border-radius:10px;font:inherit;font-size:13.5px;font-weight:600;
+    padding:11px 18px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.15s;flex-shrink:0;
+  }
+  .run:hover{background:var(--green-deep)}
+  .chips{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .chip{font-size:12.5px;color:var(--muted);background:var(--panel);border:1px solid var(--border-soft);border-radius:999px;padding:7px 13px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:7px}
+  .chip:hover{border-color:var(--green);color:var(--green-deep);background:var(--green-tint)}
+  .chip .doticon{color:var(--red)}
+
+  /* load JSON panel */
+  .loadlink{margin-top:18px;border:0;background:transparent;font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+  .loadlink:hover{color:var(--green-deep)}
+  .loadpanel{margin-top:14px;text-align:left;background:var(--panel);border:1px solid var(--border-soft);border-radius:12px;padding:14px}
+  .loadpanel textarea{width:100%;resize:vertical;font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--ink);border:1px solid var(--border);border-radius:9px;padding:10px;outline:none;background:#fff}
+  .loadpanel textarea:focus{border-color:var(--green)}
+  .loadrow{display:flex;align-items:center;gap:10px;margin-top:10px;justify-content:space-between}
+  .loadrow input[type=file]{font-size:12px;color:var(--muted);max-width:55%}
+  .loaderr{margin-top:9px;font-size:12.3px;color:var(--red);line-height:1.55}
+
+  /* analyzing overlay */
+  #analyzing{position:absolute;inset:0;background:rgba(255,255,255,.96);display:none;align-items:center;justify-content:center;z-index:30}
+  #analyzing.show{display:flex}
+  .an-wrap{text-align:center;max-width:420px}
+  .spinner{width:42px;height:42px;border-radius:50%;border:3px solid var(--green-soft);border-top-color:var(--green);margin:0 auto 18px;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .an-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:14px}
+  .an-step{font-size:13px;color:var(--muted);opacity:.35;margin:6px 0;transition:.3s;display:flex;align-items:center;justify-content:center;gap:8px}
+  .an-step.done{opacity:1;color:var(--green-deep)}
+  .an-step .tick{opacity:0;transition:.2s}
+  .an-step.done .tick{opacity:1}
+
+  /* ---------- STUDENT MODE ---------- */
+  #student .body{flex:1;display:flex;gap:22px;padding:22px 26px 24px;min-height:0}
+  .sidebar{width:248px;flex-shrink:0;display:flex;flex-direction:column;gap:12px}
+  .sidebar h4{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);margin:2px 2px 2px}
+  .finding-btn{
+    display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
+    background:#fff;border:1px solid var(--border-soft);border-left:3px solid transparent;border-radius:12px;
+    padding:14px 14px;font:inherit;transition:.15s;
+  }
+  .finding-btn:hover{border-color:var(--border)}
+  .finding-btn .num{
+    width:24px;height:24px;border-radius:50%;background:var(--panel);color:var(--muted);
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;
+  }
+  .finding-btn .ft{font-size:13.5px;font-weight:600;color:var(--ink-2);line-height:1.3}
+  .finding-btn.sel{background:var(--green-tint);border-left-color:var(--green);border-color:var(--green-soft)}
+  .finding-btn.sel .num{background:var(--green);color:#fff}
+  .finding-btn.sel .ft{color:var(--green-deep)}
+  .fdot{width:8px;height:8px;border-radius:50%;margin-left:auto;flex-shrink:0}
+  .fdot.high{background:var(--red)}
+  .fdot.mod{background:var(--amber)}
+  .fdot.min{background:var(--muted-2)}
+
+  .coach{
+    flex:1;background:#fff;border:1px solid var(--border-soft);border-radius:14px;
+    padding:24px 26px;display:flex;flex-direction:column;min-width:0;overflow:auto;
+  }
+  .coach-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
+  .coach-head h3{font-size:20px;font-weight:700;letter-spacing:-.3px;margin:0;color:var(--ink);line-height:1.25}
+  .sev{font-size:11.5px;font-weight:600;border-radius:999px;padding:4px 11px;white-space:nowrap;flex-shrink:0}
+  .sev.high{color:var(--red);border:1px solid var(--red-border);background:var(--red-soft)}
+  .sev.mod{color:var(--amber);border:1px solid var(--amber-border);background:var(--amber-soft)}
+  .sev.min{color:var(--muted);border:1px solid var(--border);background:var(--panel)}
+
+  .trow{display:flex;gap:15px;padding:12px 0;border-top:1px solid var(--border-soft)}
+  .trow:first-of-type{border-top:0;padding-top:2px}
+  .ticon{width:40px;height:40px;border-radius:50%;background:var(--green-soft);color:var(--green-deep);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .ttext .tl{font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--green-deep);margin-bottom:5px}
+  .ttext .tb{font-size:14.7px;color:var(--ink-2);line-height:1.62;white-space:pre-line}
+  .ttext .tb .ref{color:var(--green-deep);font-weight:700}
+
+  .equote{margin-top:9px;border-left:3px solid var(--green);background:var(--green-tint);padding:10px 14px;border-radius:0 10px 10px 0;font-size:13.4px;color:var(--ink-2);line-height:1.5;white-space:normal}
+  .equote .eq-slide{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--green-deep);margin-bottom:3px}
+
+  .reflect-box{border:1.5px solid var(--green);background:#fff;border-radius:12px;padding:16px 18px;font-size:15px;color:var(--green-deep);font-weight:600;line-height:1.55;box-shadow:0 1px 3px rgba(15,132,85,.08)}
+
+  .attempt-wrap{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+  textarea.attempt{width:100%;resize:vertical;font:inherit;font-size:13.5px;color:var(--ink);border:1px solid var(--border);border-radius:10px;padding:10px 12px;outline:none;background:#fff}
+  textarea.attempt:focus{border-color:var(--green)}
+  .rw-label{font-size:12px;font-weight:600;color:var(--muted)}
+  .rw-label.req{color:var(--amber)}
+  .gate-note{font-size:12.3px;color:var(--muted)}
+  .gate-note.ok{color:var(--green-deep)}
+  .gate-note.warn{color:var(--amber);font-weight:600}
+
+  .reveal{margin-top:14px;display:flex;align-items:center;gap:8px;border:1px solid var(--green);background:#fff;color:var(--green-deep);font:inherit;font-size:13.5px;font-weight:600;border-radius:10px;padding:10px 15px;cursor:pointer;align-self:flex-start;transition:.15s}
+  .reveal:hover{background:var(--green-tint)}
+  .reveal:disabled{opacity:.45;cursor:not-allowed}
+  .reveal:disabled:hover{background:#fff}
+  .locked{margin-top:12px;border:1.5px dashed var(--border);border-radius:12px;padding:14px 16px;color:var(--muted-2);font-size:13px;display:flex;align-items:center;gap:9px}
+  .fix{margin-top:12px;border:1px solid var(--green-soft);background:var(--green-tint);border-radius:12px;padding:14px 16px;display:none}
+  .fix.show{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .compare .pane{border-radius:10px;padding:12px 14px;border:1px solid}
+  .compare .pane.you{background:#fff;border-color:var(--border-soft)}
+  .compare .pane.sug{background:#fff;border-color:var(--green-soft)}
+  .compare .pl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;color:var(--muted)}
+  .compare .pane.sug .pl{color:var(--green-deep)}
+  .compare .pb{font-size:13.6px;color:var(--ink-2);line-height:1.55;white-space:pre-line}
+  .yourdraft{margin-top:8px;font-size:13px;color:var(--ink-2);border-top:1px dashed var(--border-soft);padding-top:8px}
+  .yourdraft b{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+
+  .selfexp{margin-top:12px;border-top:1px dashed var(--border);padding-top:11px}
+  .se-label{font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:7px}
+  .se-row{display:flex;gap:8px}
+  .se-row input{flex:1;font:inherit;font-size:13.3px;border:1px solid var(--border);border-radius:9px;padding:9px 11px;outline:none}
+  .se-row input:focus{border-color:var(--green)}
+  .se-save{border:1px solid var(--green);background:#fff;color:var(--green-deep);font:inherit;font-size:12.5px;font-weight:600;border-radius:9px;padding:8px 14px;cursor:pointer;flex-shrink:0}
+  .se-save.saved{background:var(--green);color:#fff}
+  .se-note{font-size:11.8px;color:var(--muted);margin-top:6px}
+
+  .tagbar{margin-top:auto;padding-top:18px;display:flex;gap:9px;flex-wrap:wrap}
+  .tag{font-size:12px;font-weight:600;color:var(--green-deep);border:1px solid var(--green-soft);background:var(--green-tint);border-radius:999px;padding:6px 12px;display:flex;align-items:center;gap:6px}
+
+  /* ---------- TEAM LEAD MODE ---------- */
+  #team .body{flex:1;padding:22px 30px 24px;overflow:auto;min-height:0}
+  .verdict{display:flex;gap:14px;margin-bottom:14px}
+  .vcard{flex:1;background:#fff;border:1px solid var(--border-soft);border-radius:14px;padding:14px 16px}
+  .vcard .vl{font-size:11.5px;color:var(--muted-2);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:9px}
+  .vpill{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:700}
+  .vpill.warn{color:var(--amber)}
+  .vpill.good{color:var(--green-deep)}
+  .vpill.bad{color:var(--red)}
+  .vpill.neutral{color:var(--muted)}
+  .vpill .dot{width:9px;height:9px;border-radius:50%}
+  .vpill.warn .dot{background:var(--amber)}
+  .vpill.good .dot{background:var(--green)}
+  .vpill.bad .dot{background:var(--red)}
+  .vpill.neutral .dot{background:var(--muted-2)}
+  .vbig{font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--ink)}
+  .vbig .stars{font-size:13px;color:var(--green);margin-left:2px;letter-spacing:1px}
+  .vsub{font-size:11.5px;color:var(--muted-2);margin-top:4px}
+
+  .crit-strip{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+  .crit-cap{font-size:11.5px;color:var(--muted-2);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-right:2px}
+  .crit-chip{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;border-radius:999px;padding:6px 12px;border:1px solid}
+  .crit-chip.pass{color:var(--green-deep);border-color:var(--green-soft);background:var(--green-tint)}
+  .crit-chip.partial{color:var(--amber);border-color:var(--amber-border);background:var(--amber-soft)}
+  .crit-chip.fail{color:var(--red);border-color:var(--red-border);background:var(--red-soft)}
+  .crit-chip .cc-score{font-weight:700}
+
+  .tl-wrap{background:#fff;border:1px solid var(--border-soft);border-radius:14px;padding:20px 22px 26px;margin-bottom:20px}
+  .tl-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .tl-head h4{font-size:14px;font-weight:700;margin:0;color:var(--ink)}
+  .legend{display:flex;gap:16px;font-size:11.5px;color:var(--muted)}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .ldot{width:9px;height:9px;border-radius:3px}
+  .ldot.g{background:var(--green)}.ldot.a{background:var(--amber)}.ldot.r{background:var(--red)}
+
+  .timeline{position:relative;padding-top:34px;padding-bottom:46px}
+  .tiles{display:flex;gap:0}
+  .cell{flex:1;display:flex;justify-content:center}
+  .tile{
+    width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+    font-size:10.5px;font-weight:600;color:#fff;background:var(--green);position:relative;
+  }
+  .tile.a{background:var(--amber)}
+  .tile.r{background:var(--red)}
+  .tile.r.pulse{box-shadow:0 0 0 0 rgba(229,83,75,.5);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(229,83,75,.45)}70%{box-shadow:0 0 0 7px rgba(229,83,75,0)}100%{box-shadow:0 0 0 0 rgba(229,83,75,0)}}
+
+  .seclabels{display:flex;margin-top:11px}
+  .seclabel{text-align:center;font-size:11px;color:var(--muted);font-weight:500;border-top:1px solid var(--border-soft);padding-top:8px;position:relative}
+  .seclabel::before{content:"";position:absolute;left:0;top:0;width:1px;height:5px;background:var(--border)}
+
+  /* callouts above */
+  .callout{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;font-size:11.5px;font-weight:600;white-space:nowrap}
+  .callout .ctext{padding:3px 10px;border-radius:6px;border:1px solid}
+  .callout .ctick{width:1px;height:9px;margin-top:1px}
+  .callout.amber .ctext{color:var(--amber);background:var(--amber-soft);border-color:var(--amber-border)}
+  .callout.amber .ctick{background:var(--amber-border)}
+  .callout.red .ctext{color:var(--red);background:var(--red-soft);border-color:var(--red-border)}
+  .callout.red .ctick{background:var(--red-border)}
+
+  /* contradiction bracket */
+  .contra{position:absolute;bottom:6px;height:30px}
+  .contra .line{position:absolute;left:0;right:0;top:0;border-top:1.5px dashed var(--red)}
+  .contra .end{position:absolute;top:-9px;width:1.5px;height:9px;background:var(--red)}
+  .contra .end.l{left:0}.contra .end.r{right:0}
+  .contra .clabel{position:absolute;top:7px;left:50%;transform:translateX(-50%);font-size:10.5px;font-weight:600;color:var(--red);background:#fff;padding:2px 9px;border:1px solid var(--red-border);border-radius:999px;white-space:nowrap}
+
+  .twocol{display:flex;gap:16px}
+  .ibox{flex:1;border-radius:14px;padding:18px 20px;border:1px solid}
+  .ibox.issue{background:var(--red-soft);border-color:var(--red-border)}
+  .ibox.fixes{background:var(--panel);border-color:var(--border-soft)}
+  .ibox h5{margin:0 0 9px;font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:8px;color:var(--ink)}
+  .ibox.issue h5{color:#B23A33}
+  .ibox p{margin:0;font-size:13px;color:var(--muted);line-height:1.55}
+  .fixlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+  .fixlist li{display:flex;gap:11px;align-items:flex-start;font-size:13px;color:var(--ink-2);line-height:1.45}
+  .fixlist .fn{width:21px;height:21px;border-radius:50%;background:var(--green);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+  .actions{display:flex;flex-direction:column;align-items:center;gap:9px;padding:13px 26px 17px;border-top:1px solid var(--border-soft);flex-shrink:0}
+  .actions-row{display:flex;justify-content:center;gap:12px}
+  .actions-note{font-size:12px;color:var(--muted)}
+  .btn-primary{background:var(--green);color:#fff;border:0;border-radius:11px;font:inherit;font-size:13.5px;font-weight:600;padding:12px 22px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:.15s}
+  .btn-primary:hover{background:var(--green-deep)}
+  .btn-primary:disabled{opacity:.65;cursor:default}
+  .btn-primary:disabled:hover{background:var(--green)}
+  .btn-secondary{background:#fff;color:var(--muted);border:1px solid var(--border);border-radius:11px;font:inherit;font-size:13.5px;font-weight:600;padding:12px 22px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:.15s}
+  .btn-secondary:hover{color:var(--ink);border-color:var(--muted-2)}
+
+  svg{display:block}
+  @media (max-width:720px){ body{padding:8px} .stage{aspect-ratio:auto;min-height:96vh} .meta{display:none} .compare{grid-template-columns:1fr} }
+
+  /* ---------- PRINTABLE REPORT (the team-facing PDF, paper only) ---------- */
+  .printable{display:none}
+  .printable .pf-head{display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--green);padding-bottom:10px}
+  .printable .pf-brand{font-weight:700;font-size:18px;color:var(--green);letter-spacing:-.4px}
+  .printable .pf-brand span{color:var(--ink);font-weight:600;font-size:14px;margin-left:6px}
+  .printable .pf-meta{font-size:11.5px;color:var(--muted)}
+  .printable .pf-title{font-size:23px;font-weight:700;letter-spacing:-.4px;margin:16px 0 4px;color:var(--ink)}
+  .printable .pf-kicker{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--green-deep);margin-bottom:14px}
+  .printable .pf-verdict-row{display:flex;gap:10px;margin:14px 0}
+  .printable .pf-vcard{flex:1;border:1px solid var(--border-soft);border-radius:10px;padding:9px 12px;background:var(--panel)}
+  .printable .pf-vcard span{display:block;font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-2);margin-bottom:4px}
+  .printable .pf-vcard b{font-size:15px;color:var(--ink)}
+  .printable .pf-vcard b.warn{color:var(--amber)}
+  .printable .pf-vcard b.good{color:var(--green-deep)}
+  .printable .pf-crit-strip{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+  .printable .pf-crit{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;border-radius:999px;padding:5px 11px;border:1px solid}
+  .printable .pf-crit.pass{color:var(--green-deep);border-color:var(--green-soft);background:var(--green-tint)}
+  .printable .pf-crit.partial{color:var(--amber);border-color:var(--amber-border);background:var(--amber-soft)}
+  .printable .pf-crit.fail{color:var(--red);border-color:var(--red-border);background:var(--red-soft)}
+  .printable .pf-section-h{font-size:15px;font-weight:700;color:var(--ink);margin:26px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--border-soft)}
+  .printable .pf-lead{font-size:13px;color:var(--muted);line-height:1.55;margin:8px 0 4px}
+  .printable .pf-strength{margin:14px 0}
+  .printable .pf-strength-pt{font-size:13.6px;font-weight:600;color:var(--ink-2);line-height:1.5;display:flex;gap:9px}
+  .printable .pf-strength-pt::before{content:"✓";color:var(--green);font-weight:700;flex-shrink:0}
+  .printable .pf-quote{margin:7px 0 0;border-left:3px solid var(--green);background:var(--green-tint);padding:8px 13px;border-radius:0 8px 8px 0;font-size:12.6px;color:var(--ink-2);line-height:1.5}
+  .printable .pf-qs{display:block;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--green-deep);margin-bottom:3px}
+  .printable .pf-finding{margin:18px 0;padding:16px 18px;border:1px solid var(--border-soft);border-radius:12px;background:#fff}
+  .printable .pf-fhead{display:flex;align-items:flex-start;gap:11px;margin-bottom:10px}
+  .printable .pf-fnum{width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+  .printable .pf-fhead h3{flex:1;margin:0;font-size:15.5px;font-weight:700;line-height:1.3;color:var(--ink)}
+  .printable .pf-sev{font-size:10.5px;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap;flex-shrink:0}
+  .printable .pf-sev.high{color:var(--red);border:1px solid var(--red-border);background:var(--red-soft)}
+  .printable .pf-sev.mod{color:var(--amber);border:1px solid var(--amber-border);background:var(--amber-soft)}
+  .printable .pf-sev.min{color:var(--muted);border:1px solid var(--border);background:var(--panel)}
+  .printable .pf-block{margin-top:11px}
+  .printable .pf-label{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--green-deep);margin-bottom:4px}
+  .printable .pf-body{font-size:13px;color:var(--ink-2);line-height:1.6}
+  .printable .pf-body .ref{color:var(--green-deep);font-weight:700}
+  .printable .pf-reflect{border:1.5px solid var(--green);border-radius:10px;padding:11px 14px;font-size:13.2px;color:var(--green-deep);font-weight:600;line-height:1.5}
+  .printable .pf-solution{margin-top:12px;background:var(--green-tint);border:1px solid var(--green-soft);border-radius:10px;padding:12px 15px}
+  .printable .pf-label.sol{color:var(--green-deep)}
+  .printable .pf-solution .pf-body{color:var(--ink-2)}
+  .printable .pf-foot{margin-top:24px;padding-top:12px;border-top:1px solid var(--border-soft);font-size:11.5px;color:var(--muted);line-height:1.55}
+
+  @media print{
+    @page{ size:A4; margin:16mm 15mm; }
+    html,body{background:#fff;display:block;min-height:0;margin:0;padding:0}
+    .stage,#analyzing{display:none !important}
+    .printable{display:block !important;max-width:none}
+    *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .pf-finding,.pf-strength{ break-inside:avoid; page-break-inside:avoid; }
+    .pf-section-h{ break-after:avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- ===================== PROMPT / CHAT INTRO ===================== -->
+  <section class="view active" id="prompt">
+    <div class="topbar">
+      <span class="brand">180DC</span>
+      <span class="vrule"></span>
+      <div class="hgroup">
+        <div class="row1"><span class="mode-title">AI Quality Reviewer</span></div>
+        <span class="subtitle">MBB-standard review for every deliverable, before it reaches the client.</span>
+      </div>
+      <div class="meta" id="srcLabel"><b>Review v1</b> · runs locally</div>
+    </div>
+    <div class="body">
+      <div class="prompt-card">
+        <div class="prompt-kicker">AI Quality Reviewer</div>
+        <h2 class="prompt-h">Drop in a deliverable to review</h2>
+        <p class="prompt-sub">The reviewer scores it on five criteria, then coaches the team through the top findings.</p>
+        <div class="chatbox">
+          <span class="clip">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          </span>
+          <input id="cmd" type="text" value="Review this deliverable" />
+          <button class="run" onclick="runReview()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Run review
+          </button>
+        </div>
+        <div class="chips">
+          <span class="chip" onclick="runBuiltin('demo')"><span class="doticon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" opacity=".18"/><path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span> Vantage IP Patent Strategy.pdf · 32 slides</span>
+          <span class="chip" onclick="runBuiltin('livelihoods')"><span class="doticon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" opacity=".18"/><path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span> Riverside Project - Deliverable 3.pdf · 29 slides</span>
+        </div>
+        <button class="loadlink" onclick="toggleLoad()">Load review JSON from the reviewer</button>
+        <div class="loadpanel" id="loadPanel" style="display:none">
+          <textarea id="jsonBox" rows="6" placeholder="Paste the JSON object the reviewer returned"></textarea>
+          <div class="loadrow">
+            <input type="file" id="jsonFile" accept=".json,application/json" />
+            <button class="run" onclick="renderFromBox()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Render review
+            </button>
+          </div>
+          <div class="loaderr" id="loadErr"></div>
+        </div>
+      </div>
+    </div>
+    <div id="analyzing">
+      <div class="an-wrap">
+        <div class="spinner"></div>
+        <div class="an-title" id="anTitle">Analyzing 32 slides…</div>
+        <div class="an-step" data-s="0"><span class="tick">✓</span> Reading action titles</div>
+        <div class="an-step" data-s="1"><span class="tick">✓</span> Tracing the governing insight</div>
+        <div class="an-step" data-s="2"><span class="tick">✓</span> Cross-checking evidence vs recommendations</div>
+        <div class="an-step" data-s="3"><span class="tick">✓</span> Scoring against the five criteria</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TEAM LEAD MODE ===================== -->
+  <section class="view" id="team">
+    <div class="topbar">
+      <span class="brand">180DC</span>
+      <span class="vrule"></span>
+      <div class="hgroup">
+        <div class="row1"><span class="mode-title">Team Lead Mode</span></div>
+        <span class="subtitle">Deck readiness at a glance</span>
+      </div>
+      <div class="modeswitch">
+        <button onclick="setMode('team')" class="on" id="ms-team-t">Team Lead</button>
+        <button onclick="setMode('student')" id="ms-student-t">Student</button>
+      </div>
+      <button class="newbtn" onclick="goPrompt()">↻ New review</button>
+      <div class="meta" id="teamMeta"></div>
+    </div>
+
+    <div class="body">
+      <!-- verdict -->
+      <div class="verdict">
+        <div class="vcard"><div class="vl">Verdict</div><div class="vpill warn" id="vVerdict"><span class="dot"></span><span id="vVerdictText"></span></div></div>
+        <div class="vcard"><div class="vl">Score</div><div class="vbig"><span id="vScore"></span> <span class="stars" id="vStars"></span></div></div>
+        <div class="vcard"><div class="vl">Estimated effort</div><div class="vbig" id="vEffort"></div></div>
+        <div class="vcard"><div class="vl">Confidence</div><div class="vpill good" id="vConf"><span class="dot"></span><span id="vConfText"></span></div></div>
+      </div>
+
+      <!-- five criteria, checks passed -->
+      <div class="crit-strip" id="critStrip"></div>
+
+      <!-- timeline -->
+      <div class="tl-wrap">
+        <div class="tl-head">
+          <h4>Deck timeline</h4>
+          <div class="legend">
+            <span><span class="ldot g"></span>Pass</span>
+            <span><span class="ldot a"></span>Partial issue</span>
+            <span><span class="ldot r"></span>Critical issue</span>
+          </div>
+        </div>
+        <div class="timeline" id="timeline"><!-- built by JS --></div>
+        <div class="seclabels" id="seclabels"><!-- built by JS --></div>
+      </div>
+
+      <!-- explanation + fixes -->
+      <div class="twocol">
+        <div class="ibox issue">
+          <h5>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+            Main issue
+          </h5>
+          <p id="mainIssueText"></p>
+        </div>
+        <div class="ibox fixes">
+          <h5>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 1-5.2 5.2l-5.4 5.4a1.4 1.4 0 0 0 2 2l5.4-5.4a4 4 0 0 1 5.2-5.2l-2.6 2.6-1.4-1.4 2.6-2.6"/></svg>
+            Critical fixes
+          </h5>
+          <ul class="fixlist" id="fixList"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="actions-note">Student mode locks each fix until the consultant attempts it first. No ghostwriting.</div>
+      <div class="actions-row">
+        <button class="btn-primary" id="sendBtn" onclick="sendBack()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send back with notes
+        </button>
+        <button class="btn-secondary" onclick="setMode('student')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Coach me through the findings
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STUDENT MODE ===================== -->
+  <section class="view" id="student">
+    <div class="topbar">
+      <span class="brand">180DC</span>
+      <span class="vrule"></span>
+      <div class="hgroup">
+        <div class="row1"><span class="mode-title">Student Mode</span><span class="badge-coach">Coach</span></div>
+        <span class="subtitle">Understand the principle, then improve the slide.</span>
+      </div>
+      <div class="modeswitch">
+        <button onclick="setMode('team')" id="ms-team-s">Team Lead</button>
+        <button onclick="setMode('student')" class="on" id="ms-student-s">Student</button>
+      </div>
+      <button class="newbtn" onclick="goPrompt()">↻ New review</button>
+      <div class="meta" id="studentMeta"></div>
+    </div>
+
+    <div class="body">
+      <div class="sidebar">
+        <h4 id="sideHead">Top findings</h4>
+        <div id="findingList"><!-- built by JS --></div>
+      </div>
+
+      <div class="coach" id="coachCard">
+        <div class="coach-head">
+          <h3 id="c-title"></h3>
+          <span class="sev" id="c-sev"></span>
+        </div>
+
+        <div class="trow">
+          <div class="ticon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l9 17H3z"/></svg>
+          </div>
+          <div class="ttext"><div class="tl">Principle</div><div class="tb" id="c-principle"></div></div>
+        </div>
+
+        <div class="trow">
+          <div class="ticon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+          </div>
+          <div class="ttext" style="flex:1"><div class="tl">Diagnosis</div><div class="tb" id="c-diagnosis"></div><div id="c-evidence"></div></div>
+        </div>
+
+        <div class="trow">
+          <div class="ticon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg>
+          </div>
+          <div class="ttext"><div class="tl">Why it matters</div><div class="tb" id="c-why"></div></div>
+        </div>
+
+        <div class="trow">
+          <div class="ticon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.2 9a2.8 2.8 0 0 1 5.4 1c0 1.8-2.6 2-2.6 4"/><line x1="12" y1="17" x2="12" y2="17"/></svg>
+          </div>
+          <div class="ttext" style="flex:1">
+            <div class="tl">Reflect before fix</div>
+            <div class="reflect-box" id="c-reflect"></div>
+
+            <div class="attempt-wrap" id="attemptWrap">
+              <textarea id="attemptBox" class="attempt" rows="3" placeholder="Type your answer. The fix stays locked until you make a real attempt."></textarea>
+              <div class="rw-label" id="rewriteLabel">Optional: draft your own version of the change first</div>
+              <textarea id="rewriteBox" class="attempt" rows="2" placeholder="Your own rewrite of the title, slide or recommendation"></textarea>
+              <div class="gate-note" id="gateNote"></div>
+            </div>
+
+            <button class="reveal" id="revealBtn" onclick="revealFix()" disabled>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              Reveal suggested fix
+            </button>
+            <div class="locked" id="lockedBox">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              Locked until you answer in your own words. The tool builds skill, it never replaces it.
+            </div>
+
+            <div class="fix" id="fixBox">
+              <div class="compare">
+                <div class="pane you">
+                  <div class="pl">Your answer</div>
+                  <div class="pb" id="cmpYou"></div>
+                </div>
+                <div class="pane sug">
+                  <div class="pl">Suggested fix</div>
+                  <div class="pb" id="c-fix"></div>
+                </div>
+              </div>
+              <div class="selfexp">
+                <div class="se-label">In one line, why does this fix satisfy the principle?</div>
+                <div class="se-row">
+                  <input id="explainBox" type="text" placeholder="Your one-line explanation" />
+                  <button class="se-save" id="explainSave" onclick="saveExplain()">Save</button>
+                </div>
+                <div class="se-note" id="seNote"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tagbar" id="c-tags"></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ===================== PRINTABLE REPORT (paper only, built from the loaded JSON) ===================== -->
+<section class="printable" id="printable"><!-- built by JS --></section>
+
+<script>
+/* ================= HELPERS ================= */
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SEV = {
+  critical:{cls:'high', label:'High impact'},
+  major:{cls:'mod', label:'Moderate'},
+  minor:{cls:'min', label:'Minor'}
+};
+/* highlight "Slide N" references inside escaped text */
+function hiRefs(escaped){
+  return escaped.replace(/Slides? \d+(?:-\d+)?(?: (?:to|and|vs) (?:slides? )?\d+)?/gi, m => `<span class="ref">${m}</span>`);
+}
+function normWords(s){ return (s.toLowerCase().match(/[a-z0-9']+/g) || []); }
+
+/* ================= DEMO DATA (schema-shaped, scripted) ================= */
+const DEMO_REVIEW = {
+  meta:{ title:"Vantage IP Patent Strategy", slideCount:32, version:"Review v1" },
+  scorecard:{
+    overall:3.2, verdict:"Needs revision", effort:"2-3 hrs", confidence:"High",
+    criteria:[
+      { name:"Action Titles", result:"partial", checksPassed:2, checksTotal:4 },
+      { name:"Governing Insight", result:"fail", checksPassed:1, checksTotal:4 },
+      { name:"Recommendation Specificity", result:"partial", checksPassed:2, checksTotal:4 },
+      { name:"Evidence Sourcing", result:"partial", checksPassed:3, checksTotal:4 },
+      { name:"Actionability", result:"partial", checksPassed:2, checksTotal:4 }
+    ]
+  },
+  timeline:{
+    sections:[
+      { label:"Opening", span:5 },
+      { label:"Patent Landscape", span:7 },
+      { label:"Peer Evidence", span:8 },
+      { label:"Recommendation", span:10 },
+      { label:"Appendix", span:2 }
+    ],
+    tiles:Array.from({length:32}, (_,k) => ({
+      slide:k+1,
+      state:[4,5].includes(k+1) ? "partial" : [13,30].includes(k+1) ? "critical" : "pass"
+    })),
+    callouts:[
+      { at:4.5, state:"partial", label:"No governing insight" },
+      { at:13, state:"critical", label:"Peer risk evidence" },
+      { at:30, state:"critical", label:"Contradicting recommendation" }
+    ],
+    connectors:[ { from:13, to:30, label:"Unresolved contradiction" } ]
+  },
+  mainIssue:"Peer data shows hyperscaler collection risk, but the recommendation still prioritizes Netflix, YouTube and AWS.",
+  criticalFixes:[
+    "Add a governing insight to the opening slides.",
+    "Resolve the slide 13 vs slide 30 contradiction.",
+    "Sequence targets by litigation capacity."
+  ],
+  findings:[
+    {
+      short:"Internal contradiction",
+      title:"Recommendation contradicts own evidence",
+      severity:"critical", severityLabel:"High impact",
+      principle:"Pyramid Principle: Internal Consistency",
+      diagnosis:"Slide 13 documents the peer pattern. VLSI won $2.18B from Intel and Optis won $506M from Apple, both overturned on appeal with $0 collected.\nSlide 30 then names Netflix, YouTube and AWS as priority targets, the same hyperscaler class that beat those comparable patent firms.",
+      evidence:[
+        { slide:13, quote:"VLSI won $2.18B from Intel and Optis won $506M from Apple, both overturned on appeal with $0 collected." },
+        { slide:30, quote:"Priority targets: Netflix, YouTube, AWS." }
+      ],
+      why:"The most damaging objection is the one your own deck already raised. You proved that small patent firms win headline verdicts against hyperscalers and then collect nothing on appeal, and the recommendation walks Vantage IP straight into that pattern.\nA recommendation that contradicts its own peer evidence isn't actionable, and the client's counsel will spot it in minutes.",
+      reflect:"Given the collection risk your own peer data shows, how should the enforcement targets be sequenced, and on which slide do you make that argument?",
+      fix:"Sequence by litigation capacity. Open with mid-tier platforms like Twitch and Peacock to build settlement precedent, then escalate to hyperscalers. Anchor it on Kove v AWS, a $525M verdict with all claims upheld, the case proving a hyperscaler pays when the patent survives. That is exactly Vantage's position with a method patent that beat 20+ IPR challenges.",
+      tags:["Pyramid Principle","ERIP Performance","Deliberate Practice"]
+    },
+    {
+      short:"Missing governing insight",
+      title:"The deck never states its answer up front",
+      severity:"critical", severityLabel:"High impact",
+      principle:"Pyramid Principle: Answer First (Minto)",
+      diagnosis:"Slides 1-5 open with topic labels and an agenda, with no answer. The recommendation only comes together late, across the strongest-fit slide and the shortlist around slides 28-30.",
+      evidence:[ { slide:4, quote:"Presentation agenda" } ],
+      why:"A partner reads the first three slides. A client CEO reads the executive summary, and that is often all they read before forming a verdict. If the answer only appears on slide 30, you have made the busiest, most senior person in the room do your synthesis for you.\nThe apex of the argument has to come first. Every other slide exists to defend it, not to gradually reveal it.",
+      reflect:"If a partner read only slides 1-5 and then closed the deck, what would they say Vantage should acquire and why? Could they answer at all?",
+      fix:"Insert one executive-summary slide after slide 5 that states the governing insight in a single sentence. Name which patents to acquire, why now and in what order, then make every later section a proof of that one sentence.",
+      tags:["Pyramid Principle","Minto","Deliberate Practice"]
+    },
+    {
+      short:"Weak execution sequence",
+      title:"Named patents, but no next move for the client",
+      severity:"major", severityLabel:"Moderate",
+      principle:"ERIP Performance: does it change outcomes?",
+      diagnosis:"Slides 28-30 name the target patents precisely, but the 'potential after acquiring' stays qualitative, with phrases like 'many possible licensing targets' and 'large infringer pool'. There is no acquisition cost, owner, sequence, timeline or success metric.",
+      evidence:[
+        { slide:28, quote:"many possible licensing targets" },
+        { slide:30, quote:"large infringer pool" }
+      ],
+      why:"Vantage can't act on 'large infringer pool'. It can act on 'offer $X for this patent before rival bidding opens, and target $Y in licensing within 18 months'.\nSix named patents with no cost, order or metric is a menu, not a recommendation, and a small firm with limited capital cannot buy a menu.",
+      reflect:"For the single highest-priority patent, what would Vantage do in the next 90 days, what is the realistic acquisition cost and what licensing figure would signal it worked?",
+      fix:"Convert the shortlist into a sequenced action table with columns for patent, estimated acquisition cost, first enforcement target, back-royalty exposure and decision deadline. Even rough ranges beat qualitative adjectives and force the capital-sequencing logic into the open.",
+      tags:["ERIP Performance","Actionability","Deliberate Practice"]
+    }
+  ]
+};
+
+/* Riverside Project - Deliverable 3: real review produced by the rubric, quotes verified verbatim
+   against the extracted deck text (riverside_d3_text.txt). Same content as review-livelihoods-plan.json. */
+const LIVELIHOODS_REVIEW = {
+  meta:{ title:"Riverside Project - Deliverable 3", slideCount:29, version:"Review v1" },
+  scorecard:{
+    overall:3.6, verdict:"Needs revision", effort:"1-2 hrs", confidence:"Medium",
+    criteria:[
+      { name:"Action Titles", result:"partial", checksPassed:2, checksTotal:4 },
+      { name:"Governing Insight", result:"partial", checksPassed:3, checksTotal:4 },
+      { name:"Recommendation Specificity", result:"partial", checksPassed:3, checksTotal:4 },
+      { name:"Evidence Sourcing", result:"fail", checksPassed:1, checksTotal:4 },
+      { name:"Actionability", result:"pass", checksPassed:4, checksTotal:4 }
+    ]
+  },
+  timeline:{
+    sections:[
+      { label:"Opening", span:4 },
+      { label:"New Livelihoods", span:12 },
+      { label:"Current Livelihoods", span:10 },
+      { label:"Milestones", span:2 },
+      { label:"Takeaways", span:1 }
+    ],
+    tiles:Array.from({length:29}, (_,k) => ({
+      slide:k+1,
+      state:[3,28].includes(k+1) ? "critical" : [19,25].includes(k+1) ? "partial" : "pass"
+    })),
+    callouts:[
+      { at:3, state:"critical", label:"Unsourced income target" },
+      { at:25, state:"partial", label:"Copy-paste leftover" },
+      { at:28, state:"critical", label:"Placeholder metrics" }
+    ],
+    connectors:[ { from:19, to:25, label:"Duplicated paragraph" } ]
+  },
+  mainIssue:"The plan's own success metrics are unfinished: slide 28 ships literal x placeholders for target volumes and the 20-30% income promise on slides 3 and 28 has no baseline, method or source.",
+  criticalFixes:[
+    "Replace the x placeholders on slide 28 with one computed target volume per livelihood.",
+    "Anchor the 20-30% income target to a stated baseline of current household income and name the source.",
+    "Remove the beekeeping paragraph from the bio-charcoal slide and run one full proofing pass."
+  ],
+  findings:[
+    {
+      short:"Placeholder metrics",
+      title:"The success metrics the whole plan answers to are placeholders and unsourced targets",
+      severity:"critical", severityLabel:"High impact",
+      principle:"Evidence Grounding: every headline number needs a source",
+      diagnosis:"Slide 3 promises an income increase and slide 28 sets the accountability frame for 36 months of work, but the volume targets still contain the letter x where numbers should be and the income figure carries no baseline, no method and no source.",
+      evidence:[
+        { slide:28, quote:"volume (e.g. x kg of salt, x" },
+        { slide:28, quote:"household sees about 20 -30%" },
+        { slide:3, quote:"average household can see about 20 -30% income increase" }
+      ],
+      why:"The milestone slide is the contract between Riverside and the client. A funder who reads x kg of salt concludes the targets were never computed, and every other number in the deck inherits that doubt.",
+      reflect:"Take one livelihood, say salt. What data would you need to set a real 36 month volume target, and where would the income baseline come from to defend the 20 to 30% claim?",
+      fix:"Compute one real target per livelihood from the pilot scale already chosen on slide 16, state the current household income baseline next to the percentage and name a source for both. Where a number cannot be grounded yet, label it an assumption to validate in phase 1 instead of shipping an x.",
+      tags:[ "Evidence Grounding", "Actionability", "Deliberate Practice" ]
+    },
+    {
+      short:"Copy-paste leftover",
+      title:"A beekeeping paragraph ships twice on slide 19 and again on the bio-charcoal slide",
+      severity:"major", severityLabel:"Moderate",
+      principle:"ERIP Performance: the deck is the product",
+      diagnosis:"The same beekeeping training paragraph appears twice on slide 19 and then reappears word for word on slide 25, whose title is about scaling bio-charcoal production. The body of a cost slide opens with bee colony lifecycle content.",
+      evidence:[
+        { slide:25, quote:"Scaling bio-charcoal production can be costly" },
+        { slide:25, quote:"Beekeeping training includes understanding the entire bee colony lifecycle, hive management," }
+      ],
+      why:"A client who spots one pasted leftover stops trusting the slides they cannot verify. A single visible QA miss taxes every claim in the deck, and this one sits on a cost slide where trust matters most.",
+      reflect:"What end of project check would have caught this before the client did, and who on the team owns that pass?",
+      fix:"Strip the duplicated paragraph, then run one full proofing pass where a teammate who did not build the slides reads every body block against its title.",
+      tags:[ "ERIP Performance", "Deliberate Practice" ]
+    },
+    {
+      short:"Costs without a budget",
+      title:"Unit costs are quoted but never become a budget or a decision",
+      severity:"major", severityLabel:"Moderate",
+      principle:"ERIP Performance: does it change outcomes?",
+      diagnosis:"Slide 19 prices beekeeping per person and slide 25 prices bio-charcoal per ton with a range spanning more than four times, yet no slide multiplies these into a program budget, names a funding source or sets the ceiling at which a livelihood is too expensive to pilot.",
+      evidence:[
+        { slide:19, quote:"around $213 - $422 per person." },
+        { slide:25, quote:"$448.78 to $2077 per ton." }
+      ],
+      why:"Riverside cannot allocate capital from a unit cost range. Without a total and a funding plan the cost research stays trivia and the go or no go decision lands back on the client.",
+      reflect:"At the pilot scale you would recommend for bio-charcoal, what do the low and high ends of that per ton range mean in total dollars, and at which number would you advise against the pilot?",
+      fix:"Add one cost roll-up per livelihood: pilot scale times unit cost, the funding source it maps to and the ceiling above which Riverside should defer that livelihood. Ranges are fine, a missing total is not.",
+      tags:[ "ERIP Performance", "Actionability", "Deliberate Practice" ]
+    }
+  ]
+};
+
+const BUILTIN = { demo: DEMO_REVIEW, livelihoods: LIVELIHOODS_REVIEW };
+function runBuiltin(key){
+  loadReview(BUILTIN[key], key === 'demo' ? 'demo' : 'loaded');
+  runReview();
+}
+
+/* ================= VALIDATION (clear errors, never a broken UI) ================= */
+function validateReview(o){
+  const e = [];
+  if(!o || typeof o !== 'object' || Array.isArray(o)){ e.push('The input is not a JSON object.'); return e; }
+  if(!o.meta || typeof o.meta.title !== 'string') e.push('meta.title is missing.');
+  if(!o.meta || typeof o.meta.slideCount !== 'number') e.push('meta.slideCount is missing or not a number.');
+  const sc = o.scorecard;
+  if(!sc){ e.push('scorecard is missing.'); }
+  else {
+    if(typeof sc.overall !== 'number') e.push('scorecard.overall must be a number.');
+    if(typeof sc.verdict !== 'string') e.push('scorecard.verdict is missing.');
+    if(!Array.isArray(sc.criteria) || sc.criteria.length < 1) e.push('scorecard.criteria must list the five criteria.');
+    else sc.criteria.forEach((c,i) => {
+      if(!c || typeof c.name !== 'string' || typeof c.result !== 'string' || typeof c.checksPassed !== 'number' || typeof c.checksTotal !== 'number')
+        e.push(`scorecard.criteria[${i}] needs name, result, checksPassed and checksTotal.`);
+    });
+  }
+  const tl = o.timeline;
+  if(!tl || !Array.isArray(tl.tiles) || tl.tiles.length < 1){ e.push('timeline.tiles must have one entry per slide.'); }
+  else tl.tiles.forEach((t,i) => {
+    if(!t || typeof t.slide !== 'number' || !['pass','partial','critical'].includes(t.state))
+      e.push(`timeline.tiles[${i}] needs a slide number and a state of pass, partial or critical.`);
+  });
+  if(tl && Array.isArray(tl.tiles) && o.meta && typeof o.meta.slideCount === 'number' && tl.tiles.length !== o.meta.slideCount)
+    e.push('timeline.tiles must have exactly one entry per slide (' + o.meta.slideCount + ' expected, ' + tl.tiles.length + ' given).');
+  if(tl && tl.sections !== undefined){
+    if(!Array.isArray(tl.sections)) e.push('timeline.sections must be an array.');
+    else tl.sections.forEach((s,i) => {
+      if(!s || typeof s.label !== 'string' || typeof s.span !== 'number' || s.span <= 0)
+        e.push(`timeline.sections[${i}] needs a label and a positive numeric span.`);
+    });
+  }
+  if(tl && tl.callouts !== undefined){
+    if(!Array.isArray(tl.callouts)) e.push('timeline.callouts must be an array.');
+    else tl.callouts.forEach((c,i) => {
+      if(!c || typeof c.at !== 'number' || typeof c.label !== 'string' || !['partial','critical'].includes(c.state))
+        e.push(`timeline.callouts[${i}] needs a numeric at, a state of partial or critical and a label.`);
+    });
+  }
+  if(tl && tl.connectors !== undefined){
+    if(!Array.isArray(tl.connectors)) e.push('timeline.connectors must be an array.');
+    else tl.connectors.forEach((c,i) => {
+      if(!c || typeof c.from !== 'number' || typeof c.to !== 'number' || typeof c.label !== 'string')
+        e.push(`timeline.connectors[${i}] needs numeric from and to plus a label.`);
+    });
+  }
+  if(o.strengths !== undefined){
+    if(!Array.isArray(o.strengths)) e.push('strengths must be an array.');
+    else o.strengths.forEach((s,i) => {
+      if(!s || typeof s.point !== 'string' || !s.point.trim()) e.push(`strengths[${i}].point is missing.`);
+      if(s && (s.quote !== undefined || s.slide !== undefined) && (typeof s.quote !== 'string' || !s.quote.trim() || typeof s.slide !== 'number'))
+        e.push(`strengths[${i}] quote needs both a verbatim quote string and a numeric slide.`);
+    });
+  }
+  if(typeof o.mainIssue !== 'string' || !o.mainIssue.trim()) e.push('mainIssue is missing.');
+  if(!Array.isArray(o.criticalFixes) || o.criticalFixes.length < 1) e.push('criticalFixes must list at least one fix.');
+  else o.criticalFixes.forEach((f,i) => { if(typeof f !== 'string' || !f.trim()) e.push(`criticalFixes[${i}] must be text.`); });
+  if(!Array.isArray(o.findings)){ e.push('findings must be an array.'); }
+  else {
+    if(o.findings.length > 3) e.push('Maximum three findings. The reviewer keeps only the top three by severity.');
+    o.findings.forEach((f,i) => {
+      ['title','severity','principle','diagnosis','why','reflect','fix'].forEach(k => {
+        if(!f || typeof f[k] !== 'string' || !f[k].trim()) e.push(`findings[${i}].${k} is missing.`);
+      });
+      if(f && f.severity && !['critical','major','minor'].includes(f.severity))
+        e.push(`findings[${i}].severity must be critical, major or minor.`);
+      if(!f || !Array.isArray(f.evidence) || f.evidence.length < 1)
+        e.push(`findings[${i}] has no evidence quote. Quote or abstain: a finding without a verbatim quote is dropped.`);
+      else f.evidence.forEach((q,j) => {
+        if(!q || typeof q.quote !== 'string' || !q.quote.trim() || typeof q.slide !== 'number')
+          e.push(`findings[${i}].evidence[${j}] needs a slide number and a verbatim quote.`);
+      });
+      if(f && f.tags !== undefined && (!Array.isArray(f.tags) || f.tags.some(t => typeof t !== 'string')))
+        e.push(`findings[${i}].tags must be an array of strings.`);
+      if(f && f.solution !== undefined && (typeof f.solution !== 'string' || !f.solution.trim()))
+        e.push(`findings[${i}].solution must be text.`);
+    });
+  }
+  return e;
+}
+
+/* ================= STATE ================= */
+let REVIEW = null;
+let SOURCE = 'demo';
+const SEND_HTML = document.getElementById('sendBtn').innerHTML;
+let current = 0;
+let coachState = [];           /* per finding: attempt, rewrite, explain, revealed, explainSaved */
+let skipStreak = 0;            /* consecutive reveals without a drafted rewrite */
+const REVEAL_CAP = 2;          /* after this many skips, the rewrite becomes required */
+const ATTEMPT_MIN = 40;        /* minimum characters for a real reflection attempt */
+const REWRITE_MIN = 20;        /* minimum characters for a rewrite to count */
+
+function explainKey(i){ return REVIEW ? 'aiqr|' + REVIEW.meta.title + '|' + REVIEW.meta.slideCount + '|' + i : 'aiqr|' + i; }
+
+/* ================= LOAD + RENDER ALL ================= */
+function loadReview(obj, source){
+  const errs = validateReview(obj);
+  if(errs.length) return errs;
+  REVIEW = obj;
+  SOURCE = source || 'demo';
+  current = 0;
+  skipStreak = 0;
+  coachState = obj.findings.map((_,i) => {
+    let saved = '';
+    try { saved = sessionStorage.getItem('aiqr|' + obj.meta.title + '|' + obj.meta.slideCount + '|' + i) || ''; } catch(ex){}
+    return { attempt:'', rewrite:'', explain:saved, revealed:false, explainSaved:!!saved };
+  });
+  renderAll(SOURCE);
+  return [];
+}
+
+function renderAll(source){
+  const m = REVIEW.meta, sc = REVIEW.scorecard;
+
+  document.getElementById('srcLabel').innerHTML = source === 'loaded'
+    ? '<b>Loaded</b> · ' + esc(m.title)
+    : '<b>Review v1</b> · runs locally';
+  const sb = document.getElementById('sendBtn');
+  sb.disabled = false;
+  if(SEND_HTML) sb.innerHTML = SEND_HTML;
+  document.getElementById('anTitle').textContent = 'Analyzing ' + m.slideCount + ' slides…';
+  document.getElementById('teamMeta').innerHTML = '<b>' + esc(m.title) + '</b><br>' + m.slideCount + ' slides analyzed · ' + esc(m.version || 'Review v1');
+  document.getElementById('studentMeta').innerHTML = '<b>Top ' + REVIEW.findings.length + ' findings</b><br>' + esc(m.title);
+  document.getElementById('sideHead').textContent = 'Top ' + REVIEW.findings.length + ' findings';
+
+  /* verdict cards */
+  const vMap = { 'Ready':'good', 'Minor revision':'warn', 'Needs revision':'warn' };
+  const vEl = document.getElementById('vVerdict');
+  vEl.className = 'vpill ' + (vMap[sc.verdict] || 'warn');
+  document.getElementById('vVerdictText').textContent = sc.verdict;
+  document.getElementById('vScore').textContent = sc.overall.toFixed(1) + ' / 5';
+  const full = Math.max(0, Math.min(5, Math.floor(sc.overall)));
+  document.getElementById('vStars').textContent = '★'.repeat(full) + '☆'.repeat(5 - full);
+  document.getElementById('vEffort').textContent = sc.effort || '—';
+  const cEl = document.getElementById('vConf');
+  cEl.className = 'vpill ' + (sc.confidence === 'High' ? 'good' : sc.confidence === 'Medium' ? 'neutral' : 'warn');
+  document.getElementById('vConfText').textContent = sc.confidence || 'Medium';
+
+  /* criteria strip */
+  document.getElementById('critStrip').innerHTML =
+    '<span class="crit-cap">Five criteria</span>' +
+    sc.criteria.map(c => `<div class="crit-chip ${esc(c.result)}"><span>${esc(c.name)}</span><span class="cc-score">${c.checksPassed}/${c.checksTotal}</span></div>`).join('');
+
+  buildTimeline();
+  buildPrintable();
+
+  /* main issue + fixes */
+  document.getElementById('mainIssueText').textContent = REVIEW.mainIssue;
+  document.getElementById('fixList').innerHTML = REVIEW.criticalFixes
+    .map((f,i) => `<li><span class="fn">${i+1}</span> ${esc(f)}</li>`).join('');
+
+  /* student mode */
+  if(REVIEW.findings.length){
+    document.getElementById('coachCard').style.display = 'flex';
+    selectFinding(0);
+  } else {
+    document.getElementById('findingList').innerHTML = '';
+    document.getElementById('sideHead').textContent = 'No findings';
+    document.getElementById('studentMeta').innerHTML = '<b>No findings</b><br>' + esc(m.title);
+    document.getElementById('coachCard').style.display = 'none';
+  }
+}
+
+/* ================= VIEW NAV ================= */
+function show(id){
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  el.querySelectorAll('.body, .coach').forEach(n => { n.scrollTop = 0; });
+}
+function goPrompt(){
+  document.getElementById('loadPanel').style.display = 'none';
+  document.getElementById('loadErr').innerHTML = '';
+  show('prompt');
+}
+function sendBack(){
+  const b = document.getElementById('sendBtn');
+  b.disabled = true;
+  b.textContent = 'Sent with notes ✓';
+}
+function setMode(m){ show(m); syncModeBtns(m); }
+function syncModeBtns(m){
+  ['t','s'].forEach(sfx => {
+    document.getElementById('ms-team-' + sfx).classList.toggle('on', m === 'team');
+    document.getElementById('ms-student-' + sfx).classList.toggle('on', m === 'student');
+  });
+}
+
+/* ================= SCRIPTED RUN ================= */
+let anTimer = null, anTimeout = null;
+function runReview(){
+  if(REVIEW) loadReview(REVIEW, SOURCE);   /* fresh coach state on every run */
+  const ov = document.getElementById('analyzing');
+  clearInterval(anTimer); clearTimeout(anTimeout);
+  ov.classList.add('show');
+  const steps = ov.querySelectorAll('.an-step');
+  steps.forEach(s => s.classList.remove('done'));
+  let i = 0;
+  anTimer = setInterval(() => { if(i < steps.length){ steps[i].classList.add('done'); i++; } }, 360);
+  anTimeout = setTimeout(() => {
+    clearInterval(anTimer);
+    ov.classList.remove('show');
+    setMode('team');
+  }, 1750);
+}
+
+/* ================= LOAD JSON PATH ================= */
+function toggleLoad(){
+  const p = document.getElementById('loadPanel');
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+}
+function renderFromBox(){
+  const errBox = document.getElementById('loadErr');
+  errBox.innerHTML = '';
+  let raw = document.getElementById('jsonBox').value.trim();
+  /* tolerate markdown fences and preamble text around the JSON object */
+  const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if(fenced) raw = fenced[1].trim();
+  else {
+    const start = raw.indexOf('{');
+    const end = raw.lastIndexOf('}');
+    if(start >= 0 && end > start) raw = raw.slice(start, end + 1);
+  }
+  let obj;
+  try { obj = JSON.parse(raw); }
+  catch(ex){ errBox.innerHTML = '<div>Could not parse the JSON: ' + esc(ex.message) + '</div>'; return; }
+  const errs = loadReview(obj, 'loaded');
+  if(errs.length){ errBox.innerHTML = errs.map(m => '<div>· ' + esc(m) + '</div>').join(''); return; }
+  document.getElementById('loadPanel').style.display = 'none';
+  setMode('team');
+}
+document.getElementById('jsonFile').addEventListener('change', ev => {
+  const f = ev.target.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = () => { document.getElementById('jsonBox').value = r.result; renderFromBox(); };
+  r.readAsText(f);
+  ev.target.value = '';
+});
+
+/* ================= TEAM TIMELINE ================= */
+function buildTimeline(){
+  const T = REVIEW.timeline;
+  const total = T.tiles.length;
+  const pct = n => ((n - 0.5) / total * 100);
+
+  let tiles = '<div class="tiles">';
+  T.tiles.forEach(t => {
+    const cls = t.state === 'partial' ? 'a' : t.state === 'critical' ? 'r pulse' : '';
+    tiles += `<div class="cell"><div class="tile ${cls}">${t.slide}</div></div>`;
+  });
+  tiles += '</div>';
+
+  /* stagger callouts onto two rows when anchors sit close together */
+  const sorted = (T.callouts || []).slice().sort((a,b) => a.at - b.at);
+  let lastP = -100, lastRow = 0, anyRaised = false;
+  const placed = sorted.map(c => {
+    const p = pct(c.at);
+    const row = (p - lastP < 14) ? (lastRow === 0 ? 1 : 0) : 0;
+    if(row === 1) anyRaised = true;
+    lastP = p; lastRow = row;
+    return { c, p, row };
+  });
+  const callouts = placed.map(({c, p, row}) => {
+    const cls = c.state === 'critical' ? 'red' : 'amber';
+    let shift = '', tickShift = '';
+    if(p > 88){ shift = 'transform:translateX(-72%);'; tickShift = 'margin-right:-44%;'; }
+    else if(p < 7){ shift = 'transform:translateX(-30%);'; tickShift = 'margin-left:-40%;'; }
+    const top = row === 1 ? 0 : (anyRaised ? 26 : 0);
+    const tickH = row === 1 ? 35 : 9;
+    return `<div class="callout ${cls}" style="left:${p}%;top:${top}px;${shift}"><div class="ctext">${esc(c.label)}</div><div class="ctick" style="height:${tickH}px;${tickShift}"></div></div>`;
+  }).join('');
+
+  const conns = (T.connectors || []).map((c,i) => {
+    const l = pct(c.from), r = pct(c.to), bottom = 6 + i * 26;
+    return `
+    <div class="contra" style="left:${l}%;width:${r-l}%;bottom:${bottom}px">
+      <div class="line"></div>
+      <div class="end l"></div><div class="end r"></div>
+      <div class="clabel">${esc(c.label)}</div>
+    </div>`;
+  }).join('');
+
+  const tl = document.getElementById('timeline');
+  tl.style.paddingTop = (anyRaised ? 60 : 34) + 'px';
+  tl.style.paddingBottom = (46 + Math.max(0, (T.connectors || []).length - 1) * 26) + 'px';
+  tl.innerHTML = callouts + tiles + conns;
+
+  const sl = document.getElementById('seclabels');
+  const secs = T.sections || [];
+  sl.style.display = secs.length ? 'flex' : 'none';
+  sl.innerHTML = secs.map(s => `<div class="seclabel" style="flex:${Number(s.span) || 1}">${esc(s.label)}</div>`).join('');
+}
+
+/* ================= PRINTABLE REPORT (strengths first, no gated fixes on paper) ================= */
+function buildPrintable(){
+  const el = document.getElementById('printable');
+  if(!el) return;
+  const m = REVIEW.meta, sc = REVIEW.scorecard;
+  const vClass = sc.verdict === 'Ready' ? 'good' : 'warn';
+
+  const crit = sc.criteria.map(c =>
+    `<div class="pf-crit ${esc(c.result)}"><span>${esc(c.name)}</span><b>${c.checksPassed}/${c.checksTotal}</b></div>`).join('');
+
+  const strengths = (Array.isArray(REVIEW.strengths) ? REVIEW.strengths : []).map(s =>
+    `<div class="pf-strength"><div class="pf-strength-pt">${esc(s.point)}</div>` +
+    (s.quote ? `<div class="pf-quote"><span class="pf-qs">Slide ${s.slide} · verbatim</span>“${esc(s.quote)}”</div>` : '') +
+    `</div>`).join('');
+
+  const findings = REVIEW.findings.map((f,i) => {
+    const sev = SEV[f.severity] || SEV.major;
+    const ev = f.evidence.map(q =>
+      `<div class="pf-quote"><span class="pf-qs">Slide ${q.slide} · verbatim</span>“${esc(q.quote)}”</div>`).join('');
+    return `<div class="pf-finding">
+      <div class="pf-fhead"><span class="pf-fnum">${i+1}</span><h3>${esc(f.title)}</h3><span class="pf-sev ${sev.cls}">${esc(f.severityLabel || sev.label)}</span></div>
+      <div class="pf-block"><div class="pf-label">Principle</div><div class="pf-body">${esc(f.principle)}</div></div>
+      <div class="pf-block"><div class="pf-label">Diagnosis</div><div class="pf-body">${hiRefs(esc(f.diagnosis))}</div>${ev}</div>
+      <div class="pf-block"><div class="pf-label">Why it matters</div><div class="pf-body">${esc(f.why)}</div></div>
+      <div class="pf-block"><div class="pf-label">Reflect before the fix</div><div class="pf-reflect">${esc(f.reflect)}</div></div>
+      ${f.solution ? `<div class="pf-solution"><div class="pf-label sol">Recommended solution</div><div class="pf-body">${hiRefs(esc(f.solution)).replace(/\s([1-9]\.)\s/g, '<br>$1 ')}</div></div>` : ''}
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="pf-head">
+      <div class="pf-brand">180DC <span>AI Quality Reviewer</span></div>
+      <div class="pf-meta">${esc(m.version || 'Review v1')} · ${m.slideCount} slides reviewed</div>
+    </div>
+    <h1 class="pf-title">${esc(m.title)}</h1>
+    <div class="pf-kicker">Senior reviewer feedback</div>
+    <div class="pf-verdict-row">
+      <div class="pf-vcard"><span>Verdict</span><b class="${vClass}">${esc(sc.verdict)}</b></div>
+      <div class="pf-vcard"><span>Score</span><b>${sc.overall.toFixed(1)} / 5</b></div>
+      <div class="pf-vcard"><span>Estimated effort</span><b>${esc(sc.effort || '—')}</b></div>
+      <div class="pf-vcard"><span>Confidence</span><b>${esc(sc.confidence || 'Medium')}</b></div>
+    </div>
+    <div class="pf-crit-strip">${crit}</div>
+    ${strengths ? `<h2 class="pf-section-h">What this deck does well</h2><div class="pf-strengths">${strengths}</div>` : ''}
+    <h2 class="pf-section-h">Where to push next</h2>
+    <p class="pf-lead">${esc(REVIEW.mainIssue)}</p>
+    <div class="pf-findings">${findings}</div>
+    <div class="pf-foot">This furnished copy includes the recommended solution for each finding so the team can move on a tight deadline. In the interactive reviewer each solution stays locked until the consultant answers the reflect question first, so the coaching path is preserved.</div>
+  `;
+}
+
+/* ================= STUDENT COACH ================= */
+function buildFindingList(){
+  const wrap = document.getElementById('findingList');
+  wrap.innerHTML = REVIEW.findings.map((f,i) => {
+    const sev = SEV[f.severity] || SEV.major;
+    return `
+    <button class="finding-btn ${i === current ? 'sel' : ''}" onclick="selectFinding(${i})">
+      <span class="num">${i+1}</span><span class="ft">${esc(f.short || f.title)}</span><span class="fdot ${sev.cls}"></span>
+    </button>`;
+  }).join('');
+}
+
+function selectFinding(i){
+  current = i;
+  const f = REVIEW.findings[i];
+  const st = coachState[i];
+  const sev = SEV[f.severity] || SEV.major;
+
+  document.getElementById('c-title').textContent = 'Finding ' + (i+1) + ': ' + f.title;
+  const sevEl = document.getElementById('c-sev');
+  sevEl.textContent = f.severityLabel || sev.label;
+  sevEl.className = 'sev ' + sev.cls;
+  document.getElementById('c-principle').textContent = f.principle;
+  document.getElementById('c-diagnosis').innerHTML = hiRefs(esc(f.diagnosis));
+  document.getElementById('c-evidence').innerHTML = f.evidence
+    .map(q => `<div class="equote"><span class="eq-slide">Slide ${q.slide} · verbatim</span>“${esc(q.quote)}”</div>`).join('');
+  document.getElementById('c-why').textContent = f.why;
+  document.getElementById('c-reflect').textContent = f.reflect;
+  document.getElementById('c-fix').textContent = f.fix;
+  document.getElementById('c-tags').innerHTML = (f.tags || []).map(t => `<span class="tag">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0l-8-8V4h6.6l8 8a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.3" fill="currentColor"/></svg>${esc(t)}</span>`).join('');
+
+  document.getElementById('attemptBox').value = st.attempt;
+  document.getElementById('rewriteBox').value = st.rewrite;
+  document.getElementById('explainBox').value = st.explain;
+  setExplainSaved(st.explainSaved);
+
+  if(st.revealed){ showRevealed(); } else { showGated(); }
+  buildFindingList();
+}
+
+function showGated(){
+  document.getElementById('attemptWrap').style.display = 'flex';
+  document.getElementById('revealBtn').style.display = 'flex';
+  document.getElementById('lockedBox').style.display = 'flex';
+  document.getElementById('fixBox').classList.remove('show');
+  updateGate();
+}
+
+function showRevealed(){
+  const st = coachState[current];
+  document.getElementById('attemptWrap').style.display = 'none';
+  document.getElementById('revealBtn').style.display = 'none';
+  document.getElementById('lockedBox').style.display = 'none';
+  let you = `<div>${esc(st.attempt)}</div>`;
+  if(st.rewrite.trim()) you += `<div class="yourdraft"><b>Your draft</b><br>${esc(st.rewrite)}</div>`;
+  document.getElementById('cmpYou').innerHTML = you;
+  document.getElementById('fixBox').classList.add('show');
+}
+
+/* --- typed-attempt gate: real attempt or no reveal --- */
+function attemptValid(ans, question){
+  const t = ans.trim();
+  if(t.length < ATTEMPT_MIN) return { ok:false, msg:'Keep going. A real attempt is at least a sentence or two.' };
+  const aw = normWords(t);
+  const qw = new Set(normWords(question));
+  const fresh = aw.filter(w => !qw.has(w));
+  if(fresh.length < Math.max(5, Math.floor(aw.length * 0.3)))
+    return { ok:false, msg:'That mostly restates the question. Answer it in your own words.' };
+  return { ok:true };
+}
+
+function rewriteRequired(){ return skipStreak >= REVEAL_CAP; }
+
+function updateGate(){
+  const f = REVIEW.findings[current];
+  const st = coachState[current];
+  const note = document.getElementById('gateNote');
+  const rwLabel = document.getElementById('rewriteLabel');
+  const btn = document.getElementById('revealBtn');
+
+  const v = attemptValid(st.attempt, f.reflect);
+  const reqRw = rewriteRequired();
+  const rwOk = !reqRw || st.rewrite.trim().length >= REWRITE_MIN;
+
+  rwLabel.textContent = reqRw
+    ? 'Required: draft your own version before this fix unlocks'
+    : 'Optional: draft your own version of the change first';
+  rwLabel.className = 'rw-label' + (reqRw ? ' req' : '');
+
+  btn.disabled = !(v.ok && rwOk);
+
+  if(!st.attempt.trim()){
+    note.textContent = 'The fix unlocks after you type a real attempt.';
+    note.className = 'gate-note';
+  } else if(!v.ok){
+    note.textContent = v.msg;
+    note.className = 'gate-note';
+  } else if(!rwOk){
+    note.textContent = 'You revealed ' + REVEAL_CAP + ' fixes without drafting an attempt. Write your own version to unlock this one.';
+    note.className = 'gate-note warn';
+  } else {
+    note.textContent = 'Unlocked. Reveal the fix to see where your answer and the reviewer converge.';
+    note.className = 'gate-note ok';
+  }
+}
+
+function revealFix(){
+  const st = coachState[current];
+  const f = REVIEW.findings[current];
+  const v = attemptValid(st.attempt, f.reflect);
+  if(!v.ok || (rewriteRequired() && st.rewrite.trim().length < REWRITE_MIN)) return;
+
+  /* no-ghostwrite cap accounting */
+  if(st.rewrite.trim().length >= REWRITE_MIN) skipStreak = 0; else skipStreak++;
+
+  st.revealed = true;
+  showRevealed();
+}
+
+/* --- self-explanation on reveal --- */
+function setExplainSaved(saved){
+  const btn = document.getElementById('explainSave');
+  btn.textContent = saved ? 'Saved' : 'Save';
+  btn.className = 'se-save' + (saved ? ' saved' : '');
+  document.getElementById('seNote').textContent = saved
+    ? 'Stored with this session.'
+    : 'One line, required before you move on.';
+}
+function saveExplain(){
+  const st = coachState[current];
+  const val = document.getElementById('explainBox').value.trim();
+  if(val.length < 15){
+    document.getElementById('seNote').textContent = 'A real explanation is at least one full line.';
+    return;
+  }
+  st.explain = val;
+  st.explainSaved = true;
+  try { sessionStorage.setItem(explainKey(current), val); } catch(ex){}
+  setExplainSaved(true);
+}
+
+/* ================= INPUT WIRING ================= */
+document.getElementById('attemptBox').addEventListener('input', e => {
+  coachState[current].attempt = e.target.value;
+  updateGate();
+});
+document.getElementById('rewriteBox').addEventListener('input', e => {
+  coachState[current].rewrite = e.target.value;
+  updateGate();
+});
+document.getElementById('explainBox').addEventListener('input', e => {
+  coachState[current].explain = e.target.value;
+  if(coachState[current].explainSaved){ coachState[current].explainSaved = false; setExplainSaved(false); }
+});
+document.getElementById('explainBox').addEventListener('keydown', e => { if(e.key === 'Enter') saveExplain(); });
+document.getElementById('cmd').addEventListener('keydown', e => { if(e.key === 'Enter') runReview(); });
+
+/* ================= INIT ================= */
+loadReview(DEMO_REVIEW, 'demo');
+</script>
+</body>
+</html>
