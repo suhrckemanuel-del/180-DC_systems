@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "title": "Client E paid membership scheme",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Nearly ready with minor edits",
+    "mainReason": "No blocking rule fired: the decision is clear, the core recommendation is supported and actionable, the headline number is presented as an assumption to test rather than a fact, and the only open points strengthen an already-sound deck.",
+    "highestRiskIssue": "Slide 8 sizes year-one revenue at about 5,000 pounds but the deck never sizes the grant gap it is meant to close, so the reader cannot judge how much this diversifies income.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "The grant income at risk in pounds (the two grants not expected to renew) would let the reader judge whether 5,000 pounds is a meaningful start, and could turn the sizing note into a targeted gap.",
+    "confidenceNote": "Confidence is Medium because no evidence and source notes field was filled in the input, so sourcing rests on the in-slide attributions alone."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.7,
+    "confidence": "Medium",
+    "effort": "4-6 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The decision, the answer and the first step are stated plainly on slides 1, 2 and 10." },
+      { "name": "Problem framing", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The problem is specific and held throughout, success criteria are implied by the 8% and 5% triggers but never stated as the target for diversification itself." },
+      { "name": "Storyline and pyramid logic", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The answer leads on slide 1 and the titles read as an argument from problem to evidence to recommendation." },
+      { "name": "Evidence quality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Each headline claim carries an in-slide source and the 8% is honestly marked as an assumption to test." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Findings are interpreted and feed the recommendation, but the year-one revenue is never compared against the size of the grant gap it addresses." },
+      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Action, owner, timeframe and measurable triggers are all present on slide 10." },
+      { "name": "Feasibility and implementation", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The single-tier soft-launch path fits the client and sequences a first step with a pilot." },
+      { "name": "Risks, assumptions and uncertainty", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The load-bearing assumptions and the main risk are named and the soft launch is set up to test them." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Most titles assert a message, but a few (The decision, The numbers) are topic labels rather than the takeaway." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, no confidentiality issue, individuals referred to by role." }
+    ]
+  },
+  "strengths": [
+    { "point": "The team marks its own key number as the thing to test rather than presenting it as fact, which is exactly the honesty a client needs.", "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.", "slide": 8 },
+    { "point": "The recommendation is specific and gated: it names an owner, a sequence and a numeric trigger for going to full launch.", "quote": "Month three: full launch if the soft launch clears 5%.", "slide": 10 },
+    { "point": "The single-tier start is tied directly to the client's constraints, so the advice fits an organization that has run no membership before.", "quote": "Launching one tier at 45 pounds, rather than three tiers at once, keeps admin low and lets Client E learn before it scales.", "slide": 6 }
+  ],
+  "findings": [
+    {
+      "short": "Revenue not sized to gap",
+      "title": "The year-one revenue is never compared against the size of the grant gap it is meant to help close.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Analysis: a number is only meaningful next to the number it is compared against.",
+      "diagnosis": "Slide 3 says grants are 80% of income and two of five will not renew. Slide 8 puts year-one membership at about 5,000 pounds. The deck never states the grant income at risk in pounds, so the reader cannot see whether 5,000 pounds is a meaningful dent in the gap or a token start.",
+      "evidence": [
+        { "slide": 3, "quote": "Two of five grants are not expected to renew, per the funder letters on file." },
+        { "slide": 8, "quote": "that is about 5,000 pounds in year one" }
+      ],
+      "why": "A board member weighing whether to back the scheme wants to know how much of the shortfall it covers. Without the gap in pounds the case for effort is harder to judge.",
+      "reflect": "How large is the income the two non-renewing grants represent, and what share of it does 5,000 pounds in year one cover.",
+      "fix": "Add the pounds at risk from the non-renewing grants next to the year-one figure so the reader can see the scheme as a first step against a sized gap. Do not overstate: frame it as a start that scales, which the deck already argues.",
+      "tags": [ "Analysis and insight", "SCR" ]
+    },
+    {
+      "short": "Two topic-label titles",
+      "title": "A couple of slide titles state the topic rather than the takeaway.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "Minto action titles: the title should carry the message, not name the subject.",
+      "diagnosis": "Most titles in the deck assert a point. Two, The decision and The numbers, are topic labels, so a reader skimming titles skips the actual takeaway on those slides.",
+      "evidence": [
+        { "slide": 2, "quote": "The decision" },
+        { "slide": 8, "quote": "The numbers" }
+      ],
+      "why": "A busy reader who scans only titles loses the answer on slide 2 and the revenue signal on slide 8, which are two of the most load-bearing slides.",
+      "reflect": "If a reader saw only the title of slide 2 and slide 8, would they get the point the slide makes.",
+      "fix": "Rewrite the two label titles as full-sentence assertions carrying the slide's takeaway, matching the assertive titles the rest of the deck already uses.",
+      "tags": [ "Minto action titles", "Slide-level communication" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 8", "problem": "The year-one figure rests on the full 1,400 mailing list being reachable, and slide 9 flags list accuracy as an assumption, but the two are not linked.", "why": "If the reachable list is smaller than 1,400 the 8% target and the 5,000 pounds move together, so the reader should see them connected.", "fix": "Note on slide 8 that the figure scales with the usable list size the soft launch will reveal." }
+  ],
+  "questionsForLead": [
+    "How large in pounds is the income from the two grants not expected to renew, and does the team have that figure to sit next to the 5,000 pounds.",
+    "Has the team confirmed the coordinator has capacity to own the launch on top of current duties.",
+    "Did the team check how current the 1,400 mailing list is, since the year-one number rests on it."
+  ],
+  "learningNote": {
+    "lesson": "A revenue number lands only when the reader can see it against the gap it is meant to close. Size the problem in the same unit as the solution.",
+    "weakHabit": "Reporting a projected figure without placing it next to the shortfall or benchmark that makes it meaningful.",
+    "exercise": "For the headline number in this deck, write the one comparison figure that tells the reader whether it is big or small, and put the two side by side.",
+    "principle": "Analysis and insight"
+  },
+  "notAssessed": [
+    "Whether the in-slide sources (2024 accounts, box-office data, funder letters, comparator websites) say what the deck reports. No evidence and source notes field was filled and the underlying documents were not provided.",
+    "Whether the coordinator actually has capacity to own the launch. The deck assigns ownership but the input states no capacity constraints.",
+    "How current or accurate the 1,400 mailing list is. The deck marks this as an assumption and it was not verifiable here.",
+    "Visual design, layout and charts. Only slide text was provided."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Decision", "span": 2 },
+      { "label": "Case", "span": 3 },
+      { "label": "Design", "span": 2 },
+      { "label": "Numbers and risk", "span": 2 },
+      { "label": "First steps", "span": 1 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "partial" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "pass" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "pass" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "pass" }
+    ],
+    "callouts": [
+      { "at": 8, "state": "partial", "label": "Revenue not sized against the grant gap" },
+      { "at": 2, "state": "partial", "label": "Topic-label title" }
+    ],
+    "connectors": [
+      { "from": 3, "to": 8, "label": "gap should meet the revenue figure" }
+    ]
+  }
+}

@@ -1,17 +1,20 @@
 ---
-title: Reviewer V2: verifier pass + self-consistency
-stage: spark
-owner: unassigned
-updated: 2026-06-18
+title: Reviewer V2: 10-dimension rubric, specialist lenses, evaluation harness
+stage: shaping
+owner: AI team
+updated: 2026-07-01
 ---
 
-# Reviewer V2: verifier pass and self-consistency
+# Reviewer V2
 
 ## The idea in one line
-Add a second model pass that checks the first reviewer's output before it ships, plus a three-run aggregate so the verdict is stable.
+Evolve the working single-pass reviewer into a serious human-controlled quality-assurance and learning system: a 10-dimension rubric, blocking-issue readiness (not an average), a strict noise budget, nine specialist lenses in one MVP call and an evaluation harness that makes quality measurable. The verifier pass and self-consistency below fold in as the staged multi-agent target.
+
+## Design lives here
+The full build plan and sprint documents are in [../../tools/quality-reviewer/v2/](../../tools/quality-reviewer/v2/). This card is the one-line pointer. Design phase, on branch `idea/reviewer-v2`. v1 stays untouched and shippable.
 
 ## Why it matters
-The pilot showed a single pass can miss a real issue. On the licensing-strategy example, an independent reviewer caught an internal contradiction the first pass missed (the anchor figure stated two ways). A built-in verifier would catch that class of miss without a human in the loop, which is exactly the branch's quality job.
+The pilot showed a single pass can miss a real issue. On the licensing-strategy example, an independent reviewer caught an internal contradiction the first pass missed (the anchor figure stated two ways). A built-in verifier would catch that class of miss without a human in the loop, which is exactly the branch's quality job. v2 makes that catch automatic and, just as important, makes the whole review testable against expert judgment rather than asserted.
 
 ## How it might work
 ```mermaid

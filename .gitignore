@@ -4,6 +4,14 @@ _client-private/
 *client*.pdf
 *client*.pptx
 
+# Real-deck material stays local: raw intake machinery (extracted client text, real
+# filenames, drive inventory, sealed triage) AND the pseudonymised case files, which
+# carry the full text of real client deliverables. Only the labeling kit, seeded-variant
+# spec and READMEs are committed.
+tools/quality-reviewer/v2/eval-cases-real/intake-work/
+tools/quality-reviewer/v2/eval-cases-real/real-*.md
+tools/quality-reviewer/v2/eval-cases-real/real-*.gold.md
+
 # Heavy binaries (decks, image dumps) are kept out to keep the repo lean.
 *.pptx
 slides_out/

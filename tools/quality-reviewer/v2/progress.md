@@ -1,0 +1,238 @@
+# v2 live-validation sprint progress
+
+Factual log of the 2026-07-02 validation sprint. Synthesis in
+[sprint-report-live-validation.md](sprint-report-live-validation.md).
+
+## Sprint objective
+
+Produce evidence that the v2 reviewer prompt works: live blind runs on the synthetic
+cases (02 and 04 first, both missing reviews), validate outputs against the contract,
+score against gold labels, change prompt or rubric only where scoring shows a real
+failure pattern, leave the repo commit-ready with v1 untouched.
+
+## State discovery (done)
+
+- Branch idea/reviewer-v2, one commit on main (5b64d21).
+- v2 docs 00 to 11 present. Prompt in 04 section A, contract in 03, rubric in 01,
+  harness in 05. All five cases with gold labels. Worked reviews for 01, 03, 05 only.
+  No v2 validator existed.
+- v1 untouched except the intended one-line README cross-link (verified by git diff).
+
+## Blindness protocol
+
+Runs use fresh-context instances receiving the deployed prompt package plus the team
+input template filled from case metadata with the failure-mode header stripped. Gold
+labels unread by runner and orchestrator until the output exists. Full protocol in
+[eval-runs/README.md](eval-runs/README.md).
+
+## Cases run
+
+| Case | Run | JSON valid | Validator | Scored |
+|---|---|---|---|---|
+| 02 | live blind 2026-07-02 | yes (parsed) | pass incl verbatim quotes | pass |
+| 04 | live blind 2026-07-02 | yes (parsed) | pass incl verbatim quotes | pass |
+| 01 | live run blocked by session limit, worked review exists and passes validator | | pass | not tonight |
+| 03 | same | | pass | not tonight |
+| 05 | same | | pass | not tonight |
+
+## Scores
+
+See [eval-runs/scoring-2026-07-02.md](eval-runs/scoring-2026-07-02.md). Both cases
+pass: readiness exact match, must-catch as top finding, prioritization 3, safety 3,
+precision at or above two thirds, restraint 2 (the weak metric, both cases).
+
+## Changes made
+
+- check-review-v2.js built, all five reviews pass it.
+- 04-prompt-templates.md: mootness pruning in the synthesis protocol, line-wrap rule
+  in the evidence rule, partial-input confidence rule in missing context.
+- 03-output-contract.md: validator section updated to the built validator and
+  whitespace-normalized quote comparison.
+- 10-source-register.md: S4, S7, S8, S9, S10 corrected after a verification pass.
+  expert-pack/one-pager.md: S10 scope clause fixed.
+- 11-decision-log.md: seven new entries. eval-cases/README.md status table updated.
+- eval-runs/ created with both live outputs, scoring sheet and README.
+- CHANGELOG.md: sprint entry added.
+
+## Session 2 (2026-07-03): full five-case set run live under the revised prompt
+
+All five cases now have live blind outputs under the revised prompt. All five pass
+check-review-v2.js with the verbatim-quote check. Files in eval-runs/:
+case-01-review-v2-live.json, case-03-review-v2-live.json, case-05-review-v2-live.json,
+and the re-runs case-02-review-v2-live-r2.json, case-04-review-v2-live-r2.json.
+(The original pre-revision 02 and 04 outputs are kept as case-02/04-review-v2-live.json
+for comparison.)
+
+Readiness vs gold:
+
+| Case | Live readiness | Gold | Match | Findings/comments |
+|---|---|---|---|---|
+| 01 | Needs substantial revision | R1 | yes | 5 / 1 |
+| 02 r2 | Needs substantial revision | R1 | yes | 4 / 2 |
+| 03 | Needs substantial revision | R1 | yes | 3 / 3 |
+| 04 r2 | Not ready for client review | R0 | yes | 3 / 2 |
+| 05 | Needs targeted revision (R2) | Nearly ready (R3) | NO | 3 / 2 |
+
+Noise cluster: fixed on the broken decks. Case 02 dropped from 5 to 4 findings and lost
+its title comment. Case 04 dropped from 5 to 3 findings. Mootness pruning fired as
+designed and each runner reported what it cut.
+
+The one divergence, case 05: the live reviewer landed R2 with three major findings where
+the gold and the hand-worked review sit at R3 with two minor ones. Inspection of the
+three findings (launch gate at 5% sits below the 8% assumption it must validate and is
+tested on the most engaged 200 contacts; the 5,000 pounds is never sized against total
+income; the conservative label leans on an attendance rate that does not measure
+willingness to pay) suggests they are genuine senior-level catches, not manufactured
+criticals. Provisional read: the reviewer out-performed the gold and the gold is too
+lenient. This must be adjudicated by the fresh-context scorer before the expert pack
+ships, because harness section E requires an exact readiness match on every case and
+restraint on case 05.
+
+Source items closed: S9 confirmed (CMCE Jan 2021, n=161, top-three nuance), S6
+corrected (guest post by Sam Smith on Tom Spencer's blog, verbatim quote confirmed,
+rebuttal noted). Register and rubric tag (Omachonu) updated.
+
+## Open issues (for the next session)
+
+- Fresh-context scorer has not yet run on the five live outputs. This is the gate.
+- Case 05 readiness mismatch needs adjudication: fix the gold to R2, or treat as a
+  reviewer severity-calibration issue. Do not silently pick one.
+- Recurring prompt ambiguities the runners flagged, candidates for the decision log if
+  they recur: light-touch (L) dimension scoring has no mechanical rule, vacuous
+  sub-checks (a financial-source check with no figures) have no pass/fail rule, and
+  timeline tile-state semantics are undefined. None block validation.
+- Expert-pack refresh (swap hand-worked samples for live outputs) waits on a green scorer.
+- Critical functionality and effectiveness review still to run (the user asked for it).
+- Still open from the source register: confirm the S4 journal tables match the working
+  paper figures.
+
+## Session 3 (2026-07-03): independent scoring, case 05 adjudication, calibration fix, green
+
+Fresh-context work this session. Two independent subagents (a scorer and a contrarian) ran
+blind, then a fresh-context runner re-ran case 05 under the revised prompt and a second
+independent scorer confirmed it.
+
+Independent scoring of the five live outputs is in
+[eval-runs/scoring-2026-07-03.md](eval-runs/scoring-2026-07-03.md), which replaces the
+orchestrator-scored 07-02 sheet as authoritative. Result: readiness matched on 4 of 5,
+every must-catch found, precision 1.00 on 01 to 04 and 0.80 on 05, safety clean
+throughout. The one miss was case 05, R2 against gold R3.
+
+Case 05 adjudicated: over-escalation, not genuine criticals. The independent scorer and the
+contrarian both read the three major findings on the merits and agreed they are real
+observations graded too high. The deck frames year one as a deliberately small pilot, so
+sizing the 5,000 pounds against total income is a minor not a blocker. Gold stays R3, with
+a dated adjudication note added to [eval-cases/case-05.gold.md](eval-cases/case-05.gold.md)
+that keeps the pre-registered gold intact.
+
+Calibration fix (prompt and rubric): a SEVERITY block that defines critical, major and
+minor by whether closing the finding changes the client's decision, a deliveryCritical
+invariant for no-blocker decks and a floor against demoting a strong no-blocker deck below
+Nearly ready. Provably a no-op on the four decks that fired a blocking rule.
+
+Case 05 re-run blind under the revised prompt landed Nearly ready (R3) with two minor
+findings, no invented criticals, and passes check-review-v2.js
+([eval-runs/case-05-review-v2-live-r2.json](eval-runs/case-05-review-v2-live-r2.json)). An
+independent re-score confirmed section E points 1 and 4. One arithmetic slip (diagnosticMean
+4.4 for 4.7) was caught by the validator and corrected.
+
+Updated readiness table:
+
+| Case | Live readiness | Gold | Match | Restraint | Pass |
+|---|---|---|---|---|---|
+| 01 | Needs substantial revision | R1 | yes | 3 | pass |
+| 02 r2 | Needs substantial revision | R1 | yes | 3 | pass |
+| 03 | Needs substantial revision | R1 | yes | 3 | pass |
+| 04 r2 | Not ready for client review | R0 | yes | 3 | pass |
+| 05 r2 | Nearly ready with minor edits | R3 | yes | 3 | pass |
+
+Green against harness section E: all six criteria pass. Expert pack refreshed to point at
+the live outputs (01, 03 live, 05 the revised-prompt re-run), marked live-generated.
+
+Critical effectiveness review written:
+[effectiveness-review-2026-07-03.md](effectiveness-review-2026-07-03.md). Fitness verdict:
+expert or lead companion, not yet direct student-facing. Single most important pre-pilot
+fix now that severity is calibrated: measure run-to-run stability (three to five runs per
+case under the frozen prompt) so finding-set and confidence variance is a number, not an
+assumption.
+
+## Green caveats (read before booking expert time)
+
+- The set is green, but 01 to 04 were not re-run under the revised prompt. The calibration
+  change binds only when blockingIssues is empty, so it is a no-op on those four (each fired
+  a blocking rule). This is a static regression argument, not a fresh run.
+- Case 05 green rests on a single post-fix blind run, independently re-scored. Stability
+  across repeated runs is unmeasured.
+- The eval is five short single-flaw synthetic decks with insider-written gold and no PDF
+  extraction noise. Passing is a smoke test, not a pilot validation. See the effectiveness
+  review sections 3 and 4.
+
+## Session 4 (2026-07-04): real-deck gold-set pipeline started
+
+Strategy decision with the user: two modes confirmed (one engine, two views, the
+readiness verdict lives only in lead mode), and the next brick is a gold set built from
+real past deliverables, not polished exemplars. Full pipeline design in
+[12-real-deck-intake.md](12-real-deck-intake.md).
+
+Done this session:
+
+- Drive library inventoried: 222 unique files, 181 unique deliverable candidates
+  (matches the "about 180" estimate). Extraction test on a real deck confirmed usable
+  text with realistic PDF noise (scrambled columns, floating chart values), which the
+  eval keeps on purpose.
+- eval-cases-real/ stood up: README with folder rules, blind labeling kit
+  (labeling/PROTOCOL.md with a stop rule, worksheet template, agreement log),
+  seeded-flaw variant spec (seeded/README.md), intake machinery and batch files
+  (intake-work/).
+- Provenance rules locked: humans write all gold for real cases, machine triage bands
+  are sealed sampling machinery, no reviewer runs on real cases before adjudicated
+  gold exists.
+- Triage fleet: pilot agent validated the loop (Drive MCP works from subagents), then
+  the 8-agent first wave hit the account session limit (resets 4am Europe/Berlin) and
+  died. 3 of 181 triage rows exist. Instructions patched to append-per-file so a killed
+  agent loses at most one file.
+
+Resume from [eval-cases-real/intake-work/NEXT-SESSION-PROMPT.md](eval-cases-real/intake-work/NEXT-SESSION-PROMPT.md).
+
+## Session 5 (2026-07-05 to 2026-07-07): local-mirror pivot, triage complete, 14 real cases built
+
+- Local-mirror pivot: the full Drive folder was downloaded to disk and extract-local.py
+  pulled text from 218 files with zero errors (full text plus a 12k-char head per file,
+  MANIFEST.tsv mapping). The Drive connector is out of the pipeline entirely. Local-text
+  Sonnet agents cost roughly a quarter of the Fable-on-MCP fleet that burned the 07-04
+  session window.
+- Triage complete: 181 of 181 candidates, merged and deduped by fileId into the sealed
+  catalog. One corrupted batch row (two records glued, one field lost) was repaired
+  during the merge with the repair noted in the row. Aggregates: 76 A, 70 B, 9 C, 26 X;
+  extractability 156 full, 13 partial, 1 poor, 11 n/a. Per-deck bands stay sealed.
+- Selection: 14 cases (4 A, 5 B, 5 C), every client used once, BCI and the Hartige
+  Samaritaan and The Good News families excluded entirely, stages 5 D1, 4 D2, 1 D3 and
+  4 finals, C band weighted toward decks with genuine draft artifacts (placeholder
+  slides, embedded reviewer comments, an annotated feedback copy). Reasons and the
+  codename mapping live in the sealed selection memo. Case numbering shuffled so the
+  sequence carries no band signal.
+- Case build: five Sonnet agents wrote real-01 to real-14 from the full local text,
+  extraction noise and draft artifacts kept verbatim, pseudonymised per policy. Session
+  limits killed three agents mid-wave but write-per-case discipline meant zero rework:
+  nine files were already complete on disk and two relaunched agents built the
+  remaining five.
+- Anonymisation QA at orchestrator level: grep sweep of every case body for real client
+  names, person names, emails, phone numbers, handles and live URLs. One fix applied
+  (seven speaker-note source URLs in real-05 stripped, logged in its extraction notes).
+  The generic 180DC org contact kept in real-02 is documented there. Sweep clean
+  everywhere after the fix.
+- Handoff: the set is ready for blind labeling per labeling/PROTOCOL.md. No gold
+  exists, the reviewer has not run on any real case and the baseline run waits for
+  adjudicated gold.
+
+## Next actions
+
+1. Before the expert session, run all five cases three to five times under the frozen
+   prompt and report the variance in findings, confidence and blocking-rule accounting.
+2. Optional belt-and-braces: a full-set blind re-run under the revised prompt with a fresh
+   scorer, to replace the static regression argument for 01 to 04.
+3. Still open from the source register: confirm the S4 journal tables match the working
+   paper figures.
+
+See [eval-runs/NEXT-SESSION-PROMPT.md](eval-runs/NEXT-SESSION-PROMPT.md) for the earlier
+paste-ready continuation prompt (now largely superseded by this session).

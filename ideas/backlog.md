@@ -7,10 +7,12 @@ Every idea, flat. The visual relationships live in [idea-map.md](idea-map.md). S
 | Quality Reviewer | shipped | AI team | (tool) | Working renderer, pilot run done on one real deliverable |
 | HR Screener | ready | AI team | (tool) | Designed and evidence-backed, gated on the HR meeting |
 | Deck Transform | shaping | AI team | (tool) | Methodology proven, not yet a repeatable product |
-| Reviewer V2: verifier + self-consistency | spark | — | [cards/reviewer-v2.md](cards/reviewer-v2.md) | Catch the misses a single pass makes |
+| Reviewer V2: rubric, lenses, eval harness | shaping | AI team | [cards/reviewer-v2.md](cards/reviewer-v2.md) | Design phase in tools/quality-reviewer/v2/. 10 dims, blocking readiness, noise budget, eval harness |
 | Golden-set calibration | spark | — | — | ~10 labelled decks to make scores defensible |
-| AI workshop curriculum | spark | — | [cards/workshop-curriculum.md](cards/workshop-curriculum.md) | Teach the branch to use the tools and the principles |
-| Client intake assistant | spark | — | — | Structure a new engagement from the first client call |
+| AI workshop curriculum | ready | AI team | [cards/workshop-curriculum.md](cards/workshop-curriculum.md) | Grown into the full education system in [../education/](../education/): workshop-model critique, 3-literacy curriculum, operating model |
+| Education system (3 literacies + builder track) | ready | AI team | [../education/](../education/) | Spine modules (B1 B2 B4 A1 A5 C1) are the cold-start build |
+| Client intake assistant | spark | — | — | Structure a new engagement from the first client call; matured into [lab/top7/02-discovery-to-proposal.md](../lab/top7/02-discovery-to-proposal.md) |
+| AI workflow lab (25 ideas, top 7 spec'd) | ready | AI team | [../lab/](../lab/) | 25 ranked demo ideas; top 7 with full build packs; method in [/guide](../guide/) |
 | Branch portfolio site from this repo | spark | — | — | Reuse the renderer pattern to publish what we built |
 
 ## How to use this

@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "title": "Client E membership scheme",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Nearly ready with minor edits",
+    "mainReason": "No blocking issue. The decision is answered early, the recommendation is specific and sequenced, and the key assumption is flagged and tested.",
+    "highestRiskIssue": "The only open items are minor: an unconfirmed partner discount and an unstated basis for comparability.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "Nothing structural. Confirming the partner discount and the comparability basis would make it fully ready."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.9,
+    "confidence": "Medium",
+    "effort": "1-2 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The decision and the answer are stated on slide 1." },
+      { "name": "Problem framing", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The question and the reason to diversify are clear." },
+      { "name": "Storyline and pyramid logic", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Answer first, each slide supports it." },
+      { "name": "Evidence quality", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Well sourced, two minor claims are thin." },
+      { "name": "Analysis and insight", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The single-tier logic is a real interpretation, not a description." },
+      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Price, tier, owner and timing are named." },
+      { "name": "Feasibility and implementation", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Soft launch sized to the coordinator, with a trigger." },
+      { "name": "Risks, assumptions and uncertainty", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The 8% assumption and the main risk are named and tested." },
+      { "name": "Slide-level communication", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Titles carry the message." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout." }
+    ]
+  },
+  "strengths": [
+    { "point": "The answer is stated on the title slide and confirmed on slide 2, so a reader gets the decision immediately.", "quote": "Client E should launch a paid membership scheme, starting with a single tier in the autumn.", "slide": 1 },
+    { "point": "The headline number is marked as an assumption and a test is built around it, which is exactly the right instinct.", "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.", "slide": 8 },
+    { "point": "The first steps name an owner and a go or no-go trigger, so the plan is genuinely executable.", "quote": "Month three: full launch if the soft launch clears 5%.", "slide": 10 }
+  ],
+  "findings": [
+    {
+      "short": "Discount unconfirmed",
+      "title": "The partner discount is offered as a benefit without confirming partners have agreed.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Evidence grounding: do not promise what is not yet secured.",
+      "diagnosis": "Slide 7 lists a discount with local partners as a member benefit. The deck does not say whether partners have agreed or what the discount is.",
+      "evidence": [ { "slide": 7, "quote": "a discount with local partners" } ],
+      "why": "Advertising an unsecured benefit risks a member promise Client E cannot keep.",
+      "reflect": "Which partners have confirmed, and what exactly have they agreed to.",
+      "fix": "Confirm the partner terms before listing the benefit, or mark it as planned rather than confirmed.",
+      "tags": [ "Evidence Grounding" ]
+    },
+    {
+      "short": "Comparability basis",
+      "title": "The comparable groups are asserted as comparable without saying on what basis.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Evidence relevance: show why a benchmark applies.",
+      "diagnosis": "Slide 5 cites three comparable arts non-profits charging 40 to 60 pounds without stating the basis for comparability such as size, art form or area.",
+      "evidence": [ { "slide": 5, "quote": "Three comparable local arts non-profits run membership at 40 to 60 pounds a year" } ],
+      "why": "A benchmark only informs the price if the comparators genuinely resemble Client E.",
+      "reflect": "On what dimension are these three groups comparable to Client E.",
+      "fix": "Add one line on why these three are the right comparators, or note the limitation.",
+      "tags": [ "Evidence Grounding" ]
+    }
+  ],
+  "comments": [],
+  "questionsForLead": [
+    "Have any local partners actually agreed to the member discount yet.",
+    "Is the mailing list clean enough that 1,400 is a real reachable base."
+  ],
+  "learningNote": {
+    "lesson": "A strong recommendation states its assumption and builds a cheap test around it, rather than hiding the uncertainty.",
+    "weakHabit": "None material here. The habit to keep is marking the load-bearing assumption and testing it before scaling.",
+    "exercise": "Before the full launch, write down what conversion result would make you stop, not just what would make you go. Deciding the stop rule in advance is what keeps a pilot honest.",
+    "principle": "Risks and assumptions"
+  },
+  "notAssessed": [
+    "Whether the 8% conversion assumption will hold in practice. That is what the soft launch tests.",
+    "Whether local partners will agree to a discount. Not yet confirmed in the deck.",
+    "Visual design and layout. Only slide text was provided.",
+    "Client E's detailed cost base for running the events. Not in the deck."
+  ],
+  "timeline": {
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "partial" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "partial" },
+      { "slide": 8, "state": "pass" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "pass" }
+    ],
+    "callouts": [
+      { "at": 7, "state": "partial", "label": "Confirm discount" }
+    ],
+    "connectors": []
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "meta": {
+    "title": "Client A regional strategy",
+    "client": "Client A (anonymized)",
+    "artifactType": "draft deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Needs substantial revision",
+    "mainReason": "The recommendation to expand to Region B depends on an unsourced demand figure, so the core decision is not yet supported.",
+    "highestRiskIssue": "The 40% Region B demand growth on slide 5 has no source and the recommendation rests on it.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "A sourced demand estimate for Region B, or a recommendation that does not depend on that growth, would lift readiness."
+  },
+  "blockingIssues": [
+    {
+      "rule": 2,
+      "label": "Unsupported core recommendation",
+      "ceiling": "Needs substantial revision",
+      "evidence": [ { "slide": 5, "quote": "Region B demand will grow 40% over the next three years." } ]
+    },
+    {
+      "rule": 4,
+      "label": "Ungrounded number the recommendation depends on",
+      "ceiling": "Needs targeted revision",
+      "evidence": [ { "slide": 5, "quote": "Region B demand will grow 40% over the next three years." } ]
+    }
+  ],
+  "scorecard": {
+    "diagnosticMean": 2.7,
+    "confidence": "Medium",
+    "effort": "4-6 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Decision is named but rests on weak support and the next step is vague." },
+      { "name": "Problem framing", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Expand versus deepen is clear, success criteria are missing." },
+      { "name": "Storyline and pyramid logic", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Governing insight arrives on slide 8." },
+      { "name": "Evidence quality", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The headline demand figure is unsourced." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Options are named but not compared on the same basis." },
+      { "name": "Recommendation specificity", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "No action, owner, timeframe or metric." },
+      { "name": "Feasibility and implementation", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "No sequence, no first step sized to the team." },
+      { "name": "Risks, assumptions and uncertainty", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "The demand growth is treated as fact, no risks named." },
+      { "name": "Slide-level communication", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "Titles are topic labels." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, no confidentiality issue." }
+    ]
+  },
+  "findings": [
+    {
+      "short": "Unsourced 40% figure",
+      "title": "The Region B recommendation depends on a demand figure with no source.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Evidence Grounding: a claim that drives a decision must be sourced.",
+      "diagnosis": "The case for Region B on slides 7 to 9 rests on the demand growth stated on slide 5. That figure carries no source, no baseline and no method, so the recommendation is currently unsupported.",
+      "evidence": [ { "slide": 5, "quote": "Region B demand will grow 40% over the next three years." } ],
+      "why": "A partner or funder who asks where the number comes from gets no answer, and the whole expansion case falls with it.",
+      "reflect": "Where does the 40% come from, and what would you accept as a credible source for it.",
+      "fix": "Source the demand estimate or replace it with a range you can defend, then show the recommendation still holds. If you cannot source it, mark it as an assumption and test whether the recommendation survives without it.",
+      "tags": [ "Evidence Grounding", "ERIP Performance" ]
+    },
+    {
+      "short": "Vague recommendation",
+      "title": "The recommendation names no action, owner, timeframe or metric.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "recommendation",
+      "owner": "team",
+      "principle": "Actionability: a recommendation names the action, the owner, the timing and the measure.",
+      "diagnosis": "Slide 9 tells Client A to scale up operations and improve partnerships. Neither phrase says what to do first, who owns it or how success is measured.",
+      "evidence": [ { "slide": 9, "quote": "Scale up operations and improve partnerships to serve the new region." } ],
+      "why": "A one-coordinator team cannot act on a direction. It needs a first step and a way to know the step worked.",
+      "reflect": "If you were the coordinator on Monday morning, what is the first concrete thing you would do, and how would you know it worked.",
+      "fix": "Turn the recommendation into a sequenced first step with an owner and a success signal, sized to a one-coordinator team. Keep it to what they can actually resource.",
+      "tags": [ "Actionability", "ERIP Performance" ]
+    },
+    {
+      "short": "Insight arrives late",
+      "title": "The governing insight appears on slide 8 and the titles are topic labels.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "Pyramid Principle: answer first, and titles carry the message.",
+      "diagnosis": "The view that Region B is the priority first appears on slide 8. Titles such as Agenda and Our view are labels, so a reader skimming the titles cannot follow the argument.",
+      "evidence": [
+        { "slide": 8, "quote": "Client A should prioritize Region B." },
+        { "slide": 2, "quote": "Context. Current operations. Regional demand. Options. Recommendation. Next steps." }
+      ],
+      "why": "A busy funder reading only the titles cannot see the recommendation or why it holds, so the argument does not land.",
+      "reflect": "If a reader saw only your slide titles, could they state your recommendation and one reason for it.",
+      "fix": "Move the governing insight to the front and rewrite the content titles as full-sentence assertions so the titles alone carry the argument.",
+      "tags": [ "Pyramid Principle", "Minto" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 10", "problem": "Next steps are not time-bound (\"Review progress in due course\").", "why": "A vague timeline means no one is accountable for momentum.", "fix": "Give the first two steps an owner and a date." },
+    { "location": "Slide 4", "problem": "\"frequently exceeds supply\" is not quantified.", "why": "The size of unmet demand in Region A is the counterweight to the Region B case, so it needs a number.", "fix": "Quantify the unmet demand if the data exists, or mark it as an estimate." }
+  ],
+  "questionsForLead": [
+    "Where did the 40% Region B demand figure come from, and did anyone verify it.",
+    "Did the team ask Client A whether it has the funding and staff to open a Region B hub, or is that assumed.",
+    "Has the team quantified the unmet demand in Region A so the two options can be compared on the same basis.",
+    "What would success look like in the first year of whichever option is chosen."
+  ],
+  "learningNote": {
+    "lesson": "A recommendation is only as strong as the number it rests on. When one figure carries the decision, sourcing it is not optional.",
+    "weakHabit": "Reaching a confident recommendation before the evidence under it is nailed down.",
+    "exercise": "Take the recommendation and list every claim it depends on. For each, write the source. Any claim with no source is the next thing to go and get.",
+    "principle": "Evidence Grounding"
+  },
+  "notAssessed": [
+    "Whether the 40% demand figure is factually true. No source was provided.",
+    "Whether Client A has the funding or staff for a Region B hub. The deck does not say.",
+    "Visual design, layout and charts. Only slide text was provided.",
+    "Client politics and whether the board favours one region."
+  ]
+}

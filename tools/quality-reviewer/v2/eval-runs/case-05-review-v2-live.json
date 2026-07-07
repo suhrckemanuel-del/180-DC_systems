@@ -1,0 +1,150 @@
+{
+  "meta": {
+    "title": "Client E paid membership scheme",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Needs targeted revision",
+    "mainReason": "No blocking rule fired, but two major gaps remain in the analysis: the soft launch gate does not validate the 8% assumption and the year one revenue is never sized against the income it must diversify.",
+    "highestRiskIssue": "The 5% full launch trigger on slide 10 sits below the 8% assumption on slide 8 and is tested on the most engaged 200 contacts, so a passing soft launch does not validate the revenue case.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "Client E's total income and the coordinator's real capacity: if membership proves material and the gate is recalibrated, this moves to nearly ready, while stated constraints could surface feasibility issues the deck cannot show."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.4,
+    "confidence": "Medium",
+    "effort": "2-4 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Decision named early, answer clear, first step stated and framed for the coordinator who must act." },
+      { "name": "Problem framing", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Problem and scope hold throughout; success criteria for diversification itself are not defined." },
+      { "name": "Storyline and pyramid logic", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Governing insight is on slide 1 and the flow holds; the titles alone do not carry the full argument." },
+      { "name": "Evidence quality", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Every figure carries a named source; the conservative label on the 8% leans on a non-comparable benchmark." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Evidence is interpreted throughout; the year one figure is never interpreted against the income it must diversify." },
+      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Action, owner, timing, trigger and measure are all present." },
+      { "name": "Feasibility and implementation", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Sequenced with a pilot sized to the client; constraints were not provided so this rests on the deck's own claims." },
+      { "name": "Risks, assumptions and uncertainty", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Assumptions and the main risk are explicit with a test attached." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "One message per slide, but most titles are labels rather than assertions." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, no confidentiality issue." }
+    ]
+  },
+  "strengths": [
+    { "point": "The answer comes first: the recommendation is the title slide.", "quote": "Client E should launch a paid membership scheme, starting with a single tier in the autumn.", "slide": 1 },
+    { "point": "Every headline number names its source on the slide it appears.", "quote": "Project grants are 80% of Client E's income (2024 accounts) and each is single-year.", "slide": 3 },
+    { "point": "Load-bearing assumptions are stated as assumptions with a test attached.", "quote": "We assume the mailing list is accurate and that members-only events do not strain staff.", "slide": 9 },
+    { "point": "The tier choice is argued as a risk decision, not asserted.", "quote": "Launching one tier at 45 pounds, rather than three tiers at once, keeps admin low and lets Client E learn before it scales.", "slide": 6 }
+  ],
+  "findings": [
+    {
+      "short": "Gate below assumption",
+      "title": "The full launch trigger is set below the revenue assumption it is meant to validate.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Test Calibration: a pilot gate must be derived from the assumption it exists to test.",
+      "diagnosis": "Slide 8 builds the year one case on 8% of the full 1,400 person mailing list. Slide 10 authorizes full launch if the soft launch clears 5%, and slide 9 runs that soft launch on the most engaged 200 contacts, the segment that should convert above the list average. A soft launch that scrapes past 5% on the friendliest audience is consistent with well under 8% across the full list, yet the plan reads it as a green light.",
+      "evidence": [
+        { "slide": 8, "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one." },
+        { "slide": 9, "quote": "A soft launch to the most engaged 200 contacts tests both before the full launch." },
+        { "slide": 10, "quote": "Month three: full launch if the soft launch clears 5%." }
+      ],
+      "why": "Client E can pass its own test, launch fully and still land well short of the 5,000 pounds the deck promises, which damages trust in the advice exactly when grant income is falling away.",
+      "reflect": "What soft launch result on your most engaged 200 contacts would genuinely imply 8% across all 1,400, and how does that compare with the 5% gate you set.",
+      "fix": "Derive the gate from the assumption: decide what the engaged segment must do for the full list 8% to remain credible, set the trigger there and say what happens at each outcome band. A test only de-risks a plan if passing it validates the number the plan rests on.",
+      "tags": [ "Test Calibration", "Evidence Grounding" ]
+    },
+    {
+      "short": "Materiality unsized",
+      "title": "The deck never shows whether 5,000 pounds meaningfully diversifies Client E's income.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Materiality: a revenue figure answers a diversification question only when set against the income it diversifies.",
+      "diagnosis": "Slide 3 states the problem in percentages: grants are 80% of income and two of five may not renew. Slide 8 states the answer in pounds: about 5,000 in year one. The deck never connects the two, so the reader cannot tell whether membership replaces a meaningful part of the income at risk or rounds to nothing.",
+      "evidence": [
+        { "slide": 3, "quote": "Project grants are 80% of Client E's income (2024 accounts) and each is single-year." },
+        { "slide": 8, "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one." }
+      ],
+      "why": "A board asked to approve the scheme as an income diversification move will ask 5,000 out of what, and the deck has no answer, which undercuts an otherwise well evidenced recommendation.",
+      "reflect": "What share of Client E's total income would year one membership represent, and what share of the two non-renewing grants would it replace.",
+      "fix": "Put the year one figure in context: state membership income as a share of total income and against the grant income at risk, then say plainly whether the scheme is the diversification answer or the first of several moves. A number answers a question only when it is sized against the problem.",
+      "tags": [ "Materiality", "So What" ]
+    },
+    {
+      "short": "Overstated benchmark",
+      "title": "Calling the 8% assumption conservative rests on an attendance rate that does not measure willingness to pay.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": false,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Claim support: a benchmark must measure the same behavior as the claim it supports.",
+      "diagnosis": "Slide 8 labels the 8% assumption conservative because it sits below the 32% event attendance rate on slide 4. Attending an event and paying 45 pounds a year are different behaviors, so the comparison offers comfort the data does not carry. The deck already treats 8% as the thing to test, which is the honest framing, and the conservative label works against it.",
+      "evidence": [
+        { "slide": 8, "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test." }
+      ],
+      "why": "If the board internalizes 8% as a cautious floor, a weaker soft launch result will read as a failure of execution rather than of the assumption, and the wrong lesson gets drawn.",
+      "reflect": "What evidence would actually tell you how event attendance converts to paid membership, and do the three comparable organizations publish member counts you could use instead.",
+      "fix": "Drop the conservative label or replace the benchmark with one that measures paying behavior, for example the comparators' member counts against their audience size. Keep the honest framing that 8% is the assumption the soft launch exists to test.",
+      "tags": [ "Evidence Grounding", "Claim support" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slides 5, 7, 8, 9 and 10", "problem": "Several titles are topic labels, for example \"The numbers\" and \"First steps\", while slides 4 and 6 already assert their point.", "why": "A board member skimming titles loses the argument exactly at the money slide and the plan slide.", "fix": "Rewrite the label titles as full sentence takeaways in the style of slides 4 and 6." },
+    { "location": "Slide 8", "problem": "The 5,000 pounds is gross and no cost of running the scheme appears anywhere, while slide 6 claims low admin without a number.", "why": "Net income is what diversifies, and a board will ask what the scheme costs to run.", "fix": "Add a rough cost line (payment processing, admin time, the two member events) so the net figure is credible." }
+  ],
+  "questionsForLead": [
+    "How was the 5% gate chosen, and what result on the most engaged 200 contacts would the team accept as validating 8% across the full list.",
+    "What is Client E's total income, so the board can see what share of it 5,000 pounds represents.",
+    "Does the coordinator have the capacity to run the soft launch and the two member events alongside current duties. No constraints were provided.",
+    "If the soft launch lands below 5%, what is the fallback for replacing the two non-renewing grants."
+  ],
+  "learningNote": {
+    "lesson": "A pilot only de-risks a decision if passing it validates the assumption the decision rests on. Set the gate by arithmetic, not comfort.",
+    "weakHabit": "Choosing test thresholds that feel achievable instead of deriving them from the claim they must prove.",
+    "exercise": "Take the soft launch and work backwards: write down what conversion on the most engaged 200 contacts would genuinely imply 8% across all 1,400, then compare that number with the 5% gate and explain any difference.",
+    "principle": "Test Calibration"
+  },
+  "notAssessed": [
+    "Whether the sourced figures (the 80% grant share, the 1,400 list, the 32% attendance) are accurate. Sources were named but not inspected.",
+    "Coordinator capacity and any budget or staffing constraints. The KNOWN CONSTRAINTS field was blank.",
+    "Audience fit. INTENDED AUDIENCE and PROJECT STAGE were not provided.",
+    "Whether the three comparable organizations are genuinely comparable. Only their public websites were cited.",
+    "Visual design, layout and charts. Only slide text was provided."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Decision", "span": 2 },
+      { "label": "Case for change", "span": 3 },
+      { "label": "The scheme", "span": 3 },
+      { "label": "Risk and plan", "span": 2 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "pass" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "pass" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "partial" },
+      { "slide": 10, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 8, "state": "partial", "label": "Revenue case unsized and its benchmark overstated" },
+      { "at": 10, "state": "partial", "label": "5% gate below the 8% assumption" }
+    ],
+    "connectors": [
+      { "from": 8, "to": 10, "label": "assumption vs launch gate" }
+    ]
+  }
+}

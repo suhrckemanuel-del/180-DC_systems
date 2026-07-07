@@ -57,3 +57,4 @@ Everything a real review changes (scores, timeline, findings) comes from the loa
 - `TESTING-GUIDE.md` acceptance criteria, test procedure, golden-set calibration
 - `sample-review.json` schema-valid review of the Vantage IP deck, quotes verified verbatim
 - `test-harness.js` headless checks for the renderer and the mechanics
+- `v2/` the v2 design folder (10-dimension rubric, specialist lenses, evaluation harness). Design stage, does not affect this working tool. See [v2/README.md](v2/README.md).

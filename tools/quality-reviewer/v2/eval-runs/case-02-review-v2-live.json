@@ -1,0 +1,206 @@
+{
+  "meta": {
+    "title": "Client B growth plan",
+    "client": "Client B (anonymized)",
+    "artifactType": "draft deck",
+    "mode": "deep",
+    "slideCount": 9,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Needs substantial revision",
+    "mainReason": "The deck opens with the board's question about growing individual donations and then recommends a programme closure that never answers it.",
+    "highestRiskIssue": "The recommendation on slide 8 addresses programme efficiency while the donations question set up on slide 2 is left unanswered.",
+    "confidence": "Low",
+    "whatCouldChangeIt": "Confirmation that the client widened the brief to programme strategy, plus sources for the slide 6 performance claims, would change both the framing verdict and the evidence verdict."
+  },
+  "blockingIssues": [
+    {
+      "rule": 3,
+      "label": "Answers the wrong problem",
+      "ceiling": "Needs substantial revision",
+      "evidence": [
+        { "slide": 2, "quote": "The board has asked how to grow individual giving." },
+        { "slide": 8, "quote": "Close the mentoring scheme. Reinvest the freed budget in tutoring." }
+      ]
+    },
+    {
+      "rule": 2,
+      "label": "Unsupported core recommendation",
+      "ceiling": "Needs substantial revision",
+      "evidence": [
+        { "slide": 6, "quote": "Mentoring runs at a loss and\nattendance is falling." }
+      ]
+    }
+  ],
+  "scorecard": {
+    "diagnosticMean": 2.3,
+    "confidence": "Low",
+    "effort": "8-12 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "The question is named on slide 2 but the answer given addresses a different decision." },
+      { "name": "Problem framing", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The problem is specific but the deck drifts from donations to programme portfolio." },
+      { "name": "Storyline and pyramid logic", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "No governing insight up front and the path from problem to recommendation breaks at slide 5." },
+      { "name": "Evidence quality", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The claims that drive the closure carry no source, numbers or method." },
+      { "name": "Analysis and insight", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The donor findings are reported but never interpreted toward the recommendation." },
+      { "name": "Recommendation specificity", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The action is specific but has no owner, timeframe or measure." },
+      { "name": "Feasibility and implementation", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "A first step exists. Constraints were not provided so fit was judged lightly." },
+      { "name": "Risks, assumptions and uncertainty", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "No assumptions, risks or tradeoffs are stated anywhere in the deck." },
+      { "name": "Slide-level communication", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "Every title is a topic label. Slides do carry one message each." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, no confidentiality issue." }
+    ]
+  },
+  "strengths": [
+    { "point": "The problem opens with a concrete quantified gap rather than a vague topic.", "quote": "Client B faces a 25% funding gap next year.", "slide": 2 },
+    { "point": "The team collected primary donor evidence that points at a workable answer.", "quote": "donors said they value Client B's tutoring results", "slide": 4 },
+    { "point": "The donation landscape diagnosis names the structural gap a recommendation could act on.", "quote": "There is no regular-giving programme.", "slide": 3 }
+  ],
+  "findings": [
+    {
+      "short": "Answers the wrong question",
+      "title": "The deck sets up a donations question and answers a programme question instead.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Problem Framing: hold one client question from the problem statement to the recommendation.",
+      "diagnosis": "Slide 2 frames the problem as growing individual giving to close a 25% gap. Slides 5 to 9 pivot to a programme review and end with closing the mentoring scheme. Nothing after slide 4 addresses donations, so the question the board asked is never answered.",
+      "evidence": [
+        { "slide": 2, "quote": "The board has asked how to grow individual giving." },
+        { "slide": 8, "quote": "Close the mentoring scheme. Reinvest the freed budget in tutoring." }
+      ],
+      "why": "The board asked how to grow giving and will receive a programme closure instead, so the funding gap the deck opens with is still open when the deck ends.",
+      "reflect": "If the board read only slide 2 and slide 8, would they say you answered their question, and what happened to individual donations between those slides.",
+      "fix": "Re-anchor the deck on the donations question. Either build the recommendation from the donor evidence already in the deck or take the scope change to the client before recommending a closure they did not ask about.",
+      "tags": [ "Problem Framing", "Failure taxonomy B" ]
+    },
+    {
+      "short": "Unsourced closure case",
+      "title": "The case for closing mentoring rests on performance claims with no source or numbers.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Evidence Grounding: a claim that drives a decision must be sourced.",
+      "diagnosis": "Slides 5 and 6 assert weak attendance, a loss and the strongest tutoring outcomes with no figures, no source and no method, and the evidence notes field was empty. The closure recommendation on slide 8 stands entirely on these assertions.",
+      "evidence": [
+        { "slide": 6, "quote": "Mentoring runs at a loss and\nattendance is falling." },
+        { "slide": 7, "quote": "delivers the best outcomes per pound." }
+      ],
+      "why": "Closing a programme that families use is a one-way decision, and a board member who asks to see the attendance or cost data gets no answer.",
+      "reflect": "What data sits behind loss, falling attendance and best outcomes per pound, and would it survive a board member asking to see it.",
+      "fix": "Show the numbers and their source for each performance claim, or mark them as unverified and test whether the recommendation survives without them.",
+      "tags": [ "Evidence Grounding", "ERIP Performance" ]
+    },
+    {
+      "short": "No owner or measure",
+      "title": "The recommendation and next steps carry no owner, timeframe or success measure.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "recommendation",
+      "owner": "team",
+      "principle": "Actionability: a recommendation names the action, the owner, the timing and the measure.",
+      "diagnosis": "Slide 8 names the action but no one owns it, nothing is dated and success is asserted as efficiency rather than measured. Slide 9 lists three steps with no dates, no owner and no signal that the funding gap is closing.",
+      "evidence": [
+        { "slide": 9, "quote": "Plan the mentoring wind-down. Communicate to families. Reallocate staff to tutoring." },
+        { "slide": 8, "quote": "This improves\noverall programme efficiency." }
+      ],
+      "why": "The client cannot act on undated steps with no owner, and without a measure no one will know whether the change closed any of the gap.",
+      "reflect": "Who does the first step, by when, and what number tells the board it worked.",
+      "fix": "Attach an owner, a timeframe and a success measure to each step, and tie the measure back to the funding gap the deck opened with.",
+      "tags": [ "Actionability" ]
+    },
+    {
+      "short": "Donor insight dropped",
+      "title": "The strongest evidence for growing donations is never turned into a recommendation.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Analysis and insight: every major finding feeds the recommendation or explains why it does not.",
+      "diagnosis": "Slide 3 establishes there is no regular-giving programme and slide 4 reports donors would give more with impact updates. These two findings point directly at the client's question, then vanish. Neither appears again after slide 4.",
+      "evidence": [
+        { "slide": 3, "quote": "There is no regular-giving programme." },
+        { "slide": 4, "quote": "In a short survey, donors said they value Client B's tutoring results and would give\nmore if they saw impact updates." }
+      ],
+      "why": "The deck already holds the raw material for answering the board's question, and a reader who spots that will ask why the team ignored its own evidence.",
+      "reflect": "What recommendation would slides 3 and 4 support if they were the spine of the deck instead of background.",
+      "fix": "Draw the implication from the donor evidence and let it drive the answer to the donations question. If programme changes belong in the story, connect them through donor value rather than efficiency.",
+      "tags": [ "Analysis and insight", "Failure taxonomy C" ]
+    },
+    {
+      "short": "Titles are labels",
+      "title": "The governing view arrives on slide 7 and every title is a topic label.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "Pyramid Principle: answer first, and titles carry the message.",
+      "diagnosis": "The deck's view first appears on slide 7. Titles such as The problem, Donation landscape and Programme review are labels, so reading the titles in order gives topics, not an argument.",
+      "evidence": [
+        { "slide": 7, "quote": "Client B should cut the mentoring scheme" },
+        { "slide": 3, "quote": "Donation landscape" }
+      ],
+      "why": "A busy board member skimming the titles gets a table of contents instead of the answer, so the argument never lands.",
+      "reflect": "If the board read only your nine titles, could they state your answer and one reason it holds.",
+      "fix": "State the governing view up front and rewrite each content title as the full-sentence assertion the slide proves.",
+      "tags": [ "Pyramid Principle", "Minto" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 4", "problem": "The survey behind the donor evidence has no stated size, sample or method (\"In a short survey\").", "why": "This is the only primary evidence in the deck and its weight cannot be judged without the basics.", "fix": "State how many donors were asked and how, and note the limits of the sample." },
+    { "location": "Slide 8", "problem": "Closing a youth programme carries risks the deck never names.", "why": "A closure recommendation with no downside, assumption or tradeoff named looks confident and is fragile in front of a board.", "fix": "Name the load-bearing assumptions and the main risks of closure (family reaction and donor perception among them) and say what would change the call." }
+  ],
+  "questionsForLead": [
+    "Did the client widen the brief from growing individual donations to reviewing the programme portfolio, or is the closure recommendation out of scope.",
+    "Where do the slide 6 performance claims come from (attendance, loss and outcomes), and has anyone seen the underlying data.",
+    "How large was the donor survey on slide 4 and who ran it.",
+    "Has the team tested whether closing mentoring could affect family or donor goodwill and therefore giving.",
+    "What would count as closing the 25% gap: a donations target, a cost target or both."
+  ],
+  "learningNote": {
+    "lesson": "Answer the question the client asked. Analysis that wanders into a more interesting question fails even when the analysis is right.",
+    "weakHabit": "Following the most analyzable data instead of the client's question, then recommending what the analysis made easy.",
+    "exercise": "Before drafting, write the client's question on one line and your governing answer to it on the next. Reject any recommendation that does not answer that line.",
+    "principle": "Problem Framing"
+  },
+  "notAssessed": [
+    "Whether the slide 6 performance claims (attendance, loss and outcomes) are true. No sources or data were provided and the evidence notes field was empty.",
+    "Whether the client widened the brief to programme strategy. The input names only the donations question.",
+    "Feasibility against budget, staff or timeline constraints. The known constraints field was empty.",
+    "The intended audience and project stage. Both fields were empty.",
+    "Visual design, layout and charts. Only slide text was provided."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Problem and donor evidence", "span": 4 },
+      { "label": "Programme review", "span": 3 },
+      { "label": "Recommendation and next steps", "span": 2 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "partial" },
+      { "slide": 5, "state": "partial" },
+      { "slide": 6, "state": "critical" },
+      { "slide": 7, "state": "critical" },
+      { "slide": 8, "state": "critical" },
+      { "slide": 9, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 5, "state": "partial", "label": "Pivot away from donations begins" },
+      { "at": 6, "state": "critical", "label": "Unsourced claims drive the closure" },
+      { "at": 8, "state": "critical", "label": "Recommendation answers a different question" }
+    ],
+    "connectors": [
+      { "from": 2, "to": 8, "label": "Question asked here is not answered here" },
+      { "from": 4, "to": 8, "label": "Donor evidence never reaches the recommendation" }
+    ]
+  }
+}
