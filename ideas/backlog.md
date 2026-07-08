@@ -13,7 +13,8 @@ Every idea, flat. The visual relationships live in [idea-map.md](idea-map.md). S
 | Education system (3 literacies + builder track) | ready | AI team | [../education/](../education/) | Spine modules (B1 B2 B4 A1 A5 C1) are the cold-start build |
 | Client intake assistant | spark | — | — | Structure a new engagement from the first client call; matured into [lab/top7/02-discovery-to-proposal.md](../lab/top7/02-discovery-to-proposal.md) |
 | AI workflow lab (25 ideas, top 7 spec'd) | ready | AI team | [../lab/](../lab/) | 25 ranked demo ideas; top 7 with full build packs; method in [/guide](../guide/) |
-| Branch portfolio site from this repo | spark | — | — | Reuse the renderer pattern to publish what we built |
+| Branch website (Delft-Rotterdam) | shaping | AI team | [../website/](../website/) | Research + full brainstorm + build stack done; gated on President's answers and access tokens |
+| Branch portfolio site from this repo | spark | — | — | Reuse the renderer pattern to publish what we built; likely folds into the branch website's "show the machine" page |
 
 ## How to use this
 

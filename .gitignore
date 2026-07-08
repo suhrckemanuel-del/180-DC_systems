@@ -17,6 +17,10 @@ tools/quality-reviewer/v2/eval-cases-real/real-*.gold.md
 slides_out/
 *.tmp
 
+# Website build secrets and reference material with unclear licensing
+website/.env
+website/moodboard/
+
 # Local tooling
 node_modules/
 __pycache__/
