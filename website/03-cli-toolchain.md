@@ -59,6 +59,6 @@ Secrets go in `website/.env` (gitignored), as before.
 
 ## Status
 
-- `pinterest-pp-cli` generation from the official spec: **running locally** (first press attempt).
+- `pinterest-pp-cli`: **pressed, built and installed** (2026-07-08, generated from Pinterest's official v5 spec). 16 API interfaces including `boards`, `pins`, `media`, `pinterest-search` and `trends`, with local SQLite sync, full-text search and `--agent` mode. Lives in `~/printing-press/library/pinterest-pp-cli`, binary on PATH. Remaining to use it: Manuel registers an OAuth app at developers.pinterest.com (`pinterest-pp-cli auth setup` prints the exact steps), then `auth login`, then curate a mood board.
 - Library installs (openart, pexels, here-now): next, in dependency order — here-now first (needs no account), then pexels, then openart when credits exist.
 - pagespeed press: after the first variant exists to score.
