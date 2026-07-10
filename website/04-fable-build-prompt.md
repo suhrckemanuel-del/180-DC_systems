@@ -62,7 +62,7 @@ Paste **Section 1** verbatim into a fresh Claude Code session in this repo (`c:\
 **Netlify is exhausted for this cycle — do not create new Netlify sites or deploys.** The existing `180dc-delft-rotterdam.netlify.app` (Pinterest-app privacy policy) stays as is; leave it untouched.
 
 **New deploy target: Cloudflare Pages** (free tier: unlimited bandwidth/requests, direct uploads, no build minutes):
-1. Requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in `website/.env` — if missing, tell Manuel and keep building locally; deploys are the last step, not a blocker.
+1. `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are in `website/.env` — **verified working 2026-07-09** (token active; Pages API responds; account subdomain `suhrckemanuel.workers.dev`). Note: a Worker named `dcsystems` exists on the account (created 2026-07-09 ~21:53, currently serving 404) — likely left by the earlier build session; the resume audit should reconcile it (adopt it if it was the intended deploy target, otherwise ignore it — do not delete without checking).
 2. One-time: `npx wrangler pages project create 180dc-variants --production-branch main`
 3. Deploy: `CLOUDFLARE_API_TOKEN=... npx wrangler pages deploy <folder> --project-name 180dc-variants` → live at `180dc-variants.pages.dev`.
 
