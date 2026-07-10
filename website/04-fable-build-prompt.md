@@ -58,13 +58,17 @@ Paste **Section 1** verbatim into a fresh Claude Code session in this repo (`c:\
 | `PINTEREST_ACCESS_TOKEN` / `PINTEREST_CLIENT_ID` | ⛔ Present but **blocked upstream**: Pinterest trial-access approval pending; API returns "consumer type not supported". Probe once, then ignore |
 | `OPENART_API_KEY` | Empty — deliberately not purchased. CSS/JS motion only; no video assets this round |
 
-### Proven Netlify deploy method (no CLI needed)
-1. Create site: `POST https://api.netlify.com/api/v1/sites` with `Authorization: Bearer $NETLIFY_AUTH_TOKEN`, JSON body `{"name":"180dc-v1-blueprint"}` → returns `id` and `ssl_url`.
-2. Zip the site folder (PowerShell `Compress-Archive` — note: bash-invoked PowerShell zips fail silently, use the PowerShell tool).
-3. Deploy: `POST https://api.netlify.com/api/v1/sites/<id>/deploys` with header `Content-Type: application/zip`, `--data-binary @site.zip`.
-4. Verify HTTP 200 on the ssl_url.
+### Deploy method — UPDATED 2026-07-09 after Netlify free credits ran out
+**Netlify is exhausted for this cycle — do not create new Netlify sites or deploys.** The existing `180dc-delft-rotterdam.netlify.app` (Pinterest-app privacy policy) stays as is; leave it untouched.
 
-Existing Netlify sites (leave untouched): `180dc-delft-rotterdam.netlify.app` — hosts the Pinterest-app privacy policy at its root; do not overwrite.
+**New deploy target: Cloudflare Pages** (free tier: unlimited bandwidth/requests, direct uploads, no build minutes):
+1. Requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in `website/.env` — if missing, tell Manuel and keep building locally; deploys are the last step, not a blocker.
+2. One-time: `npx wrangler pages project create 180dc-variants --production-branch main`
+3. Deploy: `CLOUDFLARE_API_TOKEN=... npx wrangler pages deploy <folder> --project-name 180dc-variants` → live at `180dc-variants.pages.dev`.
+
+**Consolidation (also new):** all variants ship as ONE site — gallery at the root, each variant under `/v<N>-<slug>/` with its `/guide/` beneath it. One deploy target, one shareable URL. Do not create per-variant sites. Critique rounds run on LOCAL Playwright screenshots — deploy only when a variant completes its third round, and redeploy the single consolidated site.
+
+**Long-term hosting decision (made 2026-07-09, log for the President's pack):** production site targets Cloudflare Pages — €0/month passes the branch turnover test (no card to expire), unlimited bandwidth, at-cost domains via Cloudflare Registrar. Netlify subscription rejected as unnecessary for a static site.
 
 ### Image generation (proven call)
 `POST https://api.openai.com/v1/images/generations` with the OpenAI bearer, JSON `{"model":"gpt-image-2","prompt":"...","size":"1536x1024","quality":"low","n":1}` → decode `data[0].b64_json`. A successful 180-green "blueprint grid dissolving into gradient wave" test lives in the session scratchpad precedent. Style consistency per variant: write one style suffix per direction and append it to every prompt for that variant.
@@ -89,3 +93,17 @@ Existing Netlify sites (leave untouched): `180dc-delft-rotterdam.netlify.app` �
 
 ### Budget ledger (append as you spend)
 - 2026-07-08: OpenAI test image ≈ €0.01. Total to date: ≈ €0.01 of €15.
+
+---
+
+## Section 3 — CONTINUATION PROMPT (mid-build resume, Cloudflare switch)
+
+Paste this into the session continuing a build that already started (some variants exist, Netlify is exhausted):
+
+> We are resuming the ten-variant website build mid-flight. Re-read `website/04-fable-build-prompt.md` in full — Section 1 is still the mission and its rules all still bind (Critic rounds, honesty rules, budget, invented directions 6–10); Section 2 has been UPDATED since the build started: **Netlify is exhausted — the deploy target is now Cloudflare Pages, and all variants consolidate into ONE site** (gallery at root, variants under `/v<N>-<slug>/`). Do this, in order:
+>
+> 1. **Audit state before building anything.** Inspect `website/variants/` and any local build folders from the earlier session: list which variants exist, which Critic rounds each has completed (check the /guide logs), what was deployed where, and what of the shared `content.md` and `DIRECTIONS-6-10.md` exists. Write the audit to `website/variants/RESUME-STATE.md` — that file is the single source of truth for what remains.
+> 2. **Restructure for consolidation.** Rework the build output into the single-site layout: root gallery + `/v<N>-<slug>/` per variant + `/v<N>-<slug>/guide/`. Fix all internal links to be relative so they work under subpaths. Anything previously deployed to per-variant Netlify sites is now dead weight — the consolidated local tree is canonical.
+> 3. **Verify Cloudflare access.** `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` should be in `website/.env`. Probe with `npx wrangler whoami`. If credentials are missing or fail: say so in RESUME-STATE.md and continue building locally — deployment is the last step, never a blocker. If they work: create the Pages project `180dc-variants` once, and from then on deploy the consolidated tree with `npx wrangler pages deploy` only when a variant completes its third Critic round.
+> 4. **Resume the pipeline exactly where the audit says it stopped:** finish incomplete Critic rounds first, then remaining prescribed variants, then the DIRECTIONS-6-10.md invention step, then the invented five, then the root gallery and `website/variants/RECOMMENDATION.md`, per Section 1.
+> 5. Same working agreement: autonomous until the gallery is live at `180dc-variants.pages.dev` and the recommendation is written; log decisions in the /guides; never commit `.env`; stay under the €15 image budget (check the ledger in Section 2 and append to it).
