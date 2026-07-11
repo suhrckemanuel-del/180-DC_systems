@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — V2 Port of Rotterdam — 180DC Delft–Rotterdam</title>
+<meta name="description" content="How the Port of Rotterdam variant was designed and built, its design system, and how to extend it.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23D9531F'/%3E%3Ctext x='16' y='22' font-family='Arial Black' font-size='12' fill='%2310181E' text-anchor='middle' font-weight='900'%3E180%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <a class="bar-brand" href="index.html">
+    <span class="mark" aria-hidden="true">180°</span>
+    <span class="name">Degrees Consulting<small>Delft–Rotterdam · Port of ideas</small></span>
+  </a>
+  <nav aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="for-clients.html">For clients</a>
+    <a href="guide.html" aria-current="page">Guide</a>
+  </nav>
+</header>
+
+<main id="main">
+
+<section class="hero">
+  <div class="hero-inner" style="padding-top:4.5rem;padding-bottom:3.5rem">
+    <span class="code">SHIP'S LOG · DESIGN SPECIFICATION · NOT CLIENT-FACING</span>
+    <h1 style="font-size:clamp(2.2rem,5.5vw,4.2rem)"><span class="ln1">V2 —</span> <span class="ln2">Port of Rotterdam</span></h1>
+    <p class="sub"><strong>Thesis:</strong> industrial-modern — container geometry, bold cargo color blocks, manifest-style data tables, crane silhouettes. The branch as heavy infrastructure for good. One of ten competing design variants; content identical across all ten (see <code>website/variants/content.md</code>).</p>
+  </div>
+</section>
+
+<section aria-labelledby="ds-h">
+  <div class="inner">
+    <div class="sec-head"><span class="sec-num">01</span><span class="tag">Design system</span></div>
+    <h2 id="ds-h">Specification</h2>
+    <div class="table-scroll">
+    <table class="manifest" style="margin-top:2rem">
+      <tr><th scope="row" style="width:11rem">Palette</th><td>Concrete <code>#EDEAE3</code> · Ink <code>#10181E</code> · Container orange <code>#D9531F</code> (blocks) / <code>#B8431F</code> (text) · Signal yellow <code>#EBA937</code> (blocks, ink text on top) · 180 green <code>#00623A</code> / band <code>#084D30</code> · Navy <code>#14293A</code>. Rule: loud colors are blocks, never small text.</td></tr>
+      <tr><th scope="row">Type</th><td>Archivo Black (display, uppercase, tight leading 0.98–1.02) · Archivo 400/600 (body) · Space Mono 400/700 (codes, manifests, nav). Container codes at 0.68rem / 0.18em tracking.</td></tr>
+      <tr><th scope="row">Spacing</th><td>Sections 5rem vertical; content max-width 1180px; hard edges everywhere — zero border-radius on the entire site; offset block shadows (6px/6px solid) instead of blur.</td></tr>
+      <tr><th scope="row">Motion</th><td>One move: 500ms fade-up reveal on scroll, JS-gated (no-JS renders everything) and behind <code>prefers-reduced-motion</code>. Hover: containers lift 3px with deeper offset shadow; buttons translate with hard shadow.</td></tr>
+      <tr><th scope="row">Signature elements</th><td>Harbor-master sticky nav bar with orange keel line · duotone crane photography (real Rotterdam, Pexels, credited) · crane-silhouette SVG strips between bands · corrugation texture (repeating-linear-gradient) on containers · cargo-manifest tables with row codes (180U-, CR-) · route-plan timeline as ports of call · stencil outline type for the recruitment line.</td></tr>
+      <tr><th scope="row">Imagery</th><td>Two Pexels photos of the actual Port of Rotterdam (hero cranes, Maasvlakte terminal), WebP, 157&nbsp;KB total, credited in captions. No AI imagery in this variant. No people presented as our team.</td></tr>
+      <tr><th scope="row">Honesty devices</th><td>Missing content is a hazard-striped yellow <code>[PLACEHOLDER]</code> plate — the most visible element on any page it appears on.</td></tr>
+    </table>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="how-h">
+  <div class="inner prose">
+    <div class="sec-head"><span class="sec-num">02</span><span class="tag">Method &amp; extension</span></div>
+    <h2 id="how-h">How it was made &amp; how to extend it</h2>
+    <p style="margin-top:1.2rem"><strong>Build:</strong> hand-written static HTML/CSS, one stylesheet, no framework, no build step. Fonts self-hosted woff2 latin subsets (~118&nbsp;KB). Photography via Pexels API, compressed to WebP with sharp.</p>
+    <p><strong>Mood calibration:</strong> the working harbor, not harbor nostalgia — signage, stencils, manifest paperwork, container yards. The web translation keeps paperwork density (tables with codes) and yard color discipline (blocks loud, text quiet).</p>
+    <p><strong>To extend to the full site:</strong> each new page is another document in the ship's papers — Our Work becomes a shipping ledger (one row per engagement, linked to a case "bill of lading"), Team gets ID-plate cards with duotone photos once the photo session exists, Impact becomes the harbor statistics board. Reuse <code>.manifest</code>, <code>.container-box</code>, <code>.port-stop</code>, and the crane strip as the universal band divider. If an element wants a rounded corner or a soft shadow, it belongs to another variant.</p>
+    <p><strong>Deploy:</strong> zip-deploy to Netlify via API (see <code>website/variants/tools/deploy.ps1</code>).</p>
+  </div>
+</section>
+
+<section aria-labelledby="log-h">
+  <div class="inner">
+    <div class="sec-head"><span class="sec-num">03</span><span class="tag">Ship's log — critique rounds</span></div>
+    <h2 id="log-h">Critique &amp; revision log</h2>
+    <div id="critique-log" class="prose" style="margin-top:1.5rem">
+      <p><span class="tag">Entry 1 — initial construction</span></p>
+      <p>Built from the shared content spec. Reveal animations JS-gated from the start (lesson from V1's round-1 critique).</p>
+      <p style="margin-top:1.4rem"><span class="tag">Entry 2 — Critic round 1</span></p>
+      <p><strong>Critic's top notes:</strong> (1) both photographs 404'd in production (deploy zip wrote backslash paths — same root cause as V1's font failure) so the port thesis was invisible; (2) hero read as type-on-navy with an invisible silhouette strip; (3) crew table clipped emails on mobile; (4) off-palette mint green in display type broke the site's own color rule; (5) mobile hero type overflowed; (6) containers didn't read as containers (imperceptible corrugation, arbitrary color repeats); (7) heroes carried dead vertical space; (8) maritime jargon in client-facing H2s; (9) motion was one generic fade; (10) nav inconsistent across pages and cramped on mobile.</p>
+      <p style="margin-top:1.4rem"><span class="tag">Lighthouse — final build (local run, 2026-07-09)</span></p>
+      <p>Home 100 / 96 / 100 / 100 (perf / accessibility / best-practices / SEO), 230&nbsp;KB. For-clients 100 / 97 / 100 / 100, 123&nbsp;KB. Guide 100 / 95 / 100 / 100, 124&nbsp;KB. All pages clear both quality bars (≥95) and sit far under the 1&nbsp;MB budget — photography included.</p>
+      <p style="margin-top:1.4rem"><span class="tag">Entry 4 — Critic round 3 (final)</span></p>
+      <p><strong>Critic's top notes:</strong> the round-3 screenshots caught a stale-CSS window right after deploy, so the Critic saw the services grid and crew table as empty voids — verified fine on the live site (the reveal classes fire; a Playwright check confirmed <code>opacity: 1</code> after scroll). Real notes actioned: the €0 stamp collided with the FREIGHT row on the bill of lading; the quality-section photo let a third-party shipping line's wordmark out-shout ours; the crane strip read too faint; the mobile hero needed a stronger scrim and stacked links; the dark-section placeholder was the lowest-contrast text on the site; and the six service containers appeared verbatim on both pages.</p>
+      <p><strong>Changed in Entry 4:</strong> bill of lading got bottom clearance and the stamp now overlaps the card edge, not the type; photo swapped for a brand-free Rotterdam crane frame with the credit and the claim split onto separate lines; silhouettes brightened and varied; hero scrim deepened, mobile headline floor raised, secondary links stack on mobile; dark placeholders lifted to cream-amber; for-clients services recast as a manifest of scoped engagement offers (area · what it looks like · passage) — offers, not invented past work. V2 is final after this revision.</p>
+      <p style="margin-top:1.4rem"><span class="tag">Entry 3 — Critic round 2</span></p>
+      <p><strong>Critic's top notes:</strong> (1) an <code>overflow-wrap: anywhere</code> rule broke "ORGANISATIONS" mid-word on every viewport — disqualifying; (2) the facts manifest clipped the €0 column on mobile with no scroll affordance; (3) mobile nav truncated "CONTACT"; (4) two display headlines fought in the recruitment section; (5) the for-clients hero wasted half its canvas while naming a bill of lading it never showed; (6) crane strip read as a repeated tile; (7) three equal-weight hero CTAs diluted hierarchy; (8) placeholder plates out-shouted real content; (9) motion was generic fade.</p>
+      <p><strong>Changed in Entry 3:</strong> the wrap rule deleted and the clamp retuned — hand-broken lines only; facts manifest stacks into ID plates on mobile; nav wraps instead of hiding overflow; recruitment section has one headline ("Engineers, designers, economists wanted." in ink + orange) with the qualifier demoted to the kicker; the for-clients hero now carries an actual stamped bill-of-lading document card (passage, crew, cargo, freight prepaid €0); crane silhouettes vary in height and opacity; hero has a single 01 button with 02/03 as command-style text links; placeholders dropped one register in chroma and size; the only entrance motion left is the six service containers being craned in with a staggered horizontal settle.</p>
+      <p><strong>Changed in Entry 2:</strong> deploys switched to bsdtar — the crane photo now backs the hero and the Maasvlakte image renders; display-type color rule enforced (white carries the sentence, signal yellow lands the payload — mint deleted); crew manifest collapses to stacked ID-plate cards below 640px; corrugation ribbing made visible and container codes framed as ISO-style plates; service colors locked to a deliberate navy/orange/green ×2 rhythm; hero padding capped and mobile clamp lowered (no overflow); metaphor discipline enforced — mono kickers carry the harbor language, H2s say the plain thing; manifest rows now stamp in sequentially and hazard stripes crawl slowly (both reduced-motion-gated); crane silhouettes raised to visible contrast; mobile nav is one scrollable row.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="foot-legal" style="border-top:0;margin-top:0">
+    <span>Vessel 180U-2019-DR · Ship's log · Sheet 03</span>
+    <a href="index.html">Back to deck</a>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+</script>
+</body>
+</html>

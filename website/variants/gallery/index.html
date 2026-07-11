@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>180DC Delft–Rotterdam — ten design variants</title>
+<meta name="description" content="Ten radically different live design proposals for the 180 Degrees Consulting Delft–Rotterdam website. Same content, ten designs — pick one.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2300693C'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='800' font-size='10' fill='white' text-anchor='middle'%3E10%3C/text%3E%3C/svg%3E">
+<style>
+:root { --ink: #16211B; --faint: #5A6961; --green: #00693C; --green-deep: #00512E; --line: #E2E5E0; --bg: #FAFBF9; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 1.3rem; }
+header { padding: 3.2rem 0 2.2rem; border-bottom: 1px solid var(--line); }
+h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; max-width: 30ch; }
+h1 em { font-style: normal; color: var(--green); }
+.sub { margin-top: 0.9rem; color: var(--faint); max-width: 68ch; font-size: 1.05rem; }
+.sub a { color: var(--green-deep); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.4rem; padding: 2.2rem 0; }
+.card { background: #fff; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; transition: transform 140ms ease, box-shadow 140ms ease; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(22, 33, 27, 0.1); }
+.card .shot { display: block; position: relative; }
+.card .shot img { width: 100%; height: auto; display: block; aspect-ratio: 1280 / 800; object-fit: cover; border-bottom: 1px solid var(--line); }
+.card .no { position: absolute; top: 0.7rem; left: 0.7rem; background: var(--ink); color: #fff; font-weight: 800; font-size: 0.78rem; padding: 0.25rem 0.6rem; border-radius: 5px; }
+.card .body { padding: 1.1rem 1.2rem 1.25rem; display: flex; flex-direction: column; gap: 0.55rem; flex: 1; }
+.card h2 { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em; }
+.card p { font-size: 0.92rem; color: var(--faint); flex: 1; }
+.meta { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+.chip { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em; padding: 0.22rem 0.55rem; border-radius: 999px; background: #EDF3EE; color: var(--green-deep); }
+.chip--w { background: #F0F1EE; color: var(--faint); }
+.links { display: flex; gap: 0.9rem; margin-top: 0.2rem; }
+.links a { font-size: 0.88rem; font-weight: 700; color: var(--green-deep); text-decoration: none; }
+.links a:hover, .links a:focus-visible { text-decoration: underline; }
+.links a.primary { background: var(--green-deep); color: #fff; padding: 0.5rem 0.95rem; border-radius: 6px; }
+.links a.primary:hover { background: var(--green); text-decoration: none; }
+section.compare { padding: 1.6rem 0 3rem; }
+section.compare h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.4rem; }
+section.compare .sub { margin-bottom: 1.4rem; }
+.tblwrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+table { border-collapse: collapse; width: 100%; min-width: 900px; font-size: 0.88rem; }
+th, td { text-align: left; padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th { font-size: 0.7rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--faint); background: #F6F8F5; position: sticky; top: 0; }
+tbody tr:last-child td { border-bottom: 0; }
+td.nm { font-weight: 700; white-space: nowrap; }
+td.nm a { color: var(--ink); text-decoration: none; }
+td.nm a:hover { color: var(--green-deep); }
+td .sc { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--green-deep); }
+footer { border-top: 1px solid var(--line); padding: 1.6rem 0 2.6rem; color: var(--faint); font-size: 0.88rem; }
+footer .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+a:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
+.note { font-size: 0.82rem; color: var(--faint); margin-top: 1rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Ten designs. One branch. <em>Same true content in every one.</em></h1>
+    <p class="sub">Live, clickable proposals for the 180 Degrees Consulting Delft–Rotterdam website — each built as a complete homepage, a For-Clients page, and a guide documenting its design system. Content is identical across all ten (<a href="https://github.com/suhrckemanuel-del/180-DC_systems">single source of truth</a>, honesty rules enforced: no invented statistics, no fake testimonials, no stock faces). The winner gets the full six-page build. Pick your three favourites, then read the guides.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+
+    <div class="card">
+      <a class="shot" href="v1-blueprint/"><span class="no">V1</span><img src="thumbs/v1-blueprint.webp" alt="V1 Blueprint homepage preview" loading="lazy" width="720" height="450"></a>
+      <div class="body">
+        <h2>Blueprint</h2>
+        <p>TU Delft engineering heritage — the site as an engineer's drawing of itself: drafting grid, dimension lines, title blocks, a self-drawing engagement diagram.</p>
+        <div class="meta"><span class="chip">Perf 100 · A11y 100</span><span class="chip--w chip">83 KB</span><span class="chip--w chip">no images</span></div>
+        <div class="links"><a class="primary" href="v1-blueprint/">Open site</a><a href="v1-blueprint/guide/">Guide</a></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="shot" href="v2-port/"><span class="no">V2</span><img src="thumbs/v2-port.webp" alt="V2 Port of Rotterdam homepage preview" loading="lazy" width="720" height="450"></a>
+      <div class="body">
+        <h2>Port of Rotterdam</h2>
+        <p>Industrial-modern — container geometry, cargo color blocks, manifest tables with cargo codes, real harbor photography, a stamped bill of lading.</p>
+        <div class="meta"><span class="chip">Perf 100 · A11y 96</span><span class="chip--w chip">230 KB</span><span class="chip--w chip">Pexels photos</span></div>
+        <div class="links"><a class="primary" href="v2-port/">Open site</a><a href="v2-port/guide/">Guide</a></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="shot" href="v3-destijl/"><span class="no">V3</span><img src="thumbs/v3-destijl.webp" alt="V3 De Stijl homepage preview" loading="lazy" width="720" height="450"></a>
+      <div class="body">
+        <h2>De Stijl</h2>
+        <p>Dutch modernist — Mondrian composition with 180-green as the fourth primary, the 180° numeral turning into place, one strict color rule.</p>
+        <div class="meta"><span class="chip">Perf 100 · A11y 100</span><span class="chip--w chip">146 KB</span><span class="chip--w chip">no images</span></div>
+        <div class="links"><a class="primary" href="v3-destijl/">Open site</a><a href="v3-destijl/guide/">Guide</a></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="shot" href="v4-terminal/"><span class="no">V4</span><img src="thumbs/v4-terminal.webp" alt="V4 Terminal homepage preview" loading="lazy" width="720" height="450"></a>
+      <div class="body">
+        <h2>The Terminal</h2>
+        <p>The AI-native branch — dark-first, a live terminal session as the hero, the quality pipeline drawn as a system with a labeled findings loop.</p>
+        <div class="meta"><span class="chip">Perf 100 · A11y 100</span><span class="chip--w chip">165 KB</span><span class="chip--w chip">leads with the AI story</span></div>
+        <div class="links"><a class="primary" href="v4-terminal/">Open site</a><a href="v4-terminal/guide/">Guide</a></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="shot" href="v5-soft/"><span class="no">V5</span><img src="thumbs/v5-soft.webp" alt="V5 Soft Impact homepage preview" loading="lazy" width="720" height="450"></a>
+      <div class="body">
+        <h2>Soft Impact</h2>
+        <p>Warm and human for non-profit directors — warm-graded photography of Delft and Rotterdam cropped through a 180° arch, the review rubric as a real artifact.</p>
+        <div class="meta"><span class="chip">Perf 98 · A11y 100</span><span class="chip--w chip">147 KB</span><span class="chip--w chip">photography-led</span></div>
+        <div class="links"><a class="primary" href="v5-soft/">Open site</a><a href="v5-soft/guide/">Guide</a></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="shot" href="v6-deck/"><span class="no">V6</span><img src="thumbs/v6-deck.webp" alt="V6 The Deck homepage preview" loading="lazy" width="720" height="450"></a>
+      <div class="body">
+        <h2>The Deck</h2>
+        <p>The website is a board-ready consulting deck — numbered slides, action titles, source lines, a gantt, an agenda that audits itself. The product, shown by being the product.</p>
+        <div class="meta"><span class="chip">Perf 99 · A11y 95</span><span class="chip--w chip">140 KB</span><span class="chip--w chip">invented direction</span></div>
+        <div class="links"><a class="primary" href="v6-deck/">Open site</a><a href="v6-deck/guide/">Guide</a></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="shot" href="v7-polder/"><span class="no">V7</span><img src="thumbs/v7-polder.webp" alt="V7 Polder homepage preview" loading="lazy" width="720" height="450"></a>
+      <div class="body">
+        <h2>Polder</h2>
+        <p>The Dutch landscape as design system — sky/dike/field/water strata, a NAP datum line on every section, and a page that descends below sea level as you scroll.</p>
+        <div class="meta"><span class="chip">Perf 96 · A11y 100</span><span class="chip--w chip">219 KB</span><span class="chip--w chip">invented direction</span></div>
+        <div class="links"><a class="primary" href="v7-polder/">Open site</a><a href="v7-polder/guide/">Guide</a></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="shot" href="v8-courant/"><span class="no">V8</span><img src="thumbs/v8-courant.webp" alt="V8 De Courant homepage preview" loading="lazy" width="720" height="450"></a>
+      <div class="body">
+        <h2>De Courant</h2>
+        <p>A Dutch broadsheet — blackletter masthead, news voice, recruitment as classified ads, and the honesty rules printed as an actual editorial colophon.</p>
+        <div class="meta"><span class="chip">Perf 97 · A11y 100</span><span class="chip--w chip">233 KB</span><span class="chip--w chip">invented direction</span></div>
+        <div class="links"><a class="primary" href="v8-courant/">Open site</a><a href="v8-courant/guide/">Guide</a></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="shot" href="v9-pamflet/"><span class="no">V9</span><img src="thumbs/v9-pamflet.webp" alt="V9 Pamflet homepage preview" loading="lazy" width="720" height="450"></a>
+      <div class="body">
+        <h2>Pamflet</h2>
+        <p>Dutch protest-pamphlet brutalism — enormous type, one green, zero JavaScript, a manifesto you could wheat-paste to a wall. Accessible brutalism is the flex.</p>
+        <div class="meta"><span class="chip">Perf 100 · A11y 100</span><span class="chip--w chip">89 KB</span><span class="chip--w chip">invented · riskiest</span></div>
+        <div class="links"><a class="primary" href="v9-pamflet/">Open site</a><a href="v9-pamflet/guide/">Guide</a></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="shot" href="v10-ledger/"><span class="no">V10</span><img src="thumbs/v10-ledger.webp" alt="V10 The Ledger homepage preview" loading="lazy" width="720" height="450"></a>
+      <div class="body">
+        <h2>The Ledger</h2>
+        <p>Radical transparency as layout — every claim carries a numbered evidence entry in the margin, the unclaimable is struck through, and the footer is a public changelog.</p>
+        <div class="meta"><span class="chip">Perf 95 · A11y 95</span><span class="chip--w chip">126 KB</span><span class="chip--w chip">invented · never seen before</span></div>
+        <div class="links"><a class="primary" href="v10-ledger/">Open site</a><a href="v10-ledger/guide/">Guide</a></div>
+      </div>
+    </div>
+
+  </div>
+
+  <section class="compare" aria-labelledby="cmp-h">
+    <h2 id="cmp-h">Side by side</h2>
+    <p class="sub">Every variant passed three independent critique-and-improve rounds by a fresh-context "art director" agent (logs in each guide) and both quality bars: Lighthouse Performance and Accessibility ≥ 95, first load far under 1 MB, keyboard-navigable, WCAG AA, works without JavaScript.</p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Nº</th><th>Variant</th><th>Design thesis in one line</th><th>Imagery</th><th>JS</th><th>Motion</th><th>Weight</th><th>Perf / A11y</th></tr></thead>
+        <tbody>
+          <tr><td>V1</td><td class="nm"><a href="v1-blueprint/">Blueprint</a></td><td>The site as an engineer's drawing of itself</td><td>inline SVG only</td><td>optional garnish</td><td>lines get drawn</td><td>83 KB</td><td><span class="sc">100 / 100</span></td></tr>
+          <tr><td>V2</td><td class="nm"><a href="v2-port/">Port of Rotterdam</a></td><td>Heavy industry for good — containers, manifests, cranes</td><td>real port photos</td><td>optional</td><td>containers craned in</td><td>230 KB</td><td><span class="sc">100 / 96</span></td></tr>
+          <tr><td>V3</td><td class="nm"><a href="v3-destijl/">De Stijl</a></td><td>Mondrian composition, 180-green as the fourth primary</td><td>none</td><td>optional</td><td>one 180° turn</td><td>146 KB</td><td><span class="sc">100 / 100</span></td></tr>
+          <tr><td>V4</td><td class="nm"><a href="v4-terminal/">The Terminal</a></td><td>The AI-native branch, its pipeline live on screen</td><td>none</td><td>optional</td><td>cursor, dataflow</td><td>165 KB</td><td><span class="sc">100 / 100</span></td></tr>
+          <tr><td>V5</td><td class="nm"><a href="v5-soft/">Soft Impact</a></td><td>Warm and human, photography through a 180° arch</td><td>warm-graded photos</td><td>optional + failsafe</td><td>gentle staggered bloom</td><td>147 KB</td><td><span class="sc">98 / 100</span></td></tr>
+          <tr><td>V6</td><td class="nm"><a href="v6-deck/">The Deck</a></td><td>The website is a board-ready deck — judge the product</td><td>none</td><td>arrow-key slides</td><td>none, by conviction</td><td>140 KB</td><td><span class="sc">99 / 95</span></td></tr>
+          <tr><td>V7</td><td class="nm"><a href="v7-polder/">Polder</a></td><td>Dutch landscape strata; the page ends below sea level</td><td>inline SVG only</td><td>none</td><td>the pump turns, water drifts</td><td>219 KB</td><td><span class="sc">96 / 100</span></td></tr>
+          <tr><td>V8</td><td class="nm"><a href="v8-courant/">De Courant</a></td><td>A broadsheet whose colophon is our honesty rulebook</td><td>none</td><td>none</td><td>none — newsprint</td><td>233 KB</td><td><span class="sc">97 / 100</span></td></tr>
+          <tr><td>V9</td><td class="nm"><a href="v9-pamflet/">Pamflet</a></td><td>Protest brutalism: enormous type, one green, all true</td><td>none</td><td>none</td><td>none — paper</td><td>89 KB</td><td><span class="sc">100 / 100</span></td></tr>
+          <tr><td>V10</td><td class="nm"><a href="v10-ledger/">The Ledger</a></td><td>Every claim shows its evidence; the rest is struck through</td><td>none</td><td>hover evidence links</td><td>none — ledgers don't move</td><td>126 KB</td><td><span class="sc">95 / 95</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Scores are Lighthouse desktop runs against the deployed pages (V6–V10 latest local runs; refreshed after final critique rounds). Weight = homepage transfer size. The written recommendation with a ranked top three lives in the repo: <code>website/variants/RECOMMENDATION.md</code>.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>180 Degrees Consulting Delft–Rotterdam · an AI-lab build — ten variants, one honest content spec</span>
+    <span>Built 2026-07 · hosted on Cloudflare Pages</span>
+  </div>
+</footer>
+
+</body>
+</html>

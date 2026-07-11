@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — V7 Polder — 180DC Delft–Rotterdam</title>
+<meta name="description" content="How the Polder variant was designed and built, its design system, and how to extend it.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23EBF2F3'/%3E%3Cpath d='M2 22 L16 8 L30 22 Z' fill='%2300512E'/%3E%3Crect y='24' width='32' height='8' fill='%2310333D'/%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="index.html">
+      <span class="mark" aria-hidden="true">180</span>
+      <b>Degrees Consulting<small>Delft–Rotterdam · polder works</small></b>
+    </a>
+    <nav aria-label="Main">
+      <a href="index.html">The polder</a>
+      <a href="for-clients.html">For clients</a>
+      <a href="guide.html" aria-current="page">Guide</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="stratum stratum--sky" aria-labelledby="g1">
+  <div class="wrap">
+    <p class="nap"><b>Specification — not client-facing</b></p>
+    <h1 id="g1" style="font-size:clamp(2rem,4.4vw,3.2rem);margin-top:1.6rem">V7 — <em>Polder</em></h1>
+    <div class="prose" style="margin-top:1.2rem">
+      <p><strong>Thesis:</strong> the Dutch landscape as design system — horizontal strata (sky / dike / field / water) structure every page, a NAP datum line annotates each section's elevation, parcel-strip grids carry content, and the quality system is the pump that keeps the polder dry. The page literally descends below sea level as you scroll, ending at −6.76 m — the real lowest point of the Netherlands. Deep-Dutch identity without a square inch of De Stijl cliché.</p>
+      <p>One of ten competing design variants; content identical across all ten (see <code>website/variants/content.md</code>).</p>
+    </div>
+  </div>
+</section>
+
+<section class="stratum stratum--field" aria-labelledby="g2">
+  <div class="wrap">
+    <p class="nap"><b>The system</b></p>
+    <h2 id="g2" style="margin-top:1.6rem">Specification</h2>
+    <div class="stages">
+      <div class="stage"><span class="s-el">S.1 palette</span><div><p>Sky <code>#EBF2F3</code>/<code>#DCE9EB</code> · field <code>#EDF3E4</code>/<code>#E2ECD2</code> · dike <code>#00512E</code> (the 180-green, structural) · water <code>#10333D</code> · ink <code>#182620</code>. Color is elevation: the darker the band, the lower you are. Amber hatch only in "not yet reclaimed" chips.</p></div></div>
+      <div class="stage"><span class="s-el">S.2 type</span><div><p>Bricolage Grotesque 400/600/800 (earthy, chunky display and body) + Spline Sans Mono 400/600 (NAP annotations, parcel numbers, survey labels).</p></div></div>
+      <div class="stage"><span class="s-el">S.3 structure</span><div><p>Every section is a stratum opening with the NAP datum line stating its elevation. Services are six parcel strips with dashed cadastral dividers; the timeline is a reclamation sequence (survey → dike → pumping → dry land); the team is het waterschap — the water board.</p></div></div>
+      <div class="stage"><span class="s-el">S.4 motion</span><div><p>Exactly what really moves in a polder, nothing else: the pump's sails turn and the waterline drifts (both CSS, both reduced-motion-gated). No entrance reveals — land does not animate.</p></div></div>
+      <div class="stage"><span class="s-el">S.5 honesty</span><div><p>Placeholders are "not yet reclaimed" hatched plots; the survey-marker facts row states that markers are never guessed; the −6.76 m footer datum is a true geographic fact (Zuidplaspolder), used as geography, not as an org claim.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="stratum stratum--sky2" aria-labelledby="g3">
+  <div class="wrap">
+    <p class="nap"><b>Method &amp; extension</b></p>
+    <h2 id="g3" style="margin-top:1.6rem">How it was made, and how to extend it</h2>
+    <div class="prose" style="margin-top:1.1rem">
+      <p><strong>Build:</strong> hand-written static HTML/CSS, one stylesheet, no framework, zero JavaScript, no raster images — the dike section, survey map, and pump are inline SVG. ~192&nbsp;KB of self-hosted woff2 is the asset budget.</p>
+      <p><strong>Mood calibration:</strong> waterschap cartography, cadastral maps, and the visual calm of the flat horizon — the stratum is the hero. The rule when extending: every new section must declare its elevation, and the page must always end in water.</p>
+      <p><strong>To extend:</strong> Our Work becomes reclaimed parcels (one case per parcel, its outcome as the crop); Impact is the day the survey markers get real numbers; About is the history of the polder. Never stack two strata of the same band; never let anything float free of a stratum.</p>
+      <p><strong>Deploy:</strong> consolidated Cloudflare Pages tree via <code>tools/deploy-cf.ps1</code>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="stratum stratum--field2" aria-labelledby="g4">
+  <div class="wrap">
+    <p class="nap"><b>Critique &amp; revision log</b></p>
+    <h2 id="g4" style="margin-top:1.6rem">Rounds</h2>
+    <div class="prose" id="critique-log" style="margin-top:1.1rem">
+      <p><strong>Stage 0 — initial construction.</strong> Built from the shared content spec with all accumulated lessons applied: no entrance motion (only the pump and the water move), no card walls (parcels are a cadastral form), plain controls, no cross-page duplication beyond the six parcels which each page frames differently, one placeholder register, correct field counts, semantic color (elevation). Awaiting Critic round 1.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap" style="display:block">
+    <p class="nap"><b>NAP −6.76 m — specification sheet</b></p>
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-top:1.4rem">
+      <p>Guide — not client-facing</p>
+      <p><a href="index.html">Back to the polder</a></p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

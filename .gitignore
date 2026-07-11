@@ -17,6 +17,10 @@ tools/quality-reviewer/v2/eval-cases-real/real-*.gold.md
 slides_out/
 *.tmp
 
+# Branch Awards working files carry internal branch data (budgets, metrics, client
+# names in aggregate) — local only, never pushed.
+branch-awards/
+
 # Website build secrets and reference material with unclear licensing
 website/.env
 website/moodboard/
@@ -35,3 +39,6 @@ Thumbs.db
 
 # Note: small PDFs that are our own IP (evidence-base.pdf, methodology-evidence-base.pdf)
 # are intentionally tracked. Client PDFs are not.
+
+# Generated consolidated site tree (rebuilt by website/variants/tools/build-dist.mjs)
+website/variants/dist/

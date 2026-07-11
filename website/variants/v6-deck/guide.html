@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Appendix — V6 The Deck — 180DC Delft–Rotterdam</title>
+<meta name="description" content="How the Deck variant was designed and built, its design system, and how to extend it.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23006B3C'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='800' font-size='11' fill='white' text-anchor='middle'%3E180%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="viewer">
+  <a class="file" href="index.html">
+    <span class="logo" aria-hidden="true">180</span>
+    <b>180DC_V6_Appendix.deck</b>
+  </a>
+  <nav aria-label="Main">
+    <a href="index.html">The deck</a>
+    <a href="for-clients.html">For clients</a>
+    <a href="guide.html" aria-current="page">Appendix</a>
+  </nav>
+</header>
+
+<main id="main" class="deck">
+
+<section class="slide" aria-labelledby="a1-h">
+  <span class="s-num">A1</span>
+  <p class="s-kick">Appendix — design specification, not client-facing</p>
+  <h2 class="s-title" id="a1-h">V6 "The Deck" — the website is the deliverable</h2>
+  <div class="s-body">
+    <p><strong>Thesis:</strong> clients hire us for exactly one artifact — a board-ready deck. This site shows the product by being the product: title slides, an agenda, action titles, source lines, gantt timelines, takeaway boxes, a classification strip that reads PUBLIC — PRO BONO. One of ten competing design variants; content identical across all ten (see <code>website/variants/content.md</code>).</p>
+    <p>To our knowledge, no consulting website — student or professional — has done this literally. That's the bet.</p>
+  </div>
+  <div class="s-foot"><span>180DC Delft–Rotterdam — appendix</span><span class="cls">INTERNAL</span></div>
+</section>
+
+<section class="slide" aria-labelledby="a2-h">
+  <span class="s-num">A2</span>
+  <p class="s-kick">Design system</p>
+  <h2 class="s-title" id="a2-h">The system in one slide</h2>
+  <div class="fw" style="grid-template-columns:1fr 1fr">
+    <div><h3>Palette</h3><p>Desk <code>#E4E6E4</code> (the viewer backdrop) · slide white · ink <code>#1A2420</code> · 180-green <code>#006B3C</code> / deep <code>#00522E</code> · placeholder amber only in [TO COME] chips. Green is structural: action-title rules, gantt bars, agenda numerals.</p></div>
+    <div><h3>Type</h3><p>Libre Franklin 400/600/800 (the deck sans; action titles at 800 with a 3px green rule) + Source Serif 4 italic for takeaway boxes and the title-slide accent — the "written by a human hand" register.</p></div>
+    <div><h3>Slide grammar</h3><p>Every section is a numbered slide (n / total) with footer, classification, and a source line where a claim needs one. Action titles are full-sentence takeaways — the consulting convention that forces every slide to argue, not decorate.</p></div>
+    <div><h3>Motion &amp; honesty</h3><p>No entrance motion at all — decks don't fade, they argue; hover states only. Placeholders are [TO COME] chips in editorial amber; the deck states out loud that it shows no logo it hasn't earned and pads no slide with invented statistics.</p></div>
+  </div>
+  <div class="s-foot"><span>180DC Delft–Rotterdam — appendix</span><span class="cls">INTERNAL</span></div>
+</section>
+
+<section class="slide" aria-labelledby="a3-h">
+  <span class="s-num">A3</span>
+  <p class="s-kick">Method &amp; extension</p>
+  <h2 class="s-title" id="a3-h">How it was made, and how the next person extends it</h2>
+  <div class="s-body">
+    <p><strong>Build:</strong> hand-written static HTML/CSS, one stylesheet, no framework, no images — the slide chrome is pure CSS. Fonts self-hosted woff2 (~127&nbsp;KB). Lightest possible footprint for the heaviest-feeling metaphor.</p>
+    <p><strong>To extend:</strong> every new page is a new deck file (the header names it: <code>180DC_X.deck</code>). Our Work becomes one deck per case — Situation/Approach/Outcome as three slides with real source lines; Impact is a data appendix; the murder-board stamp lands on cases that survived one. Reuse <code>.slide</code>, <code>.fw</code>, <code>.gantt</code>, <code>.takeaway</code>, <code>.roster</code>. Rules: every slide gets an action title that argues; every factual claim gets a source line; nothing enters a slide that couldn't survive a review.</p>
+    <p><strong>Deploy:</strong> zip-deploy to Netlify via API (see <code>website/variants/tools/deploy.ps1</code>).</p>
+  </div>
+  <div class="s-foot"><span>180DC Delft–Rotterdam — appendix</span><span class="cls">INTERNAL</span></div>
+</section>
+
+<section class="slide" aria-labelledby="a4-h">
+  <span class="s-num">A4</span>
+  <p class="s-kick">Critique &amp; revision log</p>
+  <h2 class="s-title" id="a4-h">Rounds</h2>
+  <div class="s-body" id="critique-log">
+    <p><strong>Rev 0 — initial construction.</strong> Built from the shared content spec with all ten accumulated lessons from V1–V5 applied: no generic reveals (this variant has zero entrance motion by thesis), no symmetric-card default (the framework grid is a deck convention, not a SaaS wall), plain language on every control, no verbatim duplication between pages (the client page is a different deck), one placeholder register, correct field counts.</p>
+    <p style="margin-top:1rem"><strong>Rev C — Critic round 2.</strong> Verdict at round 2: "top three of ten on concept and integrity — give the deck a real cover slide and it contends for the win." Top notes, all actioned: the cover was the least designed slide (now a full-bleed deep-green cover with the door chips as light tickets — the design budget spent where decks spend it); the mobile gantt clipped labels (bars are now mute duration marks above the stacked week list); the agenda skipped numbers and doubled them per row (now all eleven rows, dividers dimmed, one number per row); divider leading was broken and the green fields empty (line-height 1.1, ghost section numerals, mini-agenda lines); placeholders demoted from stickers to quiet marginal tags (one accent box per slide); the footer classification reduced to two resolved values (PRO BONO / SOURCED); serif reserved strictly for takeaways and the headline pivot; the chrome-bar counter brightened with tabular numerals, and arrow keys now jump slides — deck behaviour, not motion.</p>
+    <p style="margin-top:1rem"><strong>Rev B — Critic round 1.</strong> Verdict at round 1: "second or third — the only concept in the room." Top notes: the title slide broke the deck's own action-title rule (a category label, not an argument) and offered no door; the gantt clipped its labels on mobile; nine identical white cards flatlined the scroll; the agenda's page numerals floated orphaned; two slides carried large voids; the classification strip repeated into wallpaper; roster typography slipped. <strong>Changed:</strong> the title slide now argues ("You'd hire us for board-ready decks — so judge one: this website is it") and carries three file-chip doors in its right column; the gantt swaps to a stacked week list under 640px; two full-green section dividers added and all slides renumbered to 11; agenda rows got dotted leaders and remain working links; slides now hug their content; the classification strip became a live honesty indicator (SOURCED / [TO COME] / PRO BONO per slide); roles set in small caps with emails a size up; the chrome bar now echoes the current slide number as you scroll.</p>
+  </div>
+  <div class="s-foot"><span>180DC Delft–Rotterdam — appendix</span><span class="cls">INTERNAL</span></div>
+</section>
+
+</main>
+
+<footer class="endmatter">
+  <div class="row">
+    <span>Appendix — not client-facing</span>
+    <a href="index.html">Back to the deck</a>
+  </div>
+</footer>
+
+</body>
+</html>

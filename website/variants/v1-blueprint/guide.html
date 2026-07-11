@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — V1 Blueprint — 180DC Delft–Rotterdam</title>
+<meta name="description" content="How the Blueprint variant was designed and built, its design system, and how to extend it.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23FAFBF9'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='14' fill='%2300542F' text-anchor='middle'%3E180%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="sheet">
+
+<header class="titleblock">
+  <a class="tb-brand" href="index.html">
+    <span class="logo180" aria-hidden="true">180°</span>
+    <span class="tb-name">Degrees Consulting<small>Delft–Rotterdam branch</small></span>
+  </a>
+  <nav aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="for-clients.html">For clients</a>
+    <a href="guide.html" aria-current="page">Guide</a>
+  </nav>
+  <div class="tb-meta" aria-hidden="true">
+    <span>Sheet 03 / 03</span>
+    <span>Doc — not for construction</span>
+    <span>Rev. A — 2026</span>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero">
+  <div class="section-tag" aria-hidden="true"><span class="tag-circle">A</span><span class="anno anno--dim">Specification sheet</span></div>
+  <div class="inner">
+    <h1>V1 — <em>Blueprint</em></h1>
+    <div class="hero-dim"><div class="dim"><span class="dim-label">Design thesis, system, and build log</span></div></div>
+    <p class="sub"><strong>Thesis:</strong> TU Delft engineering heritage — the site as an engineer's drawing of itself. Drafting grid, dimension lines, title blocks, detail callouts, annotation typography. One of ten competing design variants; content identical across all ten (see <code>website/variants/content.md</code> in the repo).</p>
+  </div>
+</section>
+
+<section aria-labelledby="ds-h">
+  <div class="section-tag" aria-hidden="true"><span class="tag-circle">B</span><span class="anno anno--dim">Design system</span></div>
+  <div class="inner">
+    <h2 id="ds-h">Design system</h2>
+    <table class="bom" style="margin-top:2rem">
+      <tr><th scope="row">Palette</th><td>Paper <code>#FAFBF9</code> · Ink <code>#10231A</code> · Green <code>#00713F</code> (large text) · Deep green <code>#00542F</code> (small text, AA-safe) · Revision red <code>#B3261E</code> (placeholders only). Grid lines are the green at 5.5% and 12% opacity.</td></tr>
+      <tr><th scope="row">Type</th><td>Space Grotesk 400/500/700 (display &amp; body) + IBM Plex Mono 400/500 (annotations, dimensions, tables). Annotations are 0.72rem, uppercase, 0.14em letterspacing. Display scale: clamp(2.4rem → 4.9rem) at line-height 1.04.</td></tr>
+      <tr><th scope="row">Spacing</th><td>Sections at 4.5rem vertical padding on a 12px minor / 96px major background grid. Content max-width 1080px inside a 1240px bordered "sheet".</td></tr>
+      <tr><th scope="row">Motion</th><td>Things get <em>drawn</em>, nothing fades: stroke-dashoffset line-drawing on SVG diagrams and 2px rules drawing in under headings. Gated behind both <code>prefers-reduced-motion: no-preference</code> and an <code>html.js</code> class — no-JS and non-scrolling renderers see the complete sheet.</td></tr>
+      <tr><th scope="row">Signature elements</th><td>Title-block header (sheet number, scale, revision) · dimension-line component with paper-gap label · lettered section tags (Fig. 1, Table 1, Details A–F) · bill-of-materials proof table · parts-list team table · dashed "selection" outlines on hover · fixed coordinate readout (desktop, pure garnish) · pro-bono rubber stamp.</td></tr>
+      <tr><th scope="row">Honesty devices</th><td>All missing content is a red dashed <code>[PLACEHOLDER]</code> slot styled as a revision mark — visible by design, not hidden.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="how-h">
+  <div class="section-tag" aria-hidden="true"><span class="tag-circle">C</span><span class="anno anno--dim">Method</span></div>
+  <div class="inner prose">
+    <h2 id="how-h">How it was made &amp; how to extend it</h2>
+    <p style="margin-top:1.2rem"><strong>Build:</strong> hand-written static HTML/CSS with a single stylesheet, no framework, no build step. Fonts self-hosted as woff2 latin subsets (~95&nbsp;KB total). All imagery is inline SVG — this variant uses zero raster images, so it costs nothing to load and nothing to generate.</p>
+    <p><strong>Mood calibration:</strong> technical-drawing and engineering-documentation aesthetics — drafting sheets, title blocks, dimension conventions — translated to the web rather than imitated as texture. The restraint is the point: one accent color, two families, everything ruled.</p>
+    <p><strong>To extend to the full site:</strong> every new page is a numbered sheet. Reuse <code>.titleblock</code>, section tags (continue the letter sequence), <code>.bom</code>/<code>.parts</code> for tabular content, <code>.detail</code> callouts for card grids, and the <code>.dim</code> component wherever a quantity or span is stated. Case studies become "as-built drawings": Situation → Approach → Outcome as Figs. 1–3 with a revision table. New sections must sit on the grid; if an element needs a radius or a shadow, it doesn't belong in this variant.</p>
+    <p><strong>Deploy:</strong> zip-deploy to Netlify via API (see <code>website/variants/tools/deploy.ps1</code>).</p>
+  </div>
+</section>
+
+<section aria-labelledby="log-h">
+  <div class="section-tag" aria-hidden="true"><span class="tag-circle">D</span><span class="anno anno--dim">Revision table</span></div>
+  <div class="inner">
+    <h2 id="log-h">Critique &amp; revision log</h2>
+    <div id="critique-log" class="prose" style="margin-top:1.5rem">
+      <p><span class="anno">Rev A — initial construction</span></p>
+      <p>Built from the shared content spec.</p>
+      <p style="margin-top:1.4rem"><span class="anno">Rev B — Critic round 1</span></p>
+      <p><strong>Critic's top notes:</strong> (1) scroll-reveal left non-JS/non-scrolling renders blank — disqualifying bug; (2) hero was a generic headline on graph paper, nothing drawn in the drawing; (3) dimension-line labels collided with display type, worst on mobile; (4) no dark beat — page rhythm flat, grid too faint; (5) mobile nav wrapped with an orphan link; (6) pro-bono stamp too timid; (7) coordinate readout frozen at zeros, CTA numbering inconsistent; (8) no human/case evidence.</p>
+      <p><strong>Changed in Rev B:</strong> motion rebuilt — nothing fades, things get drawn (line-draw SVGs + rules under headings), all JS-gated behind <code>html.js</code> so the sheet always renders complete; hero now leads with "Consulting for organisations doing good." plus a self-drawing general-arrangement diagram of the engagement; dimension component got its own block row and a stacked mobile form; quality section inverted to a dark poché panel with light linework; grid opacity raised (9%/18%); stamp enlarged, rotated −4°, ink-textured via SVG turbulence mask; readout hidden until pointer moves and inset inside the sheet; CTA indices made consistent (01/02/03); added "Fig. 4 — as-built drawing No. 1" case frame with honest placeholder panels; mobile nav is one scrollable row.</p>
+      <p><strong>Not actioned (honesty rules):</strong> the Critic asked for team photos and a real client case — neither exists yet; the slots stay visibly placeholder rather than faked.</p>
+      <p style="margin-top:1.4rem"><span class="anno">Rev C — Critic round 2</span></p>
+      <p><strong>Critic's top notes:</strong> (1) self-hosted fonts 404'd in production — the deploy zip wrote backslash entry paths Netlify can't serve — so the whole type system was rendering in fallbacks; (2) the inline placeholder chip split across wrapped lines, reading as deleted text; (3) the 4-column proof table overflowed 390px viewports; (4) the dimension line struck through its own label; (5) horizontal diagrams shrank to unreadable at mobile; (6) the timeline's dimensions contradicted each other (8–10 vs 10–12 weeks) plus an orphan tick — fatal on a "drawn to scale" conceit; (7) hero diagram too timid, primary CTA index invisible; (8) six service cards duplicated verbatim on both pages; (9) placeholder color convention inconsistent; team section coldest on the site.</p>
+      <p style="margin-top:1.4rem"><span class="anno">Lighthouse — final build (local run, 2026-07-09)</span></p>
+      <p>Home 100 / 100 / 100 / 100 (perf / accessibility / best-practices / SEO), 83&nbsp;KB total. For-clients 100 / 100 / 100 / 100, 77&nbsp;KB. Guide 100 / 100 / 100 / 100, 77&nbsp;KB. Well under the 1&nbsp;MB budget; both quality bars (≥95) cleared with margin.</p>
+      <p style="margin-top:1.4rem"><span class="anno">Rev D — Critic round 3 (final)</span></p>
+      <p><strong>Critic's verdict at round 3:</strong> "final three of a ten-way competition — the conceit is total, honest, and executed with rare consistency." Remaining notes were drafting-precision items: the Fig. 1 circle crossed its own label; unannotated voids in the poché band, hero, and intake column; seven red placeholder chips made the page read as failing review; the mobile timeline promised a figure it didn't show; the third CTA orphaned; CONTACT dead-ended at a bare footer; team-table column craft.</p>
+      <p><strong>Changed in Rev D:</strong> Fig. 1 got a paper text-mask (lines break for annotations, never cross them); placeholder system split into two registers — alarm-red for the two highest-value gaps (impact numbers, first case) and grey-green hatched "Reserved" plates for everything routine; hero CTAs are now a deliberate numbered stack; poché band annotated and captioned; the intake column gained a "field note" explaining what happens after send; footer contact block now carries a scoping-call button; mobile timeline renders as a vertical dimension chain with nodes; team emails sized up.</p>
+      <p><strong>Changed in Rev C:</strong> deploys switched to bsdtar (forward-slash zip entries — fonts now load); placeholder rebuilt as an inline-block reserved-space plate, one red convention everywhere; proof table replaced by a 4→2 column spec-cell grid with the PRO BONO stamp as the FEE value; dimension component rebuilt so the line visibly breaks around its text; the mobile timeline now hides the horizontal drawing in favour of the vertical step chain; bracket relabelled "WEEKS 2–11 · THE PROJECT" and the orphan tick deleted; a hex-value leader annotation now measures the hero's green ("↖ 180-GREEN · #00713F"); for-clients services compressed to a one-line index referencing Sheet 01; eight hatched reserved portrait frames (P-01…P-08) added above the parts list.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="foot-legal" style="border-top:0;margin-top:0">
+    <span>DWG NO. 180-DR-2026-V1 · SHEET 03 · SPECIFICATION</span>
+    <a href="index.html">Back to the drawing</a>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

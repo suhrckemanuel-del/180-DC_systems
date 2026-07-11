@@ -1,0 +1,186 @@
+/* ============================================================
+   V8 — DE COURANT
+   A Dutch broadsheet front page: blackletter masthead, column
+   rules, decks and bylines, classifieds, and the honesty rules
+   printed as an actual editorial colophon. The civic-trust
+   register — journalism's own rulebook is quote-or-abstain.
+   ============================================================ */
+
+@font-face { font-family: "UnifrakturCook"; src: url("fonts/UnifrakturCook-700.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Newsreader"; src: url("fonts/Newsreader-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Newsreader"; src: url("fonts/Newsreader-400i.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Newsreader"; src: url("fonts/Newsreader-600.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Newsreader"; src: url("fonts/Newsreader-800.woff2") format("woff2"); font-weight: 800; font-display: swap; }
+
+:root {
+  --paper: #F7F4EC;
+  --ink: #191713;
+  --faint: #57534A;
+  --green: #00693C;
+  --green-deep: #00512E;
+  --hair: #C9C2B2;
+  --hair-dark: #191713;
+  --serif: "Newsreader", Georgia, serif;
+  --black: "UnifrakturCook", "Newsreader", serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  font-family: var(--serif);
+  font-size: 1.06rem;
+  line-height: 1.58;
+  color: var(--ink);
+  background: var(--paper);
+}
+::selection { background: var(--ink); color: var(--paper); }
+
+.sheet { max-width: 1140px; margin: 0 auto; padding: 0 1.2rem 3rem; }
+
+/* ---------- masthead ---------- */
+.masthead { text-align: center; padding: 1.8rem 0 1rem; border-bottom: 3.5px double var(--hair-dark); }
+.masthead .over { font-size: 0.74rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--faint); }
+.masthead h1, .masthead .mast-title {
+  font-family: var(--black); font-weight: 700;
+  font-size: clamp(2.6rem, 8vw, 5.2rem); line-height: 1;
+  margin: 0.4rem 0 0.5rem; color: var(--ink);
+}
+.masthead .mast-title a { color: inherit; text-decoration: none; }
+.masthead .under { font-style: italic; font-size: 0.95rem; color: var(--faint); }
+
+/* dateline bar */
+.dateline {
+  display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  border-bottom: 1.5px solid var(--hair-dark);
+  padding: 0.5rem 0; margin-bottom: 1.6rem;
+  font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.dateline b { color: var(--green-deep); }
+
+/* nav as section index */
+nav.index { display: flex; gap: 1.6rem; justify-content: center; flex-wrap: wrap; padding: 0.55rem 0; border-bottom: 1.5px solid var(--hair-dark); font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase; }
+nav.index a { color: var(--ink); text-decoration: none; border-bottom: 2px solid transparent; padding-bottom: 1px; }
+nav.index a:hover, nav.index a:focus-visible { border-bottom-color: var(--green); color: var(--green-deep); }
+nav.index a[aria-current="page"] { border-bottom-color: var(--ink); font-weight: 600; }
+
+/* ---------- headline forms ---------- */
+.kicker { font-size: 0.76rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--green-deep); display: block; margin-bottom: 0.5rem; }
+.headline { font-weight: 800; font-size: clamp(2rem, 4.8vw, 3.6rem); line-height: 1.04; letter-spacing: -0.01em; }
+.headline--2 { font-weight: 800; font-size: clamp(1.4rem, 2.8vw, 2rem); line-height: 1.1; }
+.deck { font-style: italic; font-size: 1.15rem; color: var(--faint); margin-top: 0.7rem; line-height: 1.45; max-width: 60ch; }
+.byline { font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin: 0.8rem 0 1rem; }
+.byline b { color: var(--ink); }
+
+/* ---------- article columns ---------- */
+.cols { columns: 3; column-gap: 2rem; column-rule: 1px solid var(--hair); }
+.cols--2 { columns: 2; }
+@media (max-width: 900px) { .cols { columns: 2; } }
+@media (max-width: 620px) { .cols, .cols--2 { columns: 1; } }
+.cols p, .cols--2 p { margin-bottom: 0.85rem; break-inside: avoid-column; }
+.dropcap::first-letter {
+  font-family: var(--black); font-size: 3.4em; float: left;
+  line-height: 0.78; padding: 0.06em 0.12em 0 0; color: var(--green-deep);
+}
+
+/* ---------- page grid ---------- */
+.front { display: grid; grid-template-columns: 2.1fr 1fr; gap: 2rem; }
+@media (max-width: 900px) { .front { grid-template-columns: 1fr; } }
+.rail { border-left: 1.5px solid var(--hair-dark); padding-left: 2rem; }
+@media (max-width: 900px) { .rail { border-left: 0; padding-left: 0; border-top: 3.5px double var(--hair-dark); padding-top: 1.4rem; } }
+
+article { padding: 1.4rem 0; border-bottom: 1.5px solid var(--hair-dark); }
+article:last-child { border-bottom: 0; }
+
+/* ---------- fact box (koersen) ---------- */
+.factbox { border: 1.5px solid var(--hair-dark); padding: 1rem 1.1rem; margin-top: 0.4rem; }
+.factbox h3 { font-size: 0.76rem; letter-spacing: 0.18em; text-transform: uppercase; border-bottom: 1px solid var(--hair); padding-bottom: 0.5rem; margin-bottom: 0.6rem; }
+.factbox dl { display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 1rem; font-size: 0.92rem; }
+.factbox dt { font-weight: 800; color: var(--green-deep); font-variant-numeric: tabular-nums; }
+.factbox dd { color: var(--faint); }
+
+/* ---------- classified ads ---------- */
+.classified {
+  border: 2.5px solid var(--ink); padding: 1.1rem 1.2rem; margin-top: 1.2rem;
+}
+.classified h3 { font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; text-align: center; border-bottom: 1px solid var(--hair); padding-bottom: 0.5rem; margin-bottom: 0.8rem; }
+.classified p { font-size: 0.94rem; margin-bottom: 0.7rem; }
+.classified .gevraagd { font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* ---------- colophon: what this paper will not print ---------- */
+.colofon { background: var(--ink); color: #E9E4D6; padding: 1.3rem 1.4rem; margin-top: 1.2rem; }
+.colofon h3 { font-size: 0.76rem; letter-spacing: 0.2em; text-transform: uppercase; color: #B7D9C4; margin-bottom: 0.7rem; }
+.colofon ul { list-style: none; font-size: 0.9rem; line-height: 1.6; }
+.colofon li { padding-left: 1.1rem; position: relative; margin-bottom: 0.3rem; }
+.colofon li::before { content: "✕"; position: absolute; left: 0; color: #C98A80; font-size: 0.8rem; }
+.colofon p { font-size: 0.82rem; font-style: italic; color: #B5AE9D; margin-top: 0.7rem; }
+
+/* ---------- engagement: the service timetable ---------- */
+.timetable { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+.timetable th, .timetable td { text-align: left; padding: 0.65rem 0.9rem 0.65rem 0; border-bottom: 1px solid var(--hair); vertical-align: baseline; }
+.timetable thead th { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); font-weight: 600; border-bottom: 1.5px solid var(--hair-dark); }
+.timetable td:first-child { font-weight: 800; white-space: nowrap; color: var(--green-deep); }
+.timetable td b { font-weight: 600; }
+.timetable td span { color: var(--faint); font-size: 0.95rem; }
+@media (max-width: 620px) {
+  .timetable thead { display: none; }
+  .timetable tr { display: block; padding: 0.6rem 0; border-bottom: 1px solid var(--hair); }
+  .timetable td { display: block; border: 0; padding: 0.1rem 0; white-space: normal; }
+}
+
+/* ---------- service listings (beurspagina) ---------- */
+.listings { margin-top: 0.6rem; }
+.listing { display: grid; grid-template-columns: 1.6rem 14rem 1fr; gap: 1rem; padding: 0.7rem 0; border-bottom: 1px solid var(--hair); align-items: baseline; font-size: 0.98rem; }
+.listing .ln { font-weight: 800; color: var(--green-deep); font-variant-numeric: tabular-nums; }
+.listing b { font-weight: 600; }
+.listing span { color: var(--faint); font-size: 0.92rem; }
+@media (max-width: 720px) { .listing { grid-template-columns: 1.6rem 1fr; } .listing span { grid-column: 2; } }
+
+/* ---------- team: redactie ---------- */
+.redactie { columns: 2; column-gap: 2rem; column-rule: 1px solid var(--hair); font-size: 0.95rem; }
+@media (max-width: 620px) { .redactie { columns: 1; } }
+.redactie li { list-style: none; break-inside: avoid; padding: 0.45rem 0; border-bottom: 1px dotted var(--hair); }
+.redactie b { font-weight: 600; }
+.redactie span { color: var(--faint); font-style: italic; }
+.redactie a { color: var(--green-deep); font-size: 0.85rem; text-decoration: none; }
+.redactie a:hover { text-decoration: underline; }
+
+/* ---------- placeholder: awaiting copy ---------- */
+.placeholder {
+  display: inline-block; font-size: 0.85rem; font-style: italic; color: #6B5A17;
+  border: 1px dashed #A8912F; padding: 0.55rem 0.8rem; line-height: 1.5; max-width: 52ch;
+  background: rgba(178, 150, 48, 0.06);
+}
+.placeholder::before { content: "— awaiting copy: "; font-weight: 600; font-style: normal; font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ---------- buttons: subscription coupons ---------- */
+.btn {
+  display: inline-block; font-weight: 800; font-size: 0.9rem; letter-spacing: 0.04em;
+  text-decoration: none; text-transform: uppercase;
+  background: var(--ink); color: var(--paper); padding: 0.8rem 1.4rem;
+  border: 2px solid var(--ink);
+}
+.btn:hover, .btn:focus-visible { background: var(--green-deep); border-color: var(--green-deep); color: #fff; }
+.btn--ghost { background: transparent; color: var(--ink); }
+.btn--ghost:hover, .btn--ghost:focus-visible { background: var(--ink); color: var(--paper); }
+a { color: var(--green-deep); }
+a:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
+
+/* ---------- forms ---------- */
+input, textarea {
+  width: 100%; padding: 0.8rem; border: 1.5px solid var(--ink);
+  background: #fff; font-family: var(--serif); font-size: 1rem; color: var(--ink);
+}
+input:focus, textarea:focus { outline: none; border-color: var(--green); }
+label .lbl { display: block; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 0.3rem; }
+
+/* ---------- footer ---------- */
+footer.foot { border-top: 3.5px double var(--hair-dark); padding-top: 1rem; margin-top: 2rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; font-size: 0.85rem; color: var(--faint); }
+footer.foot a { color: var(--ink); }
+
+/* no motion: newsprint does not move. hover/focus states only. */
+
+/* ---------- skip ---------- */
+.skip { position: absolute; left: -9999px; top: 0; z-index: 100; background: var(--ink); color: var(--paper); padding: 0.6rem 1rem; }
+.skip:focus { left: 0.5rem; top: 0.5rem; }

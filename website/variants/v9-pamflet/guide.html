@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — V9 Pamflet — 180DC Delft–Rotterdam</title>
+<meta name="description" content="How the Pamflet variant was designed and built, its design system, and how to extend it.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F6F3EC'/%3E%3Ctext x='16' y='24' font-family='Arial Black' font-size='16' fill='%23111311' text-anchor='middle' font-weight='900'%3E!%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="mast">
+  <div class="mast-inner">
+    <a class="nr" href="index.html">Pamflet <span>Nr. 0</span> — how it was printed</a>
+    <nav aria-label="Main">
+      <a href="index.html">Pamflet 1</a>
+      <a href="for-clients.html">Pamflet 2 — clients</a>
+      <a href="guide.html" aria-current="page">Guide</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="thin" aria-labelledby="g1">
+  <div class="wrap">
+    <span class="kick">Design specification — not client-facing</span>
+    <h1 id="g1" class="shout shout--2">V9 — Pamflet</h1>
+    <div class="plain" style="margin-top:1.6rem">
+      <p><strong>Thesis:</strong> Dutch protest-pamphlet brutalism — no images, no cards, no chrome; only enormous typography, one green, hard rules, and the site readable top-to-bottom as a manifesto you could wheat-paste to a wall. WCAG AA everywhere, because making brutalism accessible is the flex. The one direction that sounds like the students, not the consultancy.</p>
+      <p>One of ten competing design variants; content identical across all ten (see <code>website/variants/content.md</code>).</p>
+    </div>
+  </div>
+</section>
+
+<section class="thin" aria-labelledby="g2">
+  <div class="wrap">
+    <span class="kick">The system</span>
+    <h2 id="g2" class="shout shout--3">Specification</h2>
+    <ol class="demands">
+      <li><div><h3>Palette</h3><p>Unbleached paper <code>#F6F3EC</code>, ink <code>#111311</code>, one green <code>#00693C</code>/<code>#00522E</code>. Nothing else exists. Ink on paper is 16:1; green-deep on paper passes AA at every size used.</p></div></li>
+      <li><div><h3>Type</h3><p>Anton (the shout — up to 12.5rem, line-height 0.92, uppercase) + Public Sans 400/700 (the fine print). Two voices: shouted and spoken. The scale ratio between them IS the design.</p></div></li>
+      <li><div><h3>Structure</h3><p>Single column, hard 8px section rules (3px for minor breaks), numbered manifesto lists with oversized counters, facts as green-barred stamps, the team as signatories. The one rotated element (the GRATIS block) earns its tilt by being the pamphlet's single most important fact.</p></div></li>
+      <li><div><h3>Motion</h3><p>None. Paper does not animate. Hover and focus states only — thick underlines and block inversions. Zero JavaScript on the entire variant.</p></div></li>
+      <li><div><h3>Honesty devices</h3><p>"NOG NIET — not yet" dashed blocks; the manifesto's fourth belief states the rule out loud; no logo appears that wasn't earned.</p></div></li>
+      <li><div><h3>Accessibility flex</h3><p>Semantic heading order under the shouts, visible focus everywhere, no motion to gate, no images to alt — the most accessible variant of the ten by construction.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<section class="thin" aria-labelledby="g3">
+  <div class="wrap">
+    <span class="kick">Method &amp; extension</span>
+    <h2 id="g3" class="shout shout--3">How to print more</h2>
+    <div class="plain" style="margin-top:1.4rem">
+      <p><strong>Build:</strong> hand-written static HTML/CSS, one stylesheet, no framework, no JavaScript, no images. ~70&nbsp;KB of self-hosted woff2 is the whole asset budget — the lightest variant of the ten.</p>
+      <p><strong>Mood calibration:</strong> Provo-era Dutch protest print and International Typographic-era manifestos — scale as conviction, restraint as discipline. The line to hold: every shout must be true; brutalism with false claims is just advertising.</p>
+      <p><strong>To extend:</strong> every new page is the next numbered pamphlet. Our Work becomes Pamflet Nr. 3 — one case per broadsheet section, the outcome as the shout and the evidence as fine print. Impact is a single giant number page (only when the number is real). Rules: one green, no images except real photographs of real work when they exist, and nothing decorative that a photocopier couldn't reproduce.</p>
+      <p><strong>Deploy:</strong> consolidated Cloudflare Pages tree via <code>tools/deploy-cf.ps1</code>.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="g4">
+  <div class="wrap">
+    <span class="kick">Critique &amp; revision log</span>
+    <h2 id="g4" class="shout shout--3">Rounds</h2>
+    <div class="plain" id="critique-log" style="margin-top:1.4rem">
+      <p><strong>Print 1 — initial construction.</strong> Built from the shared content spec with every accumulated lesson applied: zero motion and zero JS by thesis, no card walls, plain controls, no cross-page duplication (Pamflet 2 is its own document), one placeholder register, correct field counts, semantic color. Awaiting Critic round 1.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Pamflet Nr. 0 — specification</p>
+    <p><a href="index.html">Back to Pamflet Nr. 1</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

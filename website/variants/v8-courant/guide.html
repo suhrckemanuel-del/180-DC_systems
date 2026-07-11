@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colophon — V8 De Courant — 180DC Delft–Rotterdam</title>
+<meta name="description" content="How the De Courant variant was designed and built, its design system, and how to extend it.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F7F4EC'/%3E%3Ctext x='16' y='24' font-family='Georgia' font-size='20' font-weight='bold' fill='%23191713' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="sheet">
+
+<header class="masthead">
+  <p class="over">De Consultant Courant · production pages</p>
+  <p class="mast-title" role="heading" aria-level="1" style="font-size:clamp(2rem,6vw,3.6rem)"><a href="index.html">Colophon</a></p>
+  <p class="under">How this paper was made — V8 of ten competing design variants</p>
+</header>
+
+<nav class="index" aria-label="Main" style="border-top:1.5px solid var(--hair-dark)">
+  <a href="index.html">Voorpagina</a>
+  <a href="for-clients.html">Katern 2 — for organisations</a>
+  <a href="guide.html" aria-current="page">Colophon</a>
+</nav>
+
+<main id="main" style="margin-top:1.8rem">
+
+<article aria-labelledby="g1">
+  <span class="kicker">The thesis</span>
+  <h2 class="headline--2" id="g1">V8 — De Courant</h2>
+  <div class="cols--2 cols" style="margin-top:0.7rem">
+    <p><strong>Thesis:</strong> a Dutch broadsheet front page — blackletter masthead, column rules, decks and bylines, recruitment as classified ads, and the branch's honesty rules printed as an actual editorial colophon ("what this paper will not print"). The newspaper is the civic-trust register: it frames pro bono consulting as public-interest work, and gives quote-or-abstain its natural home — journalism's own rulebook.</p>
+    <p>Content identical across all ten variants (see <code>website/variants/content.md</code>); this variant's twist is the *voice* — every section rewritten as news copy, which the honesty rules make possible: news voice only works when every sentence is checkable, and here it is.</p>
+  </div>
+</article>
+
+<article aria-labelledby="g2">
+  <span class="kicker">The system</span>
+  <h2 class="headline--2" id="g2">Specification</h2>
+  <div class="listings">
+    <div class="listing"><span class="ln">1</span><b>Palette</b><span>newsprint #F7F4EC · ink #191713 · 180-green #00693C/#00512E reserved for the paper's own "brand red" role (kickers, prices, key figures) · amber only in awaiting-copy slots. Duotone discipline: a newspaper has ink and one accent.</span></div>
+    <div class="listing"><span class="ln">2</span><b>Type</b><span>UnifrakturCook (the blackletter masthead — 17 KB, used for masthead and drop caps only) + Newsreader 400/600/800 with true italics for decks and op-ed voice. Column rules at 1px, section rules at 1.5px, double rules frame the page.</span></div>
+    <div class="listing"><span class="ln">3</span><b>Forms</b><span>lead story with deck + byline + three-column body and drop cap · fact box ("de koersen") with an honestly empty row · classifieds (GEVRAAGD / AANGEBODEN) for join and partners · the team as redactie list · the colophon block in solid ink listing what will never be printed · engagement as a dienstregeling timetable on Katern 2.</span></div>
+    <div class="listing"><span class="ln">4</span><b>Motion</b><span>none, and zero JavaScript. Newsprint does not move; hover states are underlines and ink inversions. The most JS-free variant alongside Pamflet.</span></div>
+    <div class="listing"><span class="ln">5</span><b>Honesty</b><span>the colophon IS the honesty system, printed as editorial policy; gaps are "awaiting copy" slots in editor's italic; the op-ed argues the practice ("an empty column you can trust…").</span></div>
+  </div>
+</article>
+
+<article aria-labelledby="g3">
+  <span class="kicker">Method &amp; extension</span>
+  <h2 class="headline--2" id="g3">How to print the next edition</h2>
+  <div class="cols--2 cols" style="margin-top:0.7rem">
+    <p><strong>Build:</strong> hand-written static HTML/CSS, one stylesheet, no framework, no JavaScript, no images — the masthead is type, the texture is rules and columns. ~212&nbsp;KB of self-hosted woff2.</p>
+    <p><strong>To extend:</strong> Our Work becomes the archive — one case per article with a real dateline; Impact is the year-end numbers page (printed only when the numbers exist); events run as announcements. Rules: every sentence must survive a fact-check; the colophon appears on every page; green never exceeds its accent role; if a section can't be written as news, it isn't ready to print.</p>
+    <p><strong>Deploy:</strong> consolidated Cloudflare Pages tree via <code>tools/deploy-cf.ps1</code>.</p>
+  </div>
+</article>
+
+<article aria-labelledby="g4" style="border-bottom:0">
+  <span class="kicker">Critique &amp; revision log</span>
+  <h2 class="headline--2" id="g4">Editions</h2>
+  <div id="critique-log" style="margin-top:0.7rem">
+    <p><strong>First edition — initial construction.</strong> Built from the shared content spec with all accumulated lessons applied: zero motion and zero JS by thesis, no card walls (newspapers invented better forms), plain controls ("Post the letter"), no cross-page duplication (Katern 2 is its own section of the paper), one placeholder register, correct field counts. Awaiting Critic round 1.</p>
+  </div>
+</article>
+
+</main>
+
+<footer class="foot">
+  <span>Colophon — not client-facing</span>
+  <span><a href="index.html">Back to the front page</a></span>
+</footer>
+
+</div>
+
+</body>
+</html>

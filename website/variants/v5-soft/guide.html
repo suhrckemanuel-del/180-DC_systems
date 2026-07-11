@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — V5 Soft Impact — 180DC Delft–Rotterdam</title>
+<meta name="description" content="How the Soft Impact variant was designed and built, its design system, and how to extend it.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%233D6A52'/%3E%3Ctext x='16' y='21' font-family='Georgia' font-size='11' fill='%23FBF7F0' text-anchor='middle'%3E180%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <a class="brand" href="index.html">
+    <span class="mark" aria-hidden="true">180°</span>
+    <b>Degrees Consulting<small>Delft–Rotterdam</small></b>
+  </a>
+  <nav aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="for-clients.html">For clients</a>
+    <a href="guide.html" aria-current="page">Guide</a>
+  </nav>
+</header>
+
+<main id="main">
+
+<section class="hero" style="padding-bottom:2.5rem">
+  <div class="wrap">
+    <span class="k">Design specification — not client-facing</span>
+    <h2 style="font-size:clamp(2rem,4.6vw,3.4rem);margin-top:0.8rem">V5 — <em style="color:var(--deep)">Soft Impact</em></h2>
+    <p class="lede"><strong>Thesis:</strong> warm and human, designed for the non-profit director — photography-led, rounded geometry, gentle motion, generous air, pastel-shifted green. The variant that leads with care rather than machinery. One of ten competing design variants; content identical across all ten (see <code>website/variants/content.md</code>).</p>
+  </div>
+</section>
+
+<section aria-labelledby="ds-h" style="padding-top:1rem">
+  <div class="wrap">
+    <span class="k">Design system</span>
+    <h2 id="ds-h">Specification</h2>
+    <div class="leaves" style="grid-template-columns:1fr 1fr">
+      <div class="leaf"><h3>Palette</h3><p>Cream <code>#FBF7F0</code> · warm ink <code>#2C3A31</code> · deep green <code>#3D6A52</code> (AA at any size) · sage <code>#55876B</code> · washes <code>#E7F0E9</code> / <code>#F2EDE2</code>. No pure white, no pure black, nothing saturated. Amber lives only in the seed-packet placeholders.</p></div>
+      <div class="leaf"><h3>Type</h3><p>Fraunces 400/600 (display — a warm soft serif with real italic) + Nunito Sans 400/700 (body, rounded humanist). Kickers 0.78rem, uppercase, 0.14em.</p></div>
+      <div class="leaf"><h3>Geometry &amp; spacing</h3><p>22px radii on everything; pill buttons and pill week-markers; soft 2px-blur shadows, never hard edges. 1160px measure, 4.2rem section rhythm, air everywhere.</p></div>
+      <div class="leaf"><h3>Motion</h3><p>One gentle move: 700ms bloom (fade + 16px rise) on scroll, JS-gated behind <code>html.js</code>, off under <code>prefers-reduced-motion</code>. Cards lift 3px on hover. Nothing pulses, nothing scans.</p></div>
+      <div class="leaf"><h3>Photography</h3><p>Real places, honestly captioned: the Delft canal (where we started), the Erasmus Bridge (our second home), a sapling for the quality section. All Pexels, credited in captions, WebP, ~390&nbsp;KB total. No stock people presented as us — team photos are dashed reserved circles with initials.</p></div>
+      <div class="leaf"><h3>Honesty devices</h3><p>Placeholders are 🌱 seed packets — dashed amber chips that read as "planted, growing" rather than alarm. The team section says out loud why the circles are empty.</p></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="how-h">
+  <div class="wrap">
+    <div class="band prose">
+      <span class="k">Method &amp; extension</span>
+      <h2 id="how-h">How it was made,<br>&amp; how to extend it</h2>
+      <p style="margin-top:1.2rem"><strong>Build:</strong> hand-written static HTML/CSS, one stylesheet, no framework, no build step. Photography via the Pexels API, compressed with sharp; fonts self-hosted woff2 (~132&nbsp;KB).</p>
+      <p><strong>Mood calibration:</strong> the warmth register of good non-profit brands — generous whitespace, honest photography of real places, serif voice — while keeping consulting credibility (real numbers row, the quality system present but soft-spoken). The line to hold when extending: warm, never cute; caring, never unserious.</p>
+      <p><strong>To extend to the full site:</strong> Our Work becomes story cards (photo, one paragraph, one real number) once cases exist; Team swaps the initial-circles for real photos in the same round frames; Impact is the pebbles row grown into a page. Reuse <code>.band</code> for alternating washed sections, <code>.stones</code> for any sequence, <code>.leaves</code> for card grids. If an element needs a sharp corner or a dark background, it belongs to another variant.</p>
+      <p><strong>Deploy:</strong> zip-deploy to Netlify via API (see <code>website/variants/tools/deploy.ps1</code>).</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="log-h" style="padding-top:0">
+  <div class="wrap">
+    <span class="k">Critique &amp; revision log</span>
+    <h2 id="log-h">Rounds</h2>
+    <div id="critique-log" class="prose" style="margin-top:1.5rem">
+      <p><strong>Round 0 — initial construction.</strong> Built from the shared content spec, with every accumulated lesson from V1–V4 baked in: JS-gated motion, forward-slash zips, hand-broken headlines, one placeholder register, no inline grid placements.</p>
+      <p style="margin-top:1.2rem"><strong>Lighthouse — final build (local run vs the live consolidated site, 2026-07-10).</strong> Home 98 / 100 (perf / accessibility), 147&nbsp;KB. For-clients 99 / 96, 247&nbsp;KB. Guide 100 / 100, 103&nbsp;KB. Both quality bars (≥95) cleared. (SEO reads ~92 across all variants on the preview domain because pages.dev serves a no-index header — a platform default, not a design property.)</p>
+      <p style="margin-top:1.2rem"><strong>Round 3 — Critic (final).</strong> Verdict: "desktop would place top-three on coherence and character alone" — but mobile had a disqualifying robustness bug: the scroll-reveal could permanently hide content (half the board cards missed the observer), plus a viewport overflow. <strong>Changed:</strong> a 1.2s failsafe now force-reveals anything the observer missed — content can never stay hidden — and <code>overflow-x: clip</code> guards the viewport; mobile member cards restacked as a proper two-column grid (name / role / email under each other); "Contact" dropped from the nav (the footer owns it) so pills never orphan; the bare arc glyph now sits in its wash circle everywhere it bullets a list (bare arcs remain only as stat brackets); the for-clients quality section's lone pill replaced by two dashed case-study skeletons shaped like the content they await; self-praising honesty copy cut from five mentions to two; hero CTAs resolved to one row — "Start a scoping call" primary, "Join as a consultant" secondary; the client-page photo swapped for market day at the Markthal (daylight, people, on-thesis).</p>
+      <p style="margin-top:1.2rem"><strong>Round 2 — Critic.</strong> Top notes: the photography led in the wrong direction (night shot vetoing the palette, cold steel on the client page); the 180°-arc mark was "a wifi icon" at 18px while the register stayed template; five components shared one white-card shape so nothing ranked; the amber placeholders out-shouted the CTAs — one sat directly under "Request the call"; 44 identical un-staggered reveals; the hero exit read as footnote debris; ten near-identical small type sizes; mobile nav clipped with hidden scrollbar; terracotta defined but never spent. <strong>Changed:</strong> photos swapped for warm daylight (the Markt in Delft; the Willemsbrug at sunset) and warm-graded in the pipeline (saturation −14%, +5% brightness, cream tint) so the images are the palette's largest swatch; the hero photo is now cropped by a full 180° arch — the mark at architectural scale — with the same arc keying the un-carded stat numerals (Fraunces at up to 3.4rem straight on the cream) and bulleting the outcomes list; placeholders re-dressed in-palette (sage dash, wash fill, no emoji) and the form disclaimer moved above the form as a quiet italic note; reveals cut to 450ms with 70ms grid stagger; three doors, three weights in the hero; terracotta spent exactly three ways (hero italic, the final board-ready week pill, link hover); mobile nav wraps as pills and the team compresses to compact rows.</p>
+      <p style="margin-top:1.2rem"><strong>Round 1 — Critic.</strong> Top notes: "a very well-groomed Squarespace nonprofit theme with excellent copy" — the thesis said photography-led but the hero photo was a postage stamp (of algae-covered water, no less); zero distinctiveness below the headline voice; the sapling photo was "the single most clichéd sustainability stock image in existence"; three equal hero CTAs; a third of the site repeated across pages; mobile nav orphaned "Contact"; "First" read as a mistake in a numeral row; the bridge photo too cold for the register; the "serious" half leaned entirely on copy. <strong>Changed:</strong> the hero photo now leads — full column height at half the canvas, swapped for Delft at twilight (warm-lit houses); the site's two ownable devices promoted into a visual language — a 180°-arc mark replaces the meaningless letter chips and bullets the outcomes list, dashed lines run through captions; the sapling replaced by the actual review artifact (the findings card: evidence / logic / clarity / calibration — the real rubric, nothing invented); one primary CTA with quiet text links; for-clients de-duplicated (compact outcomes list + one-line quality pointer); the week-by-week timeline now sits on the site's one deep-green full-bleed band — softness as a choice, not a default; mobile nav scrolls in one row; "1st"; stat numerals up 40%; measures capped; the guide headline hand-broken.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-legal" style="border-top:0;margin-top:0">
+    <span>Specification sheet — made with care</span>
+    <a href="index.html">Back to the site</a>
+  </div>
+</footer>
+
+<script>document.documentElement.classList.add('js');</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — V4 The Terminal — 180DC Delft–Rotterdam</title>
+<meta name="description" content="How the Terminal variant was designed and built, its design system, and how to extend it.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0F0D'/%3E%3Ctext x='16' y='21' font-family='monospace' font-size='13' fill='%233DDC97' text-anchor='middle'%3E180%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <a class="brand" href="index.html">
+    <span class="prompt" aria-hidden="true">~$</span>
+    <span><b>180 Degrees Consulting</b><small>delft–rotterdam · systems online</small></span>
+  </a>
+  <nav aria-label="Main">
+    <a href="index.html">home</a>
+    <a href="for-clients.html">for-clients</a>
+    <a href="guide.html" aria-current="page">guide</a>
+  </nav>
+</header>
+
+<main id="main">
+
+<section class="hero" style="padding-bottom:3.5rem">
+  <div class="wrap">
+    <span class="k"><span class="dot" aria-hidden="true"></span>man 180dc-v4 — design specification</span>
+    <h1 style="font-weight:600;font-size:clamp(1.9rem,4.5vw,3.2rem);letter-spacing:-0.02em;color:#fff;margin-top:1rem">V4 — <em style="font-style:normal;color:var(--phos)">The Terminal</em></h1>
+    <p class="sub"><strong style="color:#fff">Thesis:</strong> the AI-native branch — dark-first, monospace accents, the quality pipeline rendered as a live-feeling system, subtle scan/cursor motion. This is the one variant that leads with the AI story (the shared content spec keeps that story toggleable in prominence; every other variant carries it as a section). One of ten competing design variants; content identical across all ten (see <code>website/variants/content.md</code>).</p>
+  </div>
+</section>
+
+<section aria-labelledby="ds-h">
+  <div class="wrap">
+    <span class="k"><span class="dot" aria-hidden="true"></span>design.system</span>
+    <h2 id="ds-h">Specification</h2>
+    <table class="log" style="margin-top:2rem">
+      <tr><th scope="row" style="width:10rem">palette</th><td style="font-family:var(--sans)">Background <code>#0B0F0D</code> · panels <code>#101713</code>/<code>#131C17</code> · edges <code>#23312A</code> · text <code>#D7E2DB</code> / dim <code>#8FA39A</code> · phosphor 180-green <code>#3DDC97</code> · amber <code>#E8B93E</code> (pending states only) · alert <code>#E86A5E</code> (window chrome only). All text AA on its background.</td></tr>
+      <tr><th scope="row">type</th><td style="font-family:var(--sans)">JetBrains Mono 400/700 (terminal, kickers, tables, buttons) + Inter 400/600 (prose). The mono carries identity; Inter keeps the client-facing copy calm and readable.</td></tr>
+      <tr><th scope="row">spacing</th><td style="font-family:var(--sans)">1140px measure, 4.8rem section rhythm, 8px radii, hairline edges. A static 3px scanline texture at 1.4% opacity over everything — felt, not seen.</td></tr>
+      <tr><th scope="row">motion</th><td style="font-family:var(--sans)">Cursor blink, pulsing status dots, animated dataflow dashes in the pipeline diagram, one typed command on the homepage terminal (types once; the full text is static markup for no-JS), and a 12px rise on scroll. Everything behind <code>prefers-reduced-motion</code> and an <code>html.js</code> gate.</td></tr>
+      <tr><th scope="row">signature</th><td style="font-family:var(--sans)">The hero terminal window whose session output IS the proof row (<code>180dc status</code>); the quality pipeline as a live system diagram with flowing edges; services as callable functions (<code>svc.impact_measurement()</code>); the team as a process table (<code>ps aux | grep exec-board</code>); placeholders as <code>⚠ PENDING_REAL_CONTENT</code> warnings — the honesty rule expressed in the design's own language.</td></tr>
+      <tr><th scope="row">imagery</th><td style="font-family:var(--sans)">None. Zero raster assets; the terminal is the picture. First load is HTML+CSS+2 font families (~156 KB of woff2).</td></tr>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="how-h">
+  <div class="wrap prose">
+    <span class="k"><span class="dot" aria-hidden="true"></span>method &amp; extension</span>
+    <h2 id="how-h">How it was made &amp; how to extend it</h2>
+    <p style="margin-top:1.2rem"><strong>Build:</strong> hand-written static HTML/CSS, one stylesheet, no framework, no build step. The terminal sessions are ordinary markup styled as a window — they render complete without JavaScript; JS only adds the typing effect to the first command.</p>
+    <p><strong>Mood calibration:</strong> engineering-tool aesthetics (terminal emulators, status dashboards, man pages) — but paced like a calm product site, not a hacker toy. The tension to manage when extending: every new section must pass "would a non-profit director find this legible?" before it ships.</p>
+    <p><strong>To extend to the full site:</strong> new pages are new sessions — Our Work becomes <code>180dc log --engagements</code> (one commit-style entry per case), Impact becomes a metrics dashboard (only with real numbers), Team gets photo cards styled as user profiles after the photo session. Reuse <code>.term</code> for any hero, <code>.status</code> for fact rows, <code>.log</code> for tabular data, <code>.svc</code> for card grids. The amber warning register is reserved for pending content — never decoration.</p>
+    <p><strong>Deploy:</strong> zip-deploy to Netlify via API (see <code>website/variants/tools/deploy.ps1</code>).</p>
+  </div>
+</section>
+
+<section aria-labelledby="log-h">
+  <div class="wrap">
+    <span class="k"><span class="dot" aria-hidden="true"></span>git log --critique</span>
+    <h2 id="log-h">Critique &amp; revision log</h2>
+    <div id="critique-log" class="prose" style="margin-top:1.5rem">
+      <p><strong>commit 0 — initial construction.</strong> Built from the shared content spec. JS-gated motion and forward-slash zip deploys from the start (lessons from V1/V2 rounds).</p>
+      <p style="margin-top:1.2rem"><strong>Lighthouse — final build (local run, 2026-07-09).</strong> Home 100 / 100 / 100 / 100 (perf / accessibility / best-practices / SEO), 165&nbsp;KB. For-clients 100 / 100 / 100 / 100, 159&nbsp;KB. Guide 100 / 100 / 100 / 100, 160&nbsp;KB.</p>
+      <p style="margin-top:1.2rem"><strong>commit 3 — Critic round 3 (final).</strong> Verdict: "top three on concept — the inspectable-pipeline idea and the honesty markers are the strongest thinking in the room." Remaining notes, all actioned: the findings-loop caption overflowed its pill and collided with connectors — the pill now holds only "FINDINGS LOOP — QUOTE OR ABSTAIN" with the full sentence living in the phosphor subhead below, geometry tightened; two-up card grids now collapse to one column under 640px (the inline column styles were overriding the breakpoint); the form eyebrow claimed five fields over a four-field form — on a verifiability thesis that's a brand wound, fixed and all numeric eyebrows audited; the traveling packets now ride only the short inter-node segments so motion never occludes words; home-page eyebrows translated to human-first ("The team — exec board 2026"); photo slots became initial-monograms with a "photo: pending" microlabel; dim-text contrast raised a step.</p>
+      <p style="margin-top:1.2rem"><strong>commit 2 — Critic round 2.</strong> Top notes: the pipeline diagram — "the memorability engine of the whole concept" — was four grey boxes with an unlabeled dashed rect that read as a bug; the hero terminal clipped mid-word on mobile with no affordance; the headline's green em swallowed 60% of the headline; three equal hero doors; services pasted verbatim on both pages; "first" read as a typo in a numeral row; IMG slots read as broken checkboxes and the PID column spent a column on a joke; 5,300px of identical near-black; "stdin" jargon at the conversion moment. <strong>Changed:</strong> pipeline rebuilt — tinted stages (amber review, phosphor client), micro-captions per node, the findings loop labeled with the quote-or-abstain rule, packets travelling the path (reduced-motion-gated), and a vertical step-list replacing it under 640px; separate mobile transcripts authored for every terminal (short key:value lines, nothing clips); headline green cut to the payload with <code>text-wrap: balance</code> and the hero set as copy-left/terminal-right at desktop; one primary door with a quiet mono line for students/firms; "1st"; portrait-ratio photo slots with a frame glyph, PID deleted, emails quieted; the recruiting band phosphor-tinted as the mid-page waypoint; scanlines now live only on terminal panels; the form kicker says "contact" and labels speak sentence-case. Services on for-clients kept content-identical to home by design (shared content rule) — the duplication note is honored by the other variants via compact index lists; here the cards carry the section structure, and a full build would differentiate with real case links.</p>
+      <p style="margin-top:1.2rem"><strong>commit 1 — Critic round 1.</strong> Top notes: every CTA was written in flag syntax, locking out the non-technical director ("the variant's best idea speaks fluently to the one audience that was never going to hire it"); the terminal's dot-leader alignment collapsed on mobile wrap; the amber PENDING banners out-shouted the green CTAs; the pipeline diagram — the thesis centerpiece — was a timid strip with its differentiator in a 10px caption; hero opener generic; seven sections one wallpaper; partners section flat; team-as-processes cold; form fields near-invisible with the "not wired" note placed before the fields; macOS traffic lights a rented cliché. <strong>Changed:</strong> all CTAs now say the plain thing in the mono face ("Start a scoping call") — flag syntax lives only inside the terminal windows; shell output never wraps (scrolls inside the window, smaller mobile type); placeholders demoted to dim unboxed warning lines; the pipeline got a panel of its own on a banded section with the quote-or-abstain rule promoted to a phosphor subhead; hero now opens "Pro bono consulting — with a quality system you can inspect" and the duplicated facts moved solely into the session output; sections alternate band tones; partners are two command-labeled cards with their own CTAs; the team table gained reserved photo-frame slots per row (no invented bios — honesty rules); form borders brightened and the disclaimer moved below the submit; window chrome replaced with a 180dc session tab. Not actioned: a "why I'm here" column per board member — that would be invented personal content.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-legal" style="border-top:0;margin-top:0">
+    <span>man page · not client-facing · exit 0</span>
+    <a href="index.html">back to session</a>
+  </div>
+</footer>
+
+<script>document.documentElement.classList.add('js');</script>
+</body>
+</html>

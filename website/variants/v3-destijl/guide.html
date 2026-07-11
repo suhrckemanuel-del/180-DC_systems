@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — V3 De Stijl — 180DC Delft–Rotterdam</title>
+<meta name="description" content="How the De Stijl variant was designed and built, its design system, and how to extend it.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23FCFCF7'/%3E%3Crect x='2' y='2' width='17' height='28' fill='%2300693C'/%3E%3Crect x='21' y='2' width='9' height='13' fill='%23C8102E'/%3E%3Crect x='21' y='17' width='9' height='13' fill='%23F2CB05'/%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="frame">
+
+<header class="top">
+  <a class="brand" href="index.html">
+    <span class="sq" aria-hidden="true">180</span>
+    <b>Degrees Consulting<small>Delft–Rotterdam</small></b>
+  </a>
+  <nav aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="for-clients.html">For clients</a>
+    <a href="guide.html" aria-current="page">Guide</a>
+  </nav>
+  <div class="top-cap" aria-hidden="true" style="background:var(--green)"></div>
+</header>
+
+<main id="main">
+
+<section class="pad" aria-labelledby="g-h">
+  <span class="k k--red">Design specification — not client-facing</span>
+  <h2 id="g-h" style="font-size:clamp(2.2rem,5vw,4rem)">V3 — De Stijl</h2>
+  <p class="lede"><strong>Thesis:</strong> Dutch modernist — Mondrian-inspired asymmetric grids, primary accents against 180-green, oversized geometric composition. The black line is the design; color is placed, not sprayed. One of ten competing design variants; content identical across all ten (see <code>website/variants/content.md</code>).</p>
+</section>
+
+<section aria-labelledby="ds-h">
+  <div class="pad">
+    <span class="k k--blue">Design system</span>
+    <h2 id="ds-h">Specification</h2>
+    <div class="six" style="grid-template-columns:1fr 1fr;margin-top:2rem">
+      <div><h3>Palette</h3><p>Off-white <code>#FCFCF7</code> · Black <code>#161616</code> · Red <code>#C8102E</code> · Blue <code>#1348A0</code> · Yellow <code>#F2CB05</code> · <strong>180-green <code>#00693C</code> as the fourth primary</strong>. Color rule (hardened in round 2): the interface color is green only — chips, keys, eyebrow squares are always green; red/blue/yellow live exclusively in mute compositional planes and are never attached to labeled content, so color never fakes a legend. Text on yellow is always black. Body text is black on white, always AA.</p></div>
+      <div><h3>Type</h3><p>Schibsted Grotesk only — 400 body, 500 kickers (uppercase, 0.14–0.16em tracking), 800 display at −0.03em. One family, three voices; the grid does the differentiating.</p></div>
+      <div><h3>Line &amp; spacing</h3><p>The 6px black line divides everything; 2px lines subdivide. No border-radius, no shadows, no gradients anywhere. Compositions are CSS grid with deliberately unequal columns (1.6 / 0.6 / 0.9).</p></div>
+      <div><h3>Motion</h3><p>One motion on the whole site: the 180° numeral makes its half-turn into place on first view (JS-gated, reduced-motion-gated). Generic scroll-reveals were deleted in round 2 — one purposeful movement beats forty polite ones. Hover: cells fill flat color, doors invert to black.</p></div>
+      <div><h3>Signature elements</h3><p>Hero as a Mondrian composition whose cells are content (headline plane, 180° green plane, aphorism on yellow) · door-row CTAs as grid cells · proof strip with colored numerals · team as a mosaic with color swatches · timeline as four proportional week-blocks — the project block is widest because that's where the work lives.</p></div>
+      <div><h3>Honesty devices</h3><p>Missing content sits on yellow plates with black borders — <code>[PLACEHOLDER]</code> as a compositional element. No images at all in this variant: zero raster weight, nothing to fake.</p></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="how-h">
+  <div class="pad prose">
+    <span class="k k--yellow">Method &amp; extension</span>
+    <h2 id="how-h">How it was made &amp; how to extend it</h2>
+    <p style="margin-top:1.2rem"><strong>Build:</strong> hand-written static HTML/CSS, one stylesheet, no framework, no build step, no images. Single font family self-hosted (~138&nbsp;KB of woff2). The lightest variant of the ten by design.</p>
+    <p><strong>Mood calibration:</strong> Mondrian and Rietveld as *system*, not costume — asymmetric balance, primary color as punctuation, the line as the protagonist. The web translation must resist centering everything; De Stijl balance is asymmetric or it is nothing.</p>
+    <p><strong>To extend to the full site:</strong> every page is a new composition from the same six planes: black line, white ground, four colors. Our Work becomes a gallery of compositions (one per case, Situation/Approach/Outcome as three unequal planes); Impact becomes a proof-strip page; Team gets photo cells (black-and-white, color swatch retained) after the photo session. Never center a composition; never use more than one red plane per viewport; the green plane is always the largest colored plane — brand discipline inside the art discipline.</p>
+    <p><strong>Deploy:</strong> zip-deploy to Netlify via API (see <code>website/variants/tools/deploy.ps1</code>).</p>
+  </div>
+</section>
+
+<section aria-labelledby="log-h">
+  <div class="pad">
+    <span class="k k--green">Critique &amp; revision log</span>
+    <h2 id="log-h">Rounds</h2>
+    <div id="critique-log" class="prose" style="margin-top:1.5rem">
+      <p><strong>Round 0 — initial construction.</strong> Built from the shared content spec. Reveal motion JS-gated from the start (lesson from V1 round 1).</p>
+      <p style="margin-top:1.2rem"><strong>Lighthouse — final build (local run, 2026-07-09).</strong> Home 100 / 100 / 100 / 100 (perf / accessibility / best-practices / SEO), 146&nbsp;KB. For-clients 100 / 100 / 100 / 100, 141&nbsp;KB. Guide 100 / 100 / 100 / 100, 141&nbsp;KB. Both quality bars cleared at the maximum.</p>
+      <p style="margin-top:1.2rem"><strong>Round 3 — Critic (final).</strong> Verdict: "top-two in a ten-way field and could win on discipline alone." Remaining notes, all actioned: the review quadrant's black tile dissolved into the black band and the step colors were semantically inverted (deliver was red) — remapped to white→yellow→red→green, ending on brand green; the hero's mute planes now work for a living (red carries "Pro bono — €0, always", white carries "1st multi-city branch worldwide"); the mobile nav's empty sixth cell now seats the 180° mark; the red label tile leads the mobile service list instead of interrupting it and the blue link tile compresses to bar height; placeholders switched to neutral grey hatch so scaffolding never wears the palette; the people-card slider motif simplified to a plain rule with emails sized down; "First" set as "1st"; the intake page gained a what-happens-next note and fields a green focus state; the mobile numeral got an inset so it never clips.</p>
+      <p style="margin-top:1.2rem"><strong>Round 2 — Critic.</strong> Top notes: the for-clients service index overlapped its own text on mobile (span given a column but no row); the 180° rotation — "the single most on-mission moment on the site" — was buried small in its plane; color cycling on chips, stats, and people-cards implied a legend that didn't exist; the hero aphorism was deleted on mobile to dodge a layout problem; the field's mute planes read as absence; the quality quadrant begged to be semantic (four steps, four planes); the "snap" motion was a generic fade; assorted type rags. <strong>Changed:</strong> index rows got explicit grid rows; the numeral now dominates its plane at up to 12.5rem with a slimmer middle column for real asymmetry; a hard color rule installed — interface color is green only, red/blue/yellow live in mute planes (chips, swatches, stats, and eyebrows all uniform now); the aphorism plane returns full-width on mobile; the field's red plane carries the section's label and the blue plane carries the for-clients link; the quality quadrant now IS the diagram (1·draft / 2·review / 3·revise / 4·deliver, one word per plane); all scroll-reveals deleted — the half-turn is the site's one motion; placeholders switched to dashed-hatched so they can't be mistaken for real yellow planes; nav gets a sixth mute green cell on mobile; headline and door labels rag-fixed.</p>
+      <p style="margin-top:1.2rem"><strong>Round 1 — Critic.</strong> Top notes: the for-clients mobile hero collided (inline grid placements survived the breakpoint — disqualifying); two placeholder plates set light text on yellow (illegible); the six-service grid was "a generic SaaS card wall, pasted twice" — symmetric exactly where the thesis demands asymmetry; hero headline rag ("meets" orphaned); the site's best sentence (the "full turn" aphorism) was its smallest text; the Week-0 timeline column strangled its copy; red discipline broke the site's own one-red-plane rule; nav crammed at 390px. <strong>Changed:</strong> hero planes now place via classes so breakpoints win — mobile stacks cleanly; hard rule added (text on yellow is always black); services recomposed as one asymmetric field — Digital Transformation as a 2-row green plane, two pure color planes in the weave — and the for-clients copy compressed to a chip-index linking home; headline breaks set by hand with "for good." kept whole; aphorism raised to 1.12rem at the top of its plane; week columns got minimum character widths and the final block moved from red to blue (red = one plane per viewport, and never "alert" on good news); nav becomes a two-row ruled grid below 560px; the 180° numeral now turns 180° into place on first view (reduced-motion gated); facts placed into hero planes ("Est. 2019 · Delft → Rotterdam").</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="foot-strip" aria-hidden="true">
+    <div style="background:var(--red);border-right:2px solid var(--black)"></div>
+    <div style="background:var(--white);border-right:2px solid var(--black)"></div>
+    <div style="background:var(--yellow);border-right:2px solid var(--black)"></div>
+    <div style="background:var(--green)"></div>
+  </div>
+  <div class="foot-legal">
+    <span>Compositie 180 — specification sheet</span>
+    <a href="index.html">Back to the composition</a>
+  </div>
+</footer>
+
+</div>
+
+<script>document.documentElement.classList.add('js');</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+/* ============================================================
+   V9 — PAMFLET
+   Dutch protest-pamphlet brutalism. No images, no cards, no
+   chrome. Enormous type, one green, hard rules. A manifesto
+   you could wheat-paste to a wall — and it passes WCAG AA,
+   because making brutalism accessible is the flex.
+   ============================================================ */
+
+@font-face { font-family: "Anton"; src: url("fonts/Anton-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Public Sans"; src: url("fonts/PublicSans-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Public Sans"; src: url("fonts/PublicSans-700.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+
+:root {
+  --paper: #F6F3EC;
+  --ink: #111311;
+  --green: #00693C;
+  --green-deep: #00522E;
+  --display: "Anton", "Arial Narrow", sans-serif;
+  --body: "Public Sans", system-ui, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  font-family: var(--body);
+  font-size: 1.1rem;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--paper);
+}
+::selection { background: var(--ink); color: var(--paper); }
+
+.wrap { max-width: 1060px; margin: 0 auto; padding: 0 1.2rem; }
+
+/* ---------- masthead ---------- */
+header.mast { border-bottom: 8px solid var(--ink); }
+.mast-inner { max-width: 1060px; margin: 0 auto; padding: 1rem 1.2rem; display: flex; align-items: baseline; gap: 1.4rem; flex-wrap: wrap; }
+.mast-inner .nr { font-family: var(--display); font-size: 1.3rem; text-transform: uppercase; color: var(--ink); text-decoration: none; }
+.mast-inner .nr span { color: var(--green); }
+header.mast nav { margin-left: auto; display: flex; gap: 1.2rem; flex-wrap: wrap; }
+header.mast nav a {
+  font-weight: 700; font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink); text-decoration: none; border-bottom: 3px solid transparent;
+}
+header.mast nav a:hover, header.mast nav a:focus-visible { border-bottom-color: var(--ink); }
+header.mast nav a[aria-current="page"] { border-bottom-color: var(--green); color: var(--green-deep); }
+@media (max-width: 720px) { header.mast nav { margin-left: 0; } }
+
+/* ---------- the shout ---------- */
+.shout {
+  font-family: var(--display);
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: 0.005em;
+  font-size: clamp(3.4rem, 15.5vw, 12.5rem);
+  word-break: normal;
+}
+.shout .g { color: var(--green); }
+.shout--2 { font-size: clamp(2.4rem, 8.5vw, 6.5rem); line-height: 0.98; }
+.shout--3 { font-size: clamp(1.8rem, 5vw, 3.6rem); line-height: 1.02; }
+
+section { padding: 4rem 0; border-bottom: 8px solid var(--ink); }
+section.thin { border-bottom-width: 3px; }
+section:last-of-type { border-bottom: 0; }
+@media (max-width: 720px) { section { padding: 2.8rem 0; } }
+
+.kick {
+  font-weight: 700; font-size: 0.8rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--green-deep); display: block; margin-bottom: 1.2rem;
+}
+.plain { max-width: 58ch; font-size: 1.12rem; }
+.plain p + p { margin-top: 1rem; }
+.plain strong { font-weight: 700; }
+a { color: var(--green-deep); }
+a:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+
+/* ---------- the demands (numbered manifesto list) ---------- */
+.demands { list-style: none; counter-reset: demand; margin-top: 1.4rem; }
+.demands li {
+  counter-increment: demand;
+  display: grid; grid-template-columns: 5.5rem 1fr; gap: 1.4rem; align-items: baseline;
+  padding: 1.5rem 0; border-top: 3px solid var(--ink);
+}
+.demands li::before {
+  content: counter(demand, decimal-leading-zero);
+  font-family: var(--display); font-size: 2.6rem; color: var(--green); line-height: 1;
+}
+.demands h3 { font-family: var(--display); font-size: clamp(1.5rem, 3.4vw, 2.4rem); text-transform: uppercase; line-height: 1; }
+.demands p { margin-top: 0.4rem; max-width: 56ch; }
+@media (max-width: 640px) { .demands li { grid-template-columns: 3.4rem 1fr; gap: 0.9rem; } .demands li::before { font-size: 1.8rem; } }
+
+/* ---------- stamped facts ---------- */
+.facts { display: flex; flex-wrap: wrap; gap: 1rem 2.6rem; margin-top: 2rem; }
+.facts div { border-left: 8px solid var(--green); padding-left: 1rem; }
+.facts b { font-family: var(--display); font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1; display: block; }
+.facts span { font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* ---------- the GRATIS block ---------- */
+.gratis {
+  border: 8px solid var(--ink); padding: 1.6rem 2rem; margin-top: 2.4rem;
+  display: inline-block; transform: rotate(-1.5deg);
+}
+.gratis .shout--2 { display: block; }
+.gratis p { font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.85rem; margin-top: 0.4rem; }
+
+/* ---------- timeline: four shouted lines ---------- */
+.weeks { margin-top: 1.6rem; }
+.week { padding: 1.6rem 0; border-top: 3px solid var(--ink); display: grid; grid-template-columns: 9rem 1fr; gap: 1.6rem; align-items: baseline; }
+.week .stamp { font-family: var(--display); font-size: 1.25rem; text-transform: uppercase; color: var(--green-deep); }
+.week h3 { font-family: var(--display); font-size: clamp(1.6rem, 4vw, 2.8rem); text-transform: uppercase; line-height: 1; }
+.week p { margin-top: 0.45rem; max-width: 56ch; }
+@media (max-width: 640px) { .week { grid-template-columns: 1fr; gap: 0.4rem; } }
+
+/* ---------- signatories ---------- */
+.signed { columns: 2; column-gap: 3rem; margin-top: 1.6rem; max-width: 56rem; }
+@media (max-width: 720px) { .signed { columns: 1; } }
+.signed li { list-style: none; break-inside: avoid; padding: 0.7rem 0; border-bottom: 3px solid var(--ink); }
+.signed b { font-family: var(--display); font-size: 1.3rem; text-transform: uppercase; font-weight: 400; display: block; line-height: 1.15; }
+.signed span { font-weight: 700; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green-deep); }
+.signed a { font-size: 0.85rem; color: var(--ink); }
+
+/* ---------- placeholder: NOG NIET ---------- */
+.placeholder {
+  display: inline-block; border: 3px dashed var(--ink);
+  font-weight: 700; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.75rem 1rem; line-height: 1.55; max-width: 46ch;
+}
+.placeholder::before { content: "NOG NIET — not yet: "; color: var(--green-deep); }
+
+/* ---------- buttons: block-print ---------- */
+.btn {
+  display: inline-block; font-family: var(--display); font-size: 1.3rem; text-transform: uppercase;
+  text-decoration: none; letter-spacing: 0.02em;
+  background: var(--ink); color: var(--paper);
+  padding: 0.9rem 1.8rem 0.8rem; border: 3px solid var(--ink);
+}
+.btn:hover, .btn:focus-visible { background: var(--green-deep); border-color: var(--green-deep); color: #fff; }
+.btn--ghost { background: transparent; color: var(--ink); }
+.btn--ghost:hover, .btn--ghost:focus-visible { background: var(--ink); color: var(--paper); }
+
+/* ---------- forms ---------- */
+input, textarea {
+  width: 100%; padding: 0.9rem; border: 3px solid var(--ink);
+  background: #fff; font-family: var(--body); font-size: 1.05rem;
+}
+input:focus, textarea:focus { outline: none; border-color: var(--green); }
+label .lbl { display: block; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.35rem; }
+
+/* ---------- footer ---------- */
+footer { border-top: 8px solid var(--ink); padding: 2.4rem 0 3rem; }
+footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+footer p, footer a { font-weight: 700; font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink); }
+
+/* no motion anywhere: paper does not animate. hover/focus states only. */
+
+/* ---------- skip ---------- */
+.skip { position: absolute; left: -9999px; top: 0; z-index: 100; background: var(--ink); color: var(--paper); padding: 0.6rem 1rem; font-weight: 700; }
+.skip:focus { left: 0.5rem; top: 0.5rem; }

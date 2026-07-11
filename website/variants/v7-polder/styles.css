@@ -1,0 +1,205 @@
+/* ============================================================
+   V7 — POLDER
+   The Dutch landscape as design system: horizontal strata
+   (sky / dike / field / water), a NAP datum line annotating
+   every section's elevation, parcel-strip grids, and the
+   quality system drawn as the pump that keeps the polder dry.
+   The page descends below sea level as you scroll.
+   ============================================================ */
+
+@font-face { font-family: "Bricolage Grotesque"; src: url("fonts/BricolageGrotesque-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Bricolage Grotesque"; src: url("fonts/BricolageGrotesque-600.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Bricolage Grotesque"; src: url("fonts/BricolageGrotesque-800.woff2") format("woff2"); font-weight: 800; font-display: swap; }
+@font-face { font-family: "Spline Sans Mono"; src: url("fonts/SplineSansMono-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Spline Sans Mono"; src: url("fonts/SplineSansMono-600.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+
+:root {
+  --sky: #EBF2F3;
+  --sky-deep: #DCE9EB;
+  --field: #EDF3E4;
+  --field-deep: #E2ECD2;
+  --dike: #00512E;
+  --green: #00693C;
+  --water: #10333D;
+  --water-line: #1C5A6B;
+  --ink: #182620;
+  --faint: #52645B;
+  --sans: "Bricolage Grotesque", system-ui, sans-serif;
+  --mono: "Spline Sans Mono", ui-monospace, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  font-family: var(--sans);
+  font-size: 1.07rem;
+  line-height: 1.68;
+  color: var(--ink);
+  background: var(--sky);
+  overflow-x: clip;
+}
+::selection { background: var(--green); color: #fff; }
+
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.3rem; }
+
+/* ---------- the NAP datum line: every stratum states its elevation ---------- */
+.nap {
+  display: flex; align-items: center; gap: 1rem;
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--faint);
+  padding-top: 0.4rem;
+}
+.nap::before, .nap::after { content: ""; flex: 1; border-top: 1.5px dashed currentColor; opacity: 0.55; }
+.nap b { font-weight: 600; color: inherit; white-space: nowrap; }
+.stratum--dark .nap { color: #9FC5CE; }
+
+/* ---------- strata ---------- */
+.stratum { padding: 3.6rem 0 4.2rem; }
+.stratum--sky { background: var(--sky); }
+.stratum--sky2 { background: var(--sky-deep); }
+.stratum--dike { background: var(--dike); color: #EAF4EE; }
+.stratum--field { background: var(--field); }
+.stratum--field2 { background: var(--field-deep); }
+.stratum--water { background: var(--water); color: #D9E8EC; }
+.stratum--dark .lede, .stratum--dike p, .stratum--water p { color: inherit; }
+
+/* ---------- header ---------- */
+header.top { background: var(--sky); border-bottom: 3px solid var(--dike); }
+.top-inner { max-width: 1100px; margin: 0 auto; padding: 1.05rem 1.3rem; display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--ink); }
+.brand .mark {
+  width: 2.4rem; height: 2.4rem; background: var(--dike); color: #fff;
+  display: grid; place-items: center; font-weight: 800; font-size: 0.82rem;
+  clip-path: polygon(0 100%, 50% 0, 100% 100%); /* the dike profile */
+  padding-top: 0.5rem;
+}
+.brand b { font-weight: 800; font-size: 1.04rem; line-height: 1.2; }
+.brand small { display: block; font-family: var(--mono); font-weight: 400; font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
+header.top nav { margin-left: auto; display: flex; gap: 1.2rem; flex-wrap: wrap; }
+header.top nav a {
+  font-weight: 600; font-size: 0.88rem; color: var(--ink); text-decoration: none;
+  border-bottom: 2.5px solid transparent; padding-bottom: 2px;
+}
+header.top nav a:hover, header.top nav a:focus-visible { border-bottom-color: var(--green); }
+header.top nav a[aria-current="page"] { border-bottom-color: var(--dike); color: var(--dike); }
+@media (max-width: 720px) { header.top nav { margin-left: 0; gap: 0.9rem; } }
+
+/* ---------- type ---------- */
+h1 { font-weight: 800; font-size: clamp(2.4rem, 5.6vw, 4.4rem); line-height: 1.04; letter-spacing: -0.02em; max-width: 20ch; }
+h1 em, h2 em { font-style: normal; color: var(--green); }
+.stratum--dark h1 em, .stratum--dike h2 em, .stratum--water h2 em { color: #8FD6AE; }
+h2 { font-weight: 800; font-size: clamp(1.7rem, 3.6vw, 2.6rem); line-height: 1.1; letter-spacing: -0.015em; max-width: 26ch; }
+.lede { margin-top: 1.1rem; color: var(--faint); max-width: 58ch; font-size: 1.1rem; }
+.stratum--dike .lede { color: #BFDCCB; }
+.stratum--water .lede { color: #A9C6CE; }
+.prose { max-width: 60ch; }
+.prose p + p { margin-top: 1rem; }
+a { color: var(--dike); }
+.stratum--dike a, .stratum--water a { color: #8FD6AE; }
+a:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-block; font-weight: 800; font-size: 0.95rem; text-decoration: none;
+  background: var(--dike); color: #fff; padding: 0.9rem 1.6rem;
+  border: 2.5px solid var(--dike); border-radius: 3px;
+}
+.btn:hover, .btn:focus-visible { background: var(--green); border-color: var(--green); }
+.btn--ghost { background: transparent; color: var(--dike); }
+.btn--ghost:hover, .btn--ghost:focus-visible { background: var(--dike); color: #fff; }
+.stratum--dike .btn { background: #fff; border-color: #fff; color: var(--dike); }
+.stratum--dike .btn:hover { background: #DFF0E6; border-color: #DFF0E6; }
+
+/* ---------- dike profile hero figure ---------- */
+.hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3rem; align-items: end; }
+@media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+.dike-fig svg { width: 100%; height: auto; display: block; }
+
+/* ---------- proof: survey markers ---------- */
+.markers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.4rem; margin-top: 2rem; }
+@media (max-width: 860px) { .markers { grid-template-columns: 1fr 1fr; } }
+.marker { border-top: 3px solid #fff; padding-top: 0.8rem; }
+.marker b { font-weight: 800; font-size: clamp(2rem, 4.4vw, 3.1rem); line-height: 1; display: block; color: #fff; }
+.marker span { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: #BFDCCB; }
+
+/* ---------- parcels: services as strip allotments ---------- */
+.parcels { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; margin-top: 2.2rem; border: 2.5px solid var(--dike); }
+.parcel {
+  padding: 1.5rem 1.1rem 1.7rem; border-right: 1.5px dashed var(--dike);
+  min-height: 15rem; display: flex; flex-direction: column;
+}
+.parcel:last-child { border-right: 0; }
+.parcel:nth-child(odd) { background: var(--field); }
+.parcel:nth-child(even) { background: var(--field-deep); }
+.parcel .pnum { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.12em; color: var(--dike); font-weight: 600; margin-bottom: auto; }
+.parcel h3 { font-weight: 800; font-size: 1.05rem; line-height: 1.15; margin: 1rem 0 0.45rem; }
+.parcel p { font-size: 0.85rem; color: var(--faint); line-height: 1.5; }
+@media (max-width: 1000px) { .parcels { grid-template-columns: repeat(3, 1fr); } .parcel:nth-child(3) { border-right: 0; } .parcel:nth-child(-n+3) { border-bottom: 1.5px dashed var(--dike); } }
+@media (max-width: 620px) { .parcels { grid-template-columns: 1fr; } .parcel { border-right: 0 !important; border-bottom: 1.5px dashed var(--dike); min-height: 0; } .parcel:last-child { border-bottom: 0; } .parcel .pnum { margin-bottom: 0.2rem; } .parcel h3 { margin-top: 0.2rem; } }
+
+/* ---------- the pump (quality) ---------- */
+.pump-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+@media (max-width: 860px) { .pump-grid { grid-template-columns: 1fr; } }
+.pump-fig svg { width: 100%; max-width: 430px; height: auto; display: block; }
+@media (prefers-reduced-motion: no-preference) {
+  .pump-fig .sail { transform-origin: 215px 96px; animation: turn 14s linear infinite; }
+  @keyframes turn { to { transform: rotate(360deg); } }
+  .wave-band .wave { animation: drift 9s linear infinite; }
+  @keyframes drift { to { transform: translateX(-160px); } }
+}
+
+/* ---------- waterline divider ---------- */
+.wave-band { line-height: 0; background: var(--field-deep); overflow: hidden; }
+.wave-band svg { width: calc(100% + 160px); height: 34px; display: block; }
+
+/* ---------- postings / timeline as reclamation stages ---------- */
+.stages { margin-top: 2rem; border-top: 2.5px solid var(--dike); }
+.stage { display: grid; grid-template-columns: 9rem 1fr; gap: 1.5rem; padding: 1.3rem 0; border-bottom: 1.5px dashed var(--dike); align-items: baseline; }
+.stage:last-child { border-bottom: 0; }
+.stage .s-el { font-family: var(--mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dike); }
+.stage h3 { font-weight: 800; font-size: 1.2rem; }
+.stage p { color: var(--faint); font-size: 0.97rem; margin-top: 0.3rem; max-width: 56ch; }
+@media (max-width: 620px) { .stage { grid-template-columns: 1fr; gap: 0.3rem; } }
+
+/* ---------- team: the water board ---------- */
+.board { columns: 2; column-gap: 3rem; margin-top: 1.8rem; max-width: 58rem; }
+@media (max-width: 760px) { .board { columns: 1; } }
+.board li { list-style: none; break-inside: avoid; padding: 0.75rem 0; border-bottom: 1px solid var(--water-line); }
+.board b { font-weight: 800; display: block; color: #fff; }
+.board span { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: #8FB9C4; }
+.board a { font-family: var(--mono); font-size: 0.78rem; color: #A9C6CE; text-decoration: none; border-bottom: 1px dotted #4A7684; }
+.board a:hover { color: #fff; border-color: #fff; }
+
+/* ---------- placeholder: land not yet reclaimed ---------- */
+.placeholder {
+  display: inline-block; font-family: var(--mono); font-size: 0.72rem; line-height: 1.6;
+  letter-spacing: 0.04em; color: #6B5A17;
+  background: repeating-linear-gradient(-45deg, rgba(178,150,48,0.1), rgba(178,150,48,0.1) 9px, transparent 9px, transparent 18px);
+  border: 1.5px dashed #A8912F; border-radius: 3px; padding: 0.65rem 0.9rem; max-width: 52ch;
+}
+.placeholder::before { content: "not yet reclaimed — "; font-weight: 600; }
+.stratum--dark .placeholder, .stratum--water .placeholder, .stratum--dike .placeholder { color: #E3D08A; border-color: #A8912F; }
+
+/* ---------- forms ---------- */
+input, textarea {
+  width: 100%; padding: 0.85rem; border: 2px solid #B9C6BE; border-radius: 3px;
+  background: #fff; font-family: var(--sans); font-size: 1rem; color: var(--ink);
+}
+input:focus, textarea:focus { outline: none; border-color: var(--green); }
+label .lbl { display: block; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); margin-bottom: 0.35rem; }
+
+/* ---------- footer (the deep water) ---------- */
+footer { background: var(--water); color: #A9C6CE; padding: 2.6rem 0 2.2rem; }
+footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+footer p { font-size: 0.9rem; max-width: 60ch; }
+footer a { color: #D9E8EC; }
+footer .nap { color: #5E8894; }
+
+/* no entrance motion: the land does not move. The pump turns and the water
+   drifts — the two things that really do move in a polder (reduced-motion gated). */
+
+/* ---------- skip ---------- */
+.skip { position: absolute; left: -9999px; top: 0; z-index: 100; background: var(--dike); color: #fff; padding: 0.6rem 1rem; font-weight: 800; }
+.skip:focus { left: 0.5rem; top: 0.5rem; }

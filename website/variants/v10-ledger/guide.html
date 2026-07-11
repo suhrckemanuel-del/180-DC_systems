@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colophon — V10 The Ledger — 180DC Delft–Rotterdam</title>
+<meta name="description" content="How the Ledger variant was designed and built, its design system, and how to extend it.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23FCFBF6'/%3E%3Cpath d='M6 6 h20 M6 12 h20 M6 18 h20 M6 24 h14' stroke='%2300512E' stroke-width='2.5'/%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="book">
+  <div class="book-inner">
+    <a class="title" href="index.html">
+      <b>180 Degrees Consulting Delft–Rotterdam</b>
+      <small>Colophon · how the ledger was made</small>
+    </a>
+    <nav aria-label="Main">
+      <a href="index.html">Ledger</a>
+      <a href="for-clients.html">For clients</a>
+      <a href="index.html#join">Join</a>
+      <a href="index.html#team">Team</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="guide.html" aria-current="page">Colophon</a>
+    </nav>
+  </div>
+</header>
+
+<div class="spread">
+<main id="main">
+
+<section aria-labelledby="g1" style="padding-top:4rem">
+  <span class="acct">Colophon — design specification, not client-facing</span>
+  <h1 id="g1" style="font-size:clamp(1.9rem,4vw,2.9rem)">V10 — <em>The Ledger</em></h1>
+  <div class="prose" style="margin-top:1.2rem">
+    <p><strong>Thesis:</strong> radical transparency as layout — an open account book where every factual claim carries a numbered entry in a visible evidence margin, unverifiable lines are struck through as "cannot claim yet," and the footer is a public changelog. Quote-or-abstain, the branch's deepest principle, turned into architecture. To our knowledge no consulting website anywhere does this.</p>
+    <p>One of ten competing design variants; content identical across all ten (see <code>website/variants/content.md</code>).</p>
+  </div>
+</section>
+
+<section aria-labelledby="g2">
+  <span class="acct">The system</span>
+  <h2 id="g2">Specification</h2>
+  <div class="accounts">
+    <div class="acct-row"><span class="no">S.1</span><b>Palette</b><span>ledger paper #FCFBF6 · ink #1E241F · 180-green #00693C/#00512E for verified matter · terracotta #9A4A38 exclusively for the strike-through of unclaimable lines · pending amber only in entry-pending chips. Color is semantic here or it is absent.</span></div>
+    <div class="acct-row"><span class="no">S.2</span><b>Type</b><span>Spectral 400/600 + italic (the bookish register credibility is set in) with IBM Plex Mono 400/600 for entry numbers, postings, statuses, and tabular figures.</span></div>
+    <div class="acct-row"><span class="no">S.3</span><b>Layout</b><span>a two-column spread: content plus a 300px sticky evidence margin. On small screens the margin becomes an end-of-page evidence block — footnotes when the page narrows, marginalia when it can afford them.</span></div>
+    <div class="acct-row"><span class="no">S.4</span><b>Devices</b><span>superscript [E1] refs that highlight their margin entry on hover · the opening-balance table with struck unclaimable rows · engagement as dated postings · the changelog footer as the page's own audit trail · double-rule masthead and colophon.</span></div>
+    <div class="acct-row"><span class="no">S.5</span><b>Motion</b><span>none. Ledgers do not animate. The only dynamic behaviour is the hover link between claim and evidence — meaning, not movement.</span></div>
+    <div class="acct-row"><span class="no">S.6</span><b>Honesty devices</b><span>this variant IS the honesty device: the strike-through row is the signature. Missing content is either a struck line ("cannot claim yet") or an entry-pending chip — nothing is hidden, nothing is faked.</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="g3">
+  <span class="acct">Method &amp; extension</span>
+  <h2 id="g3">How it was made, and how to extend it</h2>
+  <div class="prose" style="margin-top:1.1rem">
+    <p><strong>Build:</strong> hand-written static HTML/CSS, one stylesheet, no framework, no images (~94&nbsp;KB of self-hosted woff2 is the entire asset budget). The margin is CSS grid; the claim-to-entry hover is eight lines of optional JS.</p>
+    <p><strong>To extend:</strong> every new page opens a new account. Our Work becomes the ledger's proudest section — each case a set of postings with client-consented evidence entries; Impact is the day the struck rows get un-struck, which is itself a story worth a changelog entry. Rules: no factual sentence ships without an entry or a strike; entry numbers never get reused; the changelog is append-only.</p>
+    <p><strong>Deploy:</strong> consolidated Cloudflare Pages tree via <code>tools/deploy-cf.ps1</code>.</p>
+  </div>
+</section>
+
+<section aria-labelledby="g4">
+  <span class="acct">Critique &amp; revision log</span>
+  <h2 id="g4">Rounds</h2>
+  <div class="prose" id="critique-log" style="margin-top:1.1rem">
+    <p><strong>v1.1 — Critic round 1.</strong> Verdict: "top-three on concept and voice — the struck rows, evidence chips, and account numbering are a fingerprint." Top notes, all actioned: the two-column account rows collided on mobile (now stacked with explicit grid rows; the balance table stacks per row too); the evidence margin abandoned its claims down-page (entries now carry ↩ back-links to the accounts that cite them — the sticky rail does travel in a live browser, but adjacency is now declared both ways); the hero gained a struck specimen line so the signature device is visible at first paint, and the headline widow hand-broken; eight reserved portrait frames warm the register without faking a face; mono-caps hierarchy split (table headers lowercased and dimmed); refs shrunk with a dotted hover cue; the cryptic "n"/"…" glyphs replaced with em dashes; nav made canonical across all three pages (Colophon included); the changelog restyled as true ledger entries (CL.01…, version chips). Decision logged: terracotta stays exclusively forensic — warmth comes from the reserved frames, not from diluting the semantic palette.</p>
+    <p style="margin-top:1rem"><strong>v1.0 — initial construction.</strong> Built from the shared content spec with all accumulated lessons from V1–V6 applied: zero entrance motion by thesis, no card walls, plain controls, no cross-page duplication (the client page is its own account with its own F-series entries), semantic color only.</p>
+  </div>
+</section>
+
+</main>
+
+<aside class="margin" aria-label="Evidence margin">
+  <div class="margin-sticky">
+    <h3>Evidence margin</h3>
+    <div class="e-entry"><b>C1</b> — build facts in this colophon describe this repository's own files and are verifiable in <code>website/variants/v10-ledger/</code>. <span class="st st--v">verified</span></div>
+  </div>
+</aside>
+</div>
+
+<footer class="colophon">
+  <div class="colo-inner">
+    <div class="colo-meta" style="border-top:0;margin-top:0;padding-top:0">
+      <span>Colophon — not client-facing</span>
+      <a href="index.html">Back to the ledger</a>
+    </div>
+  </div>
+</footer>
+
+<script>document.documentElement.classList.add('js');</script>
+</body>
+</html>
