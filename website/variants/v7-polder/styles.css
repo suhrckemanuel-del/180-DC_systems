@@ -17,10 +17,12 @@
   --sky: #EBF2F3;
   --sky-deep: #DCE9EB;
   --field: #EDF3E4;
-  --field-deep: #E2ECD2;
+  --field-deep: #E0EACC;
+  --field-deepest: #D2E0B8;
   --dike: #00512E;
   --green: #00693C;
-  --water: #10333D;
+  --water: #14404E;
+  --water-deep: #0E2F38;
   --water-line: #1C5A6B;
   --ink: #182620;
   --faint: #52645B;
@@ -52,17 +54,25 @@ body {
   padding-top: 0.4rem;
 }
 .nap::before, .nap::after { content: ""; flex: 1; border-top: 1.5px dashed currentColor; opacity: 0.55; }
-.nap b { font-weight: 600; color: inherit; white-space: nowrap; }
+/* only the elevation token refuses to wrap — the caption may */
+.nap b { font-weight: 600; color: inherit; }
+.nap .el { white-space: nowrap; }
 .stratum--dark .nap { color: #9FC5CE; }
 
 /* ---------- strata ---------- */
 .stratum { padding: 3.6rem 0 4.2rem; }
+/* color is elevation: strictly darker as the page descends */
 .stratum--sky { background: var(--sky); }
 .stratum--sky2 { background: var(--sky-deep); }
 .stratum--dike { background: var(--dike); color: #EAF4EE; }
 .stratum--field { background: var(--field); }
 .stratum--field2 { background: var(--field-deep); }
+.stratum--field3 { background: var(--field-deepest); }
 .stratum--water { background: var(--water); color: #D9E8EC; }
+.stratum--water2 { background: var(--water-deep); color: #D9E8EC; }
+.stratum--water2 .lede { color: #A9C6CE; }
+.stratum--water2 h2 em { color: #8FD6AE; }
+.stratum--water2 a { color: #8FD6AE; }
 .stratum--dark .lede, .stratum--dike p, .stratum--water p { color: inherit; }
 
 /* ---------- header ---------- */
@@ -134,7 +144,8 @@ a:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
 .parcel:nth-child(odd) { background: var(--field); }
 .parcel:nth-child(even) { background: var(--field-deep); }
 .parcel .pnum { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.12em; color: var(--dike); font-weight: 600; margin-bottom: auto; }
-.parcel h3 { font-weight: 800; font-size: 1.05rem; line-height: 1.15; margin: 1rem 0 0.45rem; }
+/* locked title block: all six h3 baselines align regardless of wrap count */
+.parcel h3 { font-weight: 800; font-size: 1.05rem; line-height: 1.15; margin: 1rem 0 0.45rem; min-height: 2.45em; display: flex; align-items: flex-end; }
 .parcel p { font-size: 0.85rem; color: var(--faint); line-height: 1.5; }
 @media (max-width: 1000px) { .parcels { grid-template-columns: repeat(3, 1fr); } .parcel:nth-child(3) { border-right: 0; } .parcel:nth-child(-n+3) { border-bottom: 1.5px dashed var(--dike); } }
 @media (max-width: 620px) { .parcels { grid-template-columns: 1fr; } .parcel { border-right: 0 !important; border-bottom: 1.5px dashed var(--dike); min-height: 0; } .parcel:last-child { border-bottom: 0; } .parcel .pnum { margin-bottom: 0.2rem; } .parcel h3 { margin-top: 0.2rem; } }
@@ -180,7 +191,31 @@ a:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
   border: 1.5px dashed #A8912F; border-radius: 3px; padding: 0.65rem 0.9rem; max-width: 52ch;
 }
 .placeholder::before { content: "not yet reclaimed — "; font-weight: 600; }
-.stratum--dark .placeholder, .stratum--water .placeholder, .stratum--dike .placeholder { color: #E3D08A; border-color: #A8912F; }
+.stratum--dark .placeholder, .stratum--water .placeholder, .stratum--water2 .placeholder, .stratum--dike .placeholder { color: #E3D08A; border-color: #A8912F; }
+
+/* the quiet register for routine gaps: one line, no plot (max two hatched plots per page) */
+.nyr { font-family: var(--mono); font-size: 0.72rem; font-style: italic; color: #6B5A17; letter-spacing: 0.03em; }
+.nyr::before { content: "not yet reclaimed — "; font-style: normal; font-weight: 600; }
+
+/* hero CTAs share one flex row — edges always align */
+.doors { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+
+/* the water board gets its cadastral plots (reserved for the photo session) */
+.board li { padding-left: 3.3rem; position: relative; }
+.board li::before {
+  content: ""; position: absolute; left: 0; top: 0.85rem;
+  width: 2.4rem; height: 3rem; border: 1.5px dashed #4A7684; border-radius: 2px;
+}
+
+/* channel flow: the drafts drifting through the pump (reduced-motion gated) */
+@media (prefers-reduced-motion: no-preference) {
+  .pump-fig .chan { stroke-dasharray: 5 7; animation: chanflow 1.8s linear infinite; }
+  @keyframes chanflow { to { stroke-dashoffset: -12; } }
+}
+@media (max-width: 720px) {
+  header.top nav { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 0.5rem 1.1rem; }
+  .wave-band svg { height: 22px; }
+}
 
 /* ---------- forms ---------- */
 input, textarea {

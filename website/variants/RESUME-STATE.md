@@ -40,6 +40,25 @@ Per-variant Netlify sites exist at `180dc-v{1..6}-<slug>.netlify.app` (v1–v4 a
 - A build script assembles `website/variants/dist/` (gitignored): root gallery + `/v<N>-<slug>/` per variant, with `guide.html` relocated to `/v<N>-<slug>/guide/index.html` and links rewritten (`guide.html` → `guide/`; inside guide: `styles.css` → `../styles.css`, `index.html` → `../`, `for-clients.html` → `../for-clients.html`).
 - Critique rounds run on local Playwright screenshots served from `dist/` over localhost (validates subpath links at the same time). Deploy the single consolidated tree only when a variant completes round 3.
 
+## HANDOFF UPDATE — 2026-07-11 (context-window offload point)
+
+Live site: **https://180dc-variants.pages.dev/** (gallery + all ten variants). Deploy via `tools/deploy-cf.ps1`. Local Critic screenshots: serve `dist/` with `npx http-server ..\dist -p 8123 -s` from tools/, shoot with `node shoot.mjs <outdir> <urls>`; Lighthouse locally with `node lh.mjs <urls>`. Critic = fresh general-purpose subagent per round: screenshots + one-line thesis only, ranked 5–10 concrete notes, fixes applied + logged in the variant's guide.
+
+| Variant | Rounds done | State |
+|---|---|---|
+| v1–v5 | 3/3 each | FINAL, deployed, Lighthouse logged |
+| v6-deck | 3/3 reports received | **Round-3 fixes NOT yet applied** — the report is logged verbatim below |
+| v7-polder | 1/3 | Round-1 fixes applied + logged; needs deploy, rounds 2–3 |
+| v8-courant | 1/3 | Round-1 fixes applied + logged; needs deploy, rounds 2–3 |
+| v9-pamflet | 0/3 | Built; round-1 Critic died twice on session limits — screenshots ready at %TEMP%\claude\shots\v9r1 (stale-ok, reshoot if in doubt) |
+| v10-ledger | 1/3 | Round-1 fixes applied + logged; round-2 Critic died twice — reshoot + rerun |
+
+**V6 round-3 report (apply these, then V6 is final):** (1) mobile for-clients slide 6/6: submit button collides with the slide footer — add ~32px bottom margin below the form; (2) divider ghost numerals clip over the footer bar — clip to content area (overflow hidden wrapper excluding footer), uniform opacity; (3) agenda dot leaders lead nowhere — right-align slide numbers at the margin so leaders connect, suppress leaders <640px; (4) gantt: render wk0/wk1 as milestone diamonds, bars only for project + final, hairline gridlines at wk 3/6/9 (both pages); (5) team slide 11/11: widen name column (no name >2 lines), pin right-column CTA block to bottom; (6) for-clients slides 4–5 repeat the intro deck — compress six-areas to a one-line reference row, different exhibit than the repeated stamp; (7) hero door cards undersized — scale card stack to headline height, metadata wraps only on "·", nav filename truncate on underscore on mobile.
+
+**After all rounds:** final Lighthouse pass (update each guide + the gallery table numbers + thumbnails via `node thumbs.mjs`), write `RECOMMENDATION.md` (ranked top 3 vs client/student/partner audiences per 01-brainstorm.md, + what to steal from non-winners), deploy, commit/push, report URL + spend (images: €0.00 this build; ledger stays ≈ €0.01 of €15).
+
+**Separate workstream — branch-awards deck (LOCAL ONLY, gitignored):** `branch-awards/R2-deck-v2.pptx` (5 slides, 16:9) was regenerated from `build_deck.py` with all presenter feedback applied (slide 1 track-record bullet removed + "Sustainability:" category; slide 3 bulletproof number discs, chips → plain ✓ ACHIEVED / ↻ REBUILT text, alternating row bands; slide 4 spacing; slide 5 rebuilt — 7 clients, SDG names spelled out per row, "9" stat dropped). REMAINING: render slides to PNG (PowerPoint COM export; the old output pptx was file-locked = PowerPoint likely open), then run two eval agents — visual formatting QA per rendered slide (overlaps/clipping/alignment/spacing) and feedback-compliance + cross-slide number consistency + typos — apply findings, re-render, certify submission-ready.
+
 ## Remaining pipeline, in order
 
 1. Restructure → dist; verify Cloudflare (`wrangler whoami`); create Pages project `180dc-variants`; initial deploy of the five completed variants + gallery stub.
