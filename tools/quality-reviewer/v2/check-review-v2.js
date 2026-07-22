@@ -148,8 +148,7 @@ if (r.readiness && READINESS.includes(r.readiness.level)) {
     if (ceil === -1) errs.push('blocking issue ceiling invalid: ' + b.ceiling);
     else if (lvl > ceil) errs.push('readiness "' + r.readiness.level + '" is above the ceiling "' + b.ceiling + '" of blocking rule ' + b.rule);
   });
-  if ((r.blockingIssues || []).length === 0 && lvl < 2)
-    warns.push('readiness below Needs targeted revision but no blocking issue is listed');
+  // the no-blocker escalation floor is enforced as an error in check 8c below
 }
 
 // 6. No em or en dash in authored fields (quote fields exempt)
@@ -174,6 +173,50 @@ if (r.timeline) {
   if (!Array.isArray(r.timeline.tiles)) errs.push('timeline.tiles must be an array');
   else if (r.meta && r.timeline.tiles.length !== r.meta.slideCount)
     errs.push('timeline.tiles length ' + r.timeline.tiles.length + ' differs from meta.slideCount ' + r.meta.slideCount);
+}
+
+/* 8. Severity and blocking-rule coherence.
+   Encodes the 2026-07-03 severity calibration (see progress.md session 3) in the
+   validator instead of leaving it to the prompt. Over-escalation on good work is the
+   failure the effectiveness review calls the most likely to burn a team on day one,
+   and nothing mechanical was checking it. */
+{
+  const finds = r.findings || [];
+  const nBlock = (r.blockingIssues || []).length;
+  const lvl = r.readiness && READINESS.includes(r.readiness.level)
+    ? READINESS.indexOf(r.readiness.level) : -1;
+
+  // 8a. deliveryCritical invariant: nothing is delivery-critical with no blocking issue.
+  if (nBlock === 0) finds.forEach((f, i) => {
+    if (f.deliveryCritical)
+      errs.push('finding ' + (i + 1) + ' is deliveryCritical but no blocking issue is listed');
+  });
+
+  // 8b. A minor finding is never delivery-critical.
+  finds.forEach((f, i) => {
+    if (f.severity === 'minor' && f.deliveryCritical)
+      errs.push('finding ' + (i + 1) + ' is severity minor but marked deliveryCritical');
+  });
+
+  // 8c. Escalation floor: the bottom two readiness levels need a blocking rule.
+  if (lvl > -1 && lvl < 2 && nBlock === 0)
+    errs.push('readiness "' + r.readiness.level + '" requires at least one blocking issue');
+
+  // 8d. Over-escalation guard: no blocker and every finding minor means Nearly ready.
+  if (lvl > -1 && lvl < 3 && nBlock === 0 && finds.length > 0 &&
+      finds.every(f => f.severity === 'minor'))
+    errs.push('readiness "' + r.readiness.level + '" but no blocking issue and every finding ' +
+      'is minor (expected "' + READINESS[3] + '")');
+
+  // 8e. Padding signal: one quote carrying two findings.
+  const seen = new Map();
+  finds.forEach((f, i) => (f.evidence || []).forEach(q => {
+    const k = norm(q.quote || '');
+    if (seen.has(k) && seen.get(k) !== i)
+      warns.push('finding ' + (i + 1) + ' reuses the quote of finding ' + (seen.get(k) + 1) +
+        ', check it is not padding');
+    else if (!seen.has(k)) seen.set(k, i);
+  }));
 }
 
 function report() {

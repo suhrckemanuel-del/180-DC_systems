@@ -1,0 +1,183 @@
+{
+  "meta": {
+    "title": "Client E paid membership recommendation",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Needs targeted revision",
+    "mainReason": "The deck is sound and well sourced, but it never sizes the roughly 5,000 pounds of membership income against the grant income it is meant to diversify away from, so the board cannot tell whether this answers their funding problem or only starts to.",
+    "highestRiskIssue": "Slide 3 names a grant cliff and slide 8 gives a year-one membership figure, and no slide connects the two.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "A stated total income figure and the value of the two grants at risk, set beside the membership estimate, would close the gap and move this to Nearly ready.",
+    "confidenceNote": "The input pack left the evidence and source notes, the client constraints and the intended audience blank, so confidence is capped at Medium."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.3,
+    "confidence": "Medium",
+    "effort": "2-3 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The decision, the answer and the first step are all stated in the first two slides and on slide 10." },
+      { "name": "Problem framing", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The question is specific and held throughout, but what is out of scope (other income routes) is never stated." },
+      { "name": "Storyline and pyramid logic", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Answer first on slide 1 and an unbroken chain, but three middle titles are labels so the titles alone do not carry it." },
+      { "name": "Evidence quality", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Every figure carries a named source. Primary and secondary evidence are not explicitly distinguished." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Findings are interpreted and feed the recommendation. The revenue is not compared to the income at risk." },
+      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Action, price, owner, month-by-month timing and a conversion measure are all present." },
+      { "name": "Feasibility and implementation", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Sized to existing capacity, sequenced over three months, with a soft launch as the first step." },
+      { "name": "Risks, assumptions and uncertainty", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Assumptions and the conversion risk are named. The cost of delivering member benefits is not treated as a risk." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Most titles assert. Slides 5, 7 and 8 are topic labels." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout. No named individual is judged and no personal data is exposed." }
+    ]
+  },
+  "strengths": [
+    {
+      "point": "The deck answers the client's question in its first two slides instead of building to it.",
+      "quote": "Client E asked whether a paid membership could diversify income away from project grants. Our answer is yes, with a deliberately small start.",
+      "slide": 2
+    },
+    {
+      "point": "The load-bearing number is labelled as an assumption and given a test, which is rare in a student deck.",
+      "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.",
+      "slide": 8
+    },
+    {
+      "point": "The plan names an owner, a sequence and a go signal, so someone can start on Monday.",
+      "quote": "The Client E coordinator owns the launch. Month one: soft launch to 200 contacts.",
+      "slide": 10
+    }
+  ],
+  "findings": [
+    {
+      "short": "Revenue never sized",
+      "title": "The membership estimate is never set against the grant income it is meant to replace.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "analysis",
+      "owner": "team",
+      "principle": "Client Decision Usefulness: an income answer must be sized against the income problem it answers.",
+      "diagnosis": "Slide 3 establishes the problem as an 80% grant dependency with two of five grants not expected to renew. Slide 8 gives the membership answer as roughly 5,000 pounds in year one. No slide states Client E's total income or the value of the two grants at risk, so the reader cannot tell whether 5,000 pounds is a meaningful diversification or a rounding error against the gap.",
+      "evidence": [
+        { "slide": 3, "quote": "Two of five grants are not expected to renew, per the funder letters on file." },
+        { "slide": 8, "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one." }
+      ],
+      "why": "A board that approves this could reasonably believe the grant loss is being addressed. If the two grants are worth many times 5,000 pounds, the board needs to know that membership is one part of the response and not the response, and it would ask for the rest at the same meeting.",
+      "reflect": "What share of the income Client E is about to lose does 5,000 pounds actually cover, and does your recommendation still read the same way once that share is on the slide.",
+      "fix": "Put the size of the gap and the size of the answer on the same slide, then say explicitly what membership is and is not solving. This is the one gap holding the deck at Needs targeted revision rather than Nearly ready.",
+      "tags": [ "Client Decision Usefulness", "So What" ]
+    },
+    {
+      "short": "Cost side absent",
+      "title": "The year-one figure is gross revenue with no cost of delivering the member benefits.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Evidence Grounding: a financial figure the client will quote should be net of what it costs to earn.",
+      "diagnosis": "Slide 7 asserts the benefits use spare capacity and slide 8 reports the 5,000 pounds without any offsetting cost for the two members-only events, the booking admin or the partner discounts. The claim about spare capacity is plausible but it is asserted rather than shown.",
+      "evidence": [
+        { "slide": 7, "quote": "These use capacity Client E already has." },
+        { "slide": 8, "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one." }
+      ],
+      "why": "The client will read 5,000 pounds as money available to spend. A short cost line protects the team when the coordinator's actual hours turn up later.",
+      "reflect": "What does one members-only event cost Client E in staff hours and cash, and what is left of the 5,000 pounds after two of them.",
+      "fix": "Add a cost line under the revenue estimate, even a rough one, and label the result as net. Where you cannot cost something, say so rather than leaving it out.",
+      "tags": [ "Evidence Grounding", "Financial Hygiene" ]
+    },
+    {
+      "short": "Two different thresholds",
+      "title": "The go decision uses a 5% threshold while the business case is built on 8%.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "implementation",
+      "owner": "team",
+      "principle": "Decision Rules: the trigger to proceed should tie back to the number the case rests on.",
+      "diagnosis": "Slide 8 builds the case on an 8% conversion. Slide 10 lets the full launch proceed at 5%. The deck does not say what a 5% to 8% result means for the revenue estimate or why the lower bar is acceptable.",
+      "evidence": [
+        { "slide": 8, "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test." },
+        { "slide": 10, "quote": "Month three: full launch if the soft launch clears 5%." }
+      ],
+      "why": "The coordinator running the review in month two has two numbers and no rule for the space between them, so the go decision falls back to instinct.",
+      "reflect": "If the soft launch converts at 6%, what does your year-one estimate become and would you still launch.",
+      "fix": "State why the go bar sits below the planning assumption and what a result between the two implies for the revenue estimate. One sentence closes it.",
+      "tags": [ "Decision Rules", "Actionability" ]
+    },
+    {
+      "short": "Price set off list price",
+      "title": "The 45 pound price is anchored on what comparable groups charge without what they offer.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Comparability: a benchmark only holds when the things compared are alike.",
+      "diagnosis": "Slide 5 takes a 40 to 60 pound range from three public websites and slide 6 lands at 45 pounds inside it. The deck does not say what those memberships include or how they convert, so the benchmark supports the range but not the choice of point within it.",
+      "evidence": [
+        { "slide": 5, "quote": "Three comparable local arts non-profits run membership at 40 to 60 pounds a year (their public websites, 2025)." },
+        { "slide": 6, "quote": "Launching one tier at 45 pounds, rather than three tiers at once, keeps admin low and lets Client E learn before it scales." }
+      ],
+      "why": "If the comparators offer more for the money, 45 pounds is a harder sell than the 8% assumption implies, and price is the easiest thing to change before launch.",
+      "reflect": "What do those three memberships include, and does Client E's benefit set justify sitting at the low end or the middle of that range.",
+      "fix": "Add one line on what the comparators include so the reader can see the price is a judgment against value, not just a midpoint. Keep it to a line: this is a caveat, not a new workstream.",
+      "tags": [ "Comparability", "Evidence Grounding" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slides 5, 7 and 8", "problem": "Three middle titles are topic labels (\"What comparable groups charge\", \"What members get\", \"The numbers\") while the rest of the deck asserts.", "why": "A board member who skims titles loses the middle of the argument, which is where the pricing and the revenue case sit.", "fix": "Turn each into the assertion the slide already proves." },
+    { "location": "Slide 4", "problem": "The 1,400 mailing list is called an engaged base to convert, and slide 9 assumes the list is accurate.", "why": "List decay is the quiet driver of the 8% assumption, so the size of the usable base matters more than the headline count.", "fix": "State when the list was last cleaned or what share opened a recent mailing." },
+    { "location": "Slide 7", "problem": "The local partner discount is presented as a benefit without saying whether any partner has agreed.", "why": "A benefit advertised at launch that is not yet secured is the sort of thing members notice first.", "fix": "Mark which benefits are confirmed and which are still to be arranged." }
+  ],
+  "questionsForLead": [
+    "What is Client E's total annual income, and what are the two non-renewing grants worth against the 5,000 pounds this scheme raises.",
+    "Did the team cost the two members-only events and the booking admin, or is the spare capacity claim on slide 7 the client's own view.",
+    "Why does the go bar on slide 10 sit at 5% when the case is built on 8%.",
+    "Has anyone confirmed the local partner discounts, or are they still an intention.",
+    "Does the client have a view on the 45 pound price point, given three comparators sit between 40 and 60."
+  ],
+  "learningNote": {
+    "lesson": "Sizing is part of the answer. When a client's problem is a number, your recommendation has to be measured against that number on the same page, or the client is left doing the arithmetic that decides whether your advice is enough.",
+    "weakHabit": "Building a well-evidenced solution and never turning back to measure it against the problem that opened the deck.",
+    "exercise": "Take the problem slide and the answer slide of this deck. Write one sentence that contains both magnitudes. If you cannot, you are missing a number the client needs.",
+    "principle": "Client Decision Usefulness"
+  },
+  "notAssessed": [
+    "Whether 5,000 pounds is material to Client E. Total income and the value of the grants at risk were not provided.",
+    "Whether the comparator memberships are genuinely comparable. Only their prices were given.",
+    "The cost of running the scheme. No cost figures were in the deck or the input pack.",
+    "The client's constraints and the intended audience. Both fields were left blank in the input pack, so feasibility was judged only against constraints the deck itself states.",
+    "Visual design, layout and charts. Only slide text was provided."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Answer", "span": 2 },
+      { "label": "Why now", "span": 3 },
+      { "label": "The scheme", "span": 3 },
+      { "label": "Case and launch", "span": 2 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "partial" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "partial" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "partial" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 8, "state": "partial", "label": "Revenue not sized against the gap" },
+      { "at": 10, "state": "partial", "label": "Go bar differs from the planning assumption" }
+    ],
+    "connectors": [
+      { "from": 3, "to": 8, "label": "Problem size never meets answer size" }
+    ]
+  }
+}

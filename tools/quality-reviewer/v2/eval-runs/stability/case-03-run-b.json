@@ -1,0 +1,191 @@
+{
+  "meta": {
+    "title": "Client C service expansion",
+    "client": "Client C (anonymized)",
+    "artifactType": "draft deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Needs substantial revision",
+    "mainReason": "The client asked which service to launch first and the deck never answers, it ends on findings and a call for further analysis.",
+    "highestRiskIssue": "Slide 9 closes the argument with \"Further analysis may be useful.\" instead of a choice, so the client leaves with the same open decision they started with.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "A stated recommendation with the criteria behind it, or confirmation that this draft was only ever meant as a findings readout with the recommendation to follow, would move the level."
+  },
+  "blockingIssues": [
+    {
+      "rule": 2,
+      "label": "No answer to the client's decision",
+      "ceiling": "Needs substantial revision",
+      "evidence": [
+        { "slide": 9, "quote": "Each option has benefits and costs. Capacity, funding and staffing all matter. Further analysis may be useful." },
+        { "slide": 2, "quote": "Background. Methodology. Findings. Appendix." }
+      ]
+    }
+  ],
+  "scorecard": {
+    "diagnosticMean": 2.4,
+    "confidence": "Medium",
+    "effort": "6-8 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The decision is named on slide 3 but no answer and no next step follow." },
+      { "name": "Problem framing", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Three options and one slot are clear, no success criteria for choosing." },
+      { "name": "Storyline and pyramid logic", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "No governing insight anywhere, the chain stops at findings." },
+      { "name": "Evidence quality", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Method is stated, the local health data behind slide 7 is not sourced and limits are absent." },
+      { "name": "Analysis and insight", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "Findings are reported with no implication and the options are never compared." },
+      { "name": "Recommendation specificity", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "There is no recommendation to score." },
+      { "name": "Feasibility and implementation", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "Cost and staffing are mentioned per option, no sequence and no first step." },
+      { "name": "Risks, assumptions and uncertainty", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "Constraints appear as facts, no assumption is marked and no tradeoff is worked through." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "One message per slide, but every title is a topic label." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, patients and staff are treated by role." }
+    ]
+  },
+  "strengths": [
+    {
+      "point": "The method is stated up front and mixes primary and secondary sources, so a reader can judge how much weight the findings carry.",
+      "quote": "We interviewed staff, surveyed 120 patients and reviewed local health data.",
+      "slide": 4
+    },
+    {
+      "point": "The patient survey produces a quantified ranking of unmet need, which is the strongest decision-relevant input in the deck.",
+      "quote": "40% of surveyed patients said mental health was their top unmet need, 30% said diabetes, 20% physiotherapy, 10% other.",
+      "slide": 8
+    },
+    {
+      "point": "The real constraints on the two harder options are surfaced rather than hidden.",
+      "quote": "A programme would need a specialist nurse.",
+      "slide": 7
+    }
+  ],
+  "findings": [
+    {
+      "short": "No answer given",
+      "title": "The deck presents findings and never states which service Client C should launch first.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Client Decision Usefulness: the deliverable must answer the decision the client faces.",
+      "diagnosis": "Slide 3 names the decision, one new service out of three. The deck then reports one finding per option on slides 5 to 7, shows the survey on slide 8, and closes on slide 9 without choosing. Slide 1 frames the whole thing as research findings, and slide 10 is a thank-you, so the client reaches the end holding the same open question.",
+      "evidence": [
+        { "slide": 9, "quote": "Each option has benefits and costs. Capacity, funding and staffing all matter. Further analysis may be useful." },
+        { "slide": 1, "quote": "Client C service expansion. Research findings." }
+      ],
+      "why": "A clinic with room for exactly one new service cannot act on a balanced summary. If the team will not pick, someone at the clinic picks on instinct and the work adds nothing to the decision.",
+      "reflect": "On the evidence you already have, which of the three would you launch first, and what would have to be true for you to be wrong.",
+      "fix": "Commit to one option and put it in the first three slides, then rebuild the findings as the case for that choice and against the other two. Where the evidence is not yet conclusive, say what you would recommend today and name the one test that would change it. A defensible answer with stated uncertainty beats no answer.",
+      "tags": [ "Client Decision Usefulness", "Pyramid Principle" ]
+    },
+    {
+      "short": "No choosing criteria",
+      "title": "The three options are described separately and never compared on a common basis.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Analysis and Insight: a choice between options requires the same criteria applied to each.",
+      "diagnosis": "Slides 5, 6 and 7 each raise a different consideration. Mental health gets demand, physiotherapy gets unfilled referrals plus equipment cost, diabetes gets prevalence plus a staffing need. No slide states what Client C should optimize for, so the three cannot be ranked and slide 9 dissolves into a general statement that everything matters.",
+      "evidence": [
+        { "slide": 5, "quote": "Patients report long waits for mental-health support elsewhere. Staff see demand." },
+        { "slide": 9, "quote": "Each option has benefits and costs. Capacity, funding and staffing all matter." }
+      ],
+      "why": "Without shared criteria the client cannot check the team's reasoning or redo it when circumstances change, and any answer the team eventually gives looks like a preference rather than a conclusion.",
+      "reflect": "What are the three or four things Client C most needs this new service to deliver, and how does each option score against them.",
+      "fix": "Agree the decision criteria with the client, then score all three options against the same set, including the ones that count against your preferred option. Show the comparison so the ranking is visible, not asserted.",
+      "tags": [ "Analysis and Insight", "Option Comparison" ]
+    },
+    {
+      "short": "Findings left inert",
+      "title": "The survey and the local health data are reported without an implication or a source.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Evidence Grounding: every number names its source and carries its so-what.",
+      "diagnosis": "Slide 8 gives the survey split and stops. Slide 7 states that local diabetes rates run above the regional average, but slide 4 identifies the source only as local health data, with no dataset, year or comparison base. Neither slide says what follows for the choice.",
+      "evidence": [
+        { "slide": 7, "quote": "Local diabetes rates are above the regional average." },
+        { "slide": 8, "quote": "40% of surveyed patients said mental health was their top unmet need, 30% said diabetes, 20% physiotherapy, 10% other." }
+      ],
+      "why": "These are the two pieces of evidence that most bear on the choice. Unsourced and uninterpreted, they cannot carry a recommendation and a sceptical board member can dismiss both.",
+      "reflect": "For the survey split and the diabetes rate, what does each one tell Client C to do, and could you name the source out loud if asked in the room.",
+      "fix": "Name the dataset and period behind the health data, state the survey base and how patients were reached, then add the implication line under each. Also say where the survey is weak, since self-reported unmet need and clinical need are not the same thing.",
+      "tags": [ "Evidence Grounding", "ERIP Performance" ]
+    },
+    {
+      "short": "Titles are labels",
+      "title": "Every slide title is a topic label, so the titles alone carry no argument.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "Minto action titles: the title states the message, not the subject.",
+      "diagnosis": "The agenda on slide 2 lists sections rather than an argument, and the content titles follow the same pattern: Background, Methodology, Finding: mental health, Considerations. A reader skimming the titles learns the topics covered and nothing the team concluded.",
+      "evidence": [
+        { "slide": 2, "quote": "Background. Methodology. Findings. Appendix." }
+      ],
+      "why": "Clinic leadership will read the titles and little else. If the titles carry no message, the work is invisible to the people who decide.",
+      "reflect": "If a board member read only your ten titles, what would they be able to tell a colleague afterwards.",
+      "fix": "Rewrite each content title as a full-sentence assertion that states what that slide proves, then read the titles in order and check they form the argument. Do this after you have chosen the recommendation, since the titles should point at it.",
+      "tags": [ "Minto", "Slide Communication" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 6", "problem": "\"Equipment cost is high\" is not sized.", "why": "Cost is the reason physiotherapy might lose, so an unquantified word is doing decisive work.", "fix": "Put a figure or a range on the equipment, or say plainly that you could not size it." },
+    { "location": "Slide 10", "problem": "The deck ends on a thank-you with no next step or owner.", "why": "A closing slide is the last chance to hand the client something to do.", "fix": "Replace it with the first action, who does it and by when." }
+  ],
+  "questionsForLead": [
+    "Was this draft always meant to stop at findings, with the recommendation in a later deck, or did the team intend to answer here.",
+    "Has the team agreed decision criteria with Client C, or is each option being judged on whatever evidence turned up.",
+    "What is the source and period of the local health data behind the diabetes claim on slide 7.",
+    "How were the 120 survey patients selected, and is that base representative of the 2,000 seen a year.",
+    "Does Client C have a budget or a funding route for any of the three, since only equipment and staffing are mentioned."
+  ],
+  "learningNote": {
+    "lesson": "Research is not the deliverable. The client is paying for the judgment call the research supports, and a deck that stops at findings transfers the hardest work back to the client.",
+    "weakHabit": "Hiding behind further analysis when the evidence is good enough to take a position.",
+    "exercise": "Before the next draft, write the recommendation as one sentence on a blank page. Then build the deck backwards from it and delete any slide that does not defend it.",
+    "principle": "Client Decision Usefulness"
+  },
+  "notAssessed": [
+    "Whether the local diabetes rate claim is factually correct. No source or dataset was provided.",
+    "Whether the patient survey is representative. The sampling method and response rate were not given.",
+    "Client C's budget, funding route and staffing headroom. The input pack left known constraints blank.",
+    "The intended audience for this deck, which was left blank, so the pitch level could not be judged.",
+    "Visual design, charts and layout. Only slide text was provided.",
+    "The appendix referenced on slide 2, which was not included."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Setup", "span": 4 },
+      { "label": "Findings", "span": 4 },
+      { "label": "Close", "span": 2 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "partial" },
+      { "slide": 2, "state": "partial" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "partial" },
+      { "slide": 5, "state": "partial" },
+      { "slide": 6, "state": "partial" },
+      { "slide": 7, "state": "partial" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "critical" },
+      { "slide": 10, "state": "critical" }
+    ],
+    "callouts": [
+      { "at": 9, "state": "critical", "label": "No recommendation, only a call for more analysis" },
+      { "at": 2, "state": "partial", "label": "Agenda lists topics, not an argument" }
+    ],
+    "connectors": [
+      { "from": 3, "to": 9, "label": "Decision named on slide 3 is still open on slide 9" },
+      { "from": 8, "to": 9, "label": "Survey ranking never feeds a choice" }
+    ]
+  }
+}

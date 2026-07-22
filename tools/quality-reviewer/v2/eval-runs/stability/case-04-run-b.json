@@ -1,0 +1,206 @@
+{
+  "meta": {
+    "title": "Client D path to self-sustainability",
+    "client": "Client D (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 9,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Not ready for client review",
+    "mainReason": "The recommendation on slide 6 asks Client D to take on a lease and three hires, which slide 3 states the organization cannot do, so the deck walks straight into its own constraint.",
+    "highestRiskIssue": "Slide 6 recommends hiring three paid repair staff after slide 3 states the board has ruled out hiring until revenue grows.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "A costed financing path that shows how the shopfront and the hires are paid for before revenue grows, or a board decision that lifts the hiring constraint, would remove the contradiction. The input left intended audience, known constraints and evidence notes blank, so more constraint detail could also change how the finance findings are weighted.",
+    "confidenceReason": "Every fact that sets the level is quotable from the deck, but no evidence or source notes were supplied, so confidence cannot be High."
+  },
+  "blockingIssues": [
+    {
+      "rule": 1,
+      "label": "Recommendation contradicts the client's stated financial constraint",
+      "ceiling": "Not ready for client review",
+      "evidence": [
+        { "slide": 3, "quote": "Client D has no cash reserves and cannot take on new fixed costs without new income first." },
+        { "slide": 3, "quote": "The board has been clear that hiring is not possible until revenue grows." },
+        { "slide": 6, "quote": "Open a retail shopfront within six months and hire three paid repair staff to meet demand." }
+      ]
+    },
+    {
+      "rule": 4,
+      "label": "Ungrounded financial projection the recommendation depends on",
+      "ceiling": "Needs targeted revision",
+      "evidence": [
+        { "slide": 7, "quote": "Revenue will double in year one. The shop pays for itself by month nine." }
+      ]
+    }
+  ],
+  "scorecard": {
+    "diagnosticMean": 2.6,
+    "confidence": "Medium",
+    "effort": "8-12 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "A clear answer and a next step are given, but the answer is not framed for a client that cannot fund it." },
+      { "name": "Problem framing", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Self-sustainability in two years is held consistently, but scope and a definition of self-sustaining are missing." },
+      { "name": "Storyline and pyramid logic", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The answer arrives on slide 6, titles are labels, and the chain breaks between slide 3 and slide 6." },
+      { "name": "Evidence quality", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "No claim in the deck carries a source, including the peer benchmark and both financial projections." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Findings feed the recommendation, but no alternative to the shopfront is compared." },
+      { "name": "Recommendation specificity", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "A specific action and a six-month timeframe are given, no owner and no success measure." },
+      { "name": "Feasibility and implementation", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The plan does not fit the stated constraints and says what to do, not how." },
+      { "name": "Risks, assumptions and uncertainty", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "No assumption is marked, no risk is named, and the deck asserts the plan is low-risk." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Each slide makes one point, but the titles are topic labels rather than assertions." },
+      { "name": "Professionalism, tone and confidentiality", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Tone is professional and no personal data appears, but certainty is overstated." }
+    ]
+  },
+  "strengths": [
+    {
+      "point": "The financial baseline is stated plainly and early, which is exactly the number a board needs to judge a self-sustainability plan.",
+      "quote": "Client D covers 60% of its costs from bicycle sales and relies on grants for the rest.",
+      "slide": 2
+    },
+    {
+      "point": "The deck states the binding constraint honestly instead of hiding it, which is what makes the contradiction fixable rather than invisible.",
+      "quote": "Client D has no cash reserves and cannot take on new fixed costs without new income first.",
+      "slide": 3
+    },
+    {
+      "point": "The deck reaches a decision and does not hide behind a menu of options.",
+      "quote": "Open a retail shopfront within six months and hire three paid repair staff to meet demand.",
+      "slide": 6
+    }
+  ],
+  "findings": [
+    {
+      "short": "Recommendation breaks constraint",
+      "title": "The recommendation asks Client D to do the two things slide 3 says it cannot do.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Internal consistency: a recommendation must survive the constraints the deck itself establishes.",
+      "diagnosis": "Slide 3 states that Client D has no reserves, cannot add fixed costs before new income, and that the board has ruled out hiring until revenue grows. Slide 6 then recommends a shopfront lease within six months plus three paid hires. A lease and three salaries are new fixed costs incurred before the revenue exists. Nothing between slide 3 and slide 6 resolves this, and slide 8 asserts the plan is low-risk without addressing it.",
+      "evidence": [
+        { "slide": 3, "quote": "Client D has no cash reserves and cannot take on new fixed costs without new income first." },
+        { "slide": 3, "quote": "The board has been clear that hiring is not possible until revenue grows." },
+        { "slide": 6, "quote": "Open a retail shopfront within six months and hire three paid repair staff to meet demand." },
+        { "slide": 8, "quote": "The plan is low-risk. Demand is proven and the model is tested by peers." }
+      ],
+      "why": "The board will see the contradiction on the first read and stop trusting the analysis behind it. Worse, if they do not see it, Client D could sign a lease it has no reserves to cover and put the organization at risk.",
+      "reflect": "Read slide 3 and slide 6 back to back as the board will. Where does the money for the lease and the three salaries come from in month one, before any new revenue arrives.",
+      "fix": "Either resolve the constraint explicitly (name the financing that covers fixed costs until revenue catches up, and say what happens if it does not) or restructure the recommendation into a sequence that generates income before it commits fixed cost. The principle is that the deck must answer its own objection, not step over it.",
+      "tags": [ "Internal Consistency", "Feasibility" ]
+    },
+    {
+      "short": "Unsourced financial projection",
+      "title": "The financial case rests on a revenue projection and a peer benchmark that carry no source or method.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Evidence Grounding: a number that drives a decision must trace to a source and a method.",
+      "diagnosis": "Slide 7 states revenue doubles in year one and the shop breaks even by month nine. No model, no cost base, no assumption set and no source appears anywhere in the deck. The peer claim on slide 5 that comparable enterprises doubled revenue is the only support offered, and it names no peer, no sample and no timeframe. The entire self-sustainability case depends on these two figures being right.",
+      "evidence": [
+        { "slide": 7, "quote": "Revenue will double in year one. The shop pays for itself by month nine." },
+        { "slide": 5, "quote": "Comparable social enterprises have doubled revenue after opening a shop." }
+      ],
+      "why": "A board asked to approve a lease against no reserves will ask where month nine comes from. With no model behind it, the answer is nothing, and the recommendation collapses at the moment it matters most.",
+      "reflect": "Write out the arithmetic that produces month nine. What rent, what wage bill, what sales volume per week does it assume, and which of those did you actually observe.",
+      "fix": "Build the projection as a visible model with its assumptions listed, then show the payback range across a pessimistic and an optimistic case rather than a single point. Name the peer enterprises and how comparable they actually are, or drop the benchmark. The principle is that a number the client acts on must be reconstructable by the reader.",
+      "tags": [ "Evidence Grounding", "ERIP Performance" ]
+    },
+    {
+      "short": "No implementation plan",
+      "title": "The next steps are three verbs with no owner, sequence, cost or measure.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "implementation",
+      "owner": "team",
+      "principle": "Actionability: a final deck hands over a plan, not a direction.",
+      "diagnosis": "Slide 9 is the whole implementation content of a final recommendation deck. It names no owner, no dates, no dependencies between the three steps, no cost for the lease or the hires, and no signal that would tell Client D the plan is working or failing. For a two-year self-sustainability target, there is also no definition of what self-sustaining means in numbers.",
+      "evidence": [
+        { "slide": 9, "quote": "Sign a lease. Recruit staff. Launch." },
+        { "slide": 6, "quote": "This will make Client D self-sustaining." }
+      ],
+      "why": "This is a final deck, so it is the last thing the team hands over. Client D is left to invent the plan itself, which is the work it asked for, and no one can tell at month three whether to continue or stop.",
+      "reflect": "If you were the Client D director the Monday after this deck lands, what is the first thing you do, who does it with you, and what number would make you pull back.",
+      "fix": "Turn slide 9 into a sequenced plan with an owner and a trigger per step, dependencies made explicit (what must be true before the lease is signed), and a defined threshold for self-sustaining that Client D can measure against. Give it a stop condition as well as a start. The principle is that a plan names who, by when and how you would know.",
+      "tags": [ "Actionability", "Implementation" ]
+    },
+    {
+      "short": "No risks or assumptions",
+      "title": "The deck names no assumption and no risk, and asserts the plan is low-risk instead.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Honest uncertainty: naming the load-bearing assumptions is what lets a board stress-test the advice.",
+      "diagnosis": "Slide 8 characterizes the plan as low-risk on the basis that demand is proven and peers have done it. Neither is established. The load-bearing assumptions (that grant income falls slowly enough, that walk-in retail demand converts, that three hires can be paid before revenue arrives) are never marked as assumptions, and no downside case appears anywhere in nine slides.",
+      "evidence": [
+        { "slide": 8, "quote": "The plan is low-risk. Demand is proven and the model is tested by peers." },
+        { "slide": 2, "quote": "Grant income is expected to fall." }
+      ],
+      "why": "A board with no reserves is buying risk, not revenue. A deck that claims low risk without showing the downside reads as advocacy, and the board cannot tell where the plan is fragile until it already is.",
+      "reflect": "List the three things that must all be true for month nine to happen. Which one is least under Client D's control.",
+      "fix": "Mark the load-bearing assumptions as assumptions on the slide that uses them, add a downside case that shows what happens if retail demand or grant timing disappoints, and replace the low-risk claim with the specific risks and how the plan mitigates each. The principle is that stated risk builds trust and asserted safety destroys it.",
+      "tags": [ "Uncertainty", "ERIP Performance" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 2", "problem": "\"Grant income is expected to fall\" gives no size and no timing.", "why": "How fast grants fall sets the deadline for the whole plan, so it is a load-bearing number left blank.", "fix": "State the expected fall as a figure and a date, or mark it as an assumption with a range." },
+    { "location": "Slide 4", "problem": "Demand is described as strong and growing with no source or size.", "why": "This claim is later used on slide 8 as proof that the plan is low-risk, so it carries more weight than its support.", "fix": "Quantify the turned-away repair work, which is the demand evidence you actually hold, and source the market claim or drop it." },
+    { "location": "Slides 2 to 8", "problem": "Titles are topic labels (Situation, The market, The opportunity, Why this works).", "why": "A board member skimming the titles cannot reconstruct the recommendation or the reason behind it.", "fix": "Rewrite content titles as full-sentence assertions so the titles alone carry the argument." }
+  ],
+  "questionsForLead": [
+    "Did the team put the recommendation to Client D's board or director against the no-hiring constraint on slide 3, and what was the response.",
+    "Where do the year-one revenue doubling and the month-nine payback come from, and has anyone seen the underlying model.",
+    "Which comparable social enterprises are behind the doubling benchmark on slide 5, and how similar are they to Client D in size and city.",
+    "Was any option other than a retail shopfront considered, and if so why was it dropped.",
+    "The input left intended audience, known constraints and evidence notes blank. Can the lead supply these before the deck goes to the client."
+  ],
+  "learningNote": {
+    "lesson": "The constraints you write down in the situation section are a test your recommendation has to pass. If the recommendation cannot pass them, the answer is not to move on, it is to change the recommendation or show how the constraint is lifted.",
+    "weakHabit": "Choosing the recommendation early, then treating the client's stated limits as background context rather than as conditions the answer must satisfy.",
+    "exercise": "Take your recommendation slide and your constraints slide and put them side by side. For each constraint, write one sentence explaining how the recommendation satisfies it. Any constraint you cannot answer is either a change to the recommendation or a question for the client, and it goes on the deck either way.",
+    "principle": "Internal Consistency"
+  },
+  "notAssessed": [
+    "Whether the year-one revenue doubling or the month-nine payback is achievable. No model, cost base or source was provided.",
+    "Whether the peer enterprises on slide 5 are genuinely comparable to Client D. None were named.",
+    "Whether Client D has access to financing that would resolve the fixed-cost constraint. The deck does not say and the input left known constraints blank.",
+    "The intended audience for the deck. The input field was left blank, so framing was judged against the client question alone.",
+    "Visual design, layout, charts and any speaker notes. Only slide text was provided.",
+    "Client politics and whether the board would approve a lease under any conditions."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Situation", "span": 4 },
+      { "label": "Recommendation", "span": 3 },
+      { "label": "Plan", "span": 2 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "partial" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "partial" },
+      { "slide": 5, "state": "partial" },
+      { "slide": 6, "state": "critical" },
+      { "slide": 7, "state": "critical" },
+      { "slide": 8, "state": "critical" },
+      { "slide": 9, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 6, "state": "critical", "label": "Recommendation contradicts slide 3" },
+      { "at": 7, "state": "critical", "label": "Projection with no model or source" },
+      { "at": 8, "state": "critical", "label": "Low-risk claim with no risk named" },
+      { "at": 9, "state": "partial", "label": "No owner, sequence or measure" }
+    ],
+    "connectors": [
+      { "from": 3, "to": 6, "label": "Constraint the recommendation walks into" },
+      { "from": 5, "to": 7, "label": "Unsourced benchmark carries the projection" }
+    ]
+  }
+}

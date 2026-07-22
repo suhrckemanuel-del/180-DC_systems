@@ -1,0 +1,244 @@
+{
+  "meta": {
+    "title": "Client A regional strategy. Options for the next phase of growth.",
+    "client": "Client A",
+    "artifactType": "draft deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+
+  "readiness": {
+    "level": "Needs substantial revision",
+    "mainReason": "The deck picks Region B on slide 8 with an assertion rather than evidence, so the core recommendation the client would act on is unsupported.",
+    "highestRiskIssue": "Slide 8 declares Region A demand bounded and Region B a step change without any figure, cost or capacity comparison behind either half of that claim.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "Source notes behind the 40% Region B growth figure and any sizing of unmet Region A demand would change how much of this is a sourcing gap and how much is a reasoning gap. A statement of Client A's budget and staffing constraints would let feasibility be judged rather than flagged."
+  },
+
+  "blockingIssues": [
+    {
+      "rule": 2,
+      "label": "Core recommendation unsupported by the evidence",
+      "ceiling": "Needs substantial revision",
+      "evidence": [
+        { "slide": 8, "quote": "The unmet demand in Region A is real but bounded, while Region B offers a step change in reach." },
+        { "slide": 8, "quote": "Region B is the larger prize." }
+      ]
+    },
+    {
+      "rule": 4,
+      "label": "Ungrounded headline number drives the decision",
+      "ceiling": "Needs targeted revision",
+      "evidence": [
+        { "slide": 5, "quote": "Region B demand will grow 40% over the next three years." }
+      ]
+    }
+  ],
+
+  "scorecard": {
+    "diagnosticMean": 2.1,
+    "confidence": "Medium",
+    "effort": "6-8 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "The decision is named through the two options and answered on slides 8 and 9, but slide 10 leaves the client with nothing concrete to do and nothing in the deck is framed against Client A's own capacity." },
+      { "name": "Problem framing", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The region question is held consistently, but there is no problem statement, no scope and no success criteria, so nothing defines what a good answer would look like." },
+      { "name": "Storyline and pyramid logic", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The governing insight arrives on slide 8 of 10 and the titles are topic labels, so a reader cannot reconstruct the argument from the top." },
+      { "name": "Evidence quality", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "No claim in the deck carries a source: 620 tonnes, 40 partners, 30 potential partners and the 40% growth figure all stand unattributed, and no limitation is stated." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Slide 8 does interpret rather than only describe and it links to the recommendation, but slides 4 and 5 draw no implications and the option comparison rests on adjectives rather than criteria." },
+      { "name": "Recommendation specificity", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "Slide 9 gives a direction and three abstractions with no owner, no timeframe and no measure of success." },
+      { "name": "Feasibility and implementation", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "Slide 3 describes one warehouse, two vans and one coordinator, and no part of the plan says how that base opens and runs a second hub." },
+      { "name": "Risks, assumptions and uncertainty", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "No assumption is marked as one, no risk of the Region B move is named and no tradeoff against Region A is acknowledged." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Each slide carries one message and its content matches its heading, but every title is a label rather than an assertion." },
+      { "name": "Professionalism, tone and confidentiality", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Tone is fit for a client and no individual or private data is exposed. Certainty is overstated where a forecast is presented as fact." }
+    ]
+  },
+
+  "strengths": [
+    {
+      "point": "The deck takes a position instead of handing the client a menu, which is the harder and more useful thing to do.",
+      "quote": "Client A should prioritize Region B.",
+      "slide": 8
+    },
+    {
+      "point": "The two options are stated as genuine alternatives, each with a concrete operating move behind it, so the client can see what is actually being chosen between.",
+      "quote": "Add a second warehouse shift and recruit more volunteer drivers to meet unmet demand in the current region.",
+      "slide": 6
+    },
+    {
+      "point": "The current-state picture is specific and quantified, which gives the analysis a real baseline to build on.",
+      "quote": "In the last year Client A moved 620 tonnes of food.",
+      "slide": 4
+    }
+  ],
+
+  "findings": [
+    {
+      "short": "Choice rests on assertion",
+      "title": "The decision between the two regions is made by assertion on slide 8, not by any comparison the client can check.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "A recommendation is only as strong as the comparison that produced it.",
+      "diagnosis": "Slides 6 and 7 set up two options. Slide 8 chooses between them with two adjectives, bounded and step change, and no number, cost, capacity figure or criterion appears on either side. Nothing in slides 3 to 5 sizes the unmet demand in Region A, so the word bounded is unsupported, and nothing sizes what serving 30 Region B partners would require. The reader is asked to accept the conclusion on the team's authority.",
+      "evidence": [
+        { "slide": 8, "quote": "The unmet demand in Region A is real but bounded, while Region B offers a step change in reach." },
+        { "slide": 4, "quote": "Partner demand in Region A frequently exceeds supply." }
+      ],
+      "why": "The client is being asked to commit its only warehouse, vans and coordinator to a new region on the strength of an unevidenced comparison. If Region A unmet demand is larger than bounded implies, the recommendation sends scarce capacity to the smaller prize and the client cannot tell from this deck.",
+      "reflect": "What two or three numbers, one per region, would have to be true for Region B to be the better use of Client A's next unit of capacity, and which of them do you actually have?",
+      "fix": "Make the comparison explicit before the choice. Name the criteria the decision turns on (tonnes of unmet demand, cost per tonne delivered, capacity required) and show both regions against them, then let slide 8 read as the conclusion of that table rather than as an opinion placed above it.",
+      "tags": ["comparison", "unsupported claim", "decision logic"]
+    },
+    {
+      "short": "40% forecast unsourced",
+      "title": "The growth figure that makes Region B look like the larger prize carries no source, method or baseline.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "A number that drives the decision must be traceable, or marked as an assumption.",
+      "diagnosis": "Slide 5 states a three-year growth rate as settled fact. There is no citation, no baseline it grows from and no method. The same slide leans on early conversations without saying how many, with whom or what they were asked. Slide 8 then converts this into the case for the whole recommendation.",
+      "evidence": [
+        { "slide": 5, "quote": "Region B demand will grow 40% over the next three years." },
+        { "slide": 5, "quote": "Early conversations suggest strong interest." }
+      ],
+      "why": "A client board will ask where 40% came from. If the answer is a desk estimate the room will discount the entire deck, and a pro-bono relationship is rebuilt slowly after that. Worse, the recommendation moves with this number: at 10% growth the Region B case weakens materially.",
+      "reflect": "Where did the 40% come from, and if you had to defend it to a sceptical trustee in one sentence, what would that sentence be?",
+      "fix": "Either attribute the figure to a named source on the slide or restate it as an explicit assumption with a range and say what the recommendation looks like at the low end. Do the same for the interview evidence: say how many conversations and with whom, so primary is visibly separated from secondary.",
+      "tags": ["sourcing", "forecast", "headline number"]
+    },
+    {
+      "short": "Recommendation not actionable",
+      "title": "Slide 9 and slide 10 give a direction rather than a plan, with no owner, no timing and no measure of success.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "recommendation",
+      "owner": "team",
+      "principle": "A recommendation without an owner, a date and a success signal is a wish.",
+      "diagnosis": "Scale up operations and improve partnerships are abstractions with no object. Next steps repeats the same move as a plan, adds a generic stakeholder line and closes with a review that has no date attached. Nothing here tells the coordinator what to do on Monday.",
+      "evidence": [
+        { "slide": 9, "quote": "Scale up operations and improve partnerships to serve the new region." },
+        { "slide": 10, "quote": "Begin planning the Region B expansion. Engage stakeholders. Review progress in due course." }
+      ],
+      "why": "Client A runs on one full-time coordinator. A recommendation this loose will be read, agreed with and not executed, which is the most common way pro-bono advice dies.",
+      "reflect": "If Client A did exactly what slides 9 and 10 say for the next four weeks, what would exist at the end of them that does not exist now?",
+      "fix": "Convert each line into an action with a named role, a date or trigger and a signal that says it worked. Where the deck cannot name an owner because the client's structure is unclear, ask rather than write around it. Replace the review line with a decision point: what will be known by when, and what decision it feeds.",
+      "tags": ["actionability", "ownership", "next steps"]
+    },
+    {
+      "short": "Capacity gap unaddressed",
+      "title": "The deck describes a one-warehouse, two-van operation and then recommends running a second hub without saying how that is resourced.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "implementation",
+      "owner": "team",
+      "principle": "Feasibility is judged against the client's real constraints, not against the size of the opportunity.",
+      "diagnosis": "Slide 3 sets out the operating base precisely. Slide 7 proposes a satellite hub for 30 partners. Between them there is no estimate of vans, drivers, staff time or money, and slide 9 relies on the volunteer base while slide 4 records that partners are already being turned away in peak months. The deck also never names a smaller first move such as serving a handful of Region B partners from the existing warehouse.",
+      "evidence": [
+        { "slide": 3, "quote": "It operates one warehouse and two vans. It relies on volunteer drivers and a single full-time coordinator." },
+        { "slide": 7, "quote": "Open a satellite hub in Region B to serve the 30 new partners and capture the growing demand there." },
+        { "slide": 4, "quote": "Volunteers report turning away partners in peak months." }
+      ],
+      "why": "If the hub needs staff and vehicles Client A cannot fund, the recommendation is not wrong so much as unusable, and the risk is that current-region service degrades while the expansion is attempted.",
+      "reflect": "What is the smallest version of the Region B move that Client A's current staff and two vans could run for one quarter, and what would it have to show to justify going further?",
+      "fix": "Add a resourcing line to the recommended option: what it needs in vehicles, driver hours, staff time and money, set against what the client has. Then sequence it, and offer a pilot as the first step so the client is choosing a test rather than a commitment.",
+      "tags": ["feasibility", "capacity", "pilot"]
+    },
+    {
+      "short": "Answer arrives late",
+      "title": "The governing insight does not appear until slide 8 of 10 and no title carries the argument.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "Answer first, then defend. The titles alone should tell the story.",
+      "diagnosis": "The agenda promises a walk through topics and the deck delivers exactly that: context, operations, demand, options, and only then a view. Every title is a noun label, so a reader skimming headings learns the sequence of the meeting but not the argument.",
+      "evidence": [
+        { "slide": 2, "quote": "Context. Current operations. Regional demand. Options. Recommendation. Next steps." },
+        { "slide": 8, "quote": "Region B is the larger prize." }
+      ],
+      "why": "A busy director reads the first two slides and the titles. In this shape they reach the end without the answer, and the team spends the meeting narrating rather than being challenged on the reasoning.",
+      "reflect": "If the client only read your slide titles in order, what argument would they come away with, and is it the one you mean to make?",
+      "fix": "Move the governing sentence into the opening and rewrite the titles as assertions that carry their slide's takeaway, so the body slides defend a claim already on the table rather than building toward a surprise.",
+      "tags": ["pyramid", "action titles", "answer first"]
+    }
+  ],
+
+  "comments": [
+    {
+      "location": "Slide 5",
+      "problem": "Thirty potential partners and no comparable redistributor are stated without a source or a definition of potential.",
+      "why": "The partner count is the other half of the size argument, so it needs the same traceability as the growth rate.",
+      "fix": "Say where the partner list came from and what qualified an organisation as a potential partner."
+    },
+    {
+      "location": "Slide 4",
+      "problem": "The finding that demand exceeds supply is reported without its implication for the decision.",
+      "why": "This is the strongest fact in the deck for the opposite option and it is left inert.",
+      "fix": "State what the shortfall means in tonnes or partners served, then say what it implies for where the next unit of capacity should go."
+    }
+  ],
+
+  "questionsForLead": [
+    "Where does the 40% Region B growth figure come from, and did the team verify it or estimate it?",
+    "Has the team asked Client A what budget and staff time, if any, exist for an expansion, given the deck currently assumes none of this?",
+    "How many early conversations in Region B took place and with whom, and is that enough to call the interest strong?",
+    "Did the team consider a hybrid or staged path, and if so why does the deck present the choice as binary?",
+    "Who is the intended audience for this deck, since the framing changes if it goes to a board rather than to the coordinator?"
+  ],
+
+  "learningNote": {
+    "lesson": "A choice between options is only advice once the criteria are on the page. Adjectives like larger prize and bounded are the sound of a conclusion, not the substance of one.",
+    "weakHabit": "Reaching the answer through team discussion and then writing the answer down, leaving the comparison that produced it in the room rather than in the deck.",
+    "exercise": "Before the next draft, write the option comparison as a three-column table with the criteria in the left column and fill every cell. Any cell you cannot fill is either the research task you still owe or an assumption you must label on the slide.",
+    "principle": "Decide by criteria, defend in public."
+  },
+
+  "notAssessed": [
+    "The intended audience was left blank, so the review does not judge whether the framing and depth fit the reader.",
+    "Known constraints were left blank, so feasibility is assessed only against the client facts stated on slide 3 and not against real budget or staffing limits.",
+    "Evidence and source notes were left blank, so no claim could be traced. Every sourcing finding says a source is absent from the deliverable, not that the underlying fact is wrong.",
+    "The truth of the 40% growth figure and the 30-partner count was not verified. That needs the sources themselves.",
+    "Visual design, layout and chart quality were not assessed. Only extracted text was available.",
+    "Whether Region B is commercially the right move for Client A is a judgment that needs facts outside this deck and a human decision."
+  ],
+
+  "timeline": {
+    "sections": [
+      { "label": "Setup", "span": 2 },
+      { "label": "Current state", "span": 2 },
+      { "label": "Opportunity", "span": 1 },
+      { "label": "Options", "span": 2 },
+      { "label": "Answer", "span": 3 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "partial" },
+      { "slide": 2, "state": "partial" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "partial" },
+      { "slide": 5, "state": "critical" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "partial" },
+      { "slide": 8, "state": "critical" },
+      { "slide": 9, "state": "critical" },
+      { "slide": 10, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 5, "state": "critical", "label": "40% growth figure unsourced" },
+      { "at": 8, "state": "critical", "label": "Option choice asserted, not compared" },
+      { "at": 9, "state": "critical", "label": "No owner, timing or measure" }
+    ],
+    "connectors": [
+      { "from": 5, "to": 8, "label": "unsourced forecast carries the choice" },
+      { "from": 4, "to": 8, "label": "demand exceeds supply, then called bounded" },
+      { "from": 3, "to": 7, "label": "one warehouse and two vans, then a second hub" }
+    ]
+  }
+}

@@ -147,6 +147,8 @@ The same object renders to the section-4 report. No new model call. Mapping:
 | 6. Learning note for consultants | `learningNote` |
 | 7. What this review did not assess | `notAssessed` |
 
+All three views below are implemented in [index.html](index.html) as of 2026-07-22.
+
 The **project-lead view** (lead mode) shows readiness, the delivery-critical findings,
 the blocking issues and the questions for the lead. It hides the reflect-and-fix gate.
 The **student view** shows the coaching-shaped findings with the typed-attempt gate
@@ -177,6 +179,13 @@ than extending the renderer-coupled v1 `check-review.js`. Usage:
 
 On any failure the validator returns a clear error list and the renderer refuses to
 draw, exactly as v1 does. A broken review never renders as a half-drawn screen.
+
+Built 2026-07-22 as [index.html](index.html), a single self-contained file with no build
+step. It ports checks 1, 2, 4, 5, 6 and 7 above plus the deliveryCritical invariants, and
+returns the same errors as the CLI on the same input. Check 3's verbatim-quote comparison
+cannot run in the browser because it needs the deliverable text, so that check stays
+CLI-only. Where the validator and the system prompt disagree on deliveryCritical for a
+no-blocker deck, the renderer follows the validator. See the decision log, 2026-07-22.
 
 ## E. Dry-run result (Sprint 3 exit check)
 

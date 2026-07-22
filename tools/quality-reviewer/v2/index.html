@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>180DC AI Quality Reviewer v2</title>
+<style>
+  :root{
+    --green:#16A66A; --green-deep:#0F8455; --green-soft:#E8F6EF; --green-tint:#F1FAF5;
+    --panel:#F5F7F6; --ink:#111827; --ink-2:#1F2933; --muted:#6B7280; --muted-2:#9AA3AF;
+    --border:#DADDE3; --border-soft:#E7EAEE;
+    --amber:#E8910C; --amber-soft:#FDF4E3; --amber-border:#F4C77E;
+    --red:#E5534B; --red-soft:#FEF2F2; --red-border:#F6B6B1;
+    --blue:#3B6FD4; --blue-soft:#EEF3FD; --blue-border:#BFD2F4;
+    --shadow:0 1px 2px rgba(17,24,39,.04), 0 8px 28px rgba(17,24,39,.06);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:#EDEFF2; color:var(--ink); -webkit-font-smoothing:antialiased;
+    font-size:15px; line-height:1.55;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:20px}
+
+  /* ---------- top bar ---------- */
+  .bar{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    padding:12px 16px;box-shadow:var(--shadow);margin-bottom:16px;
+  }
+  .brand{font-weight:700;font-size:15px;letter-spacing:-.01em}
+  .brand span{color:var(--green-deep)}
+  .bar-meta{font-size:12.5px;color:var(--muted);flex:1;min-width:180px}
+  .bar-meta b{color:var(--ink-2)}
+  .tabs{display:flex;gap:4px;background:var(--panel);border-radius:10px;padding:4px}
+  .tab{
+    border:0;background:transparent;font:inherit;font-size:13px;font-weight:600;
+    color:var(--muted);padding:7px 14px;border-radius:8px;cursor:pointer;
+  }
+  .tab.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(17,24,39,.08)}
+  .tab:disabled{opacity:.4;cursor:not-allowed}
+  .btn{
+    border:1px solid var(--border);background:#fff;font:inherit;font-size:13px;font-weight:600;
+    color:var(--ink-2);padding:7px 13px;border-radius:9px;cursor:pointer;
+  }
+  .btn:hover{border-color:var(--muted-2)}
+  .btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+  .btn.primary:disabled{background:var(--border);border-color:var(--border);color:var(--muted-2);cursor:not-allowed}
+
+  /* ---------- cards ---------- */
+  .card{
+    background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    padding:20px 22px;box-shadow:var(--shadow);margin-bottom:16px;
+  }
+  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 14px}
+  .card h3{font-size:15px;margin:0 0 8px}
+  .lead-in{font-size:13.5px;color:var(--muted);margin:-6px 0 14px}
+
+  /* ---------- start screen ---------- */
+  .picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+  .pick{
+    text-align:left;border:1px solid var(--border);background:#fff;border-radius:12px;
+    padding:14px 16px;cursor:pointer;font:inherit;
+  }
+  .pick:hover{border-color:var(--green);background:var(--green-tint)}
+  .pick b{display:block;font-size:14px;margin-bottom:4px}
+  .pick span{font-size:12.5px;color:var(--muted)}
+  textarea.paste{
+    width:100%;min-height:110px;border:1px solid var(--border);border-radius:10px;
+    padding:11px 13px;font:inherit;font-size:12.5px;font-family:ui-monospace,Menlo,Consolas,monospace;resize:vertical;
+  }
+
+  /* ---------- validation failure ---------- */
+  .invalid{border-color:var(--red-border);background:var(--red-soft)}
+  .invalid h2{color:var(--red)}
+  .invalid ul{margin:0;padding-left:20px;font-size:13.5px}
+  .invalid li{margin-bottom:5px}
+
+  /* ---------- readiness ---------- */
+  .readiness{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+  .rpill{
+    border-radius:11px;padding:12px 16px;font-weight:700;font-size:15px;
+    border:1.5px solid;white-space:nowrap;
+  }
+  .r0{background:var(--red-soft);border-color:var(--red-border);color:#A3241C}
+  .r1{background:var(--red-soft);border-color:var(--red-border);color:#A3241C}
+  .r2{background:var(--amber-soft);border-color:var(--amber-border);color:#8A5502}
+  .r3{background:var(--green-soft);border-color:#9FDCC2;color:var(--green-deep)}
+  .rbody{flex:1;min-width:260px;font-size:14px}
+  .rbody p{margin:0 0 8px}
+  .rbody .lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+  .facts{display:flex;gap:20px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border-soft)}
+  .fact{font-size:13px}
+  .fact b{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+
+  /* ---------- blocking issues ---------- */
+  .block{border-left:3px solid var(--red);background:var(--red-soft);border-radius:0 10px 10px 0;padding:12px 15px;margin-bottom:10px}
+  .block .bh{font-weight:700;font-size:14px;margin-bottom:3px}
+  .block .bc{font-size:12.5px;color:var(--muted)}
+
+  /* ---------- quotes ---------- */
+  .quote{
+    border-left:3px solid var(--border);padding:7px 0 7px 13px;margin:8px 0;
+    font-size:13.5px;color:var(--ink-2);font-style:italic;
+  }
+  .quote .sl{display:block;font-style:normal;font-size:11.5px;color:var(--muted);font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em}
+
+  /* ---------- findings ---------- */
+  .flist{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+  .fitem{
+    display:flex;align-items:center;gap:10px;border:1px solid var(--border-soft);
+    background:#fff;border-radius:10px;padding:10px 13px;cursor:pointer;font:inherit;text-align:left;width:100%;
+  }
+  .fitem.on{border-color:var(--green);background:var(--green-tint)}
+  .fitem .num{
+    width:22px;height:22px;border-radius:50%;background:var(--panel);color:var(--muted);
+    font-size:11.5px;font-weight:700;display:grid;place-items:center;flex:none;
+  }
+  .fitem.done .num{background:var(--green);color:#fff}
+  .fitem .txt{flex:1;font-size:13.5px;font-weight:600}
+  .sev{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+  .sev.critical{background:var(--red-soft);color:#A3241C}
+  .sev.major{background:var(--amber-soft);color:#8A5502}
+  .sev.minor{background:var(--panel);color:var(--muted)}
+  .dc{font-size:11px;font-weight:700;color:var(--red);white-space:nowrap}
+
+  .fcard .ftitle{font-size:19px;font-weight:700;line-height:1.4;margin:0 0 10px;letter-spacing:-.01em}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .chip{font-size:11.5px;font-weight:600;background:var(--panel);color:var(--muted);padding:4px 9px;border-radius:20px}
+  .block-label{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin:16px 0 5px}
+  .prose{font-size:14px;line-height:1.6}
+
+  /* ---------- the coaching gate ---------- */
+  .reflect{
+    border:1.5px solid var(--green);background:var(--green-tint);border-radius:12px;
+    padding:14px 16px;font-size:14.5px;color:var(--green-deep);font-weight:600;line-height:1.5;margin-top:6px;
+  }
+  .attempt{
+    width:100%;border:1px solid var(--border);border-radius:10px;padding:11px 13px;
+    font:inherit;font-size:14px;resize:vertical;margin-top:10px;
+  }
+  .attempt:focus{outline:2px solid var(--green);outline-offset:-1px;border-color:var(--green)}
+  .rw-label{font-size:12.5px;color:var(--muted);margin-top:12px;font-weight:600}
+  .rw-label.req{color:var(--amber)}
+  .gate-row{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+  .gate-note{font-size:12.5px;color:var(--muted);flex:1;min-width:200px}
+  .gate-note.ok{color:var(--green-deep);font-weight:600}
+  .gate-note.warn{color:var(--amber);font-weight:600}
+  .locked{
+    margin-top:12px;border:1.5px dashed var(--border);border-radius:12px;padding:16px;
+    color:var(--muted-2);font-size:13.5px;display:flex;align-items:center;gap:10px;
+  }
+  .fix{
+    margin-top:12px;border:1.5px solid var(--green);background:#fff;border-radius:12px;padding:14px 16px;
+  }
+  .fix .fl{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--green-deep);font-weight:700;margin-bottom:6px}
+  .fix .ft{font-size:14.5px;line-height:1.6}
+  .nav{display:flex;gap:8px;justify-content:space-between;margin-top:18px}
+
+  /* ---------- scorecard ---------- */
+  .dim{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border-soft)}
+  .dim:last-child{border-bottom:0}
+  .dim .dn{font-size:13.5px;font-weight:600}
+  .dim .dnote{font-size:12.5px;color:var(--muted);grid-column:1/-1;margin-top:-4px}
+  .dim .dct{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .res{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
+  .res.pass{background:var(--green-soft);color:var(--green-deep)}
+  .res.partial{background:var(--amber-soft);color:#8A5502}
+  .res.fail{background:var(--red-soft);color:#A3241C}
+  .res.na{background:var(--panel);color:var(--muted-2)}
+
+  /* ---------- timeline ---------- */
+  .tl{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap}
+  .tile{
+    width:38px;height:38px;border-radius:8px;display:grid;place-items:center;
+    font-size:12px;font-weight:700;border:1px solid;
+  }
+  .tile.pass{background:var(--green-soft);border-color:#9FDCC2;color:var(--green-deep)}
+  .tile.partial{background:var(--amber-soft);border-color:var(--amber-border);color:#8A5502}
+  .tile.critical{background:var(--red-soft);border-color:var(--red-border);color:#A3241C}
+  .callout{font-size:13px;margin-bottom:5px}
+  .callout b{font-variant-numeric:tabular-nums}
+
+  /* ---------- lists ---------- */
+  ul.plain{margin:0;padding-left:20px;font-size:14px;line-height:1.6}
+  ul.plain li{margin-bottom:7px}
+  .na-note{font-size:13.5px;color:var(--muted);line-height:1.6}
+
+  .grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
+  @media (max-width:900px){.grid2{grid-template-columns:1fr}}
+
+  .foot{font-size:12.5px;color:var(--muted);text-align:center;padding:8px 0 24px}
+
+  /* ---------- print ---------- */
+  .paper{background:#fff;padding:34px 38px;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border-soft)}
+  .paper h1{font-size:22px;margin:0 0 4px;letter-spacing:-.02em}
+  .paper .sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+  .pf{border-top:1px solid var(--border-soft);padding-top:14px;margin-top:14px}
+  .pf-h{font-size:15px;font-weight:700;margin-bottom:6px}
+  @media print{
+    body{background:#fff}
+    .bar,.foot,.noprint{display:none !important}
+    .wrap{max-width:none;padding:0}
+    .paper{box-shadow:none;border:0;padding:0;border-radius:0}
+    .card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
+  }
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="bar">
+    <div class="brand">180DC <span>AI Quality Reviewer</span> v2</div>
+    <div class="bar-meta" id="barMeta">No review loaded</div>
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-view="coach" disabled>Student coaching</button>
+      <button class="tab" data-view="lead" disabled>Project lead</button>
+      <button class="tab" data-view="print" disabled>Printable</button>
+    </div>
+    <button class="btn" id="backBtn">Change review</button>
+    <button class="btn noprint" id="printBtn">Print</button>
+  </div>
+
+  <!-- ============ START ============ -->
+  <div id="startView">
+    <div class="card">
+      <h2>Load a review</h2>
+      <p class="lead-in">Reviews bundled from eval-runs. These are live blind runs of the v2 prompt, not hand-worked examples.</p>
+      <div class="picker" id="picker"></div>
+    </div>
+    <div class="card">
+      <h2>Or bring your own</h2>
+      <p class="lead-in">Paste a v2 review JSON, or open a file. The renderer validates against the output contract and refuses to draw a broken review.</p>
+      <textarea class="paste" id="pasteBox" placeholder="Paste the review JSON here"></textarea>
+      <div class="gate-row">
+        <button class="btn primary" id="pasteBtn">Render pasted JSON</button>
+        <input type="file" id="fileInput" accept=".json,application/json" style="font-size:13px" />
+      </div>
+    </div>
+    <div class="card invalid hidden" id="startErr">
+      <h2>This review does not satisfy the output contract</h2>
+      <ul id="startErrList"></ul>
+    </div>
+  </div>
+
+  <!-- ============ COACH (student) ============ -->
+  <div id="coachView" class="hidden">
+    <div class="card">
+      <h2>What this deliverable does well</h2>
+      <p class="lead-in">Read this first. The findings below are worth acting on because the deck already has these foundations.</p>
+      <div id="strengths"></div>
+    </div>
+
+    <div class="grid2">
+      <div>
+        <div class="card fcard" id="fcard"></div>
+      </div>
+      <div>
+        <div class="card">
+          <h2 id="flistHead">Findings</h2>
+          <div class="flist" id="flist"></div>
+          <div class="na-note" id="coachProgress"></div>
+        </div>
+        <div class="card">
+          <h2>Learning note</h2>
+          <div id="learning"></div>
+        </div>
+        <div class="card">
+          <h2>What this review did not assess</h2>
+          <ul class="plain" id="coachNotAssessed"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LEAD ============ -->
+  <div id="leadView" class="hidden">
+    <div class="card">
+      <h2>Readiness</h2>
+      <div class="readiness" id="readiness"></div>
+    </div>
+    <div class="card" id="blockCard">
+      <h2>Blocking issues</h2>
+      <p class="lead-in">Readiness is set by these, never by the score mean. Each one carries a verbatim quote.</p>
+      <div id="blocks"></div>
+    </div>
+    <div class="card">
+      <h2>Delivery-critical findings</h2>
+      <p class="lead-in">The coaching gate is hidden here on purpose, so the fix is not handed to a lead to pass on as an answer.</p>
+      <div id="leadFindings"></div>
+    </div>
+    <div class="card" id="qCard">
+      <h2>Questions to ask the team</h2>
+      <ul class="plain" id="questions"></ul>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h2>Rubric scorecard</h2>
+        <p class="lead-in" id="meanNote"></p>
+        <div id="dims"></div>
+      </div>
+      <div>
+        <div class="card" id="tlCard">
+          <h2>Slide strip</h2>
+          <div class="tl" id="tiles"></div>
+          <div id="callouts"></div>
+        </div>
+        <div class="card" id="commentsCard">
+          <h2>Evidence-linked comments</h2>
+          <div id="comments"></div>
+        </div>
+        <div class="card">
+          <h2>What this review did not assess</h2>
+          <p class="lead-in">Where your judgment is still required.</p>
+          <ul class="plain" id="leadNotAssessed"></ul>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Sign-off</h2>
+      <p class="prose">The AI advises. A named human decides. Record your call in the project log: sign off, send back, or escalate to a board reviewer. A readiness of Not ready or Needs substantial revision is a strong signal, not a veto.</p>
+    </div>
+  </div>
+
+  <!-- ============ PRINT ============ -->
+  <div id="printView" class="hidden">
+    <div class="paper" id="paper"></div>
+  </div>
+
+  <div class="foot">Runs locally. No deliverable text or review leaves this machine.</div>
+</div>
+
+<script id="bundled-reviews" type="application/json">{"case-01":{"label":"Case 01. Vague recommendation","note":"Live blind run. Two blocking rules fired.","source":"eval-runs/case-01-review-v2-live.json","review":{"meta":{"title":"Client A regional strategy","client":"Client A","artifactType":"draft deck","mode":"deep","slideCount":10,"version":"Review v2"},"readiness":{"level":"Needs substantial revision","mainReason":"The core recommendation rests on the unsupported slide 8 assertion that Region B is the larger prize while the deck's own evidence shows unmet demand and strained capacity in Region A.","highestRiskIssue":"Slide 8 asserts the option comparison instead of showing it, so the client could commit to an expansion the deck has not justified.","confidence":"Medium","whatCouldChangeIt":"Source notes for the slide 5 figures and any comparative sizing of Region A unmet demand could confirm or overturn the slide 8 claim and move the level."},"blockingIssues":[{"rule":2,"label":"Core recommendation unsupported by the evidence","ceiling":"Needs substantial revision","evidence":[{"slide":8,"quote":"Region B is the larger prize. The unmet demand in Region A is real but bounded, while Region B offers a step change in reach."}]},{"rule":4,"label":"Ungrounded headline number drives the decision","ceiling":"Needs targeted revision","evidence":[{"slide":5,"quote":"Region B demand will grow 40% over the next three years."}]}],"scorecard":{"diagnosticMean":2.3,"confidence":"Medium","effort":"8-12 hrs","dimensions":[{"name":"Client decision usefulness","result":"partial","checksPassed":3,"checksTotal":4,"note":"The decision and the answer are clear but the reader cannot tell what concretely happens next."},{"name":"Problem framing","result":"fail","checksPassed":1,"checksTotal":4,"note":"The deck holds one question consistently but never states the problem, the scope or the criteria for choosing between the options."},{"name":"Storyline and pyramid logic","result":"fail","checksPassed":0,"checksTotal":4,"note":"The governing insight arrives on slide 8, titles are topic labels and the slide 4 evidence is never reconciled with the answer."},{"name":"Evidence quality","result":"fail","checksPassed":1,"checksTotal":4,"note":"No claim in the deck names a source; the financial-figure check passes only because no financial figure is present."},{"name":"Analysis and insight","result":"fail","checksPassed":1,"checksTotal":4,"note":"Slide 8 interprets, but the two options are never compared on any measure and the findings carry no implications."},{"name":"Recommendation specificity","result":"fail","checksPassed":1,"checksTotal":4,"note":"The action is specific but owner, timeframe and success measure are all absent."},{"name":"Feasibility and implementation","result":"fail","checksPassed":0,"checksTotal":2,"note":"Light touch for a draft deck: fit to the client's stated capacity and a concrete first step were judged and both fail."},{"name":"Risks, assumptions and uncertainty","result":"fail","checksPassed":1,"checksTotal":4,"note":"The Region A tradeoff is at least acknowledged, but no assumption is marked and the growth forecast carries false certainty."},{"name":"Slide-level communication","result":"partial","checksPassed":2,"checksTotal":4,"note":"Each slide carries one message and content matches its title, but the titles are topics rather than assertions."},{"name":"Professionalism, tone and confidentiality","result":"partial","checksPassed":3,"checksTotal":4,"note":"Clean, safe and client-fit in tone; certainty is overstated on slides 5 and 8."}]},"strengths":[{"point":"The deck commits to one clear answer instead of leaving the client a menu.","quote":"Expand to Region B.","slide":9},{"point":"It is candid about operational strain in the current region.","quote":"Volunteers report turning away partners in peak months.","slide":4},{"point":"The two options are concrete and genuinely distinct.","quote":"Add a second warehouse shift and recruit more volunteer drivers to meet unmet demand in the current region.","slide":6}],"findings":[{"short":"Unsupported option comparison","title":"The pivotal claim that Region B beats deepening Region A is asserted without any comparative analysis.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"thinking","owner":"team","principle":"The core recommendation must be carried by evidence shown in the deck, not by assertion.","diagnosis":"Slide 8 declares Region B the larger prize and Region A demand bounded, but no slide quantifies either side. Slide 4 reports demand exceeding supply in Region A and slide 5 counts 30 potential partners against the 40 partners already served, so on the deck's own numbers the comparison is at best open. No slide compares the options on reach, cost or impact, and no criteria for the choice are ever stated.","evidence":[{"slide":8,"quote":"Region B is the larger prize. The unmet demand in Region A is real but bounded, while Region B offers a step change in reach."},{"slide":4,"quote":"Partner demand in Region A frequently exceeds supply."}],"why":"The client is being asked to commit to an expansion on a claim the deck never demonstrates; if unmet demand in Region A is in fact the larger prize, this recommendation points them the wrong way.","reflect":"What evidence would prove that unmet demand in Region A is bounded, and what would you expect to see in your own slide 4 data if it were not?","fix":"Quantify unmet demand in Region A and reachable demand in Region B on comparable measures, state the criteria for the choice, and let the comparison carry slide 8. If the data does not exist yet, present the decision as open and name what would settle it.","tags":["option comparison","unsupported claim"]},{"short":"Ungrounded headline numbers","title":"The Region B figures that drive the recommendation have no stated source.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"evidence","owner":"team","principle":"Every headline number the decision depends on traces to a named source or is marked as an assumption.","diagnosis":"Slide 5 makes three load-bearing claims (30 potential partners, no comparable redistributor, 40% demand growth) with no source, and the evidence and source notes field of the input was left blank. The only sourcing language in the deck is early conversations, which names nothing.","evidence":[{"slide":5,"quote":"Region B demand will grow 40% over the next three years."},{"slide":5,"quote":"Region B has 30 potential partners and no comparable redistributor."}],"why":"An unsourced growth forecast reads as invented, and one challenged number can sink the client's trust in the whole deck.","reflect":"For each number on slide 5, where exactly did it come from and would you be comfortable showing that source to the client?","fix":"Cite each Region B figure to its source on the slide, or restate it as an assumption with its basis. Downgrade anything that came only from early conversations to what those conversations can actually support.","tags":["sourcing","headline numbers"]},{"short":"Capacity strain unaddressed","title":"The expansion recommendation never addresses the capacity strain the deck itself documents.","severity":"major","severityLabel":"Moderate","deliveryCritical":true,"issueType":"implementation","owner":"team","principle":"Recommendations must fit the client's stated capacity, and evidence that cuts against the answer must be reconciled, not ignored.","diagnosis":"Slide 3 describes one warehouse, two vans and a single full-time coordinator, slide 4 reports partners being turned away in peak months, yet slides 9 and 10 add a whole new region without saying what the satellite hub needs or where that capacity comes from. Slide 9 even leans on a strong volunteer base that slide 4 shows is already overstretched.","evidence":[{"slide":3,"quote":"It operates one warehouse and two vans. It relies on volunteer drivers and a single full-time coordinator."},{"slide":4,"quote":"Volunteers report turning away partners in peak months."}],"why":"A resource-strained non-profit that expands before it can serve current demand risks failing both regions, which is the costliest outcome this advice could produce.","reflect":"What does the Region B hub need in vehicles, drivers and coordination, and what does your own slide 3 say Client A has spare?","fix":"State the resource requirements of the Region B hub against current capacity, then either show how the gap closes or scope the expansion down to a pilot the current organization could carry.","tags":["feasibility","capacity"]},{"short":"Next steps not actionable","title":"The recommendation and next steps name no owner, no timeframe and no measure of success.","severity":"major","severityLabel":"Moderate","deliveryCritical":true,"issueType":"recommendation","owner":"team","principle":"A recommendation names the action, the owner, the timeframe and the signal that says it worked.","diagnosis":"Slide 9 falls back on vague verbs and slide 10 closes with an open-ended review, so a busy client finishes the deck without a first concrete step.","evidence":[{"slide":10,"quote":"Begin planning the Region B expansion. Engage stakeholders. Review progress in due course."},{"slide":9,"quote":"Scale up operations and improve partnerships to serve the new region."}],"why":"Advice without an owner and a deadline is a wish; the client cannot act on it and the project's value evaporates at handover.","reflect":"If the client said yes tomorrow, what is the first thing someone does on Monday and how would they know in three months that it worked?","fix":"Turn slide 10 into a sequenced first quarter: the action, who owns it, when it happens and the measure that says it worked. Replace review in due course with a dated checkpoint.","tags":["actionability","next steps"]},{"short":"No early governing insight","title":"The governing insight arrives on slide 8 and the titles are topic labels, so the argument is not readable from the top.","severity":"major","severityLabel":"Moderate","deliveryCritical":false,"issueType":"communication","owner":"team","principle":"One governing insight early, and action titles that reconstruct the argument in order.","diagnosis":"Slides 2 to 7 carry labels rather than assertions and the first statement of the answer is slide 8, so a reader skimming titles learns topics, not the argument for expansion.","evidence":[{"slide":5,"quote":"The opportunity in Region B"},{"slide":4,"quote":"Current operations"}],"why":"A board member reading titles in order cannot reconstruct why expansion wins, which weakens the deck exactly where it must persuade.","reflect":"If you kept only the ten titles, would they alone convince a reader that Region B is the right call?","fix":"State the governing insight by slide 2 or 3, then rewrite each content title as the sentence that slide proves, in an order that builds to the recommendation.","tags":["pyramid principle","action titles"]}],"comments":[{"location":"Slide 4","problem":"The 620 tonnes figure has no source.","why":"It does not drive the decision but an unsourced baseline invites the client to question the numbers that do.","fix":"Cite the internal record it comes from."}],"questionsForLead":["Where do the Region B figures (30 partners, 40% growth) come from and has anyone on the team seen the underlying data?","Has the team sized unmet demand in Region A, since the bounded claim on slide 8 currently rests on nothing?","What budget, staffing and timeline constraints has the client given for either option? The input left constraints blank.","Who is the audience for this deck, the board or the executive director, since that changes how the decision should be framed?"],"learningNote":{"lesson":"A recommendation is only as strong as the comparison behind it: quantify both options before declaring a winner.","weakHabit":"Settling on the preferred answer early and describing the alternative just enough to dismiss it.","exercise":"Write one quantified sentence per option (partners reachable, tonnes moved, resources required) and check whether slide 8 survives the numbers.","principle":"Compare before you conclude"},"notAssessed":["Accuracy of the Region B figures: no evidence or source notes were provided with the input.","Feasibility against the client's real budget, staffing and timeline: the known constraints field was left blank.","Audience fit: the intended audience and project stage were not stated.","Visual design and layout: only extracted slide text was reviewed."],"timeline":{"sections":[{"label":"Context","span":4},{"label":"Options","span":3},{"label":"Recommendation","span":3}],"tiles":[{"slide":1,"state":"pass"},{"slide":2,"state":"pass"},{"slide":3,"state":"pass"},{"slide":4,"state":"partial"},{"slide":5,"state":"critical"},{"slide":6,"state":"partial"},{"slide":7,"state":"partial"},{"slide":8,"state":"critical"},{"slide":9,"state":"critical"},{"slide":10,"state":"partial"}],"callouts":[{"at":5,"state":"critical","label":"Headline numbers unsourced"},{"at":8,"state":"critical","label":"Comparison asserted not shown"},{"at":10,"state":"partial","label":"Next steps not actionable"}],"connectors":[{"from":4,"to":8,"label":"Region A strain never reconciled with the bounded claim"},{"from":5,"to":9,"label":"Recommendation leans on the unsourced growth figure"}]}}},"case-02":{"label":"Case 02. Problem framing drift","note":"Live blind run under the revised prompt.","source":"eval-runs/case-02-review-v2-live-r2.json","review":{"meta":{"title":"Client B growth plan","client":"Client B (anonymized)","artifactType":"draft deck","mode":"deep","slideCount":9,"version":"Review v2"},"readiness":{"level":"Needs substantial revision","mainReason":"The deck answers a programme efficiency question the client did not ask, so the board's individual giving question is left unanswered.","highestRiskIssue":"Slides 5 to 9 pivot to closing the mentoring scheme on unsourced performance claims while the donation question set on slide 2 never gets an answer.","confidence":"Medium","whatCouldChangeIt":"A client brief that explicitly widens the question to programme mix, plus sources for the slide 6 performance claims, could move this toward targeted revision. Blank evidence notes and constraints keep confidence at Medium."},"blockingIssues":[{"rule":2,"label":"Unsupported core recommendation","ceiling":"Needs substantial revision","evidence":[{"slide":6,"quote":"Mentoring runs at a loss and attendance is falling."},{"slide":7,"quote":"tutoring, which delivers the best outcomes per pound"}]},{"rule":3,"label":"Answers the wrong problem","ceiling":"Needs substantial revision","evidence":[{"slide":2,"quote":"The board has asked how to grow individual giving."},{"slide":8,"quote":"Close the mentoring scheme. Reinvest the freed budget in tutoring."}]}],"scorecard":{"diagnosticMean":2.2,"confidence":"Medium","effort":"6-8 hrs","dimensions":[{"name":"Client decision usefulness","result":"fail","checksPassed":1,"checksTotal":4,"note":"The board's question is named on slide 2 but the deck answers a different one and the next steps serve that other answer."},{"name":"Problem framing","result":"partial","checksPassed":2,"checksTotal":4,"note":"The problem opens specific and quantified, then drifts from donations to programme mix at slide 5."},{"name":"Storyline and pyramid logic","result":"fail","checksPassed":0,"checksTotal":4,"note":"No governing insight early, titles are labels and the path from problem to recommendation breaks at slide 5."},{"name":"Evidence quality","result":"fail","checksPassed":1,"checksTotal":4,"note":"The survey is identified as primary but the loss, attendance and outcome claims carry no source, number or method."},{"name":"Analysis and insight","result":"fail","checksPassed":1,"checksTotal":4,"note":"The programme half interprets, but the donor evidence gets no implication and no donation growth options are compared."},{"name":"Recommendation specificity","result":"fail","checksPassed":1,"checksTotal":4,"note":"The closure action is specific but has no owner, timeframe or success measure."},{"name":"Feasibility and implementation","result":"partial","checksPassed":2,"checksTotal":4,"note":"A first step and a rough sequence exist. No constraints were provided so fit was judged lightly."},{"name":"Risks, assumptions and uncertainty","result":"fail","checksPassed":0,"checksTotal":4,"note":"No assumption, risk or tradeoff is named anywhere despite an irreversible programme closure."},{"name":"Slide-level communication","result":"fail","checksPassed":1,"checksTotal":4,"note":"Slides carry one message each but every title is a topic label."},{"name":"Professionalism, tone and confidentiality","result":"partial","checksPassed":3,"checksTotal":4,"note":"Tone is professional and there is no confidentiality issue, but unsourced claims are stated with flat certainty."}]},"strengths":[{"point":"The problem is opened with a quantified gap and a concrete trend rather than a vague topic.","quote":"Client B faces a 25% funding gap next year. Individual donations have been flat for three years.","slide":2},{"point":"The team collected primary donor evidence that speaks directly to the client's question.","quote":"donors said they value Client B's tutoring results and would give more if they saw impact updates","slide":4}],"findings":[{"short":"Answers the wrong question","title":"The deck pivots from the board's donation question to a programme efficiency recommendation and never returns to individual giving.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"thinking","owner":"team","principle":"Problem framing: answer the question the client asked and hold it to the end.","diagnosis":"Slide 2 sets the question as growing individual giving. Slides 5 to 9 review programmes and recommend closing mentoring, and slide 8 reinvests the freed budget in tutoring rather than aiming it at donations or the gap, so the deck ends without answering the question it opens with. Slide 4 already holds the strongest lead on the real question, donors who would give more if they saw impact updates, and the deck never uses it.","evidence":[{"slide":2,"quote":"The board has asked how to grow individual giving."},{"slide":8,"quote":"Close the mentoring scheme. Reinvest the freed budget in tutoring. This improves overall programme efficiency."},{"slide":4,"quote":"would give more if they saw impact updates"}],"why":"The board asked one question and receives an answer to another, so the deck moves no decision the client actually faces and spends its credibility on an unasked one.","reflect":"State in one sentence how closing the mentoring scheme grows individual donations. If you cannot, which question is this deck answering.","fix":"Re-anchor the deck on the donation question and build the argument from the donor evidence you already have, for example impact updates and a regular giving route. If the team believes programme mix is the real issue, raise that reframing with the client explicitly instead of answering it unasked.","tags":["Problem Framing","Client Decision"]},{"short":"Unsourced closure evidence","title":"The recommendation to close the mentoring scheme rests on performance claims with no source, number or method.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"evidence","owner":"team","principle":"Evidence Grounding: a claim that drives a decision must be sourced.","diagnosis":"The closure case is carried entirely by slides 6 and 7. The loss, the falling attendance and the outcomes per pound comparison arrive with no figures, no sources and blank evidence notes, so an irreversible programme closure hangs on assertion.","evidence":[{"slide":6,"quote":"Mentoring runs at a loss and attendance is falling."},{"slide":7,"quote":"tutoring, which delivers the best outcomes per pound"}],"why":"A board asked to approve closing a youth programme will ask for the loss figure and the outcome data, and the deck has neither, so the recommendation collapses under the first question.","reflect":"What data would you show the board to prove mentoring loses money and tutoring converts a pound into more outcomes, and do you have it.","fix":"Put numbers and named sources under the loss, attendance and outcome claims, or mark them as untested hypotheses. If the data does not exist, say so and downgrade the closure from recommendation to option pending analysis.","tags":["Evidence Grounding","ERIP Performance"]},{"short":"No risks named","title":"The deck recommends closing a live youth programme without naming a single risk, assumption or tradeoff.","severity":"major","severityLabel":"Moderate","deliveryCritical":true,"issueType":"thinking","owner":"team","principle":"Assumptions and uncertainty: name the load-bearing assumptions so the client can stress-test the advice.","diagnosis":"The recommendation and next steps assume staff transfer cleanly to tutoring, families accept the closure and no funder or donor reacts badly, yet none of this is stated as an assumption and no downside of closure appears anywhere on slides 7 to 9.","evidence":[{"slide":8,"quote":"Close the mentoring scheme. Reinvest the freed budget in tutoring. This improves overall programme efficiency."},{"slide":9,"quote":"Plan the mentoring wind-down. Communicate to families. Reallocate staff to tutoring."}],"why":"Closing a programme is hard to reverse, and a board that discovers the unstated risks itself will distrust the rest of the advice.","reflect":"What is the worst realistic outcome of closing the mentoring scheme, and what must be true for the closure to be safe.","fix":"List the load-bearing assumptions behind the closure and the two or three biggest risks with a mitigation each. Whatever recommendation survives the reframing, give it the same treatment, plus an owner, a date and a measure.","tags":["Assumptions","ERIP"]},{"short":"Titles carry no argument","title":"Every title is a topic label and no governing insight appears early, so the argument is not readable from the titles.","severity":"major","severityLabel":"Moderate","deliveryCritical":false,"issueType":"communication","owner":"team","principle":"Pyramid Principle: answer first, and titles carry the message.","diagnosis":"Titles such as The problem, Donation landscape and Our view are labels, and the deck's view first appears on slide 7. A reader skimming the titles cannot reconstruct any argument, least of all one about donations.","evidence":[{"slide":3,"quote":"Donation landscape"},{"slide":7,"quote":"Client B should cut the mentoring scheme and redirect its budget to tutoring, which delivers the best outcomes per pound."}],"why":"A busy board member reading only the titles takes away nothing, and the one message they need, the answer to their question, is nowhere in the title layer.","reflect":"If a reader saw only your nine titles, what would they say your recommendation is and why.","fix":"Once the deck is re-anchored, state the governing insight by slide 2 or 3 and rewrite each content title as the full-sentence assertion its slide proves.","tags":["Pyramid Principle","Minto"]}],"comments":[{"location":"Slide 4","problem":"The survey behind the donor claims has no sample size, method or date (\"In a short survey, donors said they value Client B's tutoring results\").","why":"This evidence should become the backbone of the donations answer, so its weight must be checkable.","fix":"State who was surveyed, how many and when, and mark the finding as directional if the base is small."},{"location":"Slide 2","problem":"The 25% funding gap has no stated source.","why":"The gap sizes the whole problem. It does not drive the closure decision, so it is not a blocker, but one line on where it comes from makes the opening credible.","fix":"Name the source of the 25% figure, for example next year's budget."}],"questionsForLead":["Did the client or the board ever ask for a programme review, or did the team introduce the programme mix question itself.","Where do the mentoring loss and attendance claims come from, and has anyone seen the underlying data.","Was the freed mentoring budget ever meant to close the funding gap, and if so why does slide 8 reinvest it in tutoring instead.","How large was the donor survey and who ran it.","What constraints on staff, budget and timeline should recommendations fit. None were provided in the input."],"learningNote":{"lesson":"The first duty of a deck is to answer the question the client asked. A better question found along the way is raised with the client, not substituted silently.","weakHabit":"Following the most interesting analysis away from the brief instead of checking every slide against the client's question.","exercise":"Write the client's question at the top of a page. For each slide, write one line on how it moves that question forward. Any slide with no line either earns its place explicitly or goes.","principle":"Problem Framing"},"notAssessed":["Whether the mentoring loss, attendance and outcome claims are factually true. No sources or evidence notes were provided.","Feasibility against real constraints. The constraints field was blank, so staff, budget and timeline fit could not be judged.","Audience fit and depth. The intended audience and project stage fields were blank, so a generic board audience was assumed for tone only.","Visual design, layout and charts. Only slide text was provided.","Whether closing the mentoring scheme is the right call for Client B. This review judges support and fit to the question, not the underlying decision."],"timeline":{"sections":[{"label":"Problem and donor evidence","span":4},{"label":"Programme review","span":3},{"label":"Recommendation and next steps","span":2}],"tiles":[{"slide":1,"state":"partial"},{"slide":2,"state":"pass"},{"slide":3,"state":"pass"},{"slide":4,"state":"partial"},{"slide":5,"state":"critical"},{"slide":6,"state":"critical"},{"slide":7,"state":"critical"},{"slide":8,"state":"critical"},{"slide":9,"state":"partial"}],"callouts":[{"at":5,"state":"critical","label":"Pivot away from the donation question"},{"at":8,"state":"critical","label":"Recommendation does not answer slide 2"}],"connectors":[{"from":2,"to":8,"label":"Question asked here is not the one answered"},{"from":4,"to":8,"label":"Donor evidence never reaches the recommendation"}]}}},"case-03":{"label":"Case 03. Weak storyline","note":"Live blind run. No governing insight.","source":"eval-runs/case-03-review-v2-live.json","review":{"meta":{"title":"Client C service expansion","client":"Client C (anonymized)","artifactType":"draft deck","mode":"deep","slideCount":10,"version":"Review v2"},"readiness":{"level":"Needs substantial revision","mainReason":"The client asked which service to launch first and the deck presents findings without ever stating an answer.","highestRiskIssue":"Slide 9 closes the argument with benefits and costs language and a call for further analysis instead of an answer.","confidence":"Medium","whatCouldChangeIt":"If the team holds a recommendation that was left out of the deck and the blank input fields, reviewing that answer with its evidence could move the level. Evidence and source notes were not provided so High confidence is not available."},"blockingIssues":[{"rule":2,"label":"Deck does not answer the client's question","ceiling":"Needs substantial revision","evidence":[{"slide":9,"quote":"Each option has benefits and costs. Capacity, funding and staffing all matter. Further analysis may be useful."},{"slide":2,"quote":"Background. Methodology. Findings. Appendix."}]}],"scorecard":{"diagnosticMean":2.3,"confidence":"Medium","effort":"6-8 hrs","dimensions":[{"name":"Client decision usefulness","result":"fail","checksPassed":1,"checksTotal":4,"note":"The choice is set up on slide 3 but no answer or next step follows."},{"name":"Problem framing","result":"partial","checksPassed":3,"checksTotal":4,"note":"One bounded choice held consistently, success criteria are missing."},{"name":"Storyline and pyramid logic","result":"fail","checksPassed":0,"checksTotal":4,"note":"No governing insight anywhere and the titles are topic labels."},{"name":"Evidence quality","result":"partial","checksPassed":2,"checksTotal":4,"note":"Primary and secondary are distinguished, sources stay generic and limitations are unstated."},{"name":"Analysis and insight","result":"fail","checksPassed":0,"checksTotal":4,"note":"Findings are reported without implications and the options are never compared."},{"name":"Recommendation specificity","result":"fail","checksPassed":0,"checksTotal":4,"note":"There is no recommendation to assess."},{"name":"Feasibility and implementation","result":"fail","checksPassed":0,"checksTotal":4,"note":"No execution content. Judged lightly for a draft deck but the capacity question demands at least a first step."},{"name":"Risks, assumptions and uncertainty","result":"partial","checksPassed":2,"checksTotal":4,"note":"Option costs are acknowledged and uncertainty is not hidden, load-bearing assumptions and the risks of any choice are unstated."},{"name":"Slide-level communication","result":"fail","checksPassed":1,"checksTotal":4,"note":"Every title is a label. Content matches its label but carries no message."},{"name":"Professionalism, tone and confidentiality","result":"pass","checksPassed":4,"checksTotal":4,"note":"Professional throughout, no confidentiality issue, no overclaiming."}]},"strengths":[{"point":"The research base is real primary work with a stated method.","quote":"We interviewed staff, surveyed 120 patients and reviewed local health data.","slide":4},{"point":"The survey produces a decision-relevant ranking of patient need.","quote":"40% of surveyed patients said mental health was their top unmet need, 30% said diabetes, 20% physiotherapy, 10% other.","slide":8},{"point":"The problem is framed tightly around a single bounded choice.","quote":"It has capacity to add one new service.","slide":3}],"findings":[{"short":"No answer given","title":"The deck never answers which service Client C should launch first.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"recommendation","owner":"team","principle":"Answer First: a client deck states the answer to the client's question, not only the research behind it.","diagnosis":"The client asked which of three services to launch first. Slide 1 frames the deck as research findings, the slide 2 agenda contains no recommendation section and slide 9 ends the argument by deferring to further analysis. No slide states a choice.","evidence":[{"slide":1,"quote":"Client C service expansion. Research findings."},{"slide":9,"quote":"Each option has benefits and costs. Capacity, funding and staffing all matter. Further analysis may be useful."}],"why":"Client C gets a summary of its own situation instead of advice. The decision it asked for help with is left exactly where it started.","reflect":"Using only the evidence on slides 5 to 8, which service would you launch first, and what one sentence defends that pick.","fix":"State the team's answer early and let the findings defend it. If the evidence cannot yet carry an answer, replace the general call for further analysis with the specific analysis that would close the gap and a date for it.","tags":["Answer First","Pyramid Principle"]},{"short":"Options never compared","title":"The three options are described separately and never compared on a common basis.","severity":"major","severityLabel":"Moderate","deliveryCritical":true,"issueType":"thinking","owner":"team","principle":"So What: evidence earns its place by the implication it carries for the decision.","diagnosis":"Slides 5 to 7 give each option one demand signal, and two of the three carry a cost or staffing hurdle while mental health carries none. Slide 8 ranks patient need but slide 9 draws no implication from it, so demand, cost and staffing are never laid side by side.","evidence":[{"slide":6,"quote":"Physiotherapy referrals often go unfilled locally. Equipment cost is high."},{"slide":8,"quote":"40% of surveyed patients said mental health was their top unmet need, 30% said diabetes, 20% physiotherapy, 10% other."}],"why":"A which question is a comparison. Until the options sit on one basis the survey ranking does no work and the launch decision stays with the client.","reflect":"If you drew a table of demand, cost and staffing for the three options, which cells could you fill today from your own slides and which are empty.","fix":"Put the three options on one comparison basis (demand, cost to launch, staffing need) using the evidence already collected, mark the cells you cannot fill as open questions, and let the comparison drive the answer.","tags":["So What","ERIP Performance"]},{"short":"Titles are labels","title":"There is no governing insight and every title is a topic label.","severity":"major","severityLabel":"Moderate","deliveryCritical":false,"issueType":"communication","owner":"team","principle":"Pyramid Principle: the titles alone carry the argument.","diagnosis":"The agenda on slide 2 promises topics, and every title from slide 3 to slide 9 is a label such as Methodology or Considerations. A reader skimming the titles learns the subjects covered, not what the team concluded.","evidence":[{"slide":2,"quote":"Background. Methodology. Findings. Appendix."}],"why":"A busy clinic director reading the titles takes away nothing, so the findings never add up to a message in the reader's head.","reflect":"Write your ten titles as full sentences in order. Do they tell a story that ends in an answer.","fix":"Once the answer exists, rewrite the content titles as full-sentence assertions so each carries one step of the argument toward it.","tags":["Pyramid Principle","Minto"]}],"comments":[{"location":"Slide 8","problem":"The survey ranking gives no sampling method and no note that 120 respondents stand in for 2,000 annual patients.","why":"Once an answer exists this ranking becomes its load-bearing number and a funder will ask who was surveyed and how.","fix":"State how respondents were selected and the limits of the sample where the number appears."},{"location":"Slide 3","problem":"Capacity to add one new service is never defined in terms of budget, staff or space.","why":"The client question turns on limited capacity, and an undefined constraint cannot discriminate between the options.","fix":"Define the binding constraint concretely and test each option against it."},{"location":"Slide 5","problem":"Staff see demand is unquantified and unattributed.","why":"Part of the case for the option patients ranked first rests on an impression a reader cannot weigh.","fix":"Say how many staff reported it and what they actually said."}],"questionsForLead":["Is this deck meant to answer the launch question or is it an interim findings pack, and if the latter, when does the answer come.","What is the binding capacity constraint at Client C (budget, staff or space) and did the team gather cost and staffing estimates for each option.","How were the 120 survey respondents selected and are they representative of the 2,000 patients a year.","Has the team agreed decision criteria with Client C for choosing among the three services."],"learningNote":{"lesson":"Research becomes consulting only when it converges on an answer. A which question is answered with a choice and the reasoning that carries it, not with a set of findings.","weakHabit":"Stopping at description and handing the synthesis back to the client as further analysis.","exercise":"Using only slides 5 to 8, force-rank the three options and write one sentence defending the top pick. Then list the evidence that would change the ranking.","principle":"Answer First"},"notAssessed":["Whether the local health data, the unfilled referral claim and the wait time reports are accurate. No evidence and source notes were provided.","Fit to audience and project stage. The intended audience and project stage fields were left blank.","Client C's actual budget, staffing and space constraints. The deck names none and the known constraints field was blank.","Visual design, layout and charts. Only slide text was provided."],"timeline":{"sections":[{"label":"Setup","span":3},{"label":"Methodology","span":1},{"label":"Findings","span":4},{"label":"Close","span":2}],"tiles":[{"slide":1,"state":"partial"},{"slide":2,"state":"partial"},{"slide":3,"state":"pass"},{"slide":4,"state":"pass"},{"slide":5,"state":"partial"},{"slide":6,"state":"partial"},{"slide":7,"state":"partial"},{"slide":8,"state":"pass"},{"slide":9,"state":"critical"},{"slide":10,"state":"partial"}],"callouts":[{"at":2,"state":"partial","label":"Agenda has no recommendation section"},{"at":9,"state":"critical","label":"Deck stops at findings, no answer"}],"connectors":[{"from":8,"to":9,"label":"Survey ranking is never carried into the considerations"}]}}},"case-04":{"label":"Case 04. Internal contradiction","note":"Live blind run. The only R0 in the set.","source":"eval-runs/case-04-review-v2-live-r2.json","review":{"meta":{"title":"Client D path to self-sustainability","client":"Client D (anonymized)","artifactType":"final recommendation deck","mode":"deep","slideCount":9,"version":"Review v2"},"readiness":{"level":"Not ready for client review","mainReason":"The recommendation to sign a lease and hire three staff walks straight into the deck's own statement that Client D cannot take on new fixed costs and cannot hire until revenue grows.","highestRiskIssue":"Slide 6 recommends new fixed costs that slide 3 rules out, so the deck could mislead the client into a commitment it cannot fund.","confidence":"Medium","whatCouldChangeIt":"Evidence that the board's position has changed or that funding for the shopfront exists would remove the contradiction. Source notes for the slide 5 and slide 7 figures would also be needed to lift the level."},"blockingIssues":[{"rule":1,"label":"Contradiction the recommendation walks into","ceiling":"Not ready for client review","evidence":[{"slide":3,"quote":"Client D has no cash reserves and cannot take on new fixed costs without new income first."},{"slide":3,"quote":"The board has been clear that hiring is not possible until revenue grows."},{"slide":6,"quote":"Open a retail shopfront within six months and hire three paid repair staff to meet demand."}]},{"rule":4,"label":"Ungrounded headline numbers the decision depends on","ceiling":"Needs targeted revision","evidence":[{"slide":7,"quote":"Revenue will double in year one. The shop pays for itself by month nine."}]}],"scorecard":{"diagnosticMean":2.5,"confidence":"Medium","effort":"1-2 days","dimensions":[{"name":"Client decision usefulness","result":"partial","checksPassed":3,"checksTotal":4,"note":"The decision is named and answered but the answer conflicts with the client's stated constraint."},{"name":"Problem framing","result":"partial","checksPassed":2,"checksTotal":4,"note":"One problem held throughout, but scope and a definition of self-sustaining are missing."},{"name":"Storyline and pyramid logic","result":"fail","checksPassed":1,"checksTotal":4,"note":"The path breaks at slide 3: the constraint is never reconciled with the recommendation."},{"name":"Evidence quality","result":"fail","checksPassed":0,"checksTotal":4,"note":"No claim or financial figure traces to a source and no limitation is stated."},{"name":"Analysis and insight","result":"fail","checksPassed":1,"checksTotal":4,"note":"No alternatives compared and the slide 3 constraint has no implication drawn."},{"name":"Recommendation specificity","result":"partial","checksPassed":2,"checksTotal":4,"note":"Action and timeframe are specific, owner and success measure are missing."},{"name":"Feasibility and implementation","result":"fail","checksPassed":1,"checksTotal":4,"note":"The plan violates the stated constraints and names no funding dependency."},{"name":"Risks, assumptions and uncertainty","result":"fail","checksPassed":0,"checksTotal":4,"note":"No assumption, risk or tradeoff is named anywhere and certainty is absolute."},{"name":"Slide-level communication","result":"partial","checksPassed":2,"checksTotal":4,"note":"One message per slide but titles are topic labels."},{"name":"Professionalism, tone and confidentiality","result":"partial","checksPassed":3,"checksTotal":4,"note":"Tone and confidentiality are clean, certainty is not appropriate."}]},"strengths":[{"point":"The situation is quantified with a clear baseline for the sustainability gap.","quote":"Client D covers 60% of its costs from bicycle sales and relies on grants for the rest.","slide":2},{"point":"Demand evidence includes a concrete observable signal, not only assertion.","quote":"Client D turns away repair work it cannot staff.","slide":4}],"findings":[{"short":"Contradicts own constraint","title":"The recommendation adds a lease and three hires that the deck itself says Client D cannot afford.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"thinking","owner":"team","principle":"Internal Consistency: a recommendation must survive every constraint the deck states.","diagnosis":"Slide 3 states that Client D has no cash reserves, that new fixed costs need new income first and that the board rules out hiring until revenue grows. Slide 6 then recommends a leased shopfront within six months plus three paid repair staff, both new fixed costs, with no explanation of how the constraint is lifted or funded.","evidence":[{"slide":3,"quote":"Client D has no cash reserves and cannot take on new fixed costs without new income first."},{"slide":6,"quote":"Open a retail shopfront within six months and hire three paid repair staff to meet demand."}],"why":"A board that already said no to hiring will reject the plan on sight, or worse the client signs a lease it cannot cover and the advice causes real financial harm.","reflect":"What would have to be true about funding for slide 6 to be possible under slide 3, and is any of it true today.","fix":"Reconcile the recommendation with the stated constraint. Either show a funding bridge that lifts it and address the board's position directly, or restage the plan so revenue grows before fixed costs are added, for example by first capturing the repair work Client D already turns away. State explicitly what changes the board's position.","tags":["Internal Consistency","Feasibility"]},{"short":"Ungrounded financial projections","title":"The headline financial numbers have no source, no cost side and no method.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"evidence","owner":"team","principle":"Evidence Grounding: a number that drives a decision must trace to a source and a method.","diagnosis":"Slide 7 asserts that revenue doubles in year one and the shop pays for itself by month nine. No source, baseline or cost model appears anywhere, and the only support is the unsourced peer claim on slide 5. Lease and salary costs are never quantified, so payback by month nine cannot be checked.","evidence":[{"slide":7,"quote":"Revenue will double in year one. The shop pays for itself by month nine."},{"slide":5,"quote":"Comparable social enterprises have doubled revenue after opening a shop."}],"why":"The client would bet its solvency on a payback date the deck cannot defend, and one challenged number collapses trust in the whole plan.","reflect":"Which comparables sit behind the doubling claim, and what are the actual lease and salary costs per month.","fix":"Build the numbers from the ground up: named comparables, expected sales, lease and salary costs and a break-even month with the assumptions marked. If the data does not exist, present a range and say what would validate it.","tags":["Evidence Grounding","ERIP Performance"]},{"short":"False certainty throughout","title":"A bet-the-organization move is presented as certain and low risk with no assumption or downside named.","severity":"major","severityLabel":"Moderate","deliveryCritical":true,"issueType":"thinking","owner":"team","principle":"Honest Uncertainty: state assumptions and risks so the client can stress-test the advice.","diagnosis":"Slide 8 calls the plan low-risk and slide 6 promises self-sustainability as a certainty. For an organization with no cash reserves, a lease plus three salaries is the opposite of low risk, and no risk, assumption or tradeoff appears anywhere in the deck.","evidence":[{"slide":8,"quote":"The plan is low-risk. Demand is proven and the model is tested by peers."},{"slide":6,"quote":"This will make Client D self-sustaining."}],"why":"A client reassured the plan is low risk will build no contingency, and if sales lag there are no reserves to absorb the miss.","reflect":"What is the worst plausible quarter after signing the lease, and what happens to Client D in it.","fix":"Name the load-bearing assumptions (footfall, conversion and hiring speed), state the key risks with a mitigation each and replace absolute claims with claims the evidence supports.","tags":["Honest Uncertainty","Risk Disclosure"]}],"comments":[{"location":"Slides 2 to 9","problem":"Titles are topic labels (Situation, The market, Financial impact) so the argument is not readable from the titles alone.","why":"A busy board member skimming titles cannot see the claim or why it holds.","fix":"Rewrite content titles as full-sentence assertions that carry the argument."},{"location":"Slides 1 and 2","problem":"Self-sustaining is never defined against the 40% grant gap, so the two-year target has no measurable finish line.","why":"Without a defined target the client cannot tell whether this plan, or any plan, gets there.","fix":"Define self-sustaining as a cost-coverage percentage and date, then size the revenue gap the plan must close."}],"questionsForLead":["Has the board seen this recommendation, given its stated position that hiring waits on revenue growth.","Where do the doubled-revenue and month-nine payback figures come from, and did anyone build a cost model for the lease and three salaries.","Which comparable social enterprises doubled revenue after opening a shop, and how comparable are they in size and funding.","Was a lower fixed-cost path, such as monetizing the repair work Client D already turns away, considered and rejected, and why.","What capital would the shopfront need before break-even and where would it come from with no cash reserves."],"learningNote":{"lesson":"A recommendation must survive the constraints your own deck states. When slide 3 rules out new fixed costs, slide 6 cannot add them without showing what changed.","weakHabit":"Building the case for a preferred answer while ignoring disconfirming facts already collected and written down.","exercise":"Before finalizing, read only the constraint statements in the deck, then read only the recommendation, and write one sentence per constraint on how it is satisfied or lifted. Any constraint without a sentence is a contradiction to resolve.","principle":"Internal Consistency"},"notAssessed":["Whether the peer doubling claim on slide 5 is factually true. No source or evidence notes were provided.","Whether external funding for the shopfront exists or could be raised. The deck does not say.","Audience fit. Intended audience and project stage were left blank in the input, so fit was judged only from the deck itself.","Visual design, layout and charts. Only slide text was provided."],"timeline":{"sections":[{"label":"Situation and constraint","span":3},{"label":"Market case","span":2},{"label":"Recommendation and plan","span":4}],"tiles":[{"slide":1,"state":"partial"},{"slide":2,"state":"pass"},{"slide":3,"state":"pass"},{"slide":4,"state":"partial"},{"slide":5,"state":"partial"},{"slide":6,"state":"critical"},{"slide":7,"state":"critical"},{"slide":8,"state":"partial"},{"slide":9,"state":"partial"}],"callouts":[{"at":6,"state":"critical","label":"Recommendation contradicts the slide 3 constraint"},{"at":7,"state":"critical","label":"Headline numbers have no source or cost model"},{"at":8,"state":"partial","label":"Low-risk claim with no risks named"}],"connectors":[{"from":3,"to":6,"label":"stated constraint versus recommended fixed costs"}]}}},"case-05":{"label":"Case 05. Good but not perfect","note":"The restraint case. Nearly ready, minor findings only.","source":"eval-runs/case-05-review-v2-live-r2.json","review":{"meta":{"title":"Client E paid membership scheme","client":"Client E (anonymized)","artifactType":"final recommendation deck","mode":"deep","slideCount":10,"version":"Review v2"},"readiness":{"level":"Nearly ready with minor edits","mainReason":"No blocking rule fired: the decision is clear, the core recommendation is supported and actionable, the headline number is presented as an assumption to test rather than a fact, and the only open points strengthen an already-sound deck.","highestRiskIssue":"Slide 8 sizes year-one revenue at about 5,000 pounds but the deck never sizes the grant gap it is meant to close, so the reader cannot judge how much this diversifies income.","confidence":"Medium","whatCouldChangeIt":"The grant income at risk in pounds (the two grants not expected to renew) would let the reader judge whether 5,000 pounds is a meaningful start, and could turn the sizing note into a targeted gap.","confidenceNote":"Confidence is Medium because no evidence and source notes field was filled in the input, so sourcing rests on the in-slide attributions alone."},"blockingIssues":[],"scorecard":{"diagnosticMean":4.7,"confidence":"Medium","effort":"4-6 hrs","dimensions":[{"name":"Client decision usefulness","result":"pass","checksPassed":4,"checksTotal":4,"note":"The decision, the answer and the first step are stated plainly on slides 1, 2 and 10."},{"name":"Problem framing","result":"partial","checksPassed":3,"checksTotal":4,"note":"The problem is specific and held throughout, success criteria are implied by the 8% and 5% triggers but never stated as the target for diversification itself."},{"name":"Storyline and pyramid logic","result":"pass","checksPassed":4,"checksTotal":4,"note":"The answer leads on slide 1 and the titles read as an argument from problem to evidence to recommendation."},{"name":"Evidence quality","result":"pass","checksPassed":4,"checksTotal":4,"note":"Each headline claim carries an in-slide source and the 8% is honestly marked as an assumption to test."},{"name":"Analysis and insight","result":"partial","checksPassed":3,"checksTotal":4,"note":"Findings are interpreted and feed the recommendation, but the year-one revenue is never compared against the size of the grant gap it addresses."},{"name":"Recommendation specificity","result":"pass","checksPassed":4,"checksTotal":4,"note":"Action, owner, timeframe and measurable triggers are all present on slide 10."},{"name":"Feasibility and implementation","result":"pass","checksPassed":4,"checksTotal":4,"note":"The single-tier soft-launch path fits the client and sequences a first step with a pilot."},{"name":"Risks, assumptions and uncertainty","result":"pass","checksPassed":4,"checksTotal":4,"note":"The load-bearing assumptions and the main risk are named and the soft launch is set up to test them."},{"name":"Slide-level communication","result":"partial","checksPassed":3,"checksTotal":4,"note":"Most titles assert a message, but a few (The decision, The numbers) are topic labels rather than the takeaway."},{"name":"Professionalism, tone and confidentiality","result":"pass","checksPassed":4,"checksTotal":4,"note":"Professional throughout, no confidentiality issue, individuals referred to by role."}]},"strengths":[{"point":"The team marks its own key number as the thing to test rather than presenting it as fact, which is exactly the honesty a client needs.","quote":"The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.","slide":8},{"point":"The recommendation is specific and gated: it names an owner, a sequence and a numeric trigger for going to full launch.","quote":"Month three: full launch if the soft launch clears 5%.","slide":10},{"point":"The single-tier start is tied directly to the client's constraints, so the advice fits an organization that has run no membership before.","quote":"Launching one tier at 45 pounds, rather than three tiers at once, keeps admin low and lets Client E learn before it scales.","slide":6}],"findings":[{"short":"Revenue not sized to gap","title":"The year-one revenue is never compared against the size of the grant gap it is meant to help close.","severity":"minor","severityLabel":"Minor","deliveryCritical":false,"issueType":"thinking","owner":"team","principle":"Analysis: a number is only meaningful next to the number it is compared against.","diagnosis":"Slide 3 says grants are 80% of income and two of five will not renew. Slide 8 puts year-one membership at about 5,000 pounds. The deck never states the grant income at risk in pounds, so the reader cannot see whether 5,000 pounds is a meaningful dent in the gap or a token start.","evidence":[{"slide":3,"quote":"Two of five grants are not expected to renew, per the funder letters on file."},{"slide":8,"quote":"that is about 5,000 pounds in year one"}],"why":"A board member weighing whether to back the scheme wants to know how much of the shortfall it covers. Without the gap in pounds the case for effort is harder to judge.","reflect":"How large is the income the two non-renewing grants represent, and what share of it does 5,000 pounds in year one cover.","fix":"Add the pounds at risk from the non-renewing grants next to the year-one figure so the reader can see the scheme as a first step against a sized gap. Do not overstate: frame it as a start that scales, which the deck already argues.","tags":["Analysis and insight","SCR"]},{"short":"Two topic-label titles","title":"A couple of slide titles state the topic rather than the takeaway.","severity":"minor","severityLabel":"Minor","deliveryCritical":false,"issueType":"communication","owner":"team","principle":"Minto action titles: the title should carry the message, not name the subject.","diagnosis":"Most titles in the deck assert a point. Two, The decision and The numbers, are topic labels, so a reader skimming titles skips the actual takeaway on those slides.","evidence":[{"slide":2,"quote":"The decision"},{"slide":8,"quote":"The numbers"}],"why":"A busy reader who scans only titles loses the answer on slide 2 and the revenue signal on slide 8, which are two of the most load-bearing slides.","reflect":"If a reader saw only the title of slide 2 and slide 8, would they get the point the slide makes.","fix":"Rewrite the two label titles as full-sentence assertions carrying the slide's takeaway, matching the assertive titles the rest of the deck already uses.","tags":["Minto action titles","Slide-level communication"]}],"comments":[{"location":"Slide 8","problem":"The year-one figure rests on the full 1,400 mailing list being reachable, and slide 9 flags list accuracy as an assumption, but the two are not linked.","why":"If the reachable list is smaller than 1,400 the 8% target and the 5,000 pounds move together, so the reader should see them connected.","fix":"Note on slide 8 that the figure scales with the usable list size the soft launch will reveal."}],"questionsForLead":["How large in pounds is the income from the two grants not expected to renew, and does the team have that figure to sit next to the 5,000 pounds.","Has the team confirmed the coordinator has capacity to own the launch on top of current duties.","Did the team check how current the 1,400 mailing list is, since the year-one number rests on it."],"learningNote":{"lesson":"A revenue number lands only when the reader can see it against the gap it is meant to close. Size the problem in the same unit as the solution.","weakHabit":"Reporting a projected figure without placing it next to the shortfall or benchmark that makes it meaningful.","exercise":"For the headline number in this deck, write the one comparison figure that tells the reader whether it is big or small, and put the two side by side.","principle":"Analysis and insight"},"notAssessed":["Whether the in-slide sources (2024 accounts, box-office data, funder letters, comparator websites) say what the deck reports. No evidence and source notes field was filled and the underlying documents were not provided.","Whether the coordinator actually has capacity to own the launch. The deck assigns ownership but the input states no capacity constraints.","How current or accurate the 1,400 mailing list is. The deck marks this as an assumption and it was not verifiable here.","Visual design, layout and charts. Only slide text was provided."],"timeline":{"sections":[{"label":"Decision","span":2},{"label":"Case","span":3},{"label":"Design","span":2},{"label":"Numbers and risk","span":2},{"label":"First steps","span":1}],"tiles":[{"slide":1,"state":"pass"},{"slide":2,"state":"partial"},{"slide":3,"state":"pass"},{"slide":4,"state":"pass"},{"slide":5,"state":"pass"},{"slide":6,"state":"pass"},{"slide":7,"state":"pass"},{"slide":8,"state":"partial"},{"slide":9,"state":"pass"},{"slide":10,"state":"pass"}],"callouts":[{"at":8,"state":"partial","label":"Revenue not sized against the grant gap"},{"at":2,"state":"partial","label":"Topic-label title"}],"connectors":[{"from":3,"to":8,"label":"gap should meet the revenue figure"}]}}},"case-05-drift":{"label":"Case 05, a second run","note":"Same deck, same frozen prompt, another run. Fails the contract check, so the renderer refuses to draw it. Kept as the demo of that refusal.","source":"eval-runs/stability/case-05-run-a.json","review":{"meta":{"title":"Client E paid membership recommendation","client":"Client E (anonymized)","artifactType":"final recommendation deck","mode":"deep","slideCount":10,"version":"Review v2"},"readiness":{"level":"Needs targeted revision","mainReason":"The deck is sound and well sourced, but it never sizes the roughly 5,000 pounds of membership income against the grant income it is meant to diversify away from, so the board cannot tell whether this answers their funding problem or only starts to.","highestRiskIssue":"Slide 3 names a grant cliff and slide 8 gives a year-one membership figure, and no slide connects the two.","confidence":"Medium","whatCouldChangeIt":"A stated total income figure and the value of the two grants at risk, set beside the membership estimate, would close the gap and move this to Nearly ready.","confidenceNote":"The input pack left the evidence and source notes, the client constraints and the intended audience blank, so confidence is capped at Medium."},"blockingIssues":[],"scorecard":{"diagnosticMean":4.3,"confidence":"Medium","effort":"2-3 hrs","dimensions":[{"name":"Client decision usefulness","result":"pass","checksPassed":4,"checksTotal":4,"note":"The decision, the answer and the first step are all stated in the first two slides and on slide 10."},{"name":"Problem framing","result":"partial","checksPassed":3,"checksTotal":4,"note":"The question is specific and held throughout, but what is out of scope (other income routes) is never stated."},{"name":"Storyline and pyramid logic","result":"partial","checksPassed":3,"checksTotal":4,"note":"Answer first on slide 1 and an unbroken chain, but three middle titles are labels so the titles alone do not carry it."},{"name":"Evidence quality","result":"partial","checksPassed":3,"checksTotal":4,"note":"Every figure carries a named source. Primary and secondary evidence are not explicitly distinguished."},{"name":"Analysis and insight","result":"partial","checksPassed":3,"checksTotal":4,"note":"Findings are interpreted and feed the recommendation. The revenue is not compared to the income at risk."},{"name":"Recommendation specificity","result":"pass","checksPassed":4,"checksTotal":4,"note":"Action, price, owner, month-by-month timing and a conversion measure are all present."},{"name":"Feasibility and implementation","result":"pass","checksPassed":4,"checksTotal":4,"note":"Sized to existing capacity, sequenced over three months, with a soft launch as the first step."},{"name":"Risks, assumptions and uncertainty","result":"partial","checksPassed":3,"checksTotal":4,"note":"Assumptions and the conversion risk are named. The cost of delivering member benefits is not treated as a risk."},{"name":"Slide-level communication","result":"partial","checksPassed":3,"checksTotal":4,"note":"Most titles assert. Slides 5, 7 and 8 are topic labels."},{"name":"Professionalism, tone and confidentiality","result":"pass","checksPassed":4,"checksTotal":4,"note":"Professional throughout. No named individual is judged and no personal data is exposed."}]},"strengths":[{"point":"The deck answers the client's question in its first two slides instead of building to it.","quote":"Client E asked whether a paid membership could diversify income away from project grants. Our answer is yes, with a deliberately small start.","slide":2},{"point":"The load-bearing number is labelled as an assumption and given a test, which is rare in a student deck.","quote":"The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.","slide":8},{"point":"The plan names an owner, a sequence and a go signal, so someone can start on Monday.","quote":"The Client E coordinator owns the launch. Month one: soft launch to 200 contacts.","slide":10}],"findings":[{"short":"Revenue never sized","title":"The membership estimate is never set against the grant income it is meant to replace.","severity":"major","severityLabel":"Moderate","deliveryCritical":true,"issueType":"analysis","owner":"team","principle":"Client Decision Usefulness: an income answer must be sized against the income problem it answers.","diagnosis":"Slide 3 establishes the problem as an 80% grant dependency with two of five grants not expected to renew. Slide 8 gives the membership answer as roughly 5,000 pounds in year one. No slide states Client E's total income or the value of the two grants at risk, so the reader cannot tell whether 5,000 pounds is a meaningful diversification or a rounding error against the gap.","evidence":[{"slide":3,"quote":"Two of five grants are not expected to renew, per the funder letters on file."},{"slide":8,"quote":"If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one."}],"why":"A board that approves this could reasonably believe the grant loss is being addressed. If the two grants are worth many times 5,000 pounds, the board needs to know that membership is one part of the response and not the response, and it would ask for the rest at the same meeting.","reflect":"What share of the income Client E is about to lose does 5,000 pounds actually cover, and does your recommendation still read the same way once that share is on the slide.","fix":"Put the size of the gap and the size of the answer on the same slide, then say explicitly what membership is and is not solving. This is the one gap holding the deck at Needs targeted revision rather than Nearly ready.","tags":["Client Decision Usefulness","So What"]},{"short":"Cost side absent","title":"The year-one figure is gross revenue with no cost of delivering the member benefits.","severity":"minor","severityLabel":"Minor","deliveryCritical":false,"issueType":"evidence","owner":"team","principle":"Evidence Grounding: a financial figure the client will quote should be net of what it costs to earn.","diagnosis":"Slide 7 asserts the benefits use spare capacity and slide 8 reports the 5,000 pounds without any offsetting cost for the two members-only events, the booking admin or the partner discounts. The claim about spare capacity is plausible but it is asserted rather than shown.","evidence":[{"slide":7,"quote":"These use capacity Client E already has."},{"slide":8,"quote":"If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one."}],"why":"The client will read 5,000 pounds as money available to spend. A short cost line protects the team when the coordinator's actual hours turn up later.","reflect":"What does one members-only event cost Client E in staff hours and cash, and what is left of the 5,000 pounds after two of them.","fix":"Add a cost line under the revenue estimate, even a rough one, and label the result as net. Where you cannot cost something, say so rather than leaving it out.","tags":["Evidence Grounding","Financial Hygiene"]},{"short":"Two different thresholds","title":"The go decision uses a 5% threshold while the business case is built on 8%.","severity":"minor","severityLabel":"Minor","deliveryCritical":false,"issueType":"implementation","owner":"team","principle":"Decision Rules: the trigger to proceed should tie back to the number the case rests on.","diagnosis":"Slide 8 builds the case on an 8% conversion. Slide 10 lets the full launch proceed at 5%. The deck does not say what a 5% to 8% result means for the revenue estimate or why the lower bar is acceptable.","evidence":[{"slide":8,"quote":"The 8% assumption is conservative against the 32% attendance rate and is the main thing to test."},{"slide":10,"quote":"Month three: full launch if the soft launch clears 5%."}],"why":"The coordinator running the review in month two has two numbers and no rule for the space between them, so the go decision falls back to instinct.","reflect":"If the soft launch converts at 6%, what does your year-one estimate become and would you still launch.","fix":"State why the go bar sits below the planning assumption and what a result between the two implies for the revenue estimate. One sentence closes it.","tags":["Decision Rules","Actionability"]},{"short":"Price set off list price","title":"The 45 pound price is anchored on what comparable groups charge without what they offer.","severity":"minor","severityLabel":"Minor","deliveryCritical":false,"issueType":"evidence","owner":"team","principle":"Comparability: a benchmark only holds when the things compared are alike.","diagnosis":"Slide 5 takes a 40 to 60 pound range from three public websites and slide 6 lands at 45 pounds inside it. The deck does not say what those memberships include or how they convert, so the benchmark supports the range but not the choice of point within it.","evidence":[{"slide":5,"quote":"Three comparable local arts non-profits run membership at 40 to 60 pounds a year (their public websites, 2025)."},{"slide":6,"quote":"Launching one tier at 45 pounds, rather than three tiers at once, keeps admin low and lets Client E learn before it scales."}],"why":"If the comparators offer more for the money, 45 pounds is a harder sell than the 8% assumption implies, and price is the easiest thing to change before launch.","reflect":"What do those three memberships include, and does Client E's benefit set justify sitting at the low end or the middle of that range.","fix":"Add one line on what the comparators include so the reader can see the price is a judgment against value, not just a midpoint. Keep it to a line: this is a caveat, not a new workstream.","tags":["Comparability","Evidence Grounding"]}],"comments":[{"location":"Slides 5, 7 and 8","problem":"Three middle titles are topic labels (\"What comparable groups charge\", \"What members get\", \"The numbers\") while the rest of the deck asserts.","why":"A board member who skims titles loses the middle of the argument, which is where the pricing and the revenue case sit.","fix":"Turn each into the assertion the slide already proves."},{"location":"Slide 4","problem":"The 1,400 mailing list is called an engaged base to convert, and slide 9 assumes the list is accurate.","why":"List decay is the quiet driver of the 8% assumption, so the size of the usable base matters more than the headline count.","fix":"State when the list was last cleaned or what share opened a recent mailing."},{"location":"Slide 7","problem":"The local partner discount is presented as a benefit without saying whether any partner has agreed.","why":"A benefit advertised at launch that is not yet secured is the sort of thing members notice first.","fix":"Mark which benefits are confirmed and which are still to be arranged."}],"questionsForLead":["What is Client E's total annual income, and what are the two non-renewing grants worth against the 5,000 pounds this scheme raises.","Did the team cost the two members-only events and the booking admin, or is the spare capacity claim on slide 7 the client's own view.","Why does the go bar on slide 10 sit at 5% when the case is built on 8%.","Has anyone confirmed the local partner discounts, or are they still an intention.","Does the client have a view on the 45 pound price point, given three comparators sit between 40 and 60."],"learningNote":{"lesson":"Sizing is part of the answer. When a client's problem is a number, your recommendation has to be measured against that number on the same page, or the client is left doing the arithmetic that decides whether your advice is enough.","weakHabit":"Building a well-evidenced solution and never turning back to measure it against the problem that opened the deck.","exercise":"Take the problem slide and the answer slide of this deck. Write one sentence that contains both magnitudes. If you cannot, you are missing a number the client needs.","principle":"Client Decision Usefulness"},"notAssessed":["Whether 5,000 pounds is material to Client E. Total income and the value of the grants at risk were not provided.","Whether the comparator memberships are genuinely comparable. Only their prices were given.","The cost of running the scheme. No cost figures were in the deck or the input pack.","The client's constraints and the intended audience. Both fields were left blank in the input pack, so feasibility was judged only against constraints the deck itself states.","Visual design, layout and charts. Only slide text was provided."],"timeline":{"sections":[{"label":"Answer","span":2},{"label":"Why now","span":3},{"label":"The scheme","span":3},{"label":"Case and launch","span":2}],"tiles":[{"slide":1,"state":"pass"},{"slide":2,"state":"pass"},{"slide":3,"state":"partial"},{"slide":4,"state":"pass"},{"slide":5,"state":"partial"},{"slide":6,"state":"pass"},{"slide":7,"state":"partial"},{"slide":8,"state":"partial"},{"slide":9,"state":"pass"},{"slide":10,"state":"partial"}],"callouts":[{"at":8,"state":"partial","label":"Revenue not sized against the gap"},{"at":10,"state":"partial","label":"Go bar differs from the planning assumption"}],"connectors":[{"from":3,"to":8,"label":"Problem size never meets answer size"}]}}}}</script>
+<script>
+'use strict';
+
+/* ============================================================
+   The contract validator, ported from check-review-v2.js.
+   The renderer refuses to draw a review that fails it, exactly
+   as v1 does. The one check that cannot run in the browser is
+   the verbatim-quote check, which needs the deliverable text.
+   ============================================================ */
+
+var LEVELS = ['Not ready for client review','Needs substantial revision','Needs targeted revision','Nearly ready with minor edits'];
+var RESULTS = ['pass','partial','fail','na'];
+var SEVERITIES = ['critical','major','minor'];
+var SEV_LABEL = { critical:'High impact', major:'Moderate', minor:'Minor' };
+var ISSUE_TYPES = ['thinking','evidence','recommendation','implementation','communication'];
+var BUDGET = { short:3, deep:5, lead:5 };
+
+function isStr(v){ return typeof v === 'string' && v.trim().length > 0; }
+
+function validate(r){
+  var e = [];
+  if(!r || typeof r !== 'object'){ return ['not a JSON object']; }
+
+  var m = r.meta;
+  if(!m || typeof m !== 'object') e.push('meta missing');
+  else {
+    if(!isStr(m.title)) e.push('meta.title missing');
+    if(!isStr(m.artifactType)) e.push('meta.artifactType missing');
+    if(['short','deep','lead'].indexOf(m.mode) < 0) e.push('meta.mode must be short, deep or lead');
+  }
+
+  var rd = r.readiness;
+  if(!rd || typeof rd !== 'object') e.push('readiness missing');
+  else {
+    if(LEVELS.indexOf(rd.level) < 0) e.push('readiness.level is not one of the four levels');
+    ['mainReason','highestRiskIssue','whatCouldChangeIt'].forEach(function(k){
+      if(!isStr(rd[k])) e.push('readiness.' + k + ' missing');
+    });
+    if(['Low','Medium','High'].indexOf(rd.confidence) < 0) e.push('readiness.confidence must be Low, Medium or High');
+  }
+
+  var bi = r.blockingIssues || [];
+  if(!Array.isArray(bi)) e.push('blockingIssues must be an array');
+  else bi.forEach(function(b,i){
+    if(!isStr(b.label)) e.push('blocking issue ' + (i+1) + ' has no label');
+    if(LEVELS.indexOf(b.ceiling) < 0) e.push('blocking issue ' + (i+1) + ' has an invalid ceiling');
+    if(!Array.isArray(b.evidence) || !b.evidence.length) e.push('blocking issue ' + (i+1) + ' carries no evidence quote');
+  });
+
+  var sc = r.scorecard;
+  if(!sc || typeof sc !== 'object') e.push('scorecard missing');
+  else {
+    var dims = sc.dimensions;
+    if(!Array.isArray(dims) || dims.length !== 10) e.push('scorecard.dimensions must have exactly ten entries');
+    else {
+      var inScope = [];
+      dims.forEach(function(d,i){
+        if(RESULTS.indexOf(d.result) < 0) e.push('dimension ' + (i+1) + ' has an invalid result: ' + d.result);
+        if(d.result !== 'na'){
+          if(typeof d.checksTotal !== 'number' || d.checksTotal <= 0) e.push('dimension ' + (i+1) + ' has no checksTotal');
+          else inScope.push(1 + 4 * d.checksPassed / d.checksTotal);
+        }
+      });
+      if(inScope.length && typeof sc.diagnosticMean === 'number'){
+        var mean = Math.round(inScope.reduce(function(a,b){return a+b;},0) / inScope.length * 10) / 10;
+        if(Math.abs(mean - sc.diagnosticMean) > 0.05)
+          e.push('scorecard.diagnosticMean ' + sc.diagnosticMean + ' does not equal the computed mean ' + mean);
+      }
+    }
+  }
+
+  var f = r.findings;
+  if(!Array.isArray(f)) e.push('findings must be an array');
+  else {
+    var budget = BUDGET[(m && m.mode) || 'deep'] || 5;
+    if(f.length > budget) e.push('findings exceed the ' + m.mode + ' mode noise budget of ' + budget);
+    f.forEach(function(x,i){
+      var n = 'finding ' + (i+1);
+      if(!isStr(x.title)) e.push(n + ' has no title');
+      if(SEVERITIES.indexOf(x.severity) < 0) e.push(n + ' has an invalid severity');
+      else if(x.severityLabel !== SEV_LABEL[x.severity]) e.push(n + ' severityLabel does not match its severity');
+      if(ISSUE_TYPES.indexOf(x.issueType) < 0) e.push(n + ' has an invalid issueType: ' + x.issueType);
+      if(!isStr(x.reflect)) e.push(n + ' has no reflect question, so the coaching gate cannot hold');
+      if(!isStr(x.fix)) e.push(n + ' has no fix');
+      if(!Array.isArray(x.evidence) || !x.evidence.length) e.push(n + ' carries no evidence quote (quote or abstain)');
+    });
+    /* deliveryCritical invariants, matching check-review-v2.js sections 8a, 8b and 8d.
+       Note the validator is stricter than the system prompt here: the prompt allows one
+       delivery-critical finding on a no-blocker R2 deck, the validator allows none.
+       The validator is the enforced contract, so the renderer follows it. */
+    f.forEach(function(x,i){
+      if(!bi.length && x.deliveryCritical)
+        e.push('finding ' + (i+1) + ' is deliveryCritical but no blocking issue is listed');
+      if(x.severity === 'minor' && x.deliveryCritical)
+        e.push('finding ' + (i+1) + ' is severity minor but marked deliveryCritical');
+    });
+    if(rd && !bi.length && f.length && f.every(function(x){ return x.severity === 'minor'; })
+       && rd.level !== 'Nearly ready with minor edits')
+      e.push('no blocking issue and every finding minor, so readiness should be Nearly ready with minor edits');
+  }
+
+  var c = r.comments || [];
+  if(Array.isArray(f) && f.length + c.length > 8) e.push('findings plus comments exceed 8');
+  if((r.questionsForLead || []).length > 5) e.push('questionsForLead exceeds 5');
+  if(!Array.isArray(r.notAssessed) || !r.notAssessed.length) e.push('notAssessed is required and must not be empty');
+
+  /* readiness must sit at or below the lowest ceiling that fired */
+  if(rd && bi.length && LEVELS.indexOf(rd.level) >= 0){
+    var lowest = Math.min.apply(null, bi.map(function(b){ return LEVELS.indexOf(b.ceiling); }).filter(function(i){ return i >= 0; }));
+    if(LEVELS.indexOf(rd.level) > lowest)
+      e.push('readiness "' + rd.level + '" is above the lowest blocking ceiling "' + LEVELS[lowest] + '"');
+  }
+
+  /* dash lint over authored fields, quotes exempt */
+  var dash = /[–—]/;
+  var authored = [];
+  if(rd) authored.push(rd.mainReason, rd.highestRiskIssue, rd.whatCouldChangeIt);
+  (f || []).forEach(function(x){ authored.push(x.title, x.diagnosis, x.why, x.reflect, x.fix, x.principle); });
+  (r.notAssessed || []).forEach(function(s){ authored.push(s); });
+  if(authored.filter(isStr).some(function(s){ return dash.test(s); }))
+    e.push('an em or en dash appears in an authored field');
+
+  return e;
+}
+
+/* ============================================================
+   state
+   ============================================================ */
+
+var REVIEW = null, VIEW = 'coach', current = 0, coach = [], skipStreak = 0;
+var ATTEMPT_MIN = 40, REWRITE_MIN = 20, REVEAL_CAP = 2;
+var BUNDLE = {};
+try { BUNDLE = JSON.parse(document.getElementById('bundled-reviews').textContent) || {}; } catch(ex){ BUNDLE = {}; }
+
+function $(id){ return document.getElementById(id); }
+function esc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function normWords(s){
+  return String(s || '').toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(function(w){ return w.length > 2; });
+}
+function levelClass(l){ var i = LEVELS.indexOf(l); return i < 0 ? 'r2' : 'r' + i; }
+function quoteHtml(q){
+  return '<div class="quote"><span class="sl">' + (q.slide ? 'Slide ' + esc(q.slide) : 'Evidence') + '</span>' + esc(q.quote) + '</div>';
+}
+
+/* ============================================================
+   start screen
+   ============================================================ */
+
+function renderPicker(){
+  var keys = Object.keys(BUNDLE);
+  if(!keys.length){
+    $('picker').innerHTML = '<div class="na-note">No reviews are bundled into this file yet. Run <b>node bundle-reviews.js</b> from the v2 folder, or paste a review below.</div>';
+    return;
+  }
+  $('picker').innerHTML = keys.map(function(k){
+    var b = BUNDLE[k];
+    return '<button class="pick" data-key="' + esc(k) + '"><b>' + esc(b.label) + '</b><span>' + esc(b.note || '') + '</span></button>';
+  }).join('');
+  Array.prototype.forEach.call($('picker').querySelectorAll('.pick'), function(el){
+    el.onclick = function(){ load(BUNDLE[el.dataset.key].review); };
+  });
+}
+
+function showStartError(errs){
+  $('startErr').classList.remove('hidden');
+  $('startErrList').innerHTML = errs.map(function(e){ return '<li>' + esc(e) + '</li>'; }).join('');
+  $('startErr').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+/* ============================================================
+   load and render
+   ============================================================ */
+
+function load(obj){
+  var errs = validate(obj);
+  if(errs.length){ showStartError(errs); return; }
+  $('startErr').classList.add('hidden');
+
+  REVIEW = obj;
+  current = 0;
+  skipStreak = 0;
+  coach = (obj.findings || []).map(function(){ return { attempt:'', rewrite:'', revealed:false }; });
+
+  var m = obj.meta;
+  $('barMeta').innerHTML = '<b>' + esc(m.title) + '</b> &middot; ' + esc(m.artifactType) +
+    (m.slideCount ? ' &middot; ' + m.slideCount + ' slides' : '') + ' &middot; ' + esc(m.mode) + ' mode';
+  Array.prototype.forEach.call($('tabs').querySelectorAll('.tab'), function(t){ t.disabled = false; });
+
+  renderCoach();
+  renderLead();
+  renderPrint();
+  setView('coach');
+}
+
+function setView(v){
+  VIEW = v;
+  ['start','coach','lead','print'].forEach(function(k){
+    $(k + 'View').classList.toggle('hidden', k !== v);
+  });
+  Array.prototype.forEach.call($('tabs').querySelectorAll('.tab'), function(t){
+    t.classList.toggle('on', t.dataset.view === v);
+  });
+  $('backBtn').classList.toggle('hidden', v === 'start');
+  $('printBtn').classList.toggle('hidden', v !== 'print');
+  window.scrollTo(0,0);
+}
+
+/* ---------- coach view: findings one at a time, gate enforced ---------- */
+
+function renderCoach(){
+  var r = REVIEW;
+
+  $('strengths').innerHTML = (r.strengths || []).length
+    ? r.strengths.map(function(s){
+        return '<div style="margin-bottom:12px"><div class="prose" style="font-weight:600">' + esc(s.point) + '</div>' + quoteHtml({ slide:s.slide, quote:s.quote }) + '</div>';
+      }).join('')
+    : '<div class="na-note">This review lists no strengths. On anything above Not ready that is itself worth a question to your project lead.</div>';
+
+  var ln = r.learningNote || {};
+  $('learning').innerHTML =
+    '<div class="block-label">The lesson</div><div class="prose">' + esc(ln.lesson) + '</div>' +
+    '<div class="block-label">The habit this reveals</div><div class="prose">' + esc(ln.weakHabit) + '</div>' +
+    '<div class="block-label">Practice</div><div class="prose">' + esc(ln.exercise) + '</div>' +
+    (ln.principle ? '<div class="chips" style="margin-top:12px"><span class="chip">' + esc(ln.principle) + '</span></div>' : '');
+
+  $('coachNotAssessed').innerHTML = (r.notAssessed || []).map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('');
+  $('flistHead').textContent = r.findings.length + ' findings to work through';
+
+  renderFindingList();
+  renderFinding();
+}
+
+function renderFindingList(){
+  $('flist').innerHTML = REVIEW.findings.map(function(f,i){
+    return '<button class="fitem' + (i === current ? ' on' : '') + (coach[i].revealed ? ' done' : '') + '" data-i="' + i + '">' +
+      '<span class="num">' + (coach[i].revealed ? '&#10003;' : (i+1)) + '</span>' +
+      '<span class="txt">' + esc(f.short || f.title) + '</span>' +
+      '<span class="sev ' + esc(f.severity) + '">' + esc(f.severityLabel) + '</span>' +
+    '</button>';
+  }).join('');
+  Array.prototype.forEach.call($('flist').querySelectorAll('.fitem'), function(el){
+    el.onclick = function(){ current = +el.dataset.i; renderFindingList(); renderFinding(); };
+  });
+  var done = coach.filter(function(c){ return c.revealed; }).length;
+  $('coachProgress').textContent = done + ' of ' + coach.length + ' worked through.';
+}
+
+function renderFinding(){
+  var f = REVIEW.findings[current], st = coach[current];
+
+  /* The fix is not written into the DOM until the gate opens. */
+  $('fcard').innerHTML =
+    '<h2>Finding ' + (current+1) + ' of ' + REVIEW.findings.length + '</h2>' +
+    '<div class="ftitle">' + esc(f.title) + '</div>' +
+    '<div class="chips">' +
+      '<span class="sev ' + esc(f.severity) + '">' + esc(f.severityLabel) + '</span>' +
+      (f.deliveryCritical ? '<span class="chip" style="background:var(--red-soft);color:#A3241C">Delivery critical</span>' : '') +
+      '<span class="chip">' + esc(f.issueType) + '</span>' +
+      '<span class="chip">owner: ' + esc(f.owner) + '</span>' +
+    '</div>' +
+    '<div class="block-label">The principle</div><div class="prose">' + esc(f.principle) + '</div>' +
+    '<div class="block-label">What is happening</div><div class="prose">' + esc(f.diagnosis) + '</div>' +
+    '<div class="block-label">Evidence</div>' + (f.evidence || []).map(quoteHtml).join('') +
+    '<div class="block-label">Why it matters to the client</div><div class="prose">' + esc(f.why) + '</div>' +
+    '<div class="block-label">Answer this before the fix unlocks</div>' +
+    '<div class="reflect">' + esc(f.reflect) + '</div>' +
+    '<textarea class="attempt" id="attemptBox" rows="3" placeholder="Your answer. The fix stays locked until you make a real attempt."></textarea>' +
+    '<div class="rw-label" id="rwLabel"></div>' +
+    '<textarea class="attempt" id="rewriteBox" rows="2" placeholder="Your own version of the change."></textarea>' +
+    '<div class="gate-row">' +
+      '<button class="btn primary" id="revealBtn" disabled>Reveal the reviewer fix</button>' +
+      '<div class="gate-note" id="gateNote"></div>' +
+    '</div>' +
+    '<div id="fixSlot"></div>' +
+    '<div class="nav">' +
+      '<button class="btn" id="prevBtn">Previous</button>' +
+      '<button class="btn" id="nextBtn">Next finding</button>' +
+    '</div>';
+
+  $('attemptBox').value = st.attempt;
+  $('rewriteBox').value = st.rewrite;
+  $('attemptBox').oninput = function(){ st.attempt = this.value; updateGate(); };
+  $('rewriteBox').oninput = function(){ st.rewrite = this.value; updateGate(); };
+  $('revealBtn').onclick = reveal;
+  $('prevBtn').onclick = function(){ if(current > 0){ current--; renderFindingList(); renderFinding(); } };
+  $('nextBtn').onclick = function(){ if(current < REVIEW.findings.length - 1){ current++; renderFindingList(); renderFinding(); } };
+  $('prevBtn').disabled = current === 0;
+  $('nextBtn').disabled = current === REVIEW.findings.length - 1;
+
+  if(st.revealed) showFix(); else updateGate();
+}
+
+function attemptValid(ans, question){
+  var t = String(ans || '').trim();
+  if(t.length < ATTEMPT_MIN) return { ok:false, msg:'Keep going. A real attempt is at least a sentence or two.' };
+  var aw = normWords(t), qw = normWords(question);
+  var fresh = aw.filter(function(w){ return qw.indexOf(w) < 0; });
+  if(fresh.length < Math.max(5, Math.floor(aw.length * 0.3)))
+    return { ok:false, msg:'That mostly restates the question. Answer it in your own words.' };
+  return { ok:true };
+}
+
+function rewriteRequired(){ return skipStreak >= REVEAL_CAP; }
+
+function updateGate(){
+  var f = REVIEW.findings[current], st = coach[current];
+  var v = attemptValid(st.attempt, f.reflect);
+  var reqRw = rewriteRequired();
+  var rwOk = !reqRw || st.rewrite.trim().length >= REWRITE_MIN;
+  var note = $('gateNote');
+
+  $('rwLabel').textContent = reqRw
+    ? 'Required: draft your own version before this fix unlocks'
+    : 'Optional: draft your own version of the change first';
+  $('rwLabel').className = 'rw-label' + (reqRw ? ' req' : '');
+  $('revealBtn').disabled = !(v.ok && rwOk);
+
+  if(!st.attempt.trim()){
+    note.textContent = 'The fix unlocks after you type a real attempt.'; note.className = 'gate-note';
+  } else if(!v.ok){
+    note.textContent = v.msg; note.className = 'gate-note';
+  } else if(!rwOk){
+    note.textContent = 'You revealed ' + REVEAL_CAP + ' fixes without drafting an attempt. Write your own version to unlock this one.';
+    note.className = 'gate-note warn';
+  } else {
+    note.textContent = 'Unlocked. Reveal the fix to see where your answer and the reviewer converge.';
+    note.className = 'gate-note ok';
+  }
+}
+
+function reveal(){
+  var f = REVIEW.findings[current], st = coach[current];
+  if(!attemptValid(st.attempt, f.reflect).ok) return;
+  if(rewriteRequired() && st.rewrite.trim().length < REWRITE_MIN) return;
+  if(st.rewrite.trim().length >= REWRITE_MIN) skipStreak = 0; else skipStreak++;
+  st.revealed = true;
+  showFix();
+  renderFindingList();
+}
+
+function showFix(){
+  var f = REVIEW.findings[current];
+  $('fixSlot').innerHTML = '<div class="fix"><div class="fl">The reviewer fix, a direction not a rewrite</div><div class="ft">' + esc(f.fix) + '</div></div>';
+  $('revealBtn').disabled = true;
+  $('revealBtn').textContent = 'Revealed';
+  $('gateNote').textContent = 'Compare it with your own answer. The reviewer never writes the slide for you.';
+  $('gateNote').className = 'gate-note ok';
+}
+
+/* ---------- lead view ---------- */
+
+function renderLead(){
+  var r = REVIEW, rd = r.readiness;
+
+  $('readiness').innerHTML =
+    '<div class="rpill ' + levelClass(rd.level) + '">' + esc(rd.level) + '</div>' +
+    '<div class="rbody">' +
+      '<div class="lbl">Why it sits here</div><p>' + esc(rd.mainReason) + '</p>' +
+      '<div class="lbl">Highest risk</div><p>' + esc(rd.highestRiskIssue) + '</p>' +
+      '<div class="lbl">What could change it</div><p>' + esc(rd.whatCouldChangeIt) + '</p>' +
+      '<div class="facts">' +
+        '<div class="fact"><b>Reviewer confidence</b>' + esc(rd.confidence) + '</div>' +
+        '<div class="fact"><b>Diagnostic mean</b>' + esc(r.scorecard.diagnosticMean) + ' / 5</div>' +
+        '<div class="fact"><b>Estimated effort</b>' + esc(r.scorecard.effort || 'not stated') + '</div>' +
+        '<div class="fact"><b>Blocking rules fired</b>' + (r.blockingIssues || []).length + '</div>' +
+      '</div>' +
+    '</div>';
+
+  var bi = r.blockingIssues || [];
+  $('blockCard').classList.toggle('hidden', !bi.length);
+  $('blocks').innerHTML = bi.map(function(b){
+    return '<div class="block"><div class="bh">Rule ' + esc(b.rule) + '. ' + esc(b.label) + '</div>' +
+      '<div class="bc">Caps readiness at: ' + esc(b.ceiling) + '</div>' +
+      (b.evidence || []).map(quoteHtml).join('') + '</div>';
+  }).join('');
+
+  var dcs = r.findings.filter(function(f){ return f.deliveryCritical; });
+  var shown = dcs.length ? dcs : r.findings;
+  $('leadFindings').innerHTML =
+    (dcs.length ? '' : '<div class="na-note" style="margin-bottom:12px">No finding is marked delivery critical. All findings are shown.</div>') +
+    shown.map(function(f){
+      return '<div style="padding:14px 0;border-bottom:1px solid var(--border-soft)">' +
+        '<div class="chips"><span class="sev ' + esc(f.severity) + '">' + esc(f.severityLabel) + '</span>' +
+        '<span class="chip">' + esc(f.issueType) + '</span><span class="chip">owner: ' + esc(f.owner) + '</span></div>' +
+        '<h3>' + esc(f.title) + '</h3>' +
+        '<div class="prose">' + esc(f.diagnosis) + '</div>' +
+        (f.evidence || []).map(quoteHtml).join('') +
+        '<div class="block-label">Why it matters</div><div class="prose">' + esc(f.why) + '</div>' +
+      '</div>';
+    }).join('');
+
+  var qs = r.questionsForLead || [];
+  $('qCard').classList.toggle('hidden', !qs.length);
+  $('questions').innerHTML = qs.map(function(q){ return '<li>' + esc(q) + '</li>'; }).join('');
+
+  var dims = r.scorecard.dimensions || [];
+  var scoped = dims.filter(function(d){ return d.result !== 'na'; }).length;
+  $('meanNote').textContent = 'Diagnostic, not a verdict. Mean of ' + scoped + ' in-scope dimensions. Readiness above is set by the blocking rules, not by this number.';
+  $('dims').innerHTML = dims.map(function(d){
+    return '<div class="dim"><div class="dn">' + esc(d.name) + '</div>' +
+      '<div class="dct">' + (d.result === 'na' ? 'out of scope' : esc(d.checksPassed) + ' / ' + esc(d.checksTotal)) + '</div>' +
+      '<span class="res ' + esc(d.result) + '">' + (d.result === 'na' ? 'n/a' : esc(d.result)) + '</span>' +
+      (d.note ? '<div class="dnote">' + esc(d.note) + '</div>' : '') +
+    '</div>';
+  }).join('');
+
+  var tl = r.timeline;
+  $('tlCard').classList.toggle('hidden', !tl || !(tl.tiles || []).length);
+  if(tl && (tl.tiles || []).length){
+    $('tiles').innerHTML = tl.tiles.map(function(t){
+      return '<div class="tile ' + esc(t.state) + '" title="Slide ' + esc(t.slide) + ': ' + esc(t.state) + '">' + esc(t.slide) + '</div>';
+    }).join('');
+    $('callouts').innerHTML =
+      (tl.callouts || []).map(function(c){ return '<div class="callout"><b>Slide ' + esc(c.at) + '.</b> ' + esc(c.label) + '</div>'; }).join('') +
+      (tl.connectors || []).map(function(c){ return '<div class="callout" style="color:var(--muted)"><b>' + esc(c.from) + ' to ' + esc(c.to) + '.</b> ' + esc(c.label) + '</div>'; }).join('');
+  }
+
+  var cm = r.comments || [];
+  $('commentsCard').classList.toggle('hidden', !cm.length);
+  $('comments').innerHTML = cm.map(function(c){
+    return '<div style="padding:9px 0;border-bottom:1px solid var(--border-soft)">' +
+      '<div style="font-weight:600;font-size:13.5px">' + esc(c.location) + '. ' + esc(c.problem) + '</div>' +
+      '<div class="na-note">' + esc(c.why) + ' <b>Fix:</b> ' + esc(c.fix) + '</div></div>';
+  }).join('');
+
+  $('leadNotAssessed').innerHTML = (r.notAssessed || []).map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('');
+}
+
+/* ---------- printable: strengths first, gated fixes stay off paper ---------- */
+
+function renderPrint(){
+  var r = REVIEW, rd = r.readiness, ln = r.learningNote || {};
+  $('paper').innerHTML =
+    '<h1>' + esc(r.meta.title) + '</h1>' +
+    '<div class="sub">' + esc(r.meta.artifactType) + (r.meta.slideCount ? ', ' + r.meta.slideCount + ' slides' : '') +
+      ' &middot; ' + esc(r.meta.version || 'Review v2') + ' &middot; ' + esc(r.meta.mode) + ' mode</div>' +
+
+    '<div class="pf"><div class="pf-h">Readiness: ' + esc(rd.level) + '</div>' +
+      '<div class="prose">' + esc(rd.mainReason) + '</div>' +
+      '<div class="prose" style="margin-top:6px"><b>Highest risk.</b> ' + esc(rd.highestRiskIssue) + '</div>' +
+      '<div class="prose" style="margin-top:6px"><b>Confidence.</b> ' + esc(rd.confidence) + '. ' + esc(rd.whatCouldChangeIt) + '</div></div>' +
+
+    '<div class="pf"><div class="pf-h">What the deliverable does well</div>' +
+      ((r.strengths || []).length
+        ? (r.strengths || []).map(function(s){ return '<div class="prose" style="margin-bottom:6px">' + esc(s.point) + '</div>'; }).join('')
+        : '<div class="na-note">None recorded.</div>') + '</div>' +
+
+    '<div class="pf"><div class="pf-h">Findings</div>' +
+      r.findings.map(function(f,i){
+        return '<div style="margin-bottom:14px">' +
+          '<div style="font-weight:700">' + (i+1) + '. ' + esc(f.title) + ' (' + esc(f.severityLabel) + (f.deliveryCritical ? ', delivery critical' : '') + ')</div>' +
+          '<div class="prose">' + esc(f.diagnosis) + '</div>' +
+          (f.evidence || []).map(quoteHtml).join('') +
+          '<div class="prose"><b>Why it matters.</b> ' + esc(f.why) + '</div>' +
+          '<div class="prose"><b>Answer before the fix.</b> ' + esc(f.reflect) + '</div>' +
+        '</div>';
+      }).join('') +
+      '<div class="na-note">The reviewer fix for each finding is deliberately not printed. It unlocks in the coaching view after the consultant answers the reflect question, so the printable cannot become ghostwriting.</div></div>' +
+
+    ((r.questionsForLead || []).length
+      ? '<div class="pf"><div class="pf-h">Questions for the project lead</div><ul class="plain">' +
+        r.questionsForLead.map(function(q){ return '<li>' + esc(q) + '</li>'; }).join('') + '</ul></div>'
+      : '') +
+
+    '<div class="pf"><div class="pf-h">Learning note</div>' +
+      '<div class="prose">' + esc(ln.lesson) + '</div>' +
+      '<div class="prose" style="margin-top:6px"><b>Habit.</b> ' + esc(ln.weakHabit) + '</div>' +
+      '<div class="prose" style="margin-top:6px"><b>Practice.</b> ' + esc(ln.exercise) + '</div></div>' +
+
+    '<div class="pf"><div class="pf-h">What this review did not assess</div><ul class="plain">' +
+      (r.notAssessed || []).map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('') + '</ul></div>' +
+
+    '<div class="pf"><div class="na-note">The AI advises. A named human signs off. No deliverable goes to a client on this review alone.</div></div>';
+}
+
+/* ============================================================
+   wiring
+   ============================================================ */
+
+Array.prototype.forEach.call($('tabs').querySelectorAll('.tab'), function(t){
+  t.onclick = function(){ if(REVIEW) setView(t.dataset.view); };
+});
+$('backBtn').onclick = function(){ setView('start'); };
+$('printBtn').onclick = function(){ window.print(); };
+$('pasteBtn').onclick = function(){
+  var raw = $('pasteBox').value.trim();
+  if(!raw) return;
+  try { load(JSON.parse(raw)); }
+  catch(ex){ showStartError(['the pasted text is not valid JSON: ' + ex.message]); }
+};
+$('fileInput').onchange = function(){
+  var f = this.files && this.files[0];
+  if(!f) return;
+  var fr = new FileReader();
+  fr.onload = function(){
+    try { load(JSON.parse(fr.result)); }
+    catch(ex){ showStartError(['that file is not valid JSON: ' + ex.message]); }
+  };
+  fr.readAsText(f);
+};
+
+renderPicker();
+setView('start');
+</script>
+</body>
+</html>

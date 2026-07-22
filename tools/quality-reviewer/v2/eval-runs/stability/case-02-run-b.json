@@ -1,0 +1,190 @@
+{
+  "meta": {
+    "title": "Client B growth plan",
+    "client": "Client B (anonymized)",
+    "artifactType": "draft deck",
+    "mode": "deep",
+    "slideCount": 9,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Needs substantial revision",
+    "mainReason": "The deck is asked how to grow individual donations and recommends closing a programme instead, so it answers a different question than the client posed.",
+    "highestRiskIssue": "The recommendation on slide 8 to close the mentoring scheme does not address the individual-giving question stated on slide 2.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "Written confirmation from the client that the brief was widened to programme portfolio decisions, or a rebuilt back half that answers the giving question, would move the level. The intended audience, the evidence notes and the client constraints were all left blank and would sharpen the assessment."
+  },
+  "blockingIssues": [
+    {
+      "rule": 3,
+      "label": "Problem framing drifts from giving to programme mix",
+      "ceiling": "Needs substantial revision",
+      "evidence": [
+        { "slide": 2, "quote": "The board has asked how to grow individual giving." },
+        { "slide": 8, "quote": "Close the mentoring scheme. Reinvest the freed budget in tutoring." }
+      ]
+    },
+    {
+      "rule": 2,
+      "label": "Deck does not answer the client's question and the recommendation is unsupported",
+      "ceiling": "Needs substantial revision",
+      "evidence": [
+        { "slide": 8, "quote": "This improves overall programme efficiency." },
+        { "slide": 6, "quote": "Mentoring runs at a loss and attendance is falling." }
+      ]
+    }
+  ],
+  "scorecard": {
+    "diagnosticMean": 2.4,
+    "confidence": "Medium",
+    "effort": "8-12 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The decision is named on slide 2 but the deck answers a different one, so the next steps do not serve it." },
+      { "name": "Problem framing", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "A specific problem is stated, then the deck moves to programme mix. No scope and no success criteria." },
+      { "name": "Storyline and pyramid logic", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "Slides 3 and 4 sit beside the argument the recommendation makes, and the chain from problem to recommendation is broken." },
+      { "name": "Evidence quality", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The survey is flagged as the team's own, but no figure on slides 2, 5 or 6 carries a source or a baseline." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Programme findings are interpreted, but the donor finding is never carried through and no giving options are compared." },
+      { "name": "Recommendation specificity", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The action is specific, the owner, the timing and the measure are all absent." },
+      { "name": "Feasibility and implementation", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Slide 9 names steps and a first move, without sequence, dependencies or any stated client constraint to test them against." },
+      { "name": "Risks, assumptions and uncertainty", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "Closing a service is proposed with no risk, no assumption and no tradeoff named." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Each slide carries one message and the content matches its title, but the titles are topic labels." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout. No named individual is judged and no personal data is exposed." }
+    ]
+  },
+  "strengths": [
+    { "point": "The client question is stated plainly and early, which is what makes the later drift visible at all.", "quote": "The board has asked how to grow individual giving.", "slide": 2 },
+    { "point": "The income diagnosis is sharp and it points straight at the giving question.", "quote": "There is no regular-giving programme.", "slide": 3 },
+    { "point": "The team went and asked donors rather than assuming what donors want.", "quote": "would give more if they saw impact updates", "slide": 4 }
+  ],
+  "findings": [
+    {
+      "short": "Answers a different question",
+      "title": "The deck is asked how to grow individual giving and recommends a programme cut instead.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Problem Framing: the deliverable answers the question the client asked, held consistently from first slide to last.",
+      "diagnosis": "Slide 2 states the board's question as growing individual giving. Slides 5 and 6 review programme performance and slides 7 and 8 recommend closing the mentoring scheme. Cutting a cost is a different move than raising donations, and nothing in the deck connects the freed budget to the funding gap or to any donor.",
+      "evidence": [
+        { "slide": 2, "quote": "The board has asked how to grow individual giving." },
+        { "slide": 8, "quote": "Close the mentoring scheme. Reinvest the freed budget in tutoring." }
+      ],
+      "why": "The board gets a decision it did not ask for and still has no answer on the funding gap, and a reader will fairly ask whether the team simply followed the more interesting analysis.",
+      "reflect": "If the board reads only slide 2 and slide 8, what question do they think you were given, and does your recommendation move the funding gap by a single pound.",
+      "fix": "Decide which question you are answering and hold it across the deck. If the answer is the giving question, rebuild slides 5 to 9 around how giving grows and move the programme analysis to an appendix or a separate note. If the brief genuinely widened, get that in writing from the client and reframe slide 2 to match.",
+      "tags": [ "Problem Framing", "Failure taxonomy B" ]
+    },
+    {
+      "short": "Programme cut unsupported",
+      "title": "The recommendation to close a programme rests on performance claims with no figures behind them.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Evidence Grounding: a claim that drives a decision carries a source, a baseline and a method.",
+      "diagnosis": "Slide 6 asserts that mentoring runs at a loss, that camps break even and that tutoring shows the strongest outcomes. No cost, no attendance figure, no outcome measure and no time period appear anywhere. Slide 7 then converts those assertions into a claim about outcomes per pound that no number in the deck supports.",
+      "evidence": [
+        { "slide": 6, "quote": "Mentoring runs at a loss and attendance is falling." },
+        { "slide": 7, "quote": "which delivers the best outcomes per pound" }
+      ],
+      "why": "This recommendation ends a service that real families use. If the loss figure is soft or the outcome comparison was never actually run, the client acts on an irreversible decision built on an impression.",
+      "reflect": "What is the actual cost per participant of each programme, over what period, and would that comparison still favour tutoring if you wrote the numbers on the slide.",
+      "fix": "Put the underlying figures on the slide with their source and period, or drop the outcomes-per-pound claim. If the data does not exist, say so and mark the comparison as directional rather than as a basis for closure.",
+      "tags": [ "Evidence Grounding", "ERIP Performance" ]
+    },
+    {
+      "short": "Donor evidence unused",
+      "title": "The only donor evidence in the deck never reaches the recommendation.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Analysis and Insight: every finding you keep must visibly feed the recommendation, or it should not be in the deck.",
+      "diagnosis": "Slide 3 identifies that giving is concentrated in a single annual event with no regular-giving programme, and slide 4 reports donors saying they would give more with impact updates. Both point directly at the client's question. Neither appears again after slide 4. The deck's most decision-relevant evidence is stranded.",
+      "evidence": [
+        { "slide": 4, "quote": "would give more if they saw impact updates" },
+        { "slide": 3, "quote": "There is no regular-giving programme." }
+      ],
+      "why": "The client loses the one piece of primary research the team gathered, which is also the cheapest route to the answer they asked for.",
+      "reflect": "Slides 3 and 4 already point at an answer to the board's question. What stopped you from following them, and what would you have had to find out to follow them properly.",
+      "fix": "Carry these two findings forward into the recommendation rather than leaving them as context. Work out what a regular-giving option and an impact-update habit would each need, then decide which one you are recommending and why.",
+      "tags": [ "Analysis and Insight", "Failure taxonomy C" ]
+    },
+    {
+      "short": "No risk on closure",
+      "title": "The deck proposes closing a service with no risk, assumption or tradeoff named.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": false,
+      "issueType": "implementation",
+      "owner": "team",
+      "principle": "Assumptions and Uncertainty: a recommendation that removes something states what is lost and what could go wrong.",
+      "diagnosis": "Slide 9 treats the wind-down as a communication task. Nothing in the deck says what happens to the young people in the mentoring scheme, whether any grant or funder is tied to it, whether the staff can in fact be redeployed, or what the reputational effect of closing a programme is while the organization is asking donors for more money.",
+      "evidence": [
+        { "slide": 9, "quote": "Plan the mentoring wind-down. Communicate to families. Reallocate staff to tutoring." }
+      ],
+      "why": "A board reading this cannot stress-test the advice, and the risk it most needs to weigh (cutting a service while fundraising) is invisible.",
+      "reflect": "List everyone who is worse off if mentoring closes. Which of them does the board need to hear about before it votes.",
+      "fix": "Add the load-bearing assumptions as assumptions (redeployable staff, no funder tied to mentoring, participants absorbed elsewhere) and name the downside case. Where you cannot verify one, say so rather than leaving it silent.",
+      "tags": [ "Assumptions and Uncertainty", "ERIP Involvement" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 4", "problem": "The survey is described only as short, with no sample size, no method and no date.", "why": "This is the deck's only primary evidence, so a reader cannot tell whether it represents the donor base or four people.", "fix": "State how many donors responded, how they were reached and when." },
+    { "location": "Slide 9", "problem": "None of the three next steps carries an owner or a date.", "why": "A wind-down with no named owner and no sequence is the step most likely to be handled badly.", "fix": "Give each step an owner and a date, and say which must happen before the others." }
+  ],
+  "questionsForLead": [
+    "Did the client or the board widen the brief from individual giving to programme portfolio, and is that in writing.",
+    "What cost and outcome data does the team actually hold on the three programmes, and did anyone see it.",
+    "How many donors responded to the survey on slide 4, and who designed it.",
+    "Is any grant or funder attached to the mentoring scheme, and did the team check.",
+    "Was the team told what the client can and cannot resource, since the constraints field came back blank."
+  ],
+  "learningNote": {
+    "lesson": "The question you were asked is a constraint, not a starting point. When the analysis pulls you toward a more interesting question, that is the moment to go back to the client, not the moment to quietly switch.",
+    "weakHabit": "Following the data that was easiest to analyse and letting it redefine the brief on the way to the recommendation.",
+    "exercise": "Write the client's question on one line. Then read your titles in order and mark each slide yes or no on whether it moves that question. If the back half is all no, you have drifted, and you fix the deck or you renegotiate the brief.",
+    "principle": "Problem Framing"
+  },
+  "notAssessed": [
+    "Whether the client widened the brief to include programme decisions. The input pack left the specific feedback and constraints fields blank.",
+    "Whether mentoring genuinely runs at a loss. No cost, attendance or outcome figures were provided.",
+    "Whether the 25% funding gap figure is correct. No source was given, and it is treated here as the client's own internal number.",
+    "Whether Client B has the staff or budget to run a regular-giving programme. The deck does not say and no constraints were supplied.",
+    "The intended audience. The field was blank, so the deck is judged against the board, named on slide 2.",
+    "Visual design, layout and charts. Only slide text was provided."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Problem", "span": 2 },
+      { "label": "Landscape and donors", "span": 2 },
+      { "label": "Programme review", "span": 2 },
+      { "label": "View and recommendation", "span": 2 },
+      { "label": "Next steps", "span": 1 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "partial" },
+      { "slide": 4, "state": "partial" },
+      { "slide": 5, "state": "partial" },
+      { "slide": 6, "state": "critical" },
+      { "slide": 7, "state": "critical" },
+      { "slide": 8, "state": "critical" },
+      { "slide": 9, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 4, "state": "partial", "label": "Donor evidence stops here" },
+      { "at": 6, "state": "critical", "label": "Performance claims carry no figures" },
+      { "at": 8, "state": "critical", "label": "Answers a different question than slide 2" }
+    ],
+    "connectors": [
+      { "from": 2, "to": 8, "label": "Question asked, different question answered" },
+      { "from": 4, "to": 8, "label": "Donor finding never arrives" }
+    ]
+  }
+}

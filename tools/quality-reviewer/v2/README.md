@@ -1,8 +1,22 @@
-# AI Quality Reviewer v2. Design folder
+# AI Quality Reviewer v2
 
-Design stage. This folder holds the build documents for v2 of the AI Quality
-Reviewer, for 180 Degrees Consulting Delft-Rotterdam. Nothing here is running code
-yet. The working v1 tool one level up in [../](../) stays untouched and shippable.
+This folder holds v2 of the AI Quality Reviewer, for 180 Degrees Consulting
+Delft-Rotterdam: the build documents, the evaluation evidence and the renderer. The
+working v1 tool one level up in [../](../) stays untouched and shippable.
+
+**To see it, open [index.html](index.html) in a browser.** No server, no build step, no
+install. Pick one of the bundled live reviews and read it as a student, as a project lead
+or as a printable.
+
+Running code here: [index.html](index.html) (the renderer),
+[check-review-v2.js](check-review-v2.js) (the contract validator),
+[check-stability.js](check-stability.js) (run-to-run variance) and
+[bundle-reviews.js](bundle-reviews.js). The reviewer itself is a prompt, not a program:
+it runs in a Claude Project built from [04-prompt-templates.md](04-prompt-templates.md).
+
+Status in one line: green on five synthetic cases, independently scored twice, with
+run-to-run stability now measured. It has never run on a real client deliverable, and it
+must not until human gold labels exist. See [progress.md](progress.md).
 
 ## What v2 is
 
@@ -47,7 +61,13 @@ replace human judgment.
 | `09-roadmap.md` | 9 | pilot roadmap, next actions, open questions |
 | `10-source-register.md` | 2 | every source that justifies a design decision, with its limitation |
 | `11-decision-log.md` | 1 | one line per decision, appended every sprint |
+| `index.html` | - | the renderer: student coaching view, project lead view, printable |
+| `bundle-reviews.js` | - | inlines the eval-runs outputs into index.html so it works from file:// |
+| `check-review-v2.js` | - | the contract validator |
+| `check-stability.js` | - | run-to-run variance across repeated runs of one case |
 | `eval-cases/` | 4 | synthetic anonymized deliverables plus gold-label files |
+| `eval-cases-real/` | - | 14 anonymised real deliverables, awaiting human gold labels |
+| `eval-runs/` | - | live blind outputs, scoring sheets and the stability runs |
 | `expert-pack/` | 6 | the assembled pack and sample outputs |
 
 ## Voice rules (apply to every file here)

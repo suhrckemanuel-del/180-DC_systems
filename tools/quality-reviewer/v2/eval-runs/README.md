@@ -37,6 +37,27 @@ under the revised prompt, a severity-calibration fix followed, and the r2 re-run
 Nearly ready. The story is in [scoring-2026-07-03.md](scoring-2026-07-03.md), the
 [decision log](../11-decision-log.md) and [../effectiveness-review-2026-07-03.md](../effectiveness-review-2026-07-03.md).
 
+## Stability runs
+
+[stability/](stability/) holds fifteen further runs made on 2026-07-22: the same five cases,
+three runs each, one frozen prompt, byte-identical input packs. They exist to measure
+run-to-run variance rather than to be scored against gold. Read
+[stability/README.md](stability/README.md) before quoting any number from them. Two of the
+fifteen fail the validator and are kept uncorrected on purpose.
+
+## Scoring
+
+[scoring-2026-07-22.md](scoring-2026-07-22.md) is the current authoritative sheet for the
+five post-fix outputs, scored by a fresh-context scorer that did not read the earlier sheets
+before forming its own scores. [scoring-2026-07-03.md](scoring-2026-07-03.md) remains on
+record and the 07-22 sheet logs where it agrees and disagrees with it.
+
+## Rendering
+
+Open [../index.html](../index.html) in a browser to read any of these as a student coaching
+view, a project lead view or a printable. Run `node ../bundle-reviews.js` after adding a run
+to make it selectable there.
+
 Validate any run with:
 
 ```

@@ -225,13 +225,68 @@ Resume from [eval-cases-real/intake-work/NEXT-SESSION-PROMPT.md](eval-cases-real
   exists, the reviewer has not run on any real case and the baseline run waits for
   adjudicated gold.
 
+## Session 6 (2026-07-22): the renderer exists, the audit gap is closed, stability is measured
+
+Three things that were missing are now on disk. No new design documents were written.
+
+**1. The v2 renderer.** [index.html](index.html), one self-contained file, no build step
+and no server needed. Three views off the same JSON: a student coaching view, a project
+lead view and a printable. It ports the contract validator from check-review-v2.js and
+refuses to draw a review that fails it, exactly as v1 does. Verified in a browser against
+all six bundled reviews, with the browser validator returning byte-identical errors to the
+CLI on the one failing review. The coaching gate genuinely gates: a restatement of the
+reflect question is rejected, the fix is absent from the rendered DOM until unlock, and
+after two reveals without a drafted rewrite the rewrite becomes mandatory. Readiness
+surfaces in lead mode only, per the session 4 two-modes decision. The printable carries
+strengths first and the reflect question but never the fix, so it cannot become
+ghostwriting. [bundle-reviews.js](bundle-reviews.js) inlines the eval-runs outputs into the
+file, because a page opened from file:// cannot fetch a sibling JSON.
+
+**2. The audit gap is closed.** A fresh-context scorer re-scored the five post-fix outputs
+without reading either prior scoring sheet, then compared. Sheet committed at
+[eval-runs/scoring-2026-07-22.md](eval-runs/scoring-2026-07-22.md). Verdict: GREEN, all six
+section E criteria, independently derived. The green claim no longer rests on a prose line
+in this file. The sheet also records that check-review-v2.js had uncommitted local
+modifications when it ran, so its validator results come from the working tree.
+
+**3. Run-to-run stability is measured.** Fifteen runs, five cases, three each, frozen
+prompt, byte-identical input packs, all on Opus 4.8. Full sheet at
+[eval-runs/stability/README.md](eval-runs/stability/README.md).
+
+| Case | Stable core | Readiness across 3 runs |
+|---|---|---|
+| 01 | 58% | stable, R1 |
+| 02 | 50% | stable, R1 |
+| 03 | 45% | stable, R1 |
+| 04 | 78% | stable, R0 |
+| 05 | 38% | **VARIES: R2, R3, R3** |
+
+The verdict is stable on four of five cases. Roughly half the finding set underneath it is
+not. The important result: **the strong-deck over-escalation is not fixed, it is
+intermittent.** Case 05 still lands R2 in about one run of three under the post-fix prompt.
+The green caveat in this file was right and now has a number on it. Readiness is robust
+wherever a blocking rule fires and fragile only where none does, which is structural: the
+blocking ladder is mechanical, the severity test under it is a judgment call.
+
+Also surfaced: the system prompt never lists the `issueType` enum, so 2 of 15 runs invented
+`analysis`. Mechanical fix, deliberately not applied yet because changing the prompt would
+invalidate these fifteen runs. It belongs with the other pre-freeze fixes in plan item 1.5i.
+
+Session note: the 16-agent wave hit the account session limit and every agent was killed
+mid-task. Write-per-item discipline meant all 15 runs and the scoring sheet were already on
+disk, so nothing was lost. Third session in a row this has happened. Treat the limit as a
+planning constant, not an incident.
+
 ## Next actions
 
-1. Before the expert session, run all five cases three to five times under the frozen
-   prompt and report the variance in findings, confidence and blocking-rule accounting.
-2. Optional belt-and-braces: a full-set blind re-run under the revised prompt with a fresh
-   scorer, to replace the static regression argument for 01 to 04.
-3. Still open from the source register: confirm the S4 journal tables match the working
+1. Decide whether 54 percent stable core and a one-in-three over-escalation on strong decks
+   are acceptable to carry into the pilot, or whether the severity test needs another pass
+   before the freeze. This is an owner judgment and the sheet deliberately sets no threshold.
+2. Fix the `issueType` enum omission and the two known prompt defects (plan items 1.5i and
+   1.5j), then regression-run the synthetic five before the freeze.
+3. Optional: extend case 05 from three runs to five, so the over-escalation rate is a
+   measured frequency rather than a rough one.
+4. Still open from the source register: confirm the S4 journal tables match the working
    paper figures.
 
 See [eval-runs/NEXT-SESSION-PROMPT.md](eval-runs/NEXT-SESSION-PROMPT.md) for the earlier
