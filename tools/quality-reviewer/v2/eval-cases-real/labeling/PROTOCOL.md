@@ -4,6 +4,14 @@ Two human labelers (the two builders for now, an expert later if one is availabl
 produce the gold labels for every case in [../](../). Follow this exactly. The gold is
 only as good as the discipline here.
 
+**The easy way to do this.** Open [labeling-workstation.html](labeling-workstation.html)
+in a browser (double-click it, no server needed). Open one case file, fill the worksheet
+beside it, and it will not let you download until every required part is filled and exactly
+one must-catch is marked. It exports the correctly named worksheet in the right shape and
+autosaves as you go. It loads only the case file you open, so it cannot show you an AI
+review or a triage band by accident. Filling the worksheet template by hand is still fine if
+you prefer, the shape is identical.
+
 ## Before you start
 
 1. Do not read the sealed selection memo, any AI review, any triage band or any

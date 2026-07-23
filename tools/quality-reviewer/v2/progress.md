@@ -249,22 +249,27 @@ section E criteria, independently derived. The green claim no longer rests on a 
 in this file. The sheet also records that check-review-v2.js had uncommitted local
 modifications when it ran, so its validator results come from the working tree.
 
-**3. Run-to-run stability is measured.** Fifteen runs, five cases, three each, frozen
-prompt, byte-identical input packs, all on Opus 4.8. Full sheet at
-[eval-runs/stability/README.md](eval-runs/stability/README.md).
+**3. Run-to-run stability is measured.** Seventeen runs, five cases, frozen prompt,
+byte-identical input packs, all on Opus 4.8. Cases 01 to 04 three runs each, case 05 taken to
+five on 2026-07-23. Full sheet at [eval-runs/stability/README.md](eval-runs/stability/README.md).
 
-| Case | Stable core | Readiness across 3 runs |
-|---|---|---|
-| 01 | 58% | stable, R1 |
-| 02 | 50% | stable, R1 |
-| 03 | 45% | stable, R1 |
-| 04 | 78% | stable, R0 |
-| 05 | 38% | **VARIES: R2, R3, R3** |
+| Case | Runs | Stable core | Readiness |
+|---|---|---|---|
+| 01 | 3 | 58% | stable, R1 |
+| 02 | 3 | 50% | stable, R1 |
+| 03 | 3 | 45% | stable, R1 |
+| 04 | 3 | 78% | stable, R0 |
+| 05 | 5 | 9% | **VARIES: R2, R3, R3, R2, R2** |
 
-The verdict is stable on four of five cases. Roughly half the finding set underneath it is
-not. The important result: **the strong-deck over-escalation is not fixed, it is
-intermittent.** Case 05 still lands R2 in about one run of three under the post-fix prompt.
-The green caveat in this file was right and now has a number on it. Readiness is robust
+The verdict is stable on the four cases that fire a blocking rule and unstable on the one
+that does not. The important result got worse when measured properly: **the strong-deck
+over-escalation is not fixed, it is the majority outcome.** Across five runs case 05 lands R2
+three times and the correct R3 twice, so the reviewer returns the right readiness on the
+restraint deck about two times in five. Extending from three runs to five is what surfaced
+this: the three-run sample read as "about one in three", the five-run reality is "more often
+than not". This does not make the 2026-07-22 scoring sheet wrong, it scored a real R3 run,
+but the set's green on case 05 depends on which run is scored, and on a distribution the
+exact-match requirement fails for case 05 more often than it passes. Readiness is robust
 wherever a blocking rule fires and fragile only where none does, which is structural: the
 blocking ladder is mechanical, the severity test under it is a judgment call.
 
@@ -277,15 +282,41 @@ mid-task. Write-per-item discipline meant all 15 runs and the scoring sheet were
 disk, so nothing was lost. Third session in a row this has happened. Treat the limit as a
 planning constant, not an incident.
 
+## Session 7 (2026-07-23): case 05 extended, labeling tooling built
+
+- **Case 05 stability extended to five runs.** The two extra runs (d, e) both landed R2, so
+  the five-run readiness is R2, R3, R3, R2, R2. The strong-deck over-escalation is the
+  majority outcome, not one in three. The stability sheet and its section C point 1 are
+  rewritten to this. This is the single most consequential change since the green: the
+  restraint case is a coin-flip that lands wrong more often than right, and the set's green
+  on case 05 depends on which run gets scored.
+- **Blind labeling workstation built.** [eval-cases-real/labeling/labeling-workstation.html](eval-cases-real/labeling/labeling-workstation.html),
+  build priority 4. One self-contained file, no server. A labeler opens a real-NN case file,
+  it renders read only on the left, the worksheet form is on the right, and it enforces the
+  protocol by construction: every required section filled and exactly one must-catch (or the
+  restraint-case box) before the download unlocks. It exports `real-NN.worksheet.<initials>.md`
+  in the harness section C shape and autosaves to localStorage so a 35-minute read is not
+  lost. Blindness is structural: the page loads only the case file the labeler opens and has
+  no path to any AI review, triage band or the other labeler's sheet. Tested in a browser
+  against real-01: enforcement, autosave and export all verified.
+- **Expert heuristics intake form committed.** reviewer-heuristics-intake.html, an eight
+  question serverless form that captures how an experienced reviewer reads a deck, blind,
+  before seeing the rubric. Feeds the expert-calibration track (plan Q2). It was already
+  built and orphaned, so it is now tracked.
+
 ## Next actions
 
-1. Decide whether 54 percent stable core and a one-in-three over-escalation on strong decks
-   are acceptable to carry into the pilot, or whether the severity test needs another pass
-   before the freeze. This is an owner judgment and the sheet deliberately sets no threshold.
+1. **Decide the case 05 question, now sharper.** The restraint case over-escalates 3 of 5.
+   Either take another pass at the severity test before the freeze (the escalation floor plus
+   the major-versus-minor rule are the two levers), or accept the restraint case as unstable
+   and design the pilot so a lead always sees a strong deck's readiness, never a student. This
+   is an owner judgment. The sheet still sets no numeric threshold.
 2. Fix the `issueType` enum omission and the two known prompt defects (plan items 1.5i and
-   1.5j), then regression-run the synthetic five before the freeze.
-3. Optional: extend case 05 from three runs to five, so the over-escalation rate is a
-   measured frequency rather than a rough one.
+   1.5j) in the same pre-freeze pass, then regression-run the synthetic five. Any prompt edit
+   invalidates the seventeen stability runs, so batch every prompt change into one pass and
+   re-measure once.
+3. The labeling track can start: the workstation is ready, the protocol and worksheet exist,
+   two labelers are secured per the owner decisions. Nothing in the tooling blocks it now.
 4. Still open from the source register: confirm the S4 journal tables match the working
    paper figures.
 

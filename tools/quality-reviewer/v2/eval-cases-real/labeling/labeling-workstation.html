@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blind labeling workstation</title>
+<style>
+  :root{
+    --bg:#fbfbfa; --panel:#fff; --fg:#1f1f1d; --mut:#6b6b66; --line:#e3e3df;
+    --acc:#2f5d50; --acc-soft:#eaf1ee; --warn:#9a5b1f; --warn-soft:#fbf1e6;
+    --r0:#b23b34; --r1:#c06a1f; --r2:#8a7a1f; --r3:#2f7d55;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#16171a; --panel:#1e1f23; --fg:#e9e9e6; --mut:#9a9a94; --line:#2c2e33;
+      --acc:#7fb7a4; --acc-soft:#22302c; --warn:#d59b5c; --warn-soft:#2c2519; }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--fg);
+    font:15px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+
+  header{display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+    padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+  header h1{font-size:15px;margin:0;font-weight:700}
+  header .sp{flex:1}
+  .file-btn{position:relative;overflow:hidden;display:inline-block}
+  .file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  button,.btn{font:inherit;font-weight:600;padding:.5rem .9rem;border-radius:7px;
+    border:1px solid var(--acc);background:var(--acc);color:#fff;cursor:pointer}
+  button.sec,.btn.sec{background:transparent;color:var(--acc)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  .saved{font-size:.83rem;color:var(--mut)}
+
+  .blind{font-size:.83rem;color:var(--acc);border:1px solid var(--acc);
+    border-radius:6px;padding:.2rem .5rem;background:var(--acc-soft)}
+
+  main{display:grid;grid-template-columns:1fr 1fr;gap:0;height:calc(100vh - 53px)}
+  @media (max-width:900px){main{grid-template-columns:1fr;height:auto}}
+  .pane{overflow-y:auto;padding:18px 20px}
+  .pane.left{border-right:1px solid var(--line)}
+  @media (max-width:900px){.pane.left{border-right:0;border-bottom:1px solid var(--line)}}
+
+  .empty{color:var(--mut);text-align:center;margin-top:15vh;padding:0 2rem}
+  .empty h2{color:var(--fg);font-size:1.1rem}
+
+  .casehead{border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem;
+    margin-bottom:1rem;background:var(--panel)}
+  .casehead .k{font-size:.8rem;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+  .casehead .v{margin-bottom:.5rem;font-weight:550}
+  .casebody{white-space:pre-wrap;font-size:13.5px;line-height:1.5}
+  .casebody b{color:var(--fg)}
+  .slidemark{display:block;margin-top:.9rem;font-weight:700;color:var(--acc)}
+
+  fieldset{border:1px solid var(--line);border-radius:8px;padding:.9rem 1rem .3rem;
+    margin:0 0 1.1rem;background:var(--panel)}
+  legend{font-weight:700;padding:0 .4rem;font-size:.92rem}
+  label{display:block;font-weight:600;margin:0 0 .25rem;font-size:.92rem}
+  .hint{color:var(--mut);font-size:.83rem;font-weight:400;margin:0 0 .4rem}
+  textarea,input[type=text],select{width:100%;padding:.5rem .6rem;font:inherit;
+    font-size:.92rem;color:var(--fg);background:var(--bg);
+    border:1px solid var(--line);border-radius:6px;margin-bottom:.8rem}
+  textarea{min-height:70px;resize:vertical}
+  textarea:focus,input:focus,select:focus{outline:2px solid var(--acc);outline-offset:1px}
+  .row{display:flex;gap:.7rem;flex-wrap:wrap}
+  .row>div{flex:1 1 130px}
+
+  .rlevels{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem}
+  .rlevels button{flex:1 1 130px;background:transparent;color:var(--fg);
+    border:1px solid var(--line);font-weight:600;padding:.5rem .4rem;text-align:left;font-size:.86rem}
+  .rlevels button .rl{display:block;font-weight:800;font-size:.95rem}
+  .rlevels button[data-on="1"]{color:#fff;border-color:transparent}
+  .rlevels button[data-r="R0"][data-on="1"]{background:var(--r0)}
+  .rlevels button[data-r="R1"][data-on="1"]{background:var(--r1)}
+  .rlevels button[data-r="R2"][data-on="1"]{background:var(--r2)}
+  .rlevels button[data-r="R3"][data-on="1"]{background:var(--r3)}
+
+  .issue{border:1px solid var(--line);border-radius:7px;padding:.7rem .8rem;margin-bottom:.7rem;
+    background:var(--bg);position:relative}
+  .issue .top{display:flex;gap:.5rem;align-items:center;margin-bottom:.4rem}
+  .issue .idx{font-weight:800;color:var(--mut)}
+  .issue .mc{margin-left:auto;font-size:.82rem;font-weight:700;display:flex;gap:.3rem;align-items:center;
+    color:var(--warn);cursor:pointer;user-select:none}
+  .issue.ismc{border-color:var(--warn);box-shadow:0 0 0 1px var(--warn)}
+  .issue .rm{background:transparent;border:0;color:var(--mut);cursor:pointer;font-size:1.1rem;padding:0 .3rem}
+  .issue .meta{display:flex;gap:.5rem;flex-wrap:wrap}
+  .issue .meta>div{flex:1 1 110px}
+  .issue textarea{min-height:44px;margin-bottom:.5rem}
+
+  .restraint{display:flex;gap:.5rem;align-items:center;margin:.2rem 0 .8rem;font-size:.9rem}
+  .addbtn{background:transparent;color:var(--acc);border:1px dashed var(--acc);width:100%;margin-bottom:1rem}
+
+  .checks{border:1px solid var(--line);border-radius:8px;padding:.7rem .9rem;margin-bottom:1rem;
+    background:var(--warn-soft);font-size:.88rem}
+  .checks.ok{background:var(--acc-soft)}
+  .checks ul{margin:.3rem 0 0;padding-left:1.2rem}
+  .checks li{margin-bottom:.2rem}
+  .checks .done{color:var(--mut);text-decoration:line-through}
+
+  .exportbar{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:2rem}
+  .msg{font-size:.86rem;color:var(--acc)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Blind labeling workstation</h1>
+  <span class="blind" title="This page has no server and loads only the case file you open. It cannot reach any AI review, any triage band or the other labeler's worksheet.">blindness safe: loads only the case file you open</span>
+  <span class="sp"></span>
+  <span class="saved" id="saved"></span>
+  <span class="btn sec file-btn">Open a case file<input type="file" id="fileIn" accept=".md,text/markdown,text/plain"></span>
+</header>
+
+<main>
+  <section class="pane left" id="left">
+    <div class="empty" id="leftEmpty">
+      <h2>Open a case file to begin</h2>
+      <p>Pick one <code>real-NN-*.md</code> from this folder's parent. It renders here,
+      read only. Fill the worksheet on the right, then download it.</p>
+      <p>Read the rubric and harness section C once before your first case, per the
+      protocol. Do not read any AI review, triage band or the other labeler's sheet.</p>
+    </div>
+    <div id="caseView" hidden></div>
+  </section>
+
+  <section class="pane right">
+    <div id="formWrap" hidden>
+      <fieldset>
+        <legend>About you and this read</legend>
+        <div class="row">
+          <div>
+            <label for="who">Your initials</label>
+            <input type="text" id="who" data-k="who" placeholder="e.g. MS">
+          </div>
+          <div>
+            <label for="mins">Minutes spent</label>
+            <input type="text" id="mins" data-k="mins" placeholder="e.g. 35">
+          </div>
+        </div>
+        <label for="conflict">Conflicts</label>
+        <div class="hint">Did you work on this project, or have you seen any AI output for
+          this case? State yes or no and any detail.</div>
+        <textarea id="conflict" data-k="conflict" placeholder="no / yes: I was on this team in ..."></textarea>
+      </fieldset>
+
+      <fieldset>
+        <legend>Expected readiness</legend>
+        <div class="rlevels" id="rlevels">
+          <button type="button" data-r="R0"><span class="rl">R0</span>Not ready for client review</button>
+          <button type="button" data-r="R1"><span class="rl">R1</span>Needs substantial revision</button>
+          <button type="button" data-r="R2"><span class="rl">R2</span>Needs targeted revision</button>
+          <button type="button" data-r="R3"><span class="rl">R3</span>Nearly ready with minor edits</button>
+        </div>
+        <label for="rreason">One-sentence reason</label>
+        <textarea id="rreason" data-k="rreason" style="min-height:44px"></textarea>
+        <label for="rblock">Blocking rules fired, if any</label>
+        <div class="hint">Cite the rule by number if you know it, or describe it. Leave blank if none.</div>
+        <input type="text" id="rblock" data-k="rblock">
+      </fieldset>
+
+      <fieldset>
+        <legend>Real top issues, ranked</legend>
+        <div class="hint">Ranked by what most needs to change before a client sees this.
+          Max five, fewer is fine. Mark exactly one must-catch: the one issue a review that
+          misses it has failed.</div>
+        <div class="restraint">
+          <input type="checkbox" id="restraint" data-k="restraint">
+          <label for="restraint" style="margin:0;font-weight:600">Restraint case: nothing rises to must-catch. Say below what a good review should praise.</label>
+        </div>
+        <div id="issues"></div>
+        <button type="button" class="addbtn" id="addIssue">+ add an issue</button>
+      </fieldset>
+
+      <fieldset>
+        <legend>Acceptable AI feedback</legend>
+        <div class="hint">What a good review may reasonably say, including calls you would accept even if you would not make them.</div>
+        <textarea id="accept" data-k="accept"></textarea>
+      </fieldset>
+      <fieldset>
+        <legend>Unacceptable AI feedback</legend>
+        <div class="hint">What a review must not say: ghostwritten rewrites, invented sources or figures, endorsing a scope change, judging named people.</div>
+        <textarea id="unaccept" data-k="unaccept"></textarea>
+      </fieldset>
+      <fieldset>
+        <legend>False positives to avoid</legend>
+        <div class="hint">Plausible-looking flags that are actually wrong here (an unsourced number that is plainly the client's own data, a section the brief never asked for).</div>
+        <textarea id="fp" data-k="fp"></textarea>
+      </fieldset>
+      <fieldset>
+        <legend>False negatives to catch</legend>
+        <div class="hint">Issues a review must not miss beyond the must-catch, if any.</div>
+        <textarea id="fn" data-k="fn"></textarea>
+      </fieldset>
+      <fieldset>
+        <legend>Honest uncertainty</legend>
+        <div class="hint">Anything you could not judge from the extracted text (image-only slides, cut appendix, missing brief) and how that limited your label.</div>
+        <textarea id="uncertain" data-k="uncertain"></textarea>
+      </fieldset>
+
+      <div class="checks" id="checks"></div>
+
+      <div class="exportbar">
+        <button type="button" id="dl" disabled>Download worksheet</button>
+        <button type="button" class="sec" id="cp" disabled>Copy to clipboard</button>
+        <button type="button" class="sec" id="clear">Clear this worksheet</button>
+        <span class="msg" id="msg"></span>
+      </div>
+    </div>
+    <div class="empty" id="formEmpty">
+      <p>The worksheet appears here once a case file is open.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var DIMS = ['Client decision usefulness','Problem framing','Storyline and pyramid logic',
+    'Evidence quality','Analysis and insight','Recommendation specificity',
+    'Feasibility and implementation','Risks, assumptions and uncertainty',
+    'Slide-level communication','Professionalism, tone and confidentiality'];
+  var ITYPES = ['evidence','logic','recommendation','communication','scope','other'];
+  var SEVS = ['critical','major','minor'];
+  var RLABEL = {R0:'Not ready for client review',R1:'Needs substantial revision',
+    R2:'Needs targeted revision',R3:'Nearly ready with minor edits'};
+
+  var CASE = null;      // {name, num, slug, header:{}, body}
+  var st = null;        // worksheet state
+  var mcIndex = -1;     // which issue row is must-catch, -1 none
+
+  function $(id){return document.getElementById(id)}
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+  /* ---------- case file parsing ---------- */
+  function parseCase(name, text){
+    var num = (name.match(/real-(\d{2})/i)||[])[1] || '';
+    var slug = (name.replace(/\.md$/i,'').match(/real-\d{2}-(.+)$/i)||[])[1] || '';
+    var header = {};
+    text.split(/\r?\n/).slice(0,12).forEach(function(l){
+      var m = l.match(/^\*\*(Client[^:]*|Artifact type|Client question|Deliverable stage)[:*]*\*\*\s*(.*)$/i);
+      if(m) header[m[1].replace(/\*/g,'').trim()] = m[2].replace(/^\**|\**$/g,'').trim();
+    });
+    return {name:name, num:num, slug:slug, header:header, body:text};
+  }
+
+  function renderCase(){
+    var h = CASE.header, parts = [];
+    parts.push('<div class="casehead">');
+    ['Client (pseudonymised)','Artifact type','Client question','Deliverable stage'].forEach(function(k){
+      var val = h[k] || h[Object.keys(h).find(function(x){return x.indexOf(k.split(' ')[0])===0})||''] ;
+      if(val){parts.push('<div class="k">'+esc(k)+'</div><div class="v">'+esc(val)+'</div>')}
+    });
+    parts.push('</div>');
+    // body render: escape, bold **..**, mark slide headers
+    var body = esc(CASE.body)
+      .replace(/^\# .*/m,'')
+      .replace(/\*\*(Slide[^*]+)\*\*/g,'<span class="slidemark">$1</span>')
+      .replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
+    parts.push('<div class="casebody">'+body+'</div>');
+    $('caseView').innerHTML = parts.join('');
+    $('caseView').hidden = false;
+    $('leftEmpty').hidden = true;
+  }
+
+  /* ---------- state ---------- */
+  function blank(){
+    return {who:'',mins:'',conflict:'',readiness:'',rreason:'',rblock:'',
+      restraint:false,issues:[newIssue()],accept:'',unaccept:'',fp:'',fn:'',uncertain:'',mc:-1};
+  }
+  function newIssue(){return {text:'',sev:'major',dim:DIMS[0],itype:ITYPES[0],loc:''}}
+  function storeKey(){return 'labelws|'+(CASE?CASE.num:'')+'|'+(st&&st.who?st.who.toLowerCase():'')}
+  function allKeysForCase(){
+    var out=[]; for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);
+      if(k.indexOf('labelws|'+(CASE?CASE.num:'')+'|')===0)out.push(k)} return out;
+  }
+  function save(){
+    if(!CASE)return;
+    try{localStorage.setItem(storeKey(), JSON.stringify(st));
+      $('saved').textContent='saved '+new Date().toLocaleTimeString();}catch(e){}
+  }
+  function loadFor(){
+    // try to restore a saved sheet for this case and whatever initials are present
+    var keys = allKeysForCase();
+    if(keys.length){
+      try{ st = JSON.parse(localStorage.getItem(keys[0])); mcIndex = (st.mc==null?-1:st.mc); return true; }catch(e){}
+    }
+    st = blank(); mcIndex = -1; return false;
+  }
+
+  /* ---------- issues ---------- */
+  function renderIssues(){
+    var box = $('issues'); box.innerHTML='';
+    st.issues.forEach(function(iss,i){
+      var d = document.createElement('div');
+      d.className = 'issue'+(mcIndex===i?' ismc':'');
+      d.innerHTML =
+        '<div class="top"><span class="idx">#'+(i+1)+'</span>'+
+        '<span class="mc" data-mc="'+i+'">'+(mcIndex===i?'★ must-catch':'☆ mark must-catch')+'</span>'+
+        '<button class="rm" data-rm="'+i+'" title="remove">×</button></div>'+
+        '<textarea data-f="text" data-i="'+i+'" placeholder="the issue, one or two lines">'+esc(iss.text)+'</textarea>'+
+        '<div class="meta">'+
+          '<div><label>severity</label><select data-f="sev" data-i="'+i+'">'+SEVS.map(function(s){return '<option'+(iss.sev===s?' selected':'')+'>'+s+'</option>'}).join('')+'</select></div>'+
+          '<div><label>rubric dimension</label><select data-f="dim" data-i="'+i+'">'+DIMS.map(function(s){return '<option'+(iss.dim===s?' selected':'')+'>'+esc(s)+'</option>'}).join('')+'</select></div>'+
+          '<div><label>issue type</label><select data-f="itype" data-i="'+i+'">'+ITYPES.map(function(s){return '<option'+(iss.itype===s?' selected':'')+'>'+s+'</option>'}).join('')+'</select></div>'+
+          '<div><label>slide / section</label><input type="text" data-f="loc" data-i="'+i+'" value="'+esc(iss.loc)+'"></div>'+
+        '</div>';
+      box.appendChild(d);
+    });
+    box.querySelectorAll('[data-f]').forEach(function(el){
+      el.addEventListener('input',function(){
+        st.issues[+el.dataset.i][el.dataset.f]=el.value; save(); updateChecks();
+      });
+    });
+    box.querySelectorAll('[data-mc]').forEach(function(el){
+      el.addEventListener('click',function(){
+        var i=+el.dataset.mc; mcIndex = (mcIndex===i?-1:i); st.mc=mcIndex;
+        if(mcIndex>-1){ st.restraint=false; $('restraint').checked=false; }
+        renderIssues(); save(); updateChecks();
+      });
+    });
+    box.querySelectorAll('[data-rm]').forEach(function(el){
+      el.addEventListener('click',function(){
+        var i=+el.dataset.rm; if(st.issues.length<=1)return;
+        st.issues.splice(i,1);
+        if(mcIndex===i)mcIndex=-1; else if(mcIndex>i)mcIndex--;
+        st.mc=mcIndex; renderIssues(); save(); updateChecks();
+      });
+    });
+  }
+
+  /* ---------- readiness ---------- */
+  function renderReadiness(){
+    $('rlevels').querySelectorAll('button').forEach(function(b){
+      b.setAttribute('data-on', st.readiness===b.dataset.r ? '1':'0');
+    });
+  }
+
+  /* ---------- simple text fields ---------- */
+  function bindFields(){
+    document.querySelectorAll('[data-k]').forEach(function(el){
+      var k = el.dataset.k;
+      if(el.type==='checkbox'){
+        el.addEventListener('change',function(){
+          st[k]=el.checked;
+          if(k==='restraint' && el.checked){ mcIndex=-1; st.mc=-1; renderIssues(); }
+          save(); updateChecks();
+        });
+      } else {
+        el.addEventListener('input',function(){ st[k]=el.value; save(); updateChecks();
+          if(k==='who'){ /* changing initials re-keys autosave */ } });
+      }
+    });
+    $('rlevels').querySelectorAll('button').forEach(function(b){
+      b.addEventListener('click',function(){ st.readiness=b.dataset.r; renderReadiness(); save(); updateChecks(); });
+    });
+  }
+
+  function fillFields(){
+    document.querySelectorAll('[data-k]').forEach(function(el){
+      var k=el.dataset.k;
+      if(el.type==='checkbox')el.checked=!!st[k]; else el.value=st[k]||'';
+    });
+    renderReadiness();
+  }
+
+  /* ---------- completeness checks (enforce the protocol) ---------- */
+  function problems(){
+    var p=[];
+    if(!st.who.trim())p.push('your initials');
+    if(!st.conflict.trim())p.push('the conflicts line (write "no" if none)');
+    if(!st.readiness)p.push('an expected readiness level');
+    if(!st.rreason.trim())p.push('the one-sentence readiness reason');
+    var firstIssueFilled = st.issues.some(function(x){return x.text.trim()});
+    if(!firstIssueFilled)p.push('at least one top issue');
+    if(mcIndex<0 && !st.restraint)p.push('exactly one must-catch, or tick the restraint case box');
+    if(mcIndex>-1 && !st.issues[mcIndex].text.trim())p.push('text for the issue you marked must-catch');
+    if(st.restraint && !st.accept.trim())p.push('what a good review should praise (restraint case, in Acceptable AI feedback)');
+    return p;
+  }
+  function updateChecks(){
+    var p = problems();
+    var box=$('checks');
+    if(!p.length){
+      box.className='checks ok';
+      box.innerHTML='<b>Ready to download.</b> Every required part is filled and exactly one must-catch is set'+(st.restraint?' (restraint case)':'')+'.';
+    } else {
+      box.className='checks';
+      box.innerHTML='<b>Before you download, still needed:</b><ul>'+p.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>';
+    }
+    $('dl').disabled = !!p.length;
+    $('cp').disabled = !!p.length;
+  }
+
+  /* ---------- export in worksheet-template / harness section C shape ---------- */
+  function build(){
+    var d=new Date().toISOString().slice(0,10);
+    var o='# Worksheet: real-'+CASE.num+'. Labeler: '+st.who+'. Date: '+d+'\n\n';
+    o+='- **Case file:** '+CASE.name+'\n';
+    o+='- **Conflicts:** '+st.conflict+'\n';
+    o+='- **Time spent:** '+(st.mins||'unstated')+'\n\n';
+    o+='## Expected readiness\n\n';
+    o+='- **Level:** '+st.readiness+' '+(RLABEL[st.readiness]||'')+'\n';
+    o+='- **One-sentence reason:** '+st.rreason+'\n';
+    o+='- **Blocking rules fired, if any:** '+(st.rblock||'none')+'\n\n';
+    o+='## Real top issues, ranked\n\n';
+    st.issues.forEach(function(iss,i){
+      if(!iss.text.trim())return;
+      o+=(i+1)+'. '+iss.text.trim()+'\n';
+      o+='   - severity: '+iss.sev+'; dimension: '+iss.dim+'; type: '+iss.itype+'; at: '+(iss.loc||'unstated')+'\n';
+      if(mcIndex===i)o+='   - **[MUST-CATCH]**\n';
+    });
+    if(st.restraint)o+='\n**none, restraint case.** What a good review should praise is under Acceptable AI feedback.\n';
+    o+='\n## Acceptable AI feedback\n\n'+(st.accept||'')+'\n';
+    o+='\n## Unacceptable AI feedback\n\n'+(st.unaccept||'')+'\n';
+    o+='\n## False positives to avoid\n\n'+(st.fp||'')+'\n';
+    o+='\n## False negatives to catch\n\n'+(st.fn||'')+'\n';
+    o+='\n## Honest uncertainty\n\n'+(st.uncertain||'')+'\n';
+    return o;
+  }
+
+  function fname(){
+    return 'real-'+CASE.num+'.worksheet.'+(st.who.replace(/[^a-z0-9]/gi,'').toLowerCase()||'anon')+'.md';
+  }
+
+  $('dl').addEventListener('click',function(){
+    if(problems().length)return;
+    var b=new Blob([build()],{type:'text/markdown'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=fname();a.click();
+    URL.revokeObjectURL(a.href);
+    $('msg').textContent='Saved '+fname()+'. Keep it out of the shared folder until both worksheets exist.';
+  });
+  $('cp').addEventListener('click',function(){
+    if(problems().length)return;
+    navigator.clipboard.writeText(build()).then(function(){$('msg').textContent='Copied. Paste it where the other labeler cannot see it yet.'});
+  });
+  $('clear').addEventListener('click',function(){
+    if(!CASE)return;
+    if(!confirm('Clear this worksheet? This removes the autosaved copy for case '+CASE.num+'.'))return;
+    allKeysForCase().forEach(function(k){localStorage.removeItem(k)});
+    st=blank();mcIndex=-1;fillFields();renderIssues();updateChecks();$('msg').textContent='Cleared.';
+  });
+
+  /* ---------- open a file ---------- */
+  $('fileIn').addEventListener('change',function(){
+    var f=this.files&&this.files[0]; if(!f)return;
+    var fr=new FileReader();
+    fr.onload=function(){
+      CASE = parseCase(f.name, fr.result);
+      if(!CASE.num){ alert('That file name does not look like real-NN-*.md. The export name needs the case number.'); }
+      renderCase();
+      loadFor();
+      $('formEmpty').hidden=true; $('formWrap').hidden=false;
+      fillFields(); renderIssues(); updateChecks();
+      $('msg').textContent='';
+    };
+    fr.readAsText(f);
+  });
+
+  /* wire the static field and readiness listeners once at load. The issue-row
+     listeners are attached per render inside renderIssues. */
+  bindFields();
+})();
+</script>
+</body>
+</html>

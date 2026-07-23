@@ -1,0 +1,130 @@
+{
+  "meta": {
+    "title": "Client E paid membership scheme",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Needs targeted revision",
+    "mainReason": "No blocking issue fired, but the deck recommends membership to diversify income and never sizes the roughly 5,000 pounds it would raise against the grant income at risk, so the board cannot tell whether the move materially diversifies income or is a token step.",
+    "highestRiskIssue": "The revenue target on slide 8 (about 5,000 pounds in year one) is never set against the grant concentration on slide 3, so the answer to the diversification question is not sized.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "Sizing the membership target against the two grants not expected to renew, or scoping the recommendation explicitly as a small first step rather than the whole diversification answer, would lift readiness to Nearly ready."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.2,
+    "confidence": "Medium",
+    "effort": "3-5 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The decision is named, answered and given a first step for the client who must act." },
+      { "name": "Problem framing", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The problem is specific and held consistently, but success criteria for the diversification goal itself are not defined." },
+      { "name": "Storyline and pyramid logic", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The governing answer is on slide 1 and the flow is sound, but some titles are labels not assertions." },
+      { "name": "Evidence quality", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Claims carry inline sources and the key assumption is marked, but primary and secondary evidence are not explicitly distinguished." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Evidence is interpreted and feeds the recommendation, but the revenue is not sized against the income gap it must fill." },
+      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The action, owner, timeframe and a go or no-go metric are all named." },
+      { "name": "Feasibility and implementation", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The launch is sequenced with a pilot and fits stated capacity, but the partner-discount dependency is not named." },
+      { "name": "Risks, assumptions and uncertainty", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Load-bearing assumptions and the main risk are stated, but the tradeoff of the small start is not acknowledged." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Each slide makes one point, but several titles are topic labels rather than complete-sentence assertions." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, sources referenced not exposed, no named individual judged." }
+    ]
+  },
+  "strengths": [
+    { "point": "The deck answers the decision first, in the title, so a busy reader knows the recommendation before any evidence.", "quote": "Client E should launch a paid membership scheme, starting with a single tier in the autumn.", "slide": 1 },
+    { "point": "The load-bearing assumption is named as an assumption and flagged as the thing to test, rather than smuggled in as a fact.", "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.", "slide": 8 },
+    { "point": "Implementation is specific and staged with an owner and a real go or no-go threshold.", "quote": "Month three: full launch if the soft launch clears 5%.", "slide": 10 }
+  ],
+  "findings": [
+    {
+      "short": "Revenue not sized",
+      "title": "The deck recommends membership to diversify income but never sizes the revenue against the grant income at risk.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "So-what: an answer to a diversification question must show the size of the gap the move actually closes.",
+      "diagnosis": "Slide 3 establishes that grants are 80% of income and that two of five are not expected to renew. Slide 8 puts year-one membership at about 5,000 pounds. The deck never connects the two, so the reader cannot tell whether membership meaningfully offsets the grant risk or is a small first step. This gap is the single reason readiness is not Nearly ready.",
+      "evidence": [
+        { "slide": 3, "quote": "Project grants are 80% of Client E's income (2024 accounts) and each is single-year." },
+        { "slide": 8, "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one." }
+      ],
+      "why": "A board approving this could believe the income problem is addressed when 5,000 pounds is small against the grants at risk, and so under-invest in the other measures the diversification actually needs.",
+      "reflect": "What share of the income Client E stands to lose does this membership target replace, and does the recommendation still read as a full answer or as a first step.",
+      "fix": "Set the year-one and scaled membership target against the grant income at risk, or state plainly that this is a deliberate small first step and not the whole diversification answer. Do not overstate what one tier can do.",
+      "tags": [ "So-what", "ERIP Performance" ]
+    },
+    {
+      "short": "Topic-label titles",
+      "title": "Several slide titles are topic labels rather than assertions, so the titles alone do not carry the argument.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "Minto action titles: each title is a complete-sentence assertion, not a label.",
+      "diagnosis": "The answer is clear from slides 1 and 2, but titles such as The numbers and First steps are labels. A reader skimming only the titles gets the decision but not the reasoning that supports it.",
+      "evidence": [
+        { "slide": 8, "quote": "The numbers" },
+        { "slide": 10, "quote": "First steps" }
+      ],
+      "why": "A reader who skims titles loses the chain of support, so the deck leans harder on full reading than a titles-first deck would.",
+      "reflect": "If a reader saw only your titles, could they reconstruct why membership is the answer and not just that it is.",
+      "fix": "Rewrite the label titles as full-sentence takeaways so the titles alone carry the argument. This is polish, not a blocker.",
+      "tags": [ "Minto", "Slide communication" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 7", "problem": "The member discount with local partners is presented as existing capacity, but it depends on partner agreements the deck does not show are in place (\"a discount with local partners\").", "why": "If the partner discounts are not yet agreed, part of the member offer is not yet deliverable.", "fix": "Name the partner discount as a dependency to secure before launch, or confirm the agreements exist." }
+  ],
+  "questionsForLead": [
+    "Did the team size the membership target against the income lost from the two grants not expected to renew, so the board can see whether membership materially diversifies income.",
+    "Are the local-partner discounts on slide 7 already agreed, or still to be negotiated before launch.",
+    "Who is the intended audience for this deck (the board, the director), since that affects how much the diversification ambition needs quantifying.",
+    "Are there known budget, staff or timeline constraints the launch must fit beyond the coordinator owning it."
+  ],
+  "learningNote": {
+    "lesson": "When the client asks whether a move solves a problem, sizing the move against the problem is part of the answer, not an optional extra. A sound small step still has to be shown as a step toward the goal.",
+    "weakHabit": "Recommending a well-designed action without quantifying how much of the stated problem it actually closes.",
+    "exercise": "Take the recommendation and write one line: this move replaces X of the Y at risk. If you cannot fill in X and Y, that number is the next thing to find or the scope to state.",
+    "principle": "So-what"
+  },
+  "notAssessed": [
+    "Whether the cited sources (2024 accounts, funder letters, box-office data, comparator websites) are accurate. They are referenced but not provided.",
+    "Whether the 8% conversion assumption is realistic. It is marked as an assumption to test.",
+    "Audience fit. The intended audience was not stated, so this is judged only from the text.",
+    "Feasibility against budget, staff and timeline. No constraints were provided, so this is judged against the deck's own claims.",
+    "Visual design, layout and charts. Only slide text was provided."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Decision", "span": 2 },
+      { "label": "Case for change", "span": 3 },
+      { "label": "The scheme", "span": 2 },
+      { "label": "Numbers and risks", "span": 2 },
+      { "label": "Implementation", "span": 1 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "pass" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "partial" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "pass" }
+    ],
+    "callouts": [
+      { "at": 8, "state": "partial", "label": "Revenue not sized against grant gap" },
+      { "at": 7, "state": "partial", "label": "Partner discount is an unsecured dependency" }
+    ],
+    "connectors": [
+      { "from": 3, "to": 8, "label": "Grant gap not sized against revenue" }
+    ]
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "meta": {
+    "title": "Client E paid membership recommendation",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Needs targeted revision",
+    "mainReason": "The recommendation and the pilot are sound, but the full-launch gate is set below the conversion the revenue case needs, so the soft launch would not confirm the scheme works at scale.",
+    "highestRiskIssue": "Slide 10 sets full launch at a 5% soft-launch clear while slide 8's case rests on 8% conversion across the full list.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "A go-gate reset to the 8% the projection needs and read against a representative sample, plus the missing constraints and intended audience, would lift this toward Nearly ready."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.6,
+    "confidence": "Medium",
+    "effort": "2-4 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The decision is named and answered in the opening and the first action is clear." },
+      { "name": "Problem framing", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The diversify-income question is specific and held, but no success target for the diversification goal itself is set." },
+      { "name": "Storyline and pyramid logic", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Answer first on slide 1, then need, base, benchmark, offer, numbers, risks and steps in an unbroken line." },
+      { "name": "Evidence quality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Each headline claim names a source and the 8% is flagged as an assumption, not stated as fact." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Findings feed the recommendation, but the 8% is benchmarked against a non-comparable attendance rate." },
+      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Names the action, the price, the owner, the timing and a measure." },
+      { "name": "Feasibility and implementation", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Sized to existing capacity, sequenced across three months, with a soft launch as the first step." },
+      { "name": "Risks, assumptions and uncertainty", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Names the conversion risk, the load-bearing assumptions and the test that retires them." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Several titles are assertions but several are bare labels such as The decision, The numbers and First steps." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, staff referred to by role, certainty appropriate." }
+    ]
+  },
+  "strengths": [
+    { "point": "The deck answers the client's question decision first, in the title and the opening.", "quote": "Our answer is yes, with a deliberately small start.", "slide": 2 },
+    { "point": "Every headline claim carries a named source.", "quote": "Project grants are 80% of Client E's income (2024 accounts) and each is single-year.", "slide": 3 },
+    { "point": "The plan is specific with an owner, a sequence and a measure.", "quote": "The Client E coordinator owns the launch.", "slide": 10 },
+    { "point": "Assumptions are named honestly rather than hidden.", "quote": "We assume the mailing list is accurate and that members-only events do not strain staff.", "slide": 9 }
+  ],
+  "findings": [
+    {
+      "short": "Launch gate too low",
+      "title": "The full-launch gate is set below the conversion the revenue case needs and tested on the most engaged contacts.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": false,
+      "issueType": "implementation",
+      "owner": "team",
+      "principle": "Metric integrity: a go-gate must match the number the recommendation depends on and be read against a representative sample.",
+      "diagnosis": "Slide 8 rests the 5,000 pound year-one case on 8% conversion across the whole 1,400-person list. Slide 10 then greenlights full launch if the soft launch clears 5%, and slide 9 runs that soft launch on the most engaged 200 contacts. So the gate is lower than the number the case needs, and it is measured on the people most likely to join, who should convert higher than the rest of the list.",
+      "evidence": [
+        { "slide": 8, "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one." },
+        { "slide": 10, "quote": "Month three: full launch if the soft launch clears 5%." },
+        { "slide": 9, "quote": "A soft launch to the most engaged 200 contacts tests both before the full launch." }
+      ],
+      "why": "A client following the plan could commit to a full launch on a signal that never confirms the 8% the revenue case rests on, and from a sample that should outperform the rest of the list, so the scheme may under-deliver against its own projection.",
+      "reflect": "If your most engaged 200 contacts clear only 5%, what does that predict for the other 1,200 less-engaged people, and does the 5,000 pound case still hold.",
+      "fix": "Reconcile the gate with the number the case needs. Set the full-launch threshold at the conversion the projection assumes, and read the soft-launch result against the fact that the 200 are the most engaged, not a representative slice.",
+      "tags": [ "Metric integrity", "Evidence Grounding" ]
+    },
+    {
+      "short": "Loose 8% benchmark",
+      "title": "The 8% conversion is called conservative against event attendance, but attending is not the same commitment as paying.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Comparability: a benchmark only reassures when it measures the same behavior.",
+      "diagnosis": "Slide 8 leans on the 32% attendance rate from slide 4 to call 8% conservative. Turning up to an event is a lighter commitment than paying 45 pounds a year, so the attendance rate is not a valid floor for a paid-conversion estimate.",
+      "evidence": [
+        { "slide": 8, "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test." }
+      ],
+      "why": "If the team reads 8% as safely below a real ceiling, they may treat it as more solid than it is, when the true comparable for paid conversion is unknown.",
+      "reflect": "What is the closest true comparable for paid membership conversion, and is 8% conservative against that rather than against free attendance.",
+      "fix": "Benchmark the 8% against paid-conversion rates at the comparable arts non-profits you already cite, or mark it as untested with no floor. Keep the honest main thing to test framing.",
+      "tags": [ "Comparability", "Analysis" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 2 and slide 6", "problem": "5,000 pounds in year one is small against 80% grant reliance, and the deck does not state a scale-up target the scheme must eventually hit.", "why": "The client asked about diversifying income, so it should be explicit this pilot tests the model rather than materially replacing grant income yet.", "fix": "Name the later scale-up path or the income share the scheme should reach, so the small start reads as a first step not the whole answer." },
+    { "location": "Slide 7 and slide 9", "problem": "Slide 7 says the member benefits use existing capacity while slide 9 assumes members-only events do not strain staff.", "why": "The two lines sit in slight tension, and staff time is the one resource a small non-profit cannot flex.", "fix": "Say who runs the two members-only events and confirm the coordinator can absorb them alongside the launch." }
+  ],
+  "questionsForLead": [
+    "Who is the intended audience, the board or the director, since the input left it blank and the level of financial detail should match them.",
+    "Did the team confirm the two non-renewing grants with the client, and how soon does the income gap actually bite.",
+    "Is the coordinator's capacity to run a soft launch plus two members-only events confirmed, given no dedicated staff is named.",
+    "Should the full-launch gate be reset to the 8% the revenue case needs rather than 5%, and read against a representative sample."
+  ],
+  "learningNote": {
+    "lesson": "A pilot's go-gate must match the number the recommendation is sold on, or the test cannot confirm the case. A threshold below the target, or read off a non-representative sample, greenlights a decision the evidence does not support.",
+    "weakHabit": "Setting a launch gate lower than the conversion the projection needs, and validating a full-population estimate on the most engaged slice of it.",
+    "exercise": "For every go-gate in a plan, write next to it the number the recommendation depends on and the population that number describes. If the gate is lower, or the test sample differs from that population, reconcile the two before you ship.",
+    "principle": "Metric integrity"
+  },
+  "notAssessed": [
+    "Whether the 8% conversion and the 5,000 pound projection are realistic. No paid-conversion benchmark or source was supplied beyond the deck's own reasoning.",
+    "Whether the coordinator has the capacity for the launch. Known constraints were left blank in the input.",
+    "The intended audience. The input left it blank, so tone-fit to a board or a director could not be checked.",
+    "Whether the funder letters, the 2024 accounts and the box-office data are as stated. Sources are named but not supplied.",
+    "Visual design, layout and charts. Only slide text was provided."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Decision and need", "span": 3 },
+      { "label": "Base and benchmark", "span": 2 },
+      { "label": "Offer and sizing", "span": 2 },
+      { "label": "Numbers, risks and steps", "span": 3 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "pass" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "partial" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 8, "state": "partial", "label": "8% conversion is an untested assumption benchmarked against attendance" },
+      { "at": 10, "state": "partial", "label": "full-launch gate of 5% sits below the 8% target" }
+    ],
+    "connectors": [
+      { "from": 8, "to": 10, "label": "clearing 5% does not confirm the 8% projection" }
+    ]
+  }
+}

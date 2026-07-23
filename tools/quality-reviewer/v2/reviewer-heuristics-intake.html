@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How do you review a deliverable?</title>
+<style>
+  :root { --bg:#fbfbfa; --fg:#1f1f1d; --mut:#6b6b66; --line:#e3e3df; --acc:#2f5d50; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#16171a; --fg:#e9e9e6; --mut:#9a9a94; --line:#2c2e33; --acc:#7fb7a4; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg);
+    font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:2.5rem 1.25rem 5rem; }
+  h1 { font-size:1.55rem; line-height:1.25; margin:0 0 .4rem; }
+  .lede { color:var(--mut); margin:0 0 .5rem; }
+  .warn { border-left:3px solid var(--acc); padding:.7rem .9rem; margin:1.5rem 0 2rem;
+    background:color-mix(in srgb, var(--acc) 8%, transparent); border-radius:0 6px 6px 0; }
+  .warn strong { color:var(--acc); }
+  fieldset { border:1px solid var(--line); border-radius:8px; padding:1.1rem 1.1rem .4rem;
+    margin:0 0 1.4rem; background:color-mix(in srgb, var(--fg) 2%, transparent); }
+  legend { font-weight:600; padding:0 .45rem; font-size:.97rem; }
+  label { display:block; margin:0 0 .35rem; font-weight:550; }
+  .hint { color:var(--mut); font-size:.87rem; margin:0 0 .5rem; font-weight:400; }
+  textarea, input[type=text], select { width:100%; padding:.6rem .7rem; font:inherit;
+    font-size:.95rem; color:var(--fg); background:var(--bg);
+    border:1px solid var(--line); border-radius:6px; margin-bottom:1.1rem; }
+  textarea { min-height:98px; resize:vertical; }
+  textarea:focus, input:focus, select:focus { outline:2px solid var(--acc); outline-offset:1px; }
+  .row { display:flex; gap:.9rem; flex-wrap:wrap; }
+  .row > div { flex:1 1 200px; }
+  button { font:inherit; font-weight:600; padding:.7rem 1.2rem; border-radius:6px;
+    border:1px solid var(--acc); background:var(--acc); color:#fff; cursor:pointer; }
+  button.sec { background:transparent; color:var(--acc); }
+  button:hover { filter:brightness(1.08); }
+  .bar { display:flex; gap:.7rem; flex-wrap:wrap; align-items:center; margin-top:.5rem; }
+  .ok { color:var(--acc); font-size:.9rem; }
+  footer { margin-top:2.5rem; color:var(--mut); font-size:.85rem;
+    border-top:1px solid var(--line); padding-top:1rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>How do you review a deliverable?</h1>
+  <p class="lede">Eight questions about how you personally review a student consulting
+    deliverable. Roughly 15 minutes. Nothing is uploaded anywhere: the page has no
+    server. When you finish you download a file and send it back.</p>
+
+  <div class="warn">
+    <p style="margin:.1rem 0"><strong>Please answer from your own head.</strong> Do not
+      read our review rubric first, and do not look anything up. The whole point is to
+      find out what an experienced reviewer looks for that our rubric has missed. If you
+      hand us back our own rubric, we learn nothing.</p>
+    <p style="margin:.6rem 0 .1rem"><strong>Do not name a client.</strong> Describe
+      examples generically: "a market entry deck", "a nonprofit funding case".</p>
+  </div>
+
+  <form id="f">
+    <fieldset>
+      <legend>About you</legend>
+      <div class="row">
+        <div>
+          <label for="who">Your initials or a nickname</label>
+          <div class="hint">Just so we can tell responses apart.</div>
+          <input type="text" id="who" required>
+        </div>
+        <div>
+          <label for="role">Your role when you review</label>
+          <input type="text" id="role" placeholder="project lead, ex-consultant, board" required>
+        </div>
+      </div>
+      <label for="count">Roughly how many student deliverables have you reviewed?</label>
+      <select id="count">
+        <option>fewer than 5</option><option>5 to 15</option>
+        <option>15 to 40</option><option>more than 40</option>
+      </select>
+    </fieldset>
+
+    <fieldset>
+      <legend>1. The first pass</legend>
+      <label for="q1">You open a draft deck. What are the first three things you look
+        for, in order?</label>
+      <div class="hint">Whatever you actually do, even if it feels unsophisticated.</div>
+      <textarea id="q1" required></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>2. The recurring problem</legend>
+      <label for="q2">What is the single most common problem you see in student work?</label>
+      <textarea id="q2" required></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>3. The send-back line</legend>
+      <label for="q3">What makes you send a deck back, as opposed to letting it go with
+        comments?</label>
+      <div class="hint">This is the most useful question on the page. Be specific about
+        where the line sits.</div>
+      <textarea id="q3" required></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>4. What you deliberately ignore</legend>
+      <label for="q4">What do you never bother commenting on, even when it is wrong?</label>
+      <div class="hint">Also unusually useful. Knowing what an experienced reviewer lets
+        slide is harder to find out than knowing what they catch.</div>
+      <textarea id="q4" required></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>5. A real example</legend>
+      <label for="q5">Think of one deliverable you sent back. What was wrong with it,
+        and what did you tell the team?</label>
+      <div class="hint">No client names. Generic description only.</div>
+      <textarea id="q5" required></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>6. Ready for the client</legend>
+      <label for="q6">Finish this sentence: a deliverable is ready for the client
+        when...</label>
+      <textarea id="q6" required></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>7. How much feedback is too much</legend>
+      <div class="row">
+        <div>
+          <label for="q7n">Most useful number of comments on one draft</label>
+          <select id="q7n">
+            <option>1 to 3</option><option>4 to 6</option>
+            <option>7 to 10</option><option>more than 10</option>
+          </select>
+        </div>
+      </div>
+      <label for="q7">What happens when a team gets more feedback than that?</label>
+      <textarea id="q7" required></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>8. The thing a checklist would miss</legend>
+      <label for="q8">What do you catch that you think a careful checklist would
+        not?</label>
+      <textarea id="q8" required></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>Anything else</legend>
+      <label for="q9">Optional. Anything we did not ask that matters.</label>
+      <textarea id="q9" style="min-height:70px"></textarea>
+    </fieldset>
+
+    <div class="bar">
+      <button type="button" id="dl">Download my answers</button>
+      <button type="button" class="sec" id="cp">Copy to clipboard</button>
+      <span class="ok" id="msg"></span>
+    </div>
+  </form>
+
+  <footer>
+    Send the file back to whoever asked you. Your answers shape a review tool for
+    student consulting teams. They are not shared outside that.
+  </footer>
+</main>
+
+<script>
+(function () {
+  var ids = ['who','role','count','q1','q2','q3','q4','q5','q6','q7n','q7','q8','q9'];
+  var labels = {
+    q1: 'First three things you look for',
+    q2: 'Most common problem in student work',
+    q3: 'What makes you send a deck back',
+    q4: 'What you never comment on',
+    q5: 'A real example you sent back',
+    q6: 'A deliverable is ready for the client when',
+    q7n: 'Most useful number of comments',
+    q7: 'What happens past that number',
+    q8: 'What a checklist would miss',
+    q9: 'Anything else'
+  };
+  function val(id) { return (document.getElementById(id).value || '').trim(); }
+
+  function build() {
+    var d = new Date().toISOString().slice(0, 10);
+    var out = '# Reviewer heuristics: ' + (val('who') || 'anonymous') + '\n\n';
+    out += 'Captured ' + d + ' via reviewer-heuristics-intake.html.\n';
+    out += 'Written blind, before reading the rubric.\n\n';
+    out += '- Role: ' + val('role') + '\n';
+    out += '- Deliverables reviewed: ' + val('count') + '\n\n---\n';
+    ['q1','q2','q3','q4','q5','q6','q7n','q7','q8','q9'].forEach(function (id) {
+      var v = val(id);
+      if (!v) return;
+      out += '\n## ' + labels[id] + '\n\n' + v + '\n';
+    });
+    return out;
+  }
+
+  function missing() {
+    return ids.filter(function (id) {
+      var el = document.getElementById(id);
+      return el.hasAttribute('required') && !val(id);
+    });
+  }
+
+  function flag() {
+    var m = missing();
+    if (m.length) {
+      document.getElementById(m[0]).focus();
+      document.getElementById('msg').textContent =
+        m.length + ' question' + (m.length > 1 ? 's' : '') + ' still empty.';
+      return true;
+    }
+    return false;
+  }
+
+  document.getElementById('dl').addEventListener('click', function () {
+    if (flag()) return;
+    var name = 'reviewer-heuristics-' +
+      (val('who').replace(/[^a-z0-9]/gi, '-').toLowerCase() || 'anon') + '.md';
+    var b = new Blob([build()], { type: 'text/markdown' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(b);
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    document.getElementById('msg').textContent = 'Saved ' + name + '. Send it back.';
+  });
+
+  document.getElementById('cp').addEventListener('click', function () {
+    if (flag()) return;
+    navigator.clipboard.writeText(build()).then(function () {
+      document.getElementById('msg').textContent = 'Copied. Paste it into a message.';
+    });
+  });
+})();
+</script>
+</body>
+</html>
