@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adjudication workstation</title>
+<style>
+  :root{
+    --bg:#fbfbfa; --panel:#fff; --fg:#1f1f1d; --mut:#6b6b66; --line:#e3e3df;
+    --acc:#2f5d50; --acc-soft:#eaf1ee; --warn:#9a5b1f; --warn-soft:#fbf1e6;
+    --stop:#b23b34; --stop-soft:#f7e7e5;
+    --r0:#b23b34; --r1:#c06a1f; --r2:#8a7a1f; --r3:#2f7d55;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#16171a; --panel:#1e1f23; --fg:#e9e9e6; --mut:#9a9a94; --line:#2c2e33;
+      --acc:#7fb7a4; --acc-soft:#22302c; --warn:#d59b5c; --warn-soft:#2c2519;
+      --stop:#e0665c; --stop-soft:#2c1b19; }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--fg);
+    font:15px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+
+  header{display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+    padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel);
+    position:sticky;top:0;z-index:5}
+  header h1{font-size:15px;margin:0;font-weight:700}
+  header .sp{flex:1}
+  .file-btn{position:relative;overflow:hidden;display:inline-block}
+  .file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  button,.btn{font:inherit;font-weight:600;padding:.5rem .9rem;border-radius:7px;
+    border:1px solid var(--acc);background:var(--acc);color:#fff;cursor:pointer}
+  button.sec,.btn.sec{background:transparent;color:var(--acc)}
+  button.tiny{padding:.2rem .5rem;font-size:.8rem;border-radius:5px}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  .blind{font-size:.83rem;color:var(--acc);border:1px solid var(--acc);
+    border-radius:6px;padding:.2rem .5rem;background:var(--acc-soft)}
+  .loaded{font-size:.83rem;color:var(--mut)}
+
+  main{padding:18px 20px;max-width:1200px;margin:0 auto}
+  .empty{color:var(--mut);text-align:center;margin-top:12vh;padding:0 2rem}
+  .empty h2{color:var(--fg);font-size:1.15rem}
+  .empty code{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:.1rem .35rem}
+
+  .warnbar{border:1px solid var(--stop);background:var(--stop-soft);color:var(--stop);
+    border-radius:8px;padding:.7rem .9rem;margin-bottom:1rem;font-weight:600;font-size:.92rem}
+
+  section.card{border:1px solid var(--line);border-radius:10px;background:var(--panel);
+    padding:1rem 1.1rem;margin-bottom:1.2rem}
+  section.card>h2{margin:0 0 .7rem;font-size:1rem}
+  .sub{color:var(--mut);font-size:.85rem;margin:.1rem 0 .8rem}
+
+  /* agreement panel */
+  .agg{display:flex;gap:1rem;flex-wrap:wrap;align-items:stretch}
+  .agg .box{flex:1 1 180px;border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;background:var(--bg)}
+  .agg .box .lab{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
+  .agg .box .big{font-size:1.15rem;font-weight:800;margin-top:.2rem}
+  .pill{display:inline-block;padding:.08rem .5rem;border-radius:20px;font-size:.8rem;font-weight:700;color:#fff}
+  .pill.R0{background:var(--r0)} .pill.R1{background:var(--r1)}
+  .pill.R2{background:var(--r2)} .pill.R3{background:var(--r3)}
+  .delta-exact{color:var(--r3)} .delta-one{color:var(--warn)} .delta-two{color:var(--stop)}
+
+  .toggle{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.35rem}
+  .toggle button{background:transparent;color:var(--fg);border:1px solid var(--line);
+    font-weight:600;font-size:.82rem;padding:.3rem .6rem}
+  .toggle button[data-on="1"]{background:var(--acc);color:#fff;border-color:transparent}
+  .toggle button[data-stop="1"][data-on="1"]{background:var(--stop)}
+
+  /* side by side worksheets */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media (max-width:840px){.cols{grid-template-columns:1fr}}
+  .ws{border:1px solid var(--line);border-radius:8px;padding:.8rem .9rem;background:var(--bg)}
+  .ws h3{margin:0 0 .2rem;font-size:.95rem}
+  .ws .who{font-size:.8rem;color:var(--mut);margin-bottom:.6rem}
+  .ws .field{margin-bottom:.6rem}
+  .ws .k{font-size:.76rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
+  .ws .v{font-size:.9rem;white-space:pre-wrap}
+  .ws ol{margin:.2rem 0;padding-left:1.2rem}
+  .ws li{margin-bottom:.4rem;font-size:.9rem}
+  .ws li .meta{color:var(--mut);font-size:.8rem}
+  .ws .mcflag{color:var(--warn);font-weight:800;font-size:.8rem}
+  .ws .restraint{color:var(--acc);font-weight:700;font-size:.86rem}
+
+  /* gold builder */
+  label{display:block;font-weight:600;margin:.6rem 0 .25rem;font-size:.9rem}
+  textarea,input[type=text]{width:100%;padding:.5rem .6rem;font:inherit;font-size:.9rem;
+    color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px}
+  textarea{min-height:60px;resize:vertical}
+  textarea:focus,input:focus{outline:2px solid var(--acc);outline-offset:1px}
+  .rlevels{display:flex;gap:.4rem;flex-wrap:wrap;margin:.2rem 0 .3rem}
+  .rlevels button{flex:1 1 130px;background:transparent;color:var(--fg);
+    border:1px solid var(--line);font-weight:600;padding:.45rem .4rem;text-align:left;font-size:.84rem}
+  .rlevels button .rl{display:block;font-weight:800;font-size:.92rem}
+  .rlevels button[data-on="1"]{color:#fff;border-color:transparent}
+  .rlevels button[data-r="R0"][data-on="1"]{background:var(--r0)}
+  .rlevels button[data-r="R1"][data-on="1"]{background:var(--r1)}
+  .rlevels button[data-r="R2"][data-on="1"]{background:var(--r2)}
+  .rlevels button[data-r="R3"][data-on="1"]{background:var(--r3)}
+  .srcrow{display:flex;gap:.4rem;flex-wrap:wrap;margin:.15rem 0 .1rem}
+  .srcrow .src{flex:1 1 240px;border:1px dashed var(--line);border-radius:6px;padding:.35rem .5rem;
+    font-size:.82rem;background:var(--bg)}
+  .srcrow .src .tag{font-weight:700;color:var(--mut);font-size:.74rem;text-transform:uppercase}
+  .srcrow .src button{margin-top:.25rem}
+
+  .note{border:1px solid var(--acc);background:var(--acc-soft);border-radius:8px;
+    padding:.6rem .8rem;font-size:.85rem;margin-bottom:1rem}
+  .exportbar{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-top:1rem}
+  .msg{font-size:.85rem;color:var(--acc)}
+
+  /* set tracker */
+  .track{display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+  .track .num{font-size:1.4rem;font-weight:800}
+  .track .stopnow{color:var(--stop)}
+  pre.logrow{background:var(--bg);border:1px solid var(--line);border-radius:6px;
+    padding:.5rem .6rem;font-size:.8rem;overflow-x:auto;white-space:pre;margin:.4rem 0}
+</style>
+</head>
+<body>
+<header>
+  <h1>Adjudication workstation</h1>
+  <span class="blind" title="This page has no server. It reads only the two worksheet files you open. It cannot reach any AI review, any triage band or the case file. It never proposes a label: the mechanical readiness delta is an agreement metric, the resolved gold is yours to write.">reads only the two worksheets you open, never suggests a label</span>
+  <span class="sp"></span>
+  <span class="loaded" id="loadedA">worksheet A: none</span>
+  <span class="loaded" id="loadedB">worksheet B: none</span>
+  <span class="btn sec file-btn">Open worksheet A<input type="file" id="fileA" accept=".md,text/markdown,text/plain"></span>
+  <span class="btn sec file-btn">Open worksheet B<input type="file" id="fileB" accept=".md,text/markdown,text/plain"></span>
+</header>
+
+<main>
+  <div class="empty" id="empty">
+    <h2>Open the two blind worksheets for one case</h2>
+    <p>Each labeler exported <code>real-NN.worksheet.&lt;initials&gt;.md</code> from the labeling
+    workstation. Open both here for the <b>same case</b>. This tool computes the readiness
+    agreement and runs the stop rule. You and the other labeler write the resolved gold together,
+    on the merits. Per the protocol, an averaged label is gold for nobody.</p>
+  </div>
+
+  <div id="work" hidden>
+    <div class="warnbar" id="mismatch" hidden></div>
+
+    <section class="card">
+      <h2>Agreement <span id="caseTag" class="loaded"></span></h2>
+      <p class="sub">The readiness delta is computed from the two R-levels, nothing else. Everything else is your call.</p>
+      <div class="agg">
+        <div class="box">
+          <div class="lab">Readiness A</div>
+          <div class="big" id="raBig">&mdash;</div>
+        </div>
+        <div class="box">
+          <div class="lab">Readiness B</div>
+          <div class="big" id="rbBig">&mdash;</div>
+        </div>
+        <div class="box">
+          <div class="lab">Delta (computed)</div>
+          <div class="big" id="deltaBig">&mdash;</div>
+        </div>
+        <div class="box">
+          <div class="lab">Same must-catch? (your call)</div>
+          <div class="toggle" id="mcToggle">
+            <button data-mc="y">yes, same</button>
+            <button data-mc="n">no, different</button>
+          </div>
+        </div>
+        <div class="box">
+          <div class="lab">Resolution (your call)</div>
+          <div class="toggle" id="resToggle">
+            <button data-res="agreed">agreed as-is</button>
+            <button data-res="resolved">resolved on merits</button>
+            <button data-res="contested" data-stop="1">contested</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>The two worksheets, side by side</h2>
+      <div class="cols">
+        <div class="ws" id="wsA"></div>
+        <div class="ws" id="wsB"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Resolved gold label</h2>
+      <div class="note"><b>You write this, not the tool.</b> Argue any disagreement to a resolution
+      on the merits. The <b>use A / use B</b> buttons copy a human labeler's own words in as a
+      starting point; edit freely. If you cannot resolve, set the resolution above to
+      <b>contested</b> and say why in the record rather than averaging.</div>
+
+      <label>Resolved readiness</label>
+      <div class="rlevels" id="goldR">
+        <button data-r="R0"><span class="rl">R0</span>Not ready for client review</button>
+        <button data-r="R1"><span class="rl">R1</span>Needs substantial revision</button>
+        <button data-r="R2"><span class="rl">R2</span>Needs targeted revision</button>
+        <button data-r="R3"><span class="rl">R3</span>Nearly ready with minor edits</button>
+      </div>
+
+      <label>One-sentence reason</label>
+      <div class="srcrow" id="srcReason"></div>
+      <textarea id="gReason"></textarea>
+
+      <label>Blocking rules fired, if any</label>
+      <div class="srcrow" id="srcBlock"></div>
+      <input type="text" id="gBlock" placeholder="none, or cite the rule">
+
+      <label>Real top issues, ranked (the single must-catch marked)</label>
+      <div class="srcrow" id="srcIssues"></div>
+      <textarea id="gIssues" style="min-height:120px" placeholder="1. ...&#10;   - severity; dimension; type; at&#10;   - [MUST-CATCH] on the one that matters most"></textarea>
+
+      <label>Acceptable AI feedback</label>
+      <div class="srcrow" id="srcAccept"></div>
+      <textarea id="gAccept"></textarea>
+
+      <label>Unacceptable AI feedback</label>
+      <div class="srcrow" id="srcUnaccept"></div>
+      <textarea id="gUnaccept"></textarea>
+
+      <label>False positives to avoid</label>
+      <div class="srcrow" id="srcFp"></div>
+      <textarea id="gFp"></textarea>
+
+      <label>False negatives to catch</label>
+      <div class="srcrow" id="srcFn"></div>
+      <textarea id="gFn"></textarea>
+
+      <label>Adjudication notes (why you resolved it this way, or why it is contested)</label>
+      <textarea id="gNotes"></textarea>
+
+      <div class="exportbar">
+        <button id="dlGold" disabled>Download real-NN.gold.md</button>
+        <button class="sec" id="cpLog">Copy agreement-log row</button>
+        <button class="sec" id="record">Record in set tracker</button>
+        <span class="msg" id="goldMsg"></span>
+      </div>
+      <pre class="logrow" id="logPreview" hidden></pre>
+    </section>
+
+    <section class="card">
+      <h2>Stop-rule tracker</h2>
+      <p class="sub">The set is 14 real cases. Stop rule fires at a third or more (5+) landing two levels apart or contested. Recorded cases persist in this browser only.</p>
+      <div class="track">
+        <div><div class="num" id="trkDone">0</div><div class="lab">adjudicated</div></div>
+        <div><div class="num" id="trkFlag">0</div><div class="lab">2+ apart or contested</div></div>
+        <div><div class="num" id="trkStop">safe</div><div class="lab">stop rule (fires at 5)</div></div>
+        <div style="flex:1"></div>
+        <button class="sec tiny" id="clearTrk">Clear tracker</button>
+      </div>
+      <div id="trkList" class="sub" style="margin-top:.6rem"></div>
+    </section>
+  </div>
+</main>
+
+<script>
+(function(){
+  var RLABEL={R0:'Not ready for client review',R1:'Needs substantial revision',
+    R2:'Needs targeted revision',R3:'Nearly ready with minor edits'};
+  var RIDX={R0:0,R1:1,R2:2,R3:3};
+  var SET_SIZE=14, STOP_AT=5;
+
+  var A=null,B=null;              // parsed worksheets
+  var g={readiness:'',mc:'',res:''}; // human adjudication state
+
+  function $(id){return document.getElementById(id)}
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+  /* ---------- parse a worksheet export ---------- */
+  function parseWorksheet(name,text){
+    var t=text.replace(/\r\n/g,'\n');
+    var num=(t.match(/real-(\d{2})/i)||[])[1]||'';
+    var who=(t.match(/Labeler:\s*([^.\n]+)\./i)||[])[1];
+    who=who?who.trim():'?';
+    var level=(t.match(/\*\*Level:\*\*\s*(R\d)/i)||[])[1]||'';
+    var reason=grab(t,/\*\*One-sentence reason:\*\*\s*(.*)/i);
+    var block=grab(t,/\*\*Blocking rules fired[^:]*:\*\*\s*(.*)/i);
+    var restraint=/none,\s*restraint case/i.test(t);
+    var issues=parseIssues(section(t,'Real top issues, ranked'));
+    return {
+      name:name,num:num,who:who,level:level,reason:reason,block:block,
+      restraint:restraint,issues:issues,
+      accept:section(t,'Acceptable AI feedback'),
+      unaccept:section(t,'Unacceptable AI feedback'),
+      fp:section(t,'False positives to avoid'),
+      fn:section(t,'False negatives to catch'),
+      uncertain:section(t,'Honest uncertainty')
+    };
+  }
+  function grab(t,re){var m=t.match(re);return m?m[1].trim():''}
+  function section(t,title){
+    var re=new RegExp('##\\s*'+title.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*\\n([\\s\\S]*?)(?=\\n##\\s|$)','i');
+    var m=t.match(re);return m?m[1].trim():'';
+  }
+  function parseIssues(block){
+    if(!block)return [];
+    var lines=block.split('\n'),out=[],cur=null;
+    lines.forEach(function(l){
+      var m=l.match(/^\s*(\d+)\.\s+(.*)/);
+      if(m){cur={text:m[2].trim(),meta:'',mc:false};out.push(cur);return}
+      var meta=l.match(/^\s*-\s*severity:\s*(.*)/i);
+      if(meta&&cur){cur.meta=meta[1].trim();return}
+      if(/\[MUST-CATCH\]/i.test(l)&&cur){cur.mc=true}
+    });
+    return out;
+  }
+
+  /* ---------- render one worksheet column ---------- */
+  function renderWs(w,el){
+    if(!w){el.innerHTML='<div class="who">not loaded</div>';return}
+    var h='<h3>real-'+w.num+'</h3><div class="who">labeler '+esc(w.who)+
+      (w.name?' &middot; '+esc(w.name):'')+'</div>';
+    h+='<div class="field"><div class="k">Readiness</div><div class="v">'+
+      (w.level?'<span class="pill '+w.level+'">'+w.level+'</span> '+esc(RLABEL[w.level]||''):'&mdash;')+'</div></div>';
+    h+='<div class="field"><div class="k">Reason</div><div class="v">'+esc(w.reason||'&mdash;')+'</div></div>';
+    if(w.block&&!/^none$/i.test(w.block))
+      h+='<div class="field"><div class="k">Blocking</div><div class="v">'+esc(w.block)+'</div></div>';
+    if(w.restraint)h+='<div class="restraint">restraint case: no must-catch, praise recorded</div>';
+    if(w.issues.length){
+      h+='<div class="field"><div class="k">Top issues</div><ol>';
+      w.issues.forEach(function(iss){
+        h+='<li>'+esc(iss.text)+(iss.mc?' <span class="mcflag">[MUST-CATCH]</span>':'')+
+          (iss.meta?'<div class="meta">'+esc(iss.meta)+'</div>':'')+'</li>';
+      });
+      h+='</ol></div>';
+    }
+    ['accept:Acceptable','unaccept:Unacceptable','fp:False positives','fn:False negatives','uncertain:Uncertainty'].forEach(function(pair){
+      var kf=pair.split(':'),val=w[kf[0]];
+      if(val)h+='<div class="field"><div class="k">'+kf[1]+'</div><div class="v">'+esc(val)+'</div></div>';
+    });
+    el.innerHTML=h;
+  }
+
+  /* ---------- source chips under gold fields ---------- */
+  function srcChips(containerId,field,target,label){
+    var el=$(containerId);el.innerHTML='';
+    [['A',A],['B',B]].forEach(function(pair){
+      var w=pair[1];if(!w)return;
+      var val=field==='issues'?issuesText(w):w[field];
+      if(!val)return;
+      var d=document.createElement('div');d.className='src';
+      d.innerHTML='<div class="tag">labeler '+esc(w.who)+' ('+pair[0]+')</div>'+esc(val).slice(0,600);
+      var b=document.createElement('button');b.className='tiny sec';b.textContent='use '+pair[0];
+      b.addEventListener('click',function(){target.value=val;target.dispatchEvent(new Event('input'));updateGold();});
+      d.appendChild(document.createElement('br'));d.appendChild(b);
+      el.appendChild(d);
+    });
+  }
+  function issuesText(w){
+    if(w.restraint)return 'none, restraint case';
+    return w.issues.map(function(iss,i){
+      return (i+1)+'. '+iss.text+(iss.meta?'\n   - '+iss.meta:'')+(iss.mc?'\n   - [MUST-CATCH]':'');
+    }).join('\n');
+  }
+
+  /* ---------- delta + panel ---------- */
+  function renderAgreement(){
+    $('caseTag').textContent = A&&B ? 'real-'+A.num : '';
+    $('raBig').innerHTML = A&&A.level ? '<span class="pill '+A.level+'">'+A.level+'</span> '+esc(A.who) : '&mdash;';
+    $('rbBig').innerHTML = B&&B.level ? '<span class="pill '+B.level+'">'+B.level+'</span> '+esc(B.who) : '&mdash;';
+    var d=delta();
+    if(d==null){$('deltaBig').textContent='—';return}
+    var cls=d===0?'delta-exact':d===1?'delta-one':'delta-two';
+    var word=d===0?'exact match':d===1?'one level apart':d+' levels apart';
+    $('deltaBig').innerHTML='<span class="'+cls+'">'+word+'</span>';
+  }
+  function delta(){
+    if(!A||!B||!(A.level in RIDX)||!(B.level in RIDX))return null;
+    return Math.abs(RIDX[A.level]-RIDX[B.level]);
+  }
+  function isFlagged(){ // contributes to the stop rule
+    var d=delta();
+    return g.res==='contested' || (d!=null && d>=2);
+  }
+
+  /* ---------- toggles ---------- */
+  function bindToggle(wrapId,key,after){
+    $(wrapId).querySelectorAll('button').forEach(function(b){
+      b.addEventListener('click',function(){
+        var v=b.dataset.mc||b.dataset.res;
+        g[key]=(g[key]===v?'':v);
+        $(wrapId).querySelectorAll('button').forEach(function(x){
+          x.dataset.on=(x.dataset.mc||x.dataset.res)===g[key]?'1':'0';
+        });
+        if(after)after();
+      });
+    });
+  }
+
+  /* ---------- gold builder ---------- */
+  function bindGoldReadiness(){
+    $('goldR').querySelectorAll('button').forEach(function(b){
+      b.addEventListener('click',function(){
+        g.readiness=(g.readiness===b.dataset.r?'':b.dataset.r);
+        $('goldR').querySelectorAll('button').forEach(function(x){x.dataset.on=x.dataset.r===g.readiness?'1':'0'});
+        updateGold();
+      });
+    });
+  }
+  function goldReady(){
+    return A&&B&&g.readiness&&$('gReason').value.trim()&&$('gIssues').value.trim()&&g.res;
+  }
+  function updateGold(){
+    $('dlGold').disabled=!goldReady();
+    $('logPreview').textContent=logRow();
+  }
+  function buildGold(){
+    var d=new Date().toISOString().slice(0,10);
+    var o='# Gold label: real-'+A.num+'\n\n';
+    o+='Adjudicated by '+A.who+' and '+B.who+' on '+d+'. Both blind worksheets are the audit trail.\n\n';
+    o+='## Expected readiness\n\n';
+    o+='- **Level:** '+g.readiness+' '+(RLABEL[g.readiness]||'')+'\n';
+    o+='- **One-sentence reason:** '+$('gReason').value.trim()+'\n';
+    o+='- **Blocking rules fired, if any:** '+($('gBlock').value.trim()||'none')+'\n\n';
+    o+='## Real top issues, ranked\n\n'+$('gIssues').value.trim()+'\n\n';
+    o+='## Acceptable AI feedback\n\n'+($('gAccept').value.trim()||'')+'\n\n';
+    o+='## Unacceptable AI feedback\n\n'+($('gUnaccept').value.trim()||'')+'\n\n';
+    o+='## False positives to avoid\n\n'+($('gFp').value.trim()||'')+'\n\n';
+    o+='## False negatives to catch\n\n'+($('gFn').value.trim()||'')+'\n\n';
+    o+='## Adjudication record\n\n';
+    o+='- Readiness A: '+A.level+' ('+A.who+') / Readiness B: '+B.level+' ('+B.who+')'+
+       (delta()!=null?' — '+(delta()===0?'exact':delta()===1?'one level apart':delta()+' levels apart'):'')+'\n';
+    o+='- Same must-catch: '+(g.mc==='y'?'yes':g.mc==='n'?'no':'not recorded')+'\n';
+    o+='- Resolution: '+(g.res||'not recorded')+'\n';
+    o+='- Notes: '+($('gNotes').value.trim()||'')+'\n';
+    return o;
+  }
+  function logRow(){
+    if(!A||!B)return '';
+    var d=delta();
+    var agr=d==null?'?':d===0?'exact':d===1?'1 off':'2+ off';
+    return '| real-'+A.num+' | '+A.level+' | '+B.level+' | '+agr+' | '+
+      (g.mc==='y'?'y':g.mc==='n'?'n':'?')+' | '+(g.res||'?')+' | '+
+      ($('gNotes').value.trim().replace(/\|/g,'/').slice(0,60)||'')+' |';
+  }
+
+  /* ---------- set tracker (localStorage) ---------- */
+  function trkKey(num){return 'adjudicate|real-'+num}
+  function recordCase(){
+    if(!A||!B){setMsg('Load both worksheets first');return}
+    var rec={num:A.num,a:A.level,b:B.level,delta:delta(),flagged:isFlagged(),res:g.res||'?',when:new Date().toISOString().slice(0,10)};
+    localStorage.setItem(trkKey(A.num),JSON.stringify(rec));
+    renderTracker();setMsg('real-'+A.num+' recorded in the tracker');
+  }
+  function allRecords(){
+    var out=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);
+      if(k.indexOf('adjudicate|real-')===0){try{out.push(JSON.parse(localStorage.getItem(k)))}catch(e){}}}
+    out.sort(function(x,y){return x.num<y.num?-1:1});return out;
+  }
+  function renderTracker(){
+    var recs=allRecords();
+    var flagged=recs.filter(function(r){return r.flagged}).length;
+    $('trkDone').textContent=recs.length;
+    $('trkFlag').textContent=flagged;
+    var stopEl=$('trkStop');
+    if(flagged>=STOP_AT){stopEl.textContent='STOP';stopEl.className='num stopnow'}
+    else{stopEl.textContent='safe ('+flagged+'/'+STOP_AT+')';stopEl.className='num'}
+    $('trkList').innerHTML=recs.length?recs.map(function(r){
+      return 'real-'+r.num+': '+r.a+'/'+r.b+' '+(r.delta===0?'exact':r.delta===1?'1 off':r.delta+' off')+
+        (r.res==='contested'?' contested':'')+(r.flagged?' ⚠':'');
+    }).join(' &middot; '):'nothing recorded yet';
+    if(flagged>=STOP_AT){
+      showMismatch('Stop rule fired: '+flagged+' of '+SET_SIZE+' cases are two levels apart or contested. Stop labeling and fix the rubric before any prompt work, per PROTOCOL.');
+    }
+  }
+
+  /* ---------- warnings ---------- */
+  function showMismatch(msg){var el=$('mismatch');el.hidden=false;el.textContent=msg}
+  function hideMismatch(){$('mismatch').hidden=true}
+  function setMsg(m){$('goldMsg').textContent=m}
+
+  /* ---------- wire up ---------- */
+  function refreshAll(){
+    $('empty').hidden = !(A||B);
+    $('work').hidden = !(A||B);
+    if(A&&B&&A.num&&B.num&&A.num!==B.num){
+      showMismatch('These two worksheets are for different cases (real-'+A.num+' and real-'+B.num+'). Open both worksheets for the SAME case.');
+    } else if(A&&B&&A.who&&B.who&&A.who.toLowerCase()===B.who.toLowerCase()){
+      showMismatch('Both worksheets are from labeler "'+A.who+'". Adjudication needs two independent labelers. Check you did not load the same file twice.');
+    } else {
+      // keep any active stop-rule banner, else clear
+      var flagged=allRecords().filter(function(r){return r.flagged}).length;
+      if(flagged<STOP_AT)hideMismatch();
+    }
+    renderWs(A,$('wsA'));renderWs(B,$('wsB'));
+    renderAgreement();
+    srcChips('srcReason','reason',$('gReason'));
+    srcChips('srcBlock','block',$('gBlock'));
+    srcChips('srcIssues','issues',$('gIssues'));
+    srcChips('srcAccept','accept',$('gAccept'));
+    srcChips('srcUnaccept','unaccept',$('gUnaccept'));
+    srcChips('srcFp','fp',$('gFp'));
+    srcChips('srcFn','fn',$('gFn'));
+    updateGold();
+  }
+
+  function loadFile(input,which){
+    var f=input.files&&input.files[0];if(!f)return;
+    var fr=new FileReader();
+    fr.onload=function(){
+      var w=parseWorksheet(f.name,String(fr.result));
+      if(which==='A'){A=w;$('loadedA').textContent='worksheet A: '+f.name}
+      else{B=w;$('loadedB').textContent='worksheet B: '+f.name}
+      refreshAll();
+    };
+    fr.readAsText(f);
+  }
+
+  $('fileA').addEventListener('change',function(){loadFile(this,'A')});
+  $('fileB').addEventListener('change',function(){loadFile(this,'B')});
+
+  bindToggle('mcToggle','mc',null);
+  bindToggle('resToggle','res',function(){renderTracker();updateGold();});
+  bindGoldReadiness();
+  ['gReason','gBlock','gIssues','gAccept','gUnaccept','gFp','gFn','gNotes'].forEach(function(id){
+    $(id).addEventListener('input',updateGold);
+  });
+
+  $('dlGold').addEventListener('click',function(){
+    if(!goldReady())return;
+    var b=new Blob([buildGold()],{type:'text/markdown'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(b);
+    a.download='real-'+A.num+'.gold.md';a.click();URL.revokeObjectURL(a.href);
+    setMsg('Saved real-'+A.num+'.gold.md. Keep both worksheets as the audit trail.');
+  });
+  $('cpLog').addEventListener('click',function(){
+    if(!logRow())return;
+    navigator.clipboard.writeText(logRow()).then(function(){setMsg('Agreement-log row copied. Paste it into agreement-log.md.')});
+    $('logPreview').hidden=false;
+  });
+  $('record').addEventListener('click',recordCase);
+  $('clearTrk').addEventListener('click',function(){
+    allRecords().forEach(function(r){localStorage.removeItem(trkKey(r.num))});
+    renderTracker();hideMismatch();setMsg('Tracker cleared.');
+  });
+
+  renderTracker();
+})();
+</script>
+</body>
+</html>

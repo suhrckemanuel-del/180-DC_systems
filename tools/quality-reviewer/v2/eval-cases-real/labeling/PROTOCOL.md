@@ -39,6 +39,14 @@ you prefer, the shape is identical.
 
 ## Adjudication (both labelers together)
 
+**The easy way to do this.** Open [adjudication-workstation.html](adjudication-workstation.html)
+in a browser, open both worksheets for one case, and it does the mechanical parts: it computes
+the readiness delta, shows the two sheets side by side, writes the `real-NN.gold.md` in the
+section C shape once you fill the resolved label, generates the agreement-log row, and tracks
+the stop rule across the set for you. It never proposes a label. The resolved gold is yours,
+the `use A` / `use B` buttons only copy a labeler's own words in as a starting point. Doing
+this by hand against the template below is still fine.
+
 1. Compare worksheets case by case. For each case record: readiness agreement
    (exact / one level apart / worse), top-issue agreement (same must-catch or not).
 2. Where you disagree, argue to a resolution on the merits and write the resolved
