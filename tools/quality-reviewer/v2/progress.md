@@ -304,21 +304,73 @@ planning constant, not an incident.
   before seeing the rubric. Feeds the expert-calibration track (plan Q2). It was already
   built and orphaned, so it is now tracked.
 
+## Session 8 (2026-07-24): Path B readiness gate made real and verified, S4 closed, Path A drafted
+
+Two working improvements landed and one owner decision is teed up. No new design document.
+
+**1. Path B: the renderer readiness gate now actually gates.** The over-flagging problem
+(next action 1, previous session) has two paths. Path B was on record as already satisfied
+because "readiness surfaces in lead mode only", but the renderer only separated readiness
+into the lead *view*, it did not gate it: [index.html](index.html) `load()` enabled every
+tab unconditionally, so the Project lead tab (which carries the readiness verdict) was one
+click from any student holding the file. That is now a real gate. A student build is reached
+with `?role=student` on the URL: the lead and printable views are never rendered into the
+DOM, their tabs are removed, and any forced `setView` to them bounces to coaching. The
+default (no param) is byte-identical to before, so the board demo keeps both modes open as
+decided and the risk stays accepted. Verified headless with Playwright (six checks pass):
+default shows three tabs with populated readiness, `?role=student` shows only coaching with
+`#readiness` empty in the DOM and the forced-navigation bounce holding, coaching content
+still renders. Decision-log entry added. This does not fix the over-escalation, it contains
+it: a false not-ready can no longer reach a student. The lead-mode coin-flip is untouched,
+which is what Path A is for.
+
+**2. S4 closed, the source-register backlog is clear.** The last open source item (next
+action 4) was to confirm the S4 journal tables match the working paper figures. The
+published Organization Science version (DOI 10.1287/orsc.2025.21838, online 11 March 2026,
+22 pages) was read directly. 12.2 percent more tasks, 25.1 percent faster and 19 percentage
+points less likely outside the frontier are confirmed verbatim. The more-than-40-percent
+quality and the about-43-percent below-average figures are **not** carried as percentages in
+the journal: they are 2023 working paper abstract numbers, restated qualitatively
+(significantly improved quality, lower-skilled individuals gained the most). The register
+cited the journal DOI while quoting those two working-paper-only percentages, breaking its
+own never-a-blend rule and exactly what an ex-consultant who knows this paper would flag. S4
+claim and status corrected to attribute them to the working paper. Blast radius checked: the
+two figures were a source claim only in S4. This clears plan item 2a, the gate on expert
+recruitment (next action, plan D2).
+
+**3. Path A drafted, not applied, pending the owner call.** Mechanism pinned from the run
+files: on a no-blocker deck readiness is a deterministic function of one variable, any
+finding graded major gives Needs targeted revision and zero majors gives Nearly ready (case
+05 runs a/d/e have exactly one major and land R2, runs b/c have zero and land R3). So the
+wobble is entirely the major-versus-minor call on one borderline finding, upstream of the
+readiness ladder, which is itself mechanical. The drafted fix is a severity-consistency
+clause for the no-blocker paragraph of the SEVERITY block: because no blocking rule fired,
+rules 1 to 5 have already certified a clear decision, a supported core recommendation, sound
+framing, no ungrounded decision-driving number and no safety breach, so a finding cannot be
+major on the grounds that the core is under-supported, under-validated, under-sized or
+under-benchmarked (that is a refinement, graded minor), and genuine uncertainty resolves to
+minor, mirroring the readiness block's own tie-break. It is a pure addition, reversible,
+binds only when blockingIssues is empty so it is a no-op on cases 01 to 04 by construction,
+and needs no contract change (the renderer already enforces all-minor plus no-blocker equals
+Nearly ready). It is deliberately not applied: any prompt edit invalidates the seventeen
+stability runs, and plan items 1.5i (issueType enum) and 1.5j (blockingIssues primary) must
+batch into the same single pre-freeze pass with one re-measurement. Awaiting the owner A/B
+decision before touching the frozen-candidate prompt.
+
 ## Next actions
 
-1. **Decide the case 05 question, now sharper.** The restraint case over-escalates 3 of 5.
-   Either take another pass at the severity test before the freeze (the escalation floor plus
-   the major-versus-minor rule are the two levers), or accept the restraint case as unstable
-   and design the pilot so a lead always sees a strong deck's readiness, never a student. This
-   is an owner judgment. The sheet still sets no numeric threshold.
-2. Fix the `issueType` enum omission and the two known prompt defects (plan items 1.5i and
-   1.5j) in the same pre-freeze pass, then regression-run the synthetic five. Any prompt edit
-   invalidates the seventeen stability runs, so batch every prompt change into one pass and
-   re-measure once.
+1. **Owner A/B decision on the over-flagging (teed up this session).** Path B is done and
+   verified. The open call is whether to also run Path A, the source-side severity clause, in
+   the single pre-freeze prompt pass alongside 1.5i and 1.5j, then re-measure stability once.
+   Recommendation: yes. Its marginal measurement cost is near zero because 1.5i and 1.5j
+   already force a full synthetic re-run, and it stops the real-case baseline from measuring a
+   severity calibration we already know over-escalates.
+2. If Path A is chosen: apply the drafted severity clause plus 1.5i and 1.5j in one pass,
+   regression-run the synthetic five blind, re-measure case 05 to five runs with
+   check-stability.js, then freeze. One prompt pass, one re-measurement.
 3. The labeling track can start: the workstation is ready, the protocol and worksheet exist,
    two labelers are secured per the owner decisions. Nothing in the tooling blocks it now.
-4. Still open from the source register: confirm the S4 journal tables match the working
-   paper figures.
+   This is the long pole (plan item 1.5c, calibration batch first).
 
 See [eval-runs/NEXT-SESSION-PROMPT.md](eval-runs/NEXT-SESSION-PROMPT.md) for the earlier
 paste-ready continuation prompt (now largely superseded by this session).

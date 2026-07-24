@@ -26,8 +26,11 @@ view for project leads.
 
 ## What still needs to happen, in order
 
-1. Decide the over-flagging problem (owner call): take one more pass to fix it, or design the
-   pilot so only leads see the readiness verdict, never students.
+1. Decide the over-flagging problem (owner call). Path B is built and verified 2026-07-24: the
+   renderer now genuinely gates readiness out of a student build (`?role=student`), so a false
+   not-ready cannot reach a student, and the default demo path is unchanged. The remaining call
+   is whether to also run Path A, a source-side severity fix, in the pre-freeze prompt pass. It
+   is drafted and reversible, not yet applied. See progress.md Session 8.
 2. Build the answer key, the golden set. Two people label the 14 real cases blind, then
    reconcile. Roughly 30 to 40 hours of human time. People-gated, the AI cannot do it. This is
    the long pole. Start with the four-case calibration batch in

@@ -58,17 +58,28 @@ in prior research, not re-checked here), Withdrawn (must not be relied on).
   10.1287/orsc.2025.21838. Cite the working paper for the 2023 date or the journal for
   the published version, never a blend.
 - **Claim used.** Inside the frontier, consultants using AI completed 12.2 percent more
-  tasks, 25.1 percent faster, with quality more than 40 percent higher, and the bottom
-  half of performers gained most (about 43 percent). On the task outside the frontier,
-  AI-assisted consultants were 19 percentage points less likely to produce a correct
-  solution.
+  tasks and 25.1 percent faster, with significantly improved quality. On the task outside
+  the frontier, AI-assisted consultants were 19 percentage points less likely to produce a
+  correct solution. The 12.2 percent, the 25.1 percent and the 19 percentage points are
+  stated verbatim in the published journal version. The often-quoted figures of more than
+  40 percent higher quality and about 43 percent for below-average performers are from the
+  2023 working paper abstract: the published Organization Science version does not carry
+  either as a percentage, it restates quality as significantly improved (a composite score
+  in the regression tables) and the equity effect qualitatively (lower-skilled individuals
+  gained the most, a possible equalizer). Quote 40 percent or 43 percent only against the
+  working paper, never under the journal DOI.
 - **Relevance.** The strategic rationale for the whole tool and the equity case (helps
   weaker teams most). The frontier caveat justifies the abstention and human-sign-off
   rules.
 - **Limitation.** Professional BCG consultants, not students. Use as directional
   evidence, not a promised number.
 - **Dimensions.** Meta (rationale), and the safety posture behind dimension 10.
-- **Status.** Verified (figures re-checked against the working paper on 2026-07-02).
+- **Status.** Verified. 2026-07-24: the journal version (Organization Science 2026, DOI
+  10.1287/orsc.2025.21838, published online 11 March 2026, 22 pages) was read directly and
+  the tables checked against the figures quoted here. 12.2 percent, 25.1 percent and 19
+  percentage points are confirmed verbatim. The 40 percent quality and 43 percent equity
+  figures are working paper abstract numbers not stated as percentages in the journal, now
+  attributed above. This closes the last source register backlog item.
 
 ### S5. Ericsson deliberate practice
 - **Citation.** Ericsson, deliberate practice literature (for example 2008, Academic
@@ -174,5 +185,8 @@ in prior research, not re-checked here), Withdrawn (must not be relied on).
 - 2026-07-03 pass: S9 confirmed (CMCE January 2021, n=161, top-three nuance added).
   S6 confirmed with a correction: the essay is a guest post by Sam Smith on Tom
   Spencer's blog, not by Spencer, and a rebuttal exists on the same site.
-- Still open: check the S4 journal version's tables match the working paper figures
-  quoted here.
+- 2026-07-24 pass: S4 journal version read directly (Organization Science 2026, DOI
+  10.1287/orsc.2025.21838). 12.2 percent, 25.1 percent and 19 percentage points confirmed
+  verbatim. The 40 percent quality and 43 percent equity figures are working paper abstract
+  numbers the journal does not carry as percentages, now attributed to the working paper in
+  the S4 entry. Backlog clear: no open source items remain.

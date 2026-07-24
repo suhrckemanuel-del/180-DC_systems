@@ -466,6 +466,13 @@ function validate(r){
 var REVIEW = null, VIEW = 'coach', current = 0, coach = [], skipStreak = 0;
 var ATTEMPT_MIN = 40, REWRITE_MIN = 20, REVEAL_CAP = 2;
 var BUNDLE = {};
+/* Role gate. Default 'full' keeps every tab, which is what the board demo and the lead use
+   rely on, so the no-param behaviour is byte-identical to before. A student build is reached
+   with ?role=student on the URL: the readiness-bearing views (lead, printable) are never
+   rendered into the DOM and their tabs are removed, so a false not-ready cannot reach a
+   student. Reversible: drop the param and the readiness gate is off again. */
+var ROLE = (new URLSearchParams(location.search).get('role') === 'student') ? 'student' : 'full';
+var ALLOWED_VIEWS = ROLE === 'student' ? ['start','coach'] : ['start','coach','lead','print'];
 try { BUNDLE = JSON.parse(document.getElementById('bundled-reviews').textContent) || {}; } catch(ex){ BUNDLE = {}; }
 
 function $(id){ return document.getElementById(id); }
@@ -523,15 +530,17 @@ function load(obj){
   var m = obj.meta;
   $('barMeta').innerHTML = '<b>' + esc(m.title) + '</b> &middot; ' + esc(m.artifactType) +
     (m.slideCount ? ' &middot; ' + m.slideCount + ' slides' : '') + ' &middot; ' + esc(m.mode) + ' mode';
-  Array.prototype.forEach.call($('tabs').querySelectorAll('.tab'), function(t){ t.disabled = false; });
+  Array.prototype.forEach.call($('tabs').querySelectorAll('.tab'), function(t){
+    t.disabled = ALLOWED_VIEWS.indexOf(t.dataset.view) < 0;
+  });
 
   renderCoach();
-  renderLead();
-  renderPrint();
+  if(ROLE === 'full'){ renderLead(); renderPrint(); }
   setView('coach');
 }
 
 function setView(v){
+  if(ALLOWED_VIEWS.indexOf(v) < 0) v = 'coach';
   VIEW = v;
   ['start','coach','lead','print'].forEach(function(k){
     $(k + 'View').classList.toggle('hidden', k !== v);
@@ -818,6 +827,7 @@ function renderPrint(){
 
 Array.prototype.forEach.call($('tabs').querySelectorAll('.tab'), function(t){
   t.onclick = function(){ if(REVIEW) setView(t.dataset.view); };
+  if(ALLOWED_VIEWS.indexOf(t.dataset.view) < 0) t.classList.add('hidden');
 });
 $('backBtn').onclick = function(){ setView('start'); };
 $('printBtn').onclick = function(){ window.print(); };
