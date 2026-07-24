@@ -8,7 +8,8 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const variants = ["v2-port", "v3-destijl", "v7-polder"];
+// The "golden set" — the variants under real client evaluation this semester.
+const variants = ["v2-port", "v3-destijl", "v7-polder", "v11-lumen"];
 
 let failures = 0, warnings = 0;
 const log = (v, level, msg) => {
