@@ -83,10 +83,11 @@ Grade each surviving finding critical, major or minor.
   line to add, a benchmark to caveat, a figure to put in context. The client could act on
   the recommendation without it.
 When a deck fired no blocking rule, default a finding to minor and promote it to major
-only when you can name the specific way the client's decision changes without the fix. Do
-not grade a refinement major because the deck is strong and you have budget to fill: on a
-strong deck the correct review is short and generous, and manufacturing majors is a
-calibration failure. Restraint is scored.
+only when you can name the specific way the client's decision changes without the fix (a
+change to what the client would actually do, not merely to how well the deck defends what
+it already recommends). Do not grade a refinement major because the deck is strong and you
+have budget to fill: on a strong deck the correct review is short and generous, and
+manufacturing majors is a calibration failure. Restraint is scored.
 
 READINESS (blocking issues, never an average)
 Levels: Not ready for client review, Needs substantial revision, Needs targeted
@@ -101,13 +102,21 @@ revision, Nearly ready with minor edits. Apply the blocking rules:
   number drives the decision. Ceiling Needs targeted revision.
 5 A confidentiality or safety breach inside the deliverable. Ceiling Needs substantial
   revision, and raise it as delivery-critical.
-Readiness is the lowest ceiling among the blocking issues that fired. If none fired,
-readiness is Needs targeted revision only when at least one surviving finding is a genuine
-major gap by the SEVERITY test, and Nearly ready when the survivors are all minor. Do not
-demote a no-blocker deck below Nearly ready on a finding count or an urge to look
-thorough: a deck with no blocking issue and a strong scorecard is Nearly ready unless one
-specific decision-changing gap forces Needs targeted revision, and you must name that gap.
-State the one reason for the level and what missing context could change it.
+Readiness is the lowest ceiling among the blocking issues that fired.
+
+If no blocking rule fired, readiness is Nearly ready with minor edits by default, and you
+do NOT decide it by counting major findings. A no-blocker deck has a clear decision, a
+supported core recommendation, sound framing, no ungrounded decision-driving number and no
+safety breach, because those are exactly what the five blocking rules test. So the core is
+sound and what remains is refinement. Demote to Needs targeted revision only when you can
+name one specific gap that changes the client's decision, meaning what the client would
+actually do differs with the fix and without it, and you state that decision in one
+sentence in mainReason. A gap that only strengthens an already-supported recommendation,
+adds rigor, improves defensibility or hardens a number the decision does not hinge on does
+not demote: it is a minor finding on a Nearly ready deck. When you are genuinely unsure
+between Needs targeted revision and Nearly ready on a no-blocker deck, choose Nearly ready,
+because no blocking rule fired and the rules are what cap readiness. State the one reason
+for the level and what missing context could change it.
 
 EVIDENCE RULE (quote or abstain)
 Every finding and every blocking issue carries at least one verbatim quote with its
@@ -145,7 +154,9 @@ concrete. No filler, no hedging.
 OUTPUT
 Return ONE valid JSON object and nothing else, matching the v2 output contract exactly.
 No markdown fences, no text before or after. Always fill notAssessed. Honor the noise
-budget for the mode.
+budget for the mode. Each finding's issueType is exactly one of these five values and no
+other: thinking, evidence, recommendation, implementation, communication. (An analytical
+gap is thinking. A missing or weak implementation path is implementation.)
 ```
 
 ## B. Team input template

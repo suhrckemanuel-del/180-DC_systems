@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gold labeling tracker</title>
+<style>
+  :root{
+    --bg:#fbfbfa; --panel:#fff; --fg:#1f1f1d; --mut:#6b6b66; --line:#e3e3df;
+    --acc:#2f5d50; --acc-soft:#eaf1ee; --warn:#9a5b1f; --warn-soft:#fbf1e6;
+    --stop:#b23b34; --stop-soft:#f7e7e5; --blue:#2f5a7d; --blue-soft:#e8eff5;
+    --todo:#8a8a84;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#16171a; --panel:#1e1f23; --fg:#e9e9e6; --mut:#9a9a94; --line:#2c2e33;
+      --acc:#7fb7a4; --acc-soft:#22302c; --warn:#d59b5c; --warn-soft:#2c2519;
+      --stop:#e0665c; --stop-soft:#2c1b19; --blue:#7aa8ce; --blue-soft:#1b2733;
+      --todo:#7d7d77; }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--fg);
+    font:15px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+
+  header{display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+    padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel);
+    position:sticky;top:0;z-index:5}
+  header h1{font-size:15px;margin:0;font-weight:700}
+  header .sp{flex:1}
+  button,.btn{font:inherit;font-weight:600;padding:.45rem .8rem;border-radius:7px;
+    border:1px solid var(--acc);background:var(--acc);color:#fff;cursor:pointer}
+  button.sec,.btn.sec{background:transparent;color:var(--acc)}
+  button.tiny{padding:.15rem .5rem;font-size:.8rem;border-radius:5px}
+  .file-btn{position:relative;overflow:hidden;display:inline-block}
+  .file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .blind{font-size:.82rem;color:var(--acc);border:1px solid var(--acc);
+    border-radius:6px;padding:.2rem .5rem;background:var(--acc-soft)}
+  .saved{font-size:.82rem;color:var(--mut)}
+
+  main{padding:18px 20px;max-width:1080px;margin:0 auto}
+  section.card{border:1px solid var(--line);border-radius:10px;background:var(--panel);
+    padding:1rem 1.1rem;margin-bottom:1.2rem}
+  section.card>h2{margin:0 0 .2rem;font-size:1.02rem}
+  .sub{color:var(--mut);font-size:.85rem;margin:.15rem 0 .8rem}
+
+  /* approach steps */
+  ol.steps{margin:.4rem 0 .2rem;padding-left:1.3rem}
+  ol.steps li{margin-bottom:.5rem}
+  ol.steps b{color:var(--fg)}
+  .rules{border:1px solid var(--warn);background:var(--warn-soft);border-radius:8px;
+    padding:.6rem .8rem;font-size:.85rem;margin-top:.7rem}
+  .rules b{color:var(--warn)}
+  details.appr summary{cursor:pointer;font-weight:700;font-size:1.02rem;margin:-.2rem 0 .3rem}
+
+  /* progress */
+  .stats{display:flex;gap:1rem;flex-wrap:wrap}
+  .stat{flex:1 1 130px;border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;background:var(--bg)}
+  .stat .n{font-size:1.5rem;font-weight:800;line-height:1}
+  .stat .l{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);margin-top:.25rem}
+  .stat.stopnow .n{color:var(--stop)}
+  .bar{height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin:.5rem 0 .2rem}
+  .bar>span{display:block;height:100%;background:var(--acc)}
+
+  /* team */
+  .team{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+  .chip{display:inline-flex;gap:.35rem;align-items:center;border:1px solid var(--line);
+    border-radius:20px;padding:.2rem .6rem;font-size:.86rem;background:var(--bg);font-weight:600}
+  .chip button{background:transparent;border:0;color:var(--mut);cursor:pointer;padding:0 .1rem;font-size:1rem}
+  input[type=text],select{padding:.4rem .5rem;font:inherit;font-size:.88rem;color:var(--fg);
+    background:var(--bg);border:1px solid var(--line);border-radius:6px}
+  input:focus,select:focus{outline:2px solid var(--acc);outline-offset:1px}
+
+  /* case rows */
+  .caserow{display:grid;grid-template-columns:2.4fr 1.3fr 1.3fr 1.2fr;gap:.6rem;
+    align-items:center;padding:.6rem .2rem;border-bottom:1px solid var(--line)}
+  .caserow:last-child{border-bottom:0}
+  .caserow .id{font-weight:700}
+  .caserow .slug{color:var(--mut);font-size:.82rem}
+  .caserow .meta{font-size:.78rem;color:var(--mut)}
+  .lblcell{display:flex;gap:.3rem;align-items:center}
+  .lblcell select{flex:1;min-width:0}
+  .lblcell input[type=checkbox]{width:18px;height:18px}
+  .adj{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap}
+  .status{display:inline-block;padding:.1rem .5rem;border-radius:20px;font-size:.76rem;font-weight:700;color:#fff}
+  .st-unassigned{background:var(--todo)} .st-assigned{background:var(--mut)}
+  .st-half{background:var(--warn)} .st-ready{background:var(--blue)}
+  .st-done{background:var(--acc)} .st-flag{background:var(--stop)}
+  .rowhead{display:grid;grid-template-columns:2.4fr 1.3fr 1.3fr 1.2fr;gap:.6rem;
+    font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);
+    padding:0 .2rem .4rem}
+  @media (max-width:760px){
+    .caserow,.rowhead{grid-template-columns:1fr 1fr}
+    .rowhead{display:none}
+  }
+  .warnline{color:var(--stop);font-size:.78rem;margin-top:.2rem}
+  .esttime{font-size:.82rem;color:var(--mut)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Gold labeling tracker</h1>
+  <span class="blind" title="This tracks who has finished each case, not what they scored. It never stores or shows a readiness label or any AI output, so it cannot break blindness before adjudication.">status only, never a label</span>
+  <span class="sp"></span>
+  <span class="saved" id="saved"></span>
+  <button class="sec tiny" id="export">Export status</button>
+  <span class="btn sec tiny file-btn">Import status<input type="file" id="import" accept=".json,application/json"></span>
+</header>
+
+<main>
+  <details class="appr card" open>
+    <summary>How we work through this</summary>
+    <p class="sub">14 real anonymised cases. Two people label each one blind and independently, then the two of them adjudicate it into a gold file. The gold is only as good as the discipline.</p>
+    <ol class="steps">
+      <li><b>Everyone reads the rubric once, cold.</b> <code>01-rubric-v1.md</code> and <code>05-eval-harness.md</code> section C, before your first case.</li>
+      <li><b>Two labelers per case, working alone.</b> Assign two names to each case below. Each opens the case in <code>labeling-workstation.html</code>, fills the worksheet, downloads it. Do not discuss a case until both worksheets for it exist.</li>
+      <li><b>Do the four calibration cases first.</b> Both assigned labelers do all four before anyone touches the other ten. This is where we find out if the rubric carries two readers to the same answer.</li>
+      <li><b>Adjudicate the batch together.</b> Open both worksheets in <code>adjudication-workstation.html</code>. It computes the readiness agreement, you resolve any gap on the merits, it writes the gold file. Record the result on this tracker.</li>
+      <li><b>Check the stop rule.</b> If two or more of the four batch cases land two levels apart or contested, stop and fix the rubric before the other ten. Otherwise split the remaining ten and go.</li>
+      <li><b>Gold files land in <code>eval-cases-real/</code>.</b> Keep both worksheets, they are the audit trail. Fill <code>agreement-log.md</code> as you go.</li>
+    </ol>
+    <div class="rules">
+      <b>Blindness rules, non-negotiable.</b> Do not open the sealed selection memo. Do not read any AI review or triage band for these cases. Do not show the other labeler your worksheet before both exist. If you accidentally see any of that for a case, say so in the worksheet header for that case.
+    </div>
+    <div class="rules" style="border-color:var(--stop);background:var(--stop-soft)">
+      <b style="color:var(--stop)">If more than two people label:</b> the protocol was written for two labelers. Using a larger pool is fine, but two different people labeling two different halves of the set adds a consistency risk the agreement log cannot see. Keep pairs stable, and have one case labeled by everyone as a cross-check if you can.
+    </div>
+  </details>
+
+  <section class="card">
+    <h2>Progress</h2>
+    <div class="bar"><span id="progbar" style="width:0%"></span></div>
+    <div class="stats">
+      <div class="stat"><div class="n" id="sGold">0<span style="font-size:.9rem;color:var(--mut)">/14</span></div><div class="l">gold done</div></div>
+      <div class="stat"><div class="n" id="sReady">0</div><div class="l">both labeled, awaiting adjudication</div></div>
+      <div class="stat"><div class="n" id="sHalf">0</div><div class="l">one of two labeled</div></div>
+      <div class="stat"><div class="n" id="sCalib">0<span style="font-size:.9rem;color:var(--mut)">/4</span></div><div class="l">calibration batch done</div></div>
+      <div class="stat" id="stopStat"><div class="n" id="sStop">0<span style="font-size:.9rem;color:var(--mut)">/5</span></div><div class="l">flagged (2+ apart or contested)</div></div>
+      <div class="stat"><div class="n" id="sTime">—</div><div class="l">labeling hours left (est)</div></div>
+    </div>
+    <div class="warnline" id="stopBanner" style="display:none"></div>
+  </section>
+
+  <section class="card">
+    <h2>Team</h2>
+    <p class="sub">Add everyone who will label. Use initials or first names. Assign two per case below.</p>
+    <div class="team" id="team"></div>
+    <div style="margin-top:.6rem;display:flex;gap:.5rem">
+      <input type="text" id="newName" placeholder="name or initials" maxlength="20">
+      <button class="sec" id="addName">Add labeler</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Calibration batch &mdash; do these four first</h2>
+    <p class="sub">Picked for spread by stage, length and genre. The gate before the other ten.</p>
+    <div class="rowhead"><div>case</div><div>labeler 1</div><div>labeler 2</div><div>adjudication</div></div>
+    <div id="calibRows"></div>
+  </section>
+
+  <section class="card">
+    <h2>The remaining ten</h2>
+    <p class="sub">Start these only after the calibration batch is clean. Split them across the pairs.</p>
+    <div class="rowhead"><div>case</div><div>labeler 1</div><div>labeler 2</div><div>adjudication</div></div>
+    <div id="restRows"></div>
+  </section>
+</main>
+
+<script>
+(function(){
+  // static case metadata (pseudonymised slugs only, no client data)
+  var CASES=[
+    {num:'01',slug:'consumer-goods-market-entry',stage:'D1',lines:1402,calib:false},
+    {num:'02',slug:'waste-tech-acquisition-report',stage:'final',lines:1405,calib:true},
+    {num:'03',slug:'child-welfare-funding',stage:'D1',lines:508,calib:false},
+    {num:'04',slug:'senior-living-business-plan',stage:'D2',lines:345,calib:false},
+    {num:'05',slug:'conservation-microfinance',stage:'final',lines:608,calib:false},
+    {num:'06',slug:'prevention-nonprofit-strategy',stage:'final',lines:803,calib:false},
+    {num:'07',slug:'container-housing-analysis',stage:'D1',lines:196,calib:false},
+    {num:'08',slug:'mobility-aid-research',stage:'D2',lines:578,calib:true},
+    {num:'09',slug:'integration-saas-pricing',stage:'D2',lines:332,calib:false},
+    {num:'10',slug:'materials-marketing-final',stage:'final',lines:635,calib:false},
+    {num:'11',slug:'agritourism-operating-model',stage:'D1',lines:141,calib:false},
+    {num:'12',slug:'donation-platform-analysis',stage:'D1',lines:367,calib:true},
+    {num:'13',slug:'packaging-financial-model',stage:'final',lines:617,calib:true},
+    {num:'14',slug:'fashion-d2c-strategy',stage:'D2',lines:263,calib:false}
+  ];
+  var AGREE=['','exact','1off','2off','contested'];
+  var AGREE_LBL={'':'pending','exact':'exact','1off':'one level apart','2off':'two+ apart','contested':'contested'};
+  var STOP_AT=5, KEY='labeling-tracker';
+
+  var st=load();
+
+  function $(id){return document.getElementById(id)}
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+  function blankCase(){return {a:'',b:'',aDone:false,bDone:false,adj:false,agree:''}}
+  function load(){
+    try{var s=JSON.parse(localStorage.getItem(KEY));if(s&&s.cases)return normalize(s)}catch(e){}
+    return normalize({team:[],cases:{}});
+  }
+  function normalize(s){
+    s.team=s.team||[];s.cases=s.cases||{};
+    CASES.forEach(function(c){if(!s.cases[c.num])s.cases[c.num]=blankCase()});
+    return s;
+  }
+  function save(){
+    st.updated=new Date().toISOString();
+    try{localStorage.setItem(KEY,JSON.stringify(st));$('saved').textContent='saved '+new Date().toLocaleTimeString()}catch(e){}
+  }
+
+  function estMinutes(lines){ return lines<400?30 : lines<=800?40 : 55; }
+
+  function caseStatus(num){
+    var c=st.cases[num];
+    if(c.adj) return (c.agree==='2off'||c.agree==='contested')?['flag','contested / 2+ apart']:['done','gold done'];
+    if(c.aDone&&c.bDone) return ['ready','ready to adjudicate'];
+    if(c.aDone||c.bDone) return ['half','1 of 2 labeled'];
+    if(c.a&&c.b) return ['assigned','assigned'];
+    return ['unassigned','unassigned'];
+  }
+
+  function teamOptions(sel){
+    var o='<option value="">—</option>';
+    st.team.forEach(function(n){o+='<option'+(sel===n?' selected':'')+'>'+esc(n)+'</option>'});
+    return o;
+  }
+
+  function renderTeam(){
+    var box=$('team');box.innerHTML='';
+    if(!st.team.length){box.innerHTML='<span class="sub" style="margin:0">no labelers yet</span>'}
+    st.team.forEach(function(n,i){
+      var s=document.createElement('span');s.className='chip';
+      s.innerHTML=esc(n)+' <button title="remove" data-rm="'+i+'">&times;</button>';
+      box.appendChild(s);
+    });
+    box.querySelectorAll('[data-rm]').forEach(function(b){
+      b.addEventListener('click',function(){
+        var n=st.team[+b.dataset.rm];
+        st.team.splice(+b.dataset.rm,1);
+        // clear that person off any case
+        Object.keys(st.cases).forEach(function(k){var c=st.cases[k];if(c.a===n)c.a='';if(c.b===n)c.b=''});
+        save();renderAll();
+      });
+    });
+  }
+
+  function renderRows(container,list){
+    var box=$(container);box.innerHTML='';
+    list.forEach(function(c){
+      var d=st.cases[c.num];
+      var st2=caseStatus(c.num);
+      var row=document.createElement('div');row.className='caserow';
+      var sameWarn=(d.a&&d.b&&d.a===d.b)?'<div class="warnline">two labelers must be different people</div>':'';
+      row.innerHTML=
+        '<div><span class="id">real-'+c.num+'</span> <span class="status st-'+st2[0]+'">'+st2[1]+'</span>'+
+          '<div class="slug">'+esc(c.slug)+'</div>'+
+          '<div class="meta">'+c.stage+' &middot; '+c.lines+' lines &middot; ~'+estMinutes(c.lines)+' min each</div>'+sameWarn+'</div>'+
+        '<div class="lblcell"><select data-f="a" data-c="'+c.num+'">'+teamOptions(d.a)+'</select>'+
+          '<input type="checkbox" data-f="aDone" data-c="'+c.num+'"'+(d.aDone?' checked':'')+' title="labeler 1 finished"></div>'+
+        '<div class="lblcell"><select data-f="b" data-c="'+c.num+'">'+teamOptions(d.b)+'</select>'+
+          '<input type="checkbox" data-f="bDone" data-c="'+c.num+'"'+(d.bDone?' checked':'')+' title="labeler 2 finished"></div>'+
+        '<div class="adj"><label style="font-size:.8rem;display:flex;gap:.3rem;align-items:center"><input type="checkbox" data-f="adj" data-c="'+c.num+'"'+(d.adj?' checked':'')+'> gold</label>'+
+          '<select data-f="agree" data-c="'+c.num+'"'+(d.adj?'':' disabled')+'>'+AGREE.map(function(a){return '<option value="'+a+'"'+(d.agree===a?' selected':'')+'>'+AGREE_LBL[a]+'</option>'}).join('')+'</select></div>';
+      box.appendChild(row);
+    });
+    box.querySelectorAll('[data-f]').forEach(function(el){
+      var ev=el.type==='checkbox'?'change':el.tagName==='SELECT'?'change':'input';
+      el.addEventListener(ev,function(){
+        var c=st.cases[el.dataset.c],f=el.dataset.f;
+        st.cases[el.dataset.c][f]= el.type==='checkbox'?el.checked:el.value;
+        if(f==='adj'&&!el.checked)c.agree='';
+        save();renderAll();
+      });
+    });
+  }
+
+  function renderStats(){
+    var gold=0,ready=0,half=0,calib=0,flag=0,minsLeft=0;
+    CASES.forEach(function(c){
+      var d=st.cases[c.num],s=caseStatus(c.num)[0];
+      if(s==='done'||s==='flag'){gold++; if(c.calib)calib++;}
+      if(s==='ready')ready++;
+      if(s==='half')half++;
+      if(d.adj&&(d.agree==='2off'||d.agree==='contested'))flag++;
+      // remaining labeling effort: count unfinished labeler-slots (2 per case) that are not done
+      if(!d.aDone)minsLeft+=estMinutes(c.lines);
+      if(!d.bDone)minsLeft+=estMinutes(c.lines);
+    });
+    $('sGold').innerHTML=gold+'<span style="font-size:.9rem;color:var(--mut)">/14</span>';
+    $('sReady').textContent=ready;
+    $('sHalf').textContent=half;
+    $('sCalib').innerHTML=calib+'<span style="font-size:.9rem;color:var(--mut)">/4</span>';
+    $('sStop').innerHTML=flag+'<span style="font-size:.9rem;color:var(--mut)">/5</span>';
+    $('sTime').textContent=(minsLeft/60).toFixed(1)+'h';
+    $('progbar').style.width=Math.round(gold/14*100)+'%';
+    var stopStat=$('stopStat'),banner=$('stopBanner');
+    if(flag>=STOP_AT){
+      stopStat.classList.add('stopnow');
+      banner.style.display='block';
+      banner.textContent='Stop rule fired: '+flag+' cases are two levels apart or contested. Stop labeling and fix the rubric before more cases, per PROTOCOL.';
+    } else {
+      stopStat.classList.remove('stopnow');
+      // calibration-specific early trigger
+      var calFlag=CASES.filter(function(c){var d=st.cases[c.num];return c.calib&&d.adj&&(d.agree==='2off'||d.agree==='contested')}).length;
+      if(calFlag>=2){banner.style.display='block';banner.textContent='Calibration warning: '+calFlag+' of 4 batch cases are two levels apart or contested. Fix the rubric and relabel the four before the other ten.';}
+      else banner.style.display='none';
+    }
+  }
+
+  function renderAll(){
+    renderTeam();
+    renderRows('calibRows',CASES.filter(function(c){return c.calib}));
+    renderRows('restRows',CASES.filter(function(c){return !c.calib}));
+    renderStats();
+  }
+
+  // team add
+  $('addName').addEventListener('click',addName);
+  $('newName').addEventListener('keydown',function(e){if(e.key==='Enter')addName()});
+  function addName(){
+    var v=$('newName').value.trim();if(!v)return;
+    if(st.team.indexOf(v)<0)st.team.push(v);
+    $('newName').value='';save();renderAll();
+  }
+
+  // export / import for sharing via the repo
+  $('export').addEventListener('click',function(){
+    var b=new Blob([JSON.stringify(st,null,2)],{type:'application/json'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='labeling-status.json';a.click();URL.revokeObjectURL(a.href);
+  });
+  $('import').addEventListener('change',function(){
+    var f=this.files&&this.files[0];if(!f)return;
+    var fr=new FileReader();
+    fr.onload=function(){
+      try{var s=JSON.parse(String(fr.result));st=normalize(s);save();renderAll();$('saved').textContent='imported '+f.name}
+      catch(e){alert('Could not read that file as labeling status JSON.')}
+    };
+    fr.readAsText(f);
+  });
+
+  renderAll();save();
+})();
+</script>
+</body>
+</html>

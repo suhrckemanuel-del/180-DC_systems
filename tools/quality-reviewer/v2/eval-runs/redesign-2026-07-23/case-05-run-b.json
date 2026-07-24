@@ -1,0 +1,124 @@
+{
+  "meta": {
+    "title": "Client E paid membership scheme",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Nearly ready with minor edits",
+    "mainReason": "No blocking rule fired: the decision is clear, the core recommendation is sourced inline and de-risked with a soft launch, so what remains is refinement.",
+    "highestRiskIssue": "The year-one figure on slide 8 shows gross membership income without the cost to run the scheme, so the net contribution is not yet visible.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "A confirmed cost side that made the scheme net-negative, or a coordinator capacity limit the input did not state, could demote it to Needs targeted revision."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.5,
+    "confidence": "Medium",
+    "effort": "2-4 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The decision, the answer and the first action are all stated and early." },
+      { "name": "Problem framing", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The problem is specific and held throughout, but what is out of scope is not stated." },
+      { "name": "Storyline and pyramid logic", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Answer-first, and each section builds toward the recommendation." },
+      { "name": "Evidence quality", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Claims are sourced inline, but the 8% conversion anchor is thin." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Interpreted and tied to the recommendation, but the cost side is not analyzed." },
+      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Names the action, the owner, the timing and the measure." },
+      { "name": "Feasibility and implementation", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Phased soft launch with a go-no-go gate sized to existing capacity." },
+      { "name": "Risks, assumptions and uncertainty", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Load-bearing assumptions are named and the main one is flagged to test." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Several titles are topic labels rather than assertions." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, internal data used appropriately, no named person judged." }
+    ]
+  },
+  "strengths": [
+    { "point": "The deck is answer-first: the recommendation is the title and the decision is restated plainly on slide 2.", "quote": "Client E should launch a paid membership scheme, starting with a single tier in the autumn.", "slide": 1 },
+    { "point": "Claims are sourced inline, so the argument is traceable.", "quote": "Project grants are 80% of Client E's income (2024 accounts) and each is single-year.", "slide": 3 },
+    { "point": "The load-bearing assumption is flagged and de-risked with a soft launch before the full commitment.", "quote": "A soft launch to the most engaged 200 contacts tests both before the full launch.", "slide": 9 },
+    { "point": "The first steps name an owner, a timeline and a go-no-go measure.", "quote": "The Client E coordinator owns the launch.", "slide": 10 }
+  ],
+  "findings": [
+    {
+      "short": "Revenue without cost",
+      "title": "The membership case shows gross revenue but not the cost to run the scheme.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Net contribution: a financial case shows the cost to earn the revenue, not only the top line.",
+      "diagnosis": "Slide 8 gives about 5,000 pounds of year-one income from the 8% conversion. Slides 6 and 7 assert admin is low and the member benefits use existing capacity, but no cost is netted against the 5,000 so the client cannot see the contribution.",
+      "evidence": [ { "slide": 8, "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one." } ],
+      "why": "A board weighing membership against grant income wants the net it can rely on, not the gross, so the top line alone understates the question it must decide.",
+      "reflect": "What does it cost Client E to run the two members-only events, the partner discount and the admin, and what is the net after that.",
+      "fix": "Add a line netting the running cost against the 5,000 pounds so the client sees the contribution rather than the top line. Keep it a directional estimate, not invented precision.",
+      "tags": [ "Net contribution", "Evidence Grounding" ]
+    },
+    {
+      "short": "Conversion anchor thin",
+      "title": "The 8% conversion is anchored on an event-attendance rate, a different behavior than paying to join.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Evidence Grounding: benchmark an assumption against behavior of the same kind.",
+      "diagnosis": "Slide 8 calls the 8% conservative against the 32% attendance rate. Attending an event is a lighter commitment than paying 45 pounds a year, so the 32% is a weak anchor for a paid-conversion rate even though the deck rightly flags 8% as the thing to test.",
+      "evidence": [ { "slide": 8, "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test." } ],
+      "why": "The whole year-one number turns on the 8%, so its anchor should be paid-behavior, or explicitly the soft-launch result, rather than free attendance.",
+      "reflect": "What is the closest paid-conversion benchmark you can find, from the comparable groups or the first cohort, rather than free attendance.",
+      "fix": "Caveat the 32% anchor and lean the estimate on the soft-launch result or a paid-membership comparator. Directional only.",
+      "tags": [ "Evidence Grounding", "Assumptions" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slides 7 and 9", "problem": "Titles \"What members get\" and \"Risks and what we are assuming\" are topic labels, unlike the answer-first titles elsewhere.", "why": "The deck is otherwise readable from its titles alone, so two label titles break that skim.", "fix": "Rewrite them as assertions (the takeaway of the slide) so the titles carry the whole argument." },
+    { "location": "Slides 8 and 10", "problem": "Slide 8 sets the year-one target at 8% while slide 10 sets the full-launch gate at 5%, and the deck does not say why the gate is lower than the target.", "why": "Two thresholds that look inconsistent read as an oversight rather than a deliberate lower bar to proceed.", "fix": "State in one line why the go gate sits below the target so the two numbers read as intentional." }
+  ],
+  "questionsForLead": [
+    "Did the team confirm the coordinator has capacity to own a launch on top of current duties, given no constraints were provided in the input.",
+    "What does running the membership cost across events, partner discount and admin, and is the year-one net still worth it after that.",
+    "Is about 5,000 pounds a material dent in the 80% grant concentration, or is the real value the learning from the pilot."
+  ],
+  "learningNote": {
+    "lesson": "A financial recommendation is judged on the net it delivers, so show the cost to earn the revenue next to the revenue itself.",
+    "weakHabit": "Putting a gross revenue figure in the deck without the cost line that turns it into a contribution.",
+    "exercise": "For any revenue projection, list every cost needed to deliver it and compute the net before the number goes on a slide.",
+    "principle": "Net contribution"
+  },
+  "notAssessed": [
+    "Whether the running cost of the members-only events, the partner discount and the admin nets against the 5,000 pounds. The deck does not quantify it.",
+    "Whether the Client E coordinator has capacity to own the launch. Known constraints were not provided in the input.",
+    "Whether the 8% conversion assumption holds. It is flagged as the main thing to test and no source was provided.",
+    "The intended audience was left blank, so audience fit is judged only from the text.",
+    "Visual design, layout and charts. Only slide text was provided."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Decision", "span": 2 },
+      { "label": "Why and evidence", "span": 3 },
+      { "label": "Design and numbers", "span": 3 },
+      { "label": "Risk and steps", "span": 2 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "pass" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "partial" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "pass" }
+    ],
+    "callouts": [
+      { "at": 8, "state": "partial", "label": "8% anchor to test" },
+      { "at": 7, "state": "partial", "label": "cost side not netted" }
+    ],
+    "connectors": [
+      { "from": 8, "to": 10, "label": "target feeds the go gate" }
+    ]
+  }
+}

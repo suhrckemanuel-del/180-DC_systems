@@ -1,0 +1,168 @@
+{
+  "meta": {
+    "title": "Client E paid membership scheme",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Nearly ready with minor edits",
+    "mainReason": "No blocking rule fired: the decision is clear, the core recommendation rests on sourced figures and an assumption the deck marks and tests, the framing holds and there is no safety issue, so what remains is refinement.",
+    "highestRiskIssue": "The year-one 5,000 pounds on slide 8 is a gross figure and the slide 10 go-gate of 5% sits below the 8% that figure assumes, so the income case can read stronger than the numbers support.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "A quantified income gap from the two non-renewing grants, or confirmation that staff capacity and the partner discounts hold, could surface a specific decision-changing gap and move the level."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.6,
+    "confidence": "Medium",
+    "effort": "2-4 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The decision, the answer and the first step are stated plainly and early." },
+      { "name": "Problem framing", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The problem is specific and held throughout, but the level of diversification that counts as success is not defined." },
+      { "name": "Storyline and pyramid logic", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Answer first on slide 1 and the argument runs cleanly from problem to evidence to recommendation." },
+      { "name": "Evidence quality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Each major claim names a source and the one projection is flagged as an assumption to test." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Findings are interpreted, but the 5,000 pound yield is never weighed against the size of the grant gap it must help fill." },
+      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Action, price, owner, timing and a measurable trigger are all present." },
+      { "name": "Feasibility and implementation", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The soft launch is a real pilot, steps are sequenced by month and the go decision has a trigger." },
+      { "name": "Risks, assumptions and uncertainty", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The load-bearing assumption is named, the main risk is stated and uncertainty is honest." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "The lead title carries the answer but several content titles are topic labels such as The numbers and First steps." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, the coordinator is named by role and certainty is appropriate." }
+    ]
+  },
+  "strengths": [
+    { "point": "The deck is honest about the number the whole case rests on and marks it as the thing to test rather than a fact.", "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.", "slide": 8 },
+    { "point": "The recommendation is answer first, stated as a full-sentence action title on the opening slide.", "quote": "Client E should launch a paid membership scheme, starting with a single tier in the autumn.", "slide": 1 },
+    { "point": "The plan de-risks itself with a real pilot before any full commitment.", "quote": "A soft launch to the most engaged 200 contacts tests both before the full launch.", "slide": 9 }
+  ],
+  "findings": [
+    {
+      "short": "Gate below assumption",
+      "title": "The full-launch gate is set below the conversion the revenue case assumes.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Numbers Integrity: a decision trigger should use the same figure the recommendation is built on.",
+      "diagnosis": "Slide 8 builds the year-one figure on 8% conversion, but slide 10 lets the full launch proceed at 5%. A soft launch that clears 5% but not 8% would pass the gate while missing the income the case assumes.",
+      "evidence": [
+        { "slide": 8, "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one." },
+        { "slide": 10, "quote": "Month three: full launch if the soft launch clears 5%." }
+      ],
+      "why": "If the two thresholds are not reconciled the client can green-light a full launch on the strength of a revenue number the soft launch just told it will not hit.",
+      "reflect": "If the soft launch lands at 6%, do you still proceed, and what year-one income does that imply.",
+      "fix": "Reconcile the two figures. Either state the income the 5% floor implies or explain why 5% is the right go signal even though the case assumes 8%.",
+      "tags": [ "Numbers Integrity", "Evidence Grounding" ]
+    },
+    {
+      "short": "Gap not sized",
+      "title": "The income gap the membership must help close is described but never quantified.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Analysis: size the problem so the reader can judge the solution against it.",
+      "diagnosis": "Slide 3 says two of five grants will not renew and grants are 80% of income, but the deck never puts a number on the resulting gap. The reader cannot see how far a roughly 5,000 pound scheme gets toward diversification.",
+      "evidence": [
+        { "slide": 3, "quote": "Two of five grants are not expected to renew, per the funder letters on file." }
+      ],
+      "why": "A board weighing the effort of a membership scheme needs to see the yield next to the gap it is meant to help fill, or it cannot judge whether the start is the right size.",
+      "reflect": "In pounds, how large is the gap from the two non-renewing grants, and what share of it does year-one membership cover.",
+      "fix": "Add the size of the grant gap and show the year-one yield against it, framed as a first step toward diversification rather than a full fix.",
+      "tags": [ "Analysis", "Client Decision" ]
+    },
+    {
+      "short": "Gross not net",
+      "title": "The year-one figure is gross and does not net the cost of the member benefits.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Numbers Integrity: a revenue figure that drives a decision should be shown net of what it costs to earn.",
+      "diagnosis": "The 5,000 pound figure on slide 8 is gross subscription revenue. The member benefits on slide 7, the two events a year and the partner discount, carry cost that is not subtracted, so the contribution to diversification is smaller than the headline.",
+      "evidence": [
+        { "slide": 8, "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one." }
+      ],
+      "why": "If the client plans against a gross number the real diversification effect is overstated and the scheme may look more worthwhile than it is.",
+      "reflect": "What does it cost to run the two members-only events and the partner discount, and what is the net after those.",
+      "fix": "Show the figure net of benefit and admin cost, or state plainly that 5,000 pounds is gross and give the expected net.",
+      "tags": [ "Numbers Integrity", "Evidence Grounding" ]
+    },
+    {
+      "short": "Label titles",
+      "title": "Several content titles are topic labels rather than the message of the slide.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "Minto: a slide title carries the takeaway, not the topic.",
+      "diagnosis": "The opening title is a strong assertion, but content titles such as The numbers on slide 8 and First steps on slide 10 name the topic and make the reader do the work of finding the point.",
+      "evidence": [
+        { "slide": 8, "quote": "The numbers" },
+        { "slide": 10, "quote": "First steps" }
+      ],
+      "why": "A reader skimming only the titles gets less than this deck's strong logic offers, because the middle titles do not state what each slide concludes.",
+      "reflect": "If a reader saw only your titles, could they state the takeaway of slide 8 and slide 10.",
+      "fix": "Rewrite the topic-label titles as full-sentence assertions that state each slide's conclusion, matching the strength of the opening title.",
+      "tags": [ "Minto", "Slide communication" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 5", "problem": "The chosen price of 45 pounds sits near the bottom of the 40 to 60 pound comparable range and the deck does not say why.", "why": "Price sets both take-up and revenue, so the reasoning matters to the client.", "fix": "State the pricing rationale, for example a deliberate entry price to lift conversion." },
+    { "location": "Slide 7", "problem": "The partner discount is offered as a member benefit but the deck does not say the partners have agreed.", "why": "A benefit the client cannot yet deliver weakens the offer at launch.", "fix": "Confirm the partner commitments or mark the discount as still to be arranged." }
+  ],
+  "questionsForLead": [
+    "What is the pounds size of the gap from the two non-renewing grants, so the 5,000 pound yield can be judged against it.",
+    "Did the team confirm staff can run two members-only events a year without straining capacity, or is that still an assumption.",
+    "Is 45 pounds set deliberately at the low end of the 40 to 60 pound comparable range, and why.",
+    "Are the local-partner discounts agreed, or still to be negotiated before launch."
+  ],
+  "learningNote": {
+    "lesson": "A revenue projection persuades only when it is shown net and when every decision trigger uses the same figure the case assumes.",
+    "weakHabit": "Presenting a gross headline number and then setting a go signal looser than the figure the recommendation is built on.",
+    "exercise": "For the projection that carries the recommendation, write the gross, the costs to subtract and the net, then check that every go or no-go trigger uses the same conversion the case assumes.",
+    "principle": "Numbers Integrity"
+  },
+  "notAssessed": [
+    "Whether Client E staff genuinely has capacity for the two members-only events. The input states no constraints and the deck marks it as an assumption.",
+    "The pounds size of the income gap from the two non-renewing grants. The deck does not quantify it.",
+    "Whether the local-partner discounts are agreed. The deck does not say.",
+    "Fit for a specific audience. The intended audience was left blank, so framing was judged from the text only.",
+    "Factual accuracy of the cited sources such as the 2024 accounts, box-office data, funder letters and comparable websites. Sources are named but were not provided."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Decision", "span": 2 },
+      { "label": "Why diversify", "span": 3 },
+      { "label": "The scheme", "span": 2 },
+      { "label": "Numbers and risk", "span": 2 },
+      { "label": "First steps", "span": 1 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "partial" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "partial" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "partial" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 3, "state": "partial", "label": "Income gap not sized" },
+      { "at": 8, "state": "partial", "label": "Gross not net" },
+      { "at": 10, "state": "partial", "label": "Gate below the assumed conversion" }
+    ],
+    "connectors": [
+      { "from": 8, "to": 10, "label": "8% assumption against 5% gate" }
+    ]
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "title": "Client B growth plan",
+    "client": "Client B (anonymized)",
+    "artifactType": "draft deck",
+    "mode": "deep",
+    "slideCount": 9,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Needs substantial revision",
+    "mainReason": "The board asked how to grow individual giving but the recommendation is to cut a programme and reallocate budget, so the deck answers the wrong question.",
+    "highestRiskIssue": "The slide 8 recommendation to close mentoring answers a programme-cost question, not the board's giving question on slide 2.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "Evidence that the freed budget funds a giving programme, or confirmation that the client changed the brief to programme cost, would change the picture. Source notes for the performance claims were not provided."
+  },
+  "blockingIssues": [
+    {
+      "rule": 3,
+      "label": "Problem framing drift",
+      "ceiling": "Needs substantial revision",
+      "evidence": [
+        { "slide": 2, "quote": "The board has asked how to grow individual giving." },
+        { "slide": 8, "quote": "Close the mentoring scheme. Reinvest the freed budget in tutoring. This improves overall programme efficiency." }
+      ]
+    },
+    {
+      "rule": 2,
+      "label": "Client question not answered",
+      "ceiling": "Needs substantial revision",
+      "evidence": [
+        { "slide": 8, "quote": "Close the mentoring scheme. Reinvest the freed budget in tutoring. This improves overall programme efficiency." }
+      ]
+    }
+  ],
+  "scorecard": {
+    "diagnosticMean": 2.2,
+    "confidence": "Medium",
+    "effort": "6-8 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The client decision is named on slide 2 but the deck answers a different one." },
+      { "name": "Problem framing", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The problem is specific but the framing drifts to programme cost by slide 8." },
+      { "name": "Storyline and pyramid logic", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "The governing view arrives on slide 7 and the giving and programme sections do not connect." },
+      { "name": "Evidence quality", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The survey and the programme performance claims are unsourced." },
+      { "name": "Analysis and insight", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The donor signal on slide 4 is not turned into an implication or a recommendation." },
+      { "name": "Recommendation specificity", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The action is specific but names no owner, timeframe or measure." },
+      { "name": "Feasibility and implementation", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "A first wind-down step exists but no sequence or dependencies, and constraints are unstated." },
+      { "name": "Risks, assumptions and uncertainty", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "No assumptions behind the cut and no risks of it are named." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Titles are topic labels, though each slide holds one message." },
+      { "name": "Professionalism, tone and confidentiality", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Tone is professional, but unsourced performance is stated as fact." }
+    ]
+  },
+  "strengths": [
+    { "point": "The problem is framed clearly and specifically at the top.", "quote": "Client B faces a 25% funding gap next year.", "slide": 2 },
+    { "point": "The donor survey surfaces a usable signal about what would grow giving.", "quote": "donors said they value Client B's tutoring results and would give more if they saw impact updates.", "slide": 4 }
+  ],
+  "findings": [
+    {
+      "short": "Answers wrong question",
+      "title": "The deck answers a programme-cost question, not the board's question about growing individual giving.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Problem Framing: the deliverable answers the exact decision the client asked about.",
+      "diagnosis": "Slide 2 states the board's question as how to grow individual giving. The analysis then pivots to the programme portfolio and the recommendation on slide 8 is to close mentoring and reinvest in tutoring, which is a programme-cost decision. The deck never returns to individual giving, so it answers a different question than the one it was set.",
+      "evidence": [
+        { "slide": 2, "quote": "The board has asked how to grow individual giving." },
+        { "slide": 8, "quote": "Close the mentoring scheme. Reinvest the freed budget in tutoring. This improves overall programme efficiency." }
+      ],
+      "why": "The board asked how to raise money from individuals and would leave with a plan to cut a programme instead, so the decision it needs is not answered and it could act on advice that misses its goal.",
+      "reflect": "What decision did the board actually ask you to inform, and does your recommendation move that decision.",
+      "fix": "Reframe the recommendation around the giving question the board asked, and test every finding by whether it changes how Client B grows individual donations. Programme cuts belong in this deck only if you show they raise giving.",
+      "tags": [ "Problem Framing", "Answer the question" ]
+    },
+    {
+      "short": "Cut may lower giving",
+      "title": "The recommended cut works against the donor motivation the deck itself found.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Internal Consistency: a recommendation must not undercut the goal it serves.",
+      "diagnosis": "Slide 4 reports that donors give more when they see impact. Slide 8 recommends closing a programme, which reduces the reach and impact story Client B can show. Cutting delivery to improve efficiency may shrink the very impact that the deck says drives individual giving, so the recommendation could deepen the funding gap it was meant to close.",
+      "evidence": [
+        { "slide": 4, "quote": "donors said they value Client B's tutoring results and would give more if they saw impact updates." },
+        { "slide": 8, "quote": "Close the mentoring scheme." }
+      ],
+      "why": "If the board cuts a programme to save money, it may weaken the impact narrative donors respond to and raise less, the opposite of the goal.",
+      "reflect": "Does cutting a programme make the impact story stronger or weaker for the donors you want to grow.",
+      "fix": "Trace the recommendation through to individual giving before proposing it. If a cut weakens the impact donors reward, either drop it or show how giving still rises.",
+      "tags": [ "Internal Consistency", "So-what test" ]
+    },
+    {
+      "short": "No giving plan",
+      "title": "The deck proposes no mechanism to grow individual donations, the one thing the board asked for.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "recommendation",
+      "owner": "team",
+      "principle": "Actionability: answer the client's question with a concrete lever.",
+      "diagnosis": "Slide 3 shows individual giving is small and has no regular-giving programme, and slide 4 shows donors would give more with impact updates. Those two facts point straight at a giving mechanism (for example a regular-giving programme tied to impact reporting), but the deck never proposes one. The recommendation is about programmes, not donations.",
+      "evidence": [
+        { "slide": 3, "quote": "There is no regular-giving programme." },
+        { "slide": 4, "quote": "would give more if they saw impact updates." }
+      ],
+      "why": "The board leaves with no way to grow individual giving, which is the decision it came for, so the deck does not do its job.",
+      "reflect": "What is the one concrete way Client B could turn the donor signal on slide 4 into more individual giving.",
+      "fix": "Build a recommendation on the giving lever the evidence supports, with a first step, an owner and a measure. Name the lever and let the team specify it rather than handing back finished slide text.",
+      "tags": [ "Actionability", "Recommendation" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 6", "problem": "The programme performance claims that justify the cut are unsourced (\"Mentoring runs at a loss and attendance is falling\").", "why": "A recommendation to close a programme needs the loss and attendance data behind it, or the cut is not defensible.", "fix": "Cite the performance data or mark it as an estimate." },
+    { "location": "Titles throughout", "problem": "Titles are topic labels (\"The problem\", \"Donation landscape\", \"Programme review\", \"Our view\").", "why": "A reader skimming the titles cannot follow the argument or see the recommendation.", "fix": "Rewrite content titles as full-sentence assertions that carry the message." }
+  ],
+  "questionsForLead": [
+    "Did the client actually ask how to grow individual giving, or has the brief shifted to programme cost efficiency.",
+    "Where do the programme performance claims (mentoring runs at a loss, attendance falling) come from.",
+    "Is the plan that freeing the mentoring budget funds a new giving programme, or is the cut the whole recommendation.",
+    "What donation target does the 25% funding gap imply, and over what period.",
+    "Was the donor survey representative, how many donors, and can its impact-update finding be built into a giving ask."
+  ],
+  "learningNote": {
+    "lesson": "Answer the question the client asked. Before recommending, check that the recommendation moves the client's stated decision.",
+    "weakHabit": "Drifting from the client's question to a more familiar analysis (programme cost) and recommending on that instead.",
+    "exercise": "Write the client's question at the top of the final slide. For each recommendation, draw a line back to the question. If a recommendation does not move the question, it does not belong.",
+    "principle": "Problem Framing"
+  },
+  "notAssessed": [
+    "Whether the programme performance claims are true. No source or evidence notes were provided.",
+    "Whether cutting mentoring frees enough budget to affect the 25% funding gap. The deck does not quantify it.",
+    "The intended audience, known constraints and the team's own open questions. Those input fields were left blank.",
+    "Visual design, layout and charts. Only slide text was provided.",
+    "Whether the board has already decided to consider programme cuts. Client politics are not in the material."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Framing", "span": 2 },
+      { "label": "Donations context", "span": 2 },
+      { "label": "Programme review", "span": 2 },
+      { "label": "Recommendation", "span": 2 },
+      { "label": "Next steps", "span": 1 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "partial" },
+      { "slide": 5, "state": "partial" },
+      { "slide": 6, "state": "partial" },
+      { "slide": 7, "state": "critical" },
+      { "slide": 8, "state": "critical" },
+      { "slide": 9, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 2, "state": "partial", "label": "Question set here: grow individual giving" },
+      { "at": 4, "state": "partial", "label": "Donor signal surfaced then dropped" },
+      { "at": 8, "state": "critical", "label": "Answer drifts to programme cost" }
+    ],
+    "connectors": [
+      { "from": 2, "to": 8, "label": "Question and answer do not match" },
+      { "from": 4, "to": 8, "label": "Donor signal unused" }
+    ]
+  }
+}

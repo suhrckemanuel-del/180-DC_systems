@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "title": "Client C service expansion",
+    "client": "Client C (anonymized)",
+    "artifactType": "draft deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Needs substantial revision",
+    "mainReason": "The deck is framed as research findings and never states which of the three services Client C should launch first, so it does not answer the client's decision.",
+    "highestRiskIssue": "Slide 9 closes on \"Further analysis may be useful\" with no recommendation, so the decision the client asked for is left unmade.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "A stated team recommendation not shown here, or confirmation that this draft is only an interim findings readout with the decision to follow, would move the level."
+  },
+  "blockingIssues": [
+    {
+      "rule": 2,
+      "label": "Deck does not answer the client's decision",
+      "ceiling": "Needs substantial revision",
+      "evidence": [
+        { "slide": 9, "quote": "Each option has benefits and costs. Capacity, funding and staffing all matter. Further analysis may be useful." },
+        { "slide": 1, "quote": "Client C service expansion. Research findings." }
+      ]
+    }
+  ],
+  "scorecard": {
+    "diagnosticMean": 2.2,
+    "confidence": "Medium",
+    "effort": "6-9 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The decision is named on slide 3 but the deck gives no answer and no next step." },
+      { "name": "Problem framing", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The three-option choice under a one-service constraint is clear and held, but success criteria for choosing are missing." },
+      { "name": "Storyline and pyramid logic", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "No governing insight, titles are labels, and the chain stops before insight or recommendation." },
+      { "name": "Evidence quality", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "Methodology distinguishes primary from secondary, but costs are unquantified and limitations are unstated." },
+      { "name": "Analysis and insight", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "Options are described in isolation, never compared or interpreted toward a choice." },
+      { "name": "Recommendation specificity", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "There is no recommendation to be specific about." },
+      { "name": "Feasibility and implementation", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "Light touch at this stage, but nothing on how any option would be stood up." },
+      { "name": "Risks, assumptions and uncertainty", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "Slide 9 gestures at cost and capacity, but no assumption or risk is named against a choice." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "One message per slide, but every title is a topic label, not an assertion." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, patients handled in aggregate, no confidentiality issue." }
+    ]
+  },
+  "strengths": [
+    {
+      "point": "The problem is bounded to three concrete options under a real one-service constraint, which is a clean decision frame to build on.",
+      "quote": "It has capacity to add one new service. Three options are on the table: mental-health counselling, physiotherapy and a diabetes programme.",
+      "slide": 3
+    },
+    {
+      "point": "The evidence base is transparent and mixed-method, which gives the eventual recommendation something to stand on.",
+      "quote": "We interviewed staff, surveyed 120 patients and reviewed local health data.",
+      "slide": 4
+    }
+  ],
+  "findings": [
+    {
+      "short": "No recommendation",
+      "title": "The deck delivers research findings but never answers which service to launch first.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "recommendation",
+      "owner": "team",
+      "principle": "Answer the question: a client deck exists to move a decision, not to catalogue findings.",
+      "diagnosis": "The deck is framed as Research findings on slide 1, lists findings for each option on slides 5 to 8, then closes slide 9 with Further analysis may be useful and a thank-you slide. It never states which of the three services Client C should launch first.",
+      "evidence": [
+        { "slide": 9, "quote": "Each option has benefits and costs. Capacity, funding and staffing all matter. Further analysis may be useful." },
+        { "slide": 1, "quote": "Client C service expansion. Research findings." }
+      ],
+      "why": "Client C asked which service to launch first with limited capacity. A deck that stops at findings leaves the decision exactly where it started, so the client gets research it could have commissioned from anyone and no advice.",
+      "reflect": "Given everything you found, which one service would you launch first, and what is the single strongest reason.",
+      "fix": "Commit to a recommendation and lead with it. Pick the option the evidence best supports, state it on an early slide and let the findings defend that choice. If the team is genuinely split, say so and give the decision rule that would break the tie.",
+      "tags": [ "Client decision usefulness", "Actionability" ]
+    },
+    {
+      "short": "Options not compared",
+      "title": "The three options are described in isolation and never compared on a common basis, so no decision can emerge.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Analysis over description: evidence must be interpreted and compared, not just reported.",
+      "diagnosis": "Slides 5 to 7 present each option on its own terms and never place them side by side on the criteria that would decide the choice. The survey on slide 8 ranks demand with mental health at 40%, yet that signal is never carried back to the option findings or used to weigh the choice.",
+      "evidence": [
+        { "slide": 8, "quote": "40% of surveyed patients said mental health was their top unmet need, 30% said diabetes, 20% physiotherapy, 10% other." },
+        { "slide": 9, "quote": "Each option has benefits and costs. Capacity, funding and staffing all matter." }
+      ],
+      "why": "Without a like-for-like comparison the client cannot see why one option beats the others, and the strongest quantified signal the team collected sits unused.",
+      "reflect": "On which two or three criteria do these options actually differ, and what does each criterion say about the ranking.",
+      "fix": "Build one comparison across the options on the criteria that decide it (demand, cost, staffing and capacity fit), then read the recommendation off that comparison. Use the survey ranking as one input, not as decoration.",
+      "tags": [ "Analysis and insight", "Synthesis" ]
+    },
+    {
+      "short": "Costs not quantified",
+      "title": "The cost and staffing claims that should drive the choice are asserted qualitatively, not sized.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": false,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Evidence grounding: a claim that carries a decision needs a number, not an adjective.",
+      "diagnosis": "Slide 6 says physiotherapy equipment cost is high and slide 7 says the diabetes programme would need a specialist nurse, but neither is sized. Because the clinic can fund only one service, cost and staffing are exactly what separates the options, so leaving them as adjectives blocks the comparison.",
+      "evidence": [
+        { "slide": 6, "quote": "Physiotherapy referrals often go unfilled locally. Equipment cost is high." },
+        { "slide": 7, "quote": "A programme would need a specialist nurse." }
+      ],
+      "why": "If the decision turns on what each option costs and demands in staff, unquantified costs mean the client cannot judge feasibility, and the option that looks cheap in words may not be.",
+      "reflect": "What would each option cost to stand up in year one, and what staff does each need that the clinic does not already have.",
+      "fix": "Attach a rough order-of-magnitude cost and a staffing requirement to each option, even a banded estimate, and mark it as an estimate. Ground the comparison in numbers the client can act on.",
+      "tags": [ "Evidence quality", "Feasibility" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slides 2 to 9", "problem": "Every title is a topic label (Background, Methodology, Considerations), not an assertion.", "why": "A reader skimming only the titles cannot follow an argument or find the answer, which compounds the missing recommendation.", "fix": "Once the recommendation exists, rewrite the content titles as full-sentence takeaways so the titles alone carry the story." },
+    { "location": "Slide 4", "problem": "Methodology gives counts but no sourcing detail or limitations for the local health data.", "why": "The reader cannot weigh how much to trust the diabetes-rate and demand claims that a choice would rest on.", "fix": "Name the source and date of the local health data and state the survey's main limitation." }
+  ],
+  "questionsForLead": [
+    "Has the team formed a view on which service to launch, or is the deck deliberately stopping at findings for the client to decide.",
+    "Does Client C have the funding and staff to stand up any of the three options, and were cost and staffing figures gathered.",
+    "On what basis should launch first be decided: patient demand, cost, clinical need or fit with current capacity.",
+    "Is the claim that local diabetes rates are above the regional average backed by a specific data source the team can cite."
+  ],
+  "learningNote": {
+    "lesson": "A findings readout is not a deliverable until it commits to an answer. The client is paying for the so-what, and the last mile from findings to a recommendation is the work.",
+    "weakHabit": "Collecting solid evidence and then deferring the judgment it was collected to support.",
+    "exercise": "Before the next draft, write the one-sentence recommendation first, then arrange the findings as the argument that defends it. If you cannot write the sentence, the analysis is not finished.",
+    "principle": "Answer first"
+  },
+  "notAssessed": [
+    "Whether the qualitative cost and staffing claims are accurate. No figures or sources were provided.",
+    "Whether Client C can fund or staff any specific option. The input left constraints blank and the deck does not say.",
+    "The factual accuracy of the local health data and the diabetes rate. The source was not provided.",
+    "Visual design, layout and any charts. Only slide text was provided.",
+    "The intended audience and the specific feedback the team wanted, both left blank in the input."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Setup", "span": 2 },
+      { "label": "Method", "span": 2 },
+      { "label": "Findings", "span": 4 },
+      { "label": "Close", "span": 2 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "partial" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "partial" },
+      { "slide": 5, "state": "partial" },
+      { "slide": 6, "state": "partial" },
+      { "slide": 7, "state": "partial" },
+      { "slide": 8, "state": "pass" },
+      { "slide": 9, "state": "critical" },
+      { "slide": 10, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 9, "state": "critical", "label": "Defers the decision, no recommendation" }
+    ],
+    "connectors": [
+      { "from": 8, "to": 9, "label": "Survey signal not carried into a choice" }
+    ]
+  }
+}

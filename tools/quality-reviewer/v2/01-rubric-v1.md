@@ -56,19 +56,35 @@ the level implied by the residual major issues. It is never the mean of the ten 
    named individual judged, or private data exposed). Ceiling: **R1**, and it is raised
    as a delivery-critical issue regardless of everything else.
 
-**Residual level (only if no blocking rule fires):**
-
-- one or more major but non-blocking issues -> **R2**.
-- only minor polish -> **R3**.
+**Residual level (only if no blocking rule fires).** Decided by one question, not by
+counting majors. Default is **R3**. Demote to **R2** only when a single specific gap
+changes the client's decision (what the client would actually do differs with the fix and
+without it) and that decision is named in one sentence. When genuinely unsure between R2
+and R3 with no blocker, choose R3. See the 2026-07-23 redesign note below.
 
 **Severity, and the R2 to R3 boundary.** A finding is **major** only when the team must
 close it before client submission because closing it changes the recommendation or its
 defensibility. A finding is **minor** when the deck is already sound and the fix only
-strengthens it (a line to add, a caveat, context for a figure). On a deck with no blocking
-issue, default findings to minor and land at R3. Demote to R2 only when a specific
-decision-changing gap is named. A strong scorecard with no blocking issue and no
-decision-changing gap is R3, not R2. Manufacturing majors on a strong deck to justify R2
-is a calibration failure, and it is scored against restraint.
+strengthens it (a line to add, a caveat, context for a figure). Readiness on a no-blocker
+deck does NOT follow from the major or minor count: a no-blocker deck can carry one major
+finding and still be R3, if closing that finding would not change what the client decides.
+Manufacturing majors on a strong deck to justify R2 is a calibration failure, and it is
+scored against restraint.
+
+**Redesign note, 2026-07-23.** The residual level used to read "one or more major but
+non-blocking issues to R2." Run-to-run stability measurement showed that rule made a
+strong deck (eval case 05, gold R3) land R2 in three of five runs, because the model would
+promote one finding to major on a defensibility argument and the count rule then forced R2.
+The two loopholes were "changes the recommendation or its defensibility" (almost anything
+touches defensibility) and "any one major forces R2" (a knife-edge that flips run to run).
+The redesign decouples no-blocker readiness from the major count entirely and routes it
+through a single decision-change test with a deterministic default of R3. Rationale: the
+blocking rules already cap any deck whose core is unclear, unsupported, misframed or unsafe,
+so a deck that fires none of them is sound by construction and its residual findings are
+refinement. This errs toward R3 (under-escalation), which the effectiveness review calls the
+safer error, with the project lead as the backstop. The real-case baseline is where
+under-escalation on a genuinely R2 no-blocker deck would show up, and that is the test this
+trades for stability. See [11-decision-log.md](11-decision-log.md).
 
 The reviewer states, in one sentence, the single reason readiness sits where it does,
 and names what missing context could change it. A deck with clean tone, clear slides
