@@ -14,18 +14,32 @@
 @font-face { font-family: "Spline Sans Mono"; src: url("fonts/SplineSansMono-600.woff2") format("woff2"); font-weight: 600; font-display: swap; }
 
 :root {
-  --sky: #EBF2F3;
-  --sky-deep: #DCE9EB;
-  --field: #EDF3E4;
-  --field-deep: #E0EACC;
-  --field-deepest: #D2E0B8;
-  --dike: #00512E;
-  --green: #00693C;
-  --water: #14404E;
-  --water-deep: #0E2F38;
+  /* round 2: a strictly monotonic descent — every band is darker than the one
+     above it, so darkness reads as depth. The old sea-level band was near-black
+     and sat above four lighter fields, which broke the whole "you are
+     descending" promise. Luminance now steps down ~8–10% per band. */
+  --sky: #EDF3F4;          /* +1.20  hero, lightest */
+  --sea: #DBE7E0;          /* ±0.00  sea level: the facts, a mid-tone */
+  --field: #C9DBC1;        /* −1.20  services */
+  --field-deep: #B4CDA6;   /* −1.50  join */
+  --field-deepest: #9DBB8C;/* −1.80  partners, last land band */
+  /* 2026-07-23 rebrand: the invented pine-green (#00512E/#00693C) is gone.
+     --dike is now the AA-safe verified brand green (#4A7322, 5.58:1 on white) —
+     used for buttons/links/interactive text on the light sky+sea bands.
+     --green is the brand-exact bright green (#78B038) — decorative/large-surface
+     use only (SVG fills, brand mark background with white text on top, big
+     emphasis type ≥24px). Small mono labels (.pnum, .s-el) that sit on the
+     mid-tone field/field-deep/field-deepest bands use var(--ink) instead —
+     verified by contrast check that no brand green clears 4.5:1 against those
+     particular backgrounds, while ink clears 7:1+ everywhere. */
+  --dike: #4A7322;
+  --green: #78B038;
+  --green-ink: #182620;    /* alias of ink — guaranteed-AA text on every land band */
+  --water: #14404E;        /* −2.60  pump: across the waterline into the dark */
+  --water-deep: #0E2F38;   /* −4.00  water board */
   --water-line: #1C5A6B;
   --ink: #182620;
-  --faint: #52645B;
+  --faint: #47564E;        /* darkened for AA on the deeper field bands */
   --sans: "Bricolage Grotesque", system-ui, sans-serif;
   --mono: "Spline Sans Mono", ui-monospace, monospace;
 }
@@ -53,18 +67,18 @@ body {
   text-transform: uppercase; color: var(--faint);
   padding-top: 0.4rem;
 }
+.nap { font-size: 0.76rem; }
 .nap::before, .nap::after { content: ""; flex: 1; border-top: 1.5px dashed currentColor; opacity: 0.55; }
 /* only the elevation token refuses to wrap — the caption may */
 .nap b { font-weight: 600; color: inherit; }
 .nap .el { white-space: nowrap; }
-.stratum--dark .nap { color: #9FC5CE; }
+.stratum--water .nap, .stratum--water2 .nap { color: #9FC5CE; }
 
 /* ---------- strata ---------- */
 .stratum { padding: 3.6rem 0 4.2rem; }
 /* color is elevation: strictly darker as the page descends */
 .stratum--sky { background: var(--sky); }
-.stratum--sky2 { background: var(--sky-deep); }
-.stratum--dike { background: var(--dike); color: #EAF4EE; }
+.stratum--sea { background: var(--sea); }
 .stratum--field { background: var(--field); }
 .stratum--field2 { background: var(--field-deep); }
 .stratum--field3 { background: var(--field-deepest); }
@@ -130,9 +144,10 @@ a:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
 /* ---------- proof: survey markers ---------- */
 .markers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.4rem; margin-top: 2rem; }
 @media (max-width: 860px) { .markers { grid-template-columns: 1fr 1fr; } }
-.marker { border-top: 3px solid #fff; padding-top: 0.8rem; }
-.marker b { font-weight: 800; font-size: clamp(2rem, 4.4vw, 3.1rem); line-height: 1; display: block; color: #fff; }
-.marker span { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: #BFDCCB; }
+/* markers live on the light sea-level band now: dark survey ink, dike rule */
+.marker { border-top: 3px solid var(--dike); padding-top: 0.8rem; }
+.marker b { font-weight: 800; font-size: clamp(2rem, 4.4vw, 3.1rem); line-height: 1; display: block; color: var(--dike); white-space: nowrap; }
+.marker span { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
 
 /* ---------- parcels: services as strip allotments ---------- */
 .parcels { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; margin-top: 2.2rem; border: 2.5px solid var(--dike); }
@@ -143,7 +158,7 @@ a:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
 .parcel:last-child { border-right: 0; }
 .parcel:nth-child(odd) { background: var(--field); }
 .parcel:nth-child(even) { background: var(--field-deep); }
-.parcel .pnum { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.12em; color: var(--dike); font-weight: 600; margin-bottom: auto; }
+.parcel .pnum { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.12em; color: var(--ink); font-weight: 600; margin-bottom: auto; }
 /* locked title block: all six h3 baselines align regardless of wrap count */
 .parcel h3 { font-weight: 800; font-size: 1.05rem; line-height: 1.15; margin: 1rem 0 0.45rem; min-height: 2.45em; display: flex; align-items: flex-end; }
 .parcel p { font-size: 0.85rem; color: var(--faint); line-height: 1.5; }
@@ -169,7 +184,7 @@ a:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
 .stages { margin-top: 2rem; border-top: 2.5px solid var(--dike); }
 .stage { display: grid; grid-template-columns: 9rem 1fr; gap: 1.5rem; padding: 1.3rem 0; border-bottom: 1.5px dashed var(--dike); align-items: baseline; }
 .stage:last-child { border-bottom: 0; }
-.stage .s-el { font-family: var(--mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dike); }
+.stage .s-el { font-family: var(--mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); }
 .stage h3 { font-weight: 800; font-size: 1.2rem; }
 .stage p { color: var(--faint); font-size: 0.97rem; margin-top: 0.3rem; max-width: 56ch; }
 @media (max-width: 620px) { .stage { grid-template-columns: 1fr; gap: 0.3rem; } }
@@ -238,3 +253,33 @@ footer .nap { color: #5E8894; }
 /* ---------- skip ---------- */
 .skip { position: absolute; left: -9999px; top: 0; z-index: 100; background: var(--dike); color: #fff; padding: 0.6rem 1rem; font-weight: 800; }
 .skip:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ---------- 2026-07-23 rebrand additions: logo mark, Mission, Our Work,
+   Join (roles/events/testimonials) ---------- */
+
+.brand .logo-mark { width: 2.2rem; height: auto; display: block; }
+.lockup-branch { max-width: 210px; height: auto; display: block; }
+.lockup-white { max-width: 260px; height: auto; display: block; }
+
+/* mission */
+.mission-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2.6rem; align-items: center; margin-top: 1.6rem; }
+@media (max-width: 860px) { .mission-grid { grid-template-columns: 1fr; } }
+.mission-grid .lockup-branch { justify-self: end; background: #fff; padding: 1.2rem; border: 1.5px solid var(--dike); border-radius: 3px; }
+@media (max-width: 860px) { .mission-grid .lockup-branch { justify-self: start; } }
+
+/* our work — case parcels with Situation/Approach/Outcome */
+.work-steps { margin-top: 0.9rem; display: grid; gap: 0.5rem; }
+.work-steps div { border-top: 1.5px dashed var(--ink); padding-top: 0.35rem; opacity: 0.85; }
+.work-steps em { font-style: normal; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); display: block; }
+
+/* join: roles, events, testimonials */
+.roles { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; margin-top: 1.8rem; }
+@media (max-width: 860px) { .roles { grid-template-columns: 1fr; } }
+.role-card { background: rgba(255,255,255,0.55); border: 1.5px solid var(--dike); border-radius: 3px; padding: 1.5rem 1.6rem; }
+.role-card h3 { font-weight: 800; font-size: 1.1rem; margin-bottom: 0.5rem; }
+
+.events-box { margin-top: 1.8rem; border: 1.5px dashed #A8912F; border-radius: 3px; padding: 1.3rem 1.5rem; background: repeating-linear-gradient(-45deg, rgba(178,150,48,0.08), rgba(178,150,48,0.08) 9px, transparent 9px, transparent 18px); }
+.events-box h3 { font-weight: 800; font-size: 1.05rem; margin-bottom: 0.4rem; }
+
+.testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.1rem; margin-top: 1.6rem; }
+.testi-card { border: 1.5px dashed #A8912F; border-radius: 3px; padding: 1.2rem; background: rgba(255,255,255,0.4); }

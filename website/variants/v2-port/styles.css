@@ -11,14 +11,21 @@
 @font-face { font-family: "Space Mono"; src: url("fonts/SpaceMono-700.woff2") format("woff2"); font-weight: 700; font-display: swap; }
 
 :root {
+  /* 2026-07-23 rebrand: the invented deep pine-green (#00693C family) is gone.
+     These are the three VERIFIED 180 Degrees Consulting greens, sampled from the
+     official logo files (see _brand/BRAND.md) — nothing else. Steel/ink/concrete
+     stay true neutrals (no green-tinted "navy" — that was part of the invented
+     palette too). The variable names keep their old cargo-system roles; only the
+     hues moved to the real brand. */
   --concrete: #EDEAE3;
   --ink: #10181E;
   --steel: #33414C;
-  --orange: #B8431F;      /* container rust — AA large-text on concrete */
-  --orange-loud: #D9531F; /* blocks only, never small text */
-  --yellow: #EBA937;      /* blocks only, ink text on top */
-  --green: #00623A;       /* 180 green, AA on concrete */
-  --navy: #14293A;
+  --orange: #4A7322;      /* AA-safe brand green — body links, small text/codes on light grounds (5.6:1 on white) */
+  --orange-loud: #78B038; /* brand green, exact — blocks, buttons, big surfaces; ink or white-on-dark text only */
+  --yellow: #78B038;      /* same brand green, used as the accent on dark grounds (6.9:1 on ink — passes AA there) */
+  --green: #4A7322;       /* AA-safe brand green — small stamped text on white (bol-stamp) */
+  --green-darkest: #3D6B1C; /* extra-safe brand green — very small text / one of the three container tones */
+  --navy: #10181E;        /* was an invented green-slate; now just the true ink neutral */
   --white: #F7F5F0;
   --display: "Archivo Black", "Arial Black", sans-serif;
   --body: "Archivo", system-ui, sans-serif;
@@ -200,10 +207,10 @@ h2 {
 .container-box h3 { font-family: var(--display); font-size: 1.28rem; text-transform: uppercase; line-height: 1.1; margin-bottom: 0.55rem; }
 .container-box p { font-size: 0.95rem; opacity: 0.94; }
 .cb-navy { background: var(--navy); }
-.cb-orange { background: #A63C1B; }
-.cb-green { background: #084D30; }
-.cb-steel { background: #2C3A45; }
-.cb-yellow { background: var(--yellow); color: var(--ink); }
+.cb-orange { background: #5C8C2C; }   /* was container-rust — now mid 180 green */
+.cb-green { background: #2E5615; }     /* deep green */
+.cb-steel { background: #2C3A45; }     /* neutral steel — one cool support in the stack */
+.cb-yellow { background: var(--yellow); color: var(--ink); }  /* bright mint block */
 .cb-yellow .cbox-code { opacity: 0.7; }
 
 /* ---------- stencil pro bono ---------- */
@@ -236,9 +243,9 @@ h2 {
   padding: 0.8rem 1.05rem;
   font-family: var(--mono); font-size: 0.68rem; font-weight: 700;
   letter-spacing: 0.09em; text-transform: uppercase; color: var(--steel);
-  background: repeating-linear-gradient(-45deg, rgba(235,169,55,0.28), rgba(235,169,55,0.28) 12px, rgba(217,151,31,0.28) 12px, rgba(217,151,31,0.28) 24px);
+  background: repeating-linear-gradient(-45deg, rgba(14,122,68,0.24), rgba(14,122,68,0.24) 12px, rgba(10,91,52,0.24) 12px, rgba(10,91,52,0.24) 24px);
 }
-.band-dark .placeholder, .band-green .placeholder { color: #F0E3C0; border-color: #9FB0BC; background: repeating-linear-gradient(-45deg, rgba(235,169,55,0.12), rgba(235,169,55,0.12) 12px, rgba(217,151,31,0.12) 12px, rgba(217,151,31,0.12) 24px); }
+.band-dark .placeholder, .band-green .placeholder { color: #CFE7D8; border-color: #9FB0BC; background: repeating-linear-gradient(-45deg, rgba(86,201,138,0.14), rgba(86,201,138,0.14) 12px, rgba(46,150,95,0.14) 12px, rgba(46,150,95,0.14) 24px); }
 
 /* ---------- band sections ---------- */
 .band-dark { background: var(--ink); color: var(--white); }
@@ -248,7 +255,7 @@ h2 {
 .band-green { background: var(--green); color: var(--white); }
 .band-green h2 { color: var(--white); }
 .band-green .lede, .band-green p { color: #D3E8DC; }
-.band-green a { color: var(--yellow); }
+.band-green a { color: #EAF7EF; }  /* mint on green is too low-contrast; pale mint reads AA */
 
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
 @media (max-width: 860px) { .split { grid-template-columns: 1fr; gap: 2rem; } }
@@ -332,3 +339,58 @@ input, textarea {
   background: var(--white); font-family: var(--body); font-size: 1rem;
 }
 label .tag { display: block; margin-bottom: 0.35rem; color: var(--ink); }
+
+/* ---------- 2026-07-23 rebrand additions: logo mark, Mission, Our Work,
+   portrait frames, Join (roles/events/testimonials) ---------- */
+
+.bar-brand .logo-mark { width: 2.1rem; height: auto; display: block; flex-shrink: 0; }
+.lockup-branch { max-width: 220px; height: auto; display: block; }
+.lockup-white { max-width: 300px; height: auto; display: block; }
+
+/* mission */
+.mission-grid { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 3rem; align-items: center; }
+@media (max-width: 860px) { .mission-grid { grid-template-columns: 1fr; gap: 2rem; } }
+.mission-grid .lockup-branch { justify-self: end; background: var(--white); padding: 1.4rem; border: 2px solid var(--ink); }
+@media (max-width: 860px) { .mission-grid .lockup-branch { justify-self: start; } }
+
+/* reserved portrait frames — dashed + diagonal hatch, container-placard style */
+.crew-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.1rem; margin-top: 2.2rem; }
+.crew-card { background: var(--white); border: 2px solid var(--ink); padding: 1.1rem 1.1rem 1.3rem; box-shadow: 5px 5px 0 rgba(16,24,30,0.7); display: flex; flex-direction: column; }
+.crew-card .photo-slot {
+  aspect-ratio: 3 / 4; border: 1.5px dashed var(--steel); margin-bottom: 0.9rem;
+  background: repeating-linear-gradient(-45deg, transparent, transparent 9px, rgba(74,115,34,0.08) 9px, rgba(74,115,34,0.08) 18px);
+  display: grid; place-items: end start;
+}
+.crew-card .photo-slot span { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em; color: var(--orange); padding: 0.5rem; text-transform: uppercase; }
+.crew-card b { font-family: var(--display); font-size: 1.05rem; text-transform: uppercase; line-height: 1.15; }
+.crew-card .role { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.05em; color: var(--steel); margin: 0.3rem 0 0.6rem; display: block; }
+.crew-card a { margin-top: auto; font-family: var(--mono); font-size: 0.76rem; word-break: break-all; }
+
+/* our work / portfolio — reserved case cards with Situation -> Approach -> Outcome */
+.work-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; margin-top: 2.2rem; }
+.work-card { background: var(--white); border: 2px solid var(--ink); padding: 1.5rem; box-shadow: 6px 6px 0 rgba(16,24,30,0.85); }
+.work-card .wc-tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.64rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--orange); border: 1.5px solid var(--orange); padding: 0.25rem 0.55rem; margin-bottom: 0.9rem;
+}
+.work-card .wc-steps { display: grid; gap: 0.7rem; margin-top: 1.1rem; }
+.work-card .wc-step { border-top: 1.5px dashed var(--steel); padding-top: 0.5rem; }
+.work-card .wc-step em { font-family: var(--mono); font-style: normal; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--steel); display: block; margin-bottom: 0.2rem; }
+
+/* join: role cards, events, testimonials */
+.role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; margin-top: 1.6rem; }
+@media (max-width: 860px) { .role-grid { grid-template-columns: 1fr; } }
+.role-card { background: var(--white); border: 2px solid var(--ink); padding: 1.5rem; box-shadow: 5px 5px 0 rgba(16,24,30,0.7); }
+.role-card h3 { font-family: var(--display); text-transform: uppercase; font-size: 1.2rem; margin-bottom: 0.6rem; }
+
+.events-box {
+  margin-top: 1.6rem; border: 1.5px dashed var(--steel); padding: 1.2rem 1.4rem;
+  background: repeating-linear-gradient(-45deg, transparent, transparent 9px, rgba(74,115,34,0.06) 9px, rgba(74,115,34,0.06) 18px);
+}
+.events-box h3 { font-family: var(--display); text-transform: uppercase; font-size: 1.05rem; margin-bottom: 0.4rem; }
+
+.testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.1rem; margin-top: 1.6rem; }
+.testi-card { border: 1.5px dashed var(--steel); padding: 1.2rem; background: rgba(255,255,255,0.5); }
+.band-dark .testi-card, .band-green .testi-card { border-color: rgba(255,255,255,0.4); }
+
+/* nav-fill spacer no longer needed but harmless if absent */

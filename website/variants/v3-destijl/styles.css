@@ -15,8 +15,8 @@
   --red: #C8102E;
   --blue: #1348A0;
   --yellow: #F2CB05;
-  --green: #00693C;      /* the 180 green — the fourth primary */
-  --green-dark: #00502D;
+  --green: #78B038;      /* the 180 green — the fourth primary (verified brand green) */
+  --green-dark: #4A7322; /* AA-safe green for text/links on white */
   --line: 6px;
   --sans: "Schibsted Grotesk", system-ui, sans-serif;
 }
@@ -363,3 +363,59 @@ footer { background: var(--white); }
 /* ---------- skip ---------- */
 .skip { position: absolute; left: -9999px; top: 0; z-index: 100; background: var(--yellow); color: var(--black); padding: 0.6rem 1rem; font-weight: 800; }
 .skip:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ---------- 2026-07-23 rebrand additions: logo mark, Mission, Our Work,
+   portrait squares, Join (roles/events/testimonials) ---------- */
+
+.brand .logo-mark { width: 2.4rem; height: auto; display: block; }
+.lockup-branch { max-width: 200px; height: auto; display: block; border: 2px solid var(--black); }
+.lockup-white { max-width: 260px; height: auto; display: block; }
+
+/* mission composition */
+.mission-comp { display: grid; grid-template-columns: 1.4fr 0.6fr; border: var(--line) solid var(--black); margin-top: 2.2rem; }
+.mission-comp > div:first-child { padding: 2.6rem; border-right: 2px solid var(--black); }
+.mission-comp > div:last-child { padding: 2.6rem; display: grid; place-items: center; background: #F4F2E9; }
+@media (max-width: 860px) {
+  .mission-comp { grid-template-columns: 1fr; }
+  .mission-comp > div:first-child { border-right: 0; border-bottom: 2px solid var(--black); padding: 1.8rem 1.4rem; }
+  .mission-comp > div:last-child { padding: 1.8rem 1.4rem; }
+}
+
+/* our work — Mondrian case cards with Situation/Approach/Outcome */
+.work-mondrian { display: grid; grid-template-columns: repeat(3, 1fr); border: var(--line) solid var(--black); margin-top: 2.4rem; }
+.work-mondrian > div { padding: 1.8rem 1.6rem; border-right: 2px solid var(--black); }
+.work-mondrian > div:last-child { border-right: 0; }
+.work-mondrian .wc-swatch { width: 1.15rem; height: 1.15rem; margin-bottom: 1rem; }
+.work-mondrian .wc-steps { margin-top: 1.1rem; display: grid; gap: 0.6rem; }
+.work-mondrian .wc-step { border-top: 2px solid var(--black); padding-top: 0.4rem; }
+.work-mondrian .wc-step em { font-style: normal; font-weight: 500; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #4A4A4A; display: block; margin-bottom: 0.1rem; }
+@media (max-width: 900px) {
+  .work-mondrian { grid-template-columns: 1fr; }
+  .work-mondrian > div { border-right: 0; border-bottom: 2px solid var(--black); }
+  .work-mondrian > div:last-child { border-bottom: 0; }
+}
+
+/* board: reserved portrait squares (replace the swatch line) */
+.mosaic .pf-square {
+  aspect-ratio: 1 / 1; border: 2px solid var(--black); margin-bottom: 1rem;
+  display: grid; place-items: center;
+  font-weight: 500; font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: #4A4A4A;
+}
+.mosaic > div:nth-child(4n+1) .pf-square { background: #F4F2E9; }
+.mosaic > div:nth-child(4n+2) .pf-square { background: #FBEAEC; }
+.mosaic > div:nth-child(4n+3) .pf-square { background: #E9F0FB; }
+.mosaic > div:nth-child(4n+4) .pf-square { background: #FDF6D9; }
+
+/* join: roles, events, testimonials */
+.roles { display: grid; grid-template-columns: 1fr 1fr; border: var(--line) solid var(--black); margin-top: 1.8rem; }
+.roles > div { padding: 1.8rem 1.7rem; border-right: 2px solid var(--black); }
+.roles > div:last-child { border-right: 0; }
+.roles h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 0.6rem; }
+@media (max-width: 860px) { .roles { grid-template-columns: 1fr; } .roles > div { border-right: 0; border-bottom: 2px solid var(--black); } .roles > div:last-child { border-bottom: 0; } }
+
+.events-box { margin-top: 1.8rem; border: 2px dashed #6A6A62; padding: 1.4rem 1.6rem; background: repeating-linear-gradient(-45deg, #EFEEE6, #EFEEE6 11px, #E2E1D6 11px, #E2E1D6 22px); }
+.events-box h3 { font-weight: 800; font-size: 1.05rem; margin-bottom: 0.4rem; }
+
+.testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.1rem; margin-top: 1.6rem; }
+.testi-card { border: 2px dashed #6A6A62; padding: 1.2rem; background: #F4F2E9; }
+.band-green .testi-card, .band-black .testi-card { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.06); }
