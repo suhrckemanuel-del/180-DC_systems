@@ -31,10 +31,10 @@
 <div class="spread">
 <main id="main">
 
-<section aria-labelledby="h1" style="padding-top:4rem">
+<section aria-labelledby="h1" class="hero" style="padding-top:4rem">
   <span class="acct">Account 01 — who we are</span>
   <h1 id="h1">A consultancy that shows its receipts,<br><em>starting with this page.</em></h1>
-  <p class="lede">We are the first multi-city branch<a class="ref" href="#e01" aria-label="evidence entry 1">[E1]</a> of 180 Degrees Consulting, the world's largest university-based consultancy<a class="ref" href="#e02" aria-label="evidence entry 2">[E2]</a> — students of TU Delft and Erasmus Rotterdam<a class="ref" href="#e03" aria-label="evidence entry 3">[E3]</a>, working pro bono<a class="ref" href="#e04" aria-label="evidence entry 4">[E4]</a> for non-profits and social enterprises. Every factual claim on this site is posted to the evidence margin. What we can't verify, we strike through and say so.</p>
+  <p class="lede">We are the first multi-city branch<a class="ref" href="#e01" aria-label="evidence entry 1">[E1]</a> of 180 Degrees Consulting, the world's largest university-based consultancy — students of TU Delft and Erasmus Rotterdam, working pro bono<a class="ref" href="#e04" aria-label="evidence entry 4">[E4]</a> for non-profits and social enterprises. Every factual claim on this site is posted to the evidence margin. What we can't verify, we strike through and say so.</p>
   <p class="prose" style="margin-top:1.6rem;font-size:0.98rem">A specimen, so you know we mean it: <span class="cannot">"clients told us…"</span> <span class="cannot-note">cannot claim yet — no consented testimonials</span><a class="ref" href="#e08">[E8]</a></p>
   <p style="margin-top:1.8rem"><a class="btn" href="for-clients.html">Work with us</a> <a class="btn btn--ghost" href="#join" style="margin-left:0.5rem">Join as a consultant</a></p>
 </section>
@@ -50,8 +50,8 @@
       <tr><td class="amt">2</td><td class="desc">cities and universities — TU Delft technical depth × Erasmus business acumen<a class="ref" href="#e03">[E3]</a></td><td class="mono" style="font-size:0.76rem">✓ verified</td></tr>
       <tr><td class="amt">1st</td><td class="desc">multi-city branch of 180DC worldwide<a class="ref" href="#e01">[E1]</a></td><td class="mono" style="font-size:0.76rem">✓ verified</td></tr>
       <tr><td class="amt">€0</td><td class="desc">our fee — 100% pro bono, always<a class="ref" href="#e04">[E4]</a></td><td class="mono" style="font-size:0.76rem">✓ verified</td></tr>
-      <tr class="strike"><td class="amt"><span class="cannot">—</span></td><td class="desc"><span class="cannot">projects delivered, consultants trained, hours donated</span></td><td><span class="cannot-note">cannot claim yet</span><a class="ref" href="#e08">[E8]</a></td></tr>
-      <tr class="strike"><td class="amt"><span class="cannot">—</span></td><td class="desc"><span class="cannot">client testimonials</span></td><td><span class="cannot-note">cannot claim yet</span><a class="ref" href="#e08">[E8]</a></td></tr>
+      <tr class="strike"><td class="amt"><span class="nil" aria-label="no value">∅</span></td><td class="desc"><span class="cannot">projects delivered, consultants trained, hours donated</span></td><td><span class="cannot-note">cannot claim yet</span><a class="ref" href="#e08">[E8]</a></td></tr>
+      <tr class="strike"><td class="amt"><span class="nil" aria-label="no value">∅</span></td><td class="desc"><span class="cannot">client testimonials</span></td><td><span class="cannot-note">cannot claim yet</span><a class="ref" href="#e08">[E8]</a></td></tr>
     </tbody>
   </table>
   <p class="prose" style="margin-top:1.3rem;font-style:italic;color:var(--faint)">Most sites would hide those last two rows. We post them struck through, because an empty line you can trust is worth more than a full one you can't.</p>
@@ -104,23 +104,17 @@
 <section id="team" aria-labelledby="team-h">
   <span class="acct">Account 07 — the registrars</span>
   <h2 id="team-h">The executive board, on the record<a class="ref" href="#e07">[E7]</a></h2>
-  <p class="lede">Every 180DC branch is entirely student-run. Eight frames stand reserved for the photo session — this ledger holds no stock faces.</p>
-  <div class="pframes" aria-hidden="true">
-    <div class="pframe">pending</div><div class="pframe">pending</div><div class="pframe">pending</div><div class="pframe">pending</div><div class="pframe">pending</div><div class="pframe">pending</div><div class="pframe">pending</div><div class="pframe">pending</div>
-  </div>
-  <table class="register">
-    <thead><tr><th scope="col">Name</th><th scope="col">Office</th><th scope="col">Contact</th></tr></thead>
-    <tbody>
-      <tr><td><b>Stefan Kluwer</b></td><td>President</td><td><a href="mailto:s.kluwer@180dc.org">s.kluwer@180dc.org</a></td></tr>
-      <tr><td><b>Zhi Yu Yap</b></td><td>Vice President</td><td><a href="mailto:z.yuyap@180dc.org">z.yuyap@180dc.org</a></td></tr>
-      <tr><td><b>Phuong Anh Nguyen</b></td><td>Marketing Director</td><td><a href="mailto:a.nguyen@180dc.org">a.nguyen@180dc.org</a></td></tr>
-      <tr><td><b>Austeja Kupsyte</b></td><td>Events Director</td><td><a href="mailto:a.kupsyte@180dc.org">a.kupsyte@180dc.org</a></td></tr>
-      <tr><td><b>Benas Maciulskis</b></td><td>External Relations Director</td><td><a href="mailto:b.maciulskis@180dc.org">b.maciulskis@180dc.org</a></td></tr>
-      <tr><td><b>Sarayesha Fazila</b></td><td>Human Resources Director</td><td><a href="mailto:s.fazila@180dc.org">s.fazila@180dc.org</a></td></tr>
-      <tr><td><b>James Ward</b></td><td>Consulting Director</td><td><a href="mailto:j.ward@180dc.org">j.ward@180dc.org</a></td></tr>
-      <tr><td><b>Fredrik Nygaard Løvåsen</b></td><td>Consulting Director</td><td><a href="mailto:f.nygaard@180dc.org">f.nygaard@180dc.org</a></td></tr>
-    </tbody>
-  </table>
+  <p class="lede">Every 180DC branch is entirely student-run. Eight seats stand reserved for the photo session — this ledger holds no stock faces, so each frame carries the name instead.</p>
+  <ul class="roster">
+    <li class="pframe"><span class="pf-pic" aria-hidden="true">pending</span><b>Stefan Kluwer</b><span class="pf-office">President</span><a href="mailto:s.kluwer@180dc.org">s.kluwer@180dc.org</a></li>
+    <li class="pframe"><span class="pf-pic" aria-hidden="true">pending</span><b>Zhi Yu Yap</b><span class="pf-office">Vice President</span><a href="mailto:z.yuyap@180dc.org">z.yuyap@180dc.org</a></li>
+    <li class="pframe"><span class="pf-pic" aria-hidden="true">pending</span><b>Phuong Anh Nguyen</b><span class="pf-office">Marketing Director</span><a href="mailto:a.nguyen@180dc.org">a.nguyen@180dc.org</a></li>
+    <li class="pframe"><span class="pf-pic" aria-hidden="true">pending</span><b>Austeja Kupsyte</b><span class="pf-office">Events Director</span><a href="mailto:a.kupsyte@180dc.org">a.kupsyte@180dc.org</a></li>
+    <li class="pframe"><span class="pf-pic" aria-hidden="true">pending</span><b>Benas Maciulskis</b><span class="pf-office">External Relations Director</span><a href="mailto:b.maciulskis@180dc.org">b.maciulskis@180dc.org</a></li>
+    <li class="pframe"><span class="pf-pic" aria-hidden="true">pending</span><b>Sarayesha Fazila</b><span class="pf-office">Human Resources Director</span><a href="mailto:s.fazila@180dc.org">s.fazila@180dc.org</a></li>
+    <li class="pframe"><span class="pf-pic" aria-hidden="true">pending</span><b>James Ward</b><span class="pf-office">Consulting Director</span><a href="mailto:j.ward@180dc.org">j.ward@180dc.org</a></li>
+    <li class="pframe"><span class="pf-pic" aria-hidden="true">pending</span><b>Fredrik Nygaard Løvåsen</b><span class="pf-office">Consulting Director</span><a href="mailto:f.nygaard@180dc.org">f.nygaard@180dc.org</a></li>
+  </ul>
 </section>
 
 <section id="contact" aria-labelledby="c-h">
@@ -166,13 +160,70 @@
 <script>
 document.documentElement.classList.add('js');
 (function () {
-  /* garnish: hovering a claim reference highlights its margin entry */
-  document.querySelectorAll('a.ref').forEach(function (r) {
-    var id = r.getAttribute('href').slice(1);
-    var e = document.getElementById(id);
+  var refs = Array.prototype.slice.call(document.querySelectorAll('a.ref'));
+  var byId = function (id) { return document.getElementById(id); };
+
+  /* the bond, both ways: a claim ref lights its entry, an entry lights its refs.
+     No movement — a left rule and a warmer paper. */
+  refs.forEach(function (r) {
+    var e = byId(r.getAttribute('href').slice(1));
     if (!e) return;
-    r.addEventListener('mouseenter', function () { e.classList.add('claim-hl'); });
-    r.addEventListener('mouseleave', function () { e.classList.remove('claim-hl'); });
+    var on = function () { e.classList.add('claim-hl'); r.classList.add('ref-hl'); };
+    var off = function () { e.classList.remove('claim-hl'); r.classList.remove('ref-hl'); };
+    r.addEventListener('mouseenter', on); r.addEventListener('mouseleave', off);
+    r.addEventListener('focus', on); r.addEventListener('blur', off);
+  });
+  document.querySelectorAll('.e-entry').forEach(function (e) {
+    var mine = refs.filter(function (r) { return r.getAttribute('href').slice(1) === e.id; });
+    var on = function () { e.classList.add('claim-hl'); mine.forEach(function (r) { r.classList.add('ref-hl'); }); };
+    var off = function () { e.classList.remove('claim-hl'); mine.forEach(function (r) { r.classList.remove('ref-hl'); }); };
+    e.addEventListener('mouseenter', on); e.addEventListener('mouseleave', off);
+  });
+
+  /* scroll-spy: light the entries the current section cites, dim the rest. */
+  var margin = document.querySelector('.margin');
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main section'));
+  var sectionEntries = sections.map(function (s) {
+    var ids = {};
+    s.querySelectorAll('a.ref').forEach(function (r) { ids[r.getAttribute('href').slice(1)] = 1; });
+    return ids;
+  });
+  if (margin && 'IntersectionObserver' in window && matchMedia('(min-width: 941px)').matches) {
+    margin.setAttribute('data-spy', '');
+    var spy = function () {
+      var mid = scrollY + innerHeight * 0.35, active = 0;
+      for (var i = 0; i < sections.length; i++) {
+        if (sections[i].offsetTop <= mid) active = i;
+      }
+      var ids = sectionEntries[active] || {};
+      var any = Object.keys(ids).length > 0;
+      document.querySelectorAll('.e-entry').forEach(function (e) {
+        e.classList.toggle('spy-on', !any || !!ids[e.id]);
+      });
+    };
+    addEventListener('scroll', function () { requestAnimationFrame(spy); }, { passive: true });
+    spy();
+  }
+
+  /* mobile: a ref expands its entry inline beneath its own paragraph, so the
+     citation lives with the claim instead of only in the bottom appendix. */
+  refs.forEach(function (r) {
+    r.addEventListener('click', function (ev) {
+      if (!matchMedia('(max-width: 940px)').matches) return;   // desktop margin is visible; leave the jump
+      var e = byId(r.getAttribute('href').slice(1));
+      var host = r.closest('p, li, td, .prose, .lede');
+      if (!e || !host) return;
+      ev.preventDefault();
+      var open = host.nextElementSibling;
+      if (open && open.classList.contains('e-inline') && open.dataset.for === e.id) {
+        open.remove(); return;                                  // tap again to close
+      }
+      if (open && open.classList.contains('e-inline')) open.remove();
+      var panel = document.createElement('div');
+      panel.className = 'e-inline'; panel.dataset.for = e.id;
+      panel.innerHTML = e.innerHTML;
+      host.parentNode.insertBefore(panel, host.nextSibling);
+    });
   });
 })();
 </script>

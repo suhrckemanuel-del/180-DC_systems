@@ -31,7 +31,7 @@
 <div class="spread">
 <main id="main">
 
-<section aria-labelledby="h1" style="padding-top:4rem">
+<section aria-labelledby="h1" class="hero" style="padding-top:4rem">
   <span class="acct">Client account — terms</span>
   <h1 id="h1">A consulting team, at no cost, <em>on your hardest question.</em></h1>
   <p class="lede">If your organisation's primary goal is impact rather than profit — a non-profit, a social enterprise, a mission-driven institution — you likely qualify<a class="ref" href="#f01">[F1]</a>. Student consultants do it for the experience and the mission; quality is protected by our review system<a class="ref" href="#f02">[F2]</a>, not a fee. These are the full terms, posted openly.</p>
@@ -79,14 +79,14 @@
   <div class="prose" style="margin-top:1.1rem">
     <p>Four fields. We reply within a week, usually faster — one email from a person, never a sequence. <em>An honesty note: this form is a design preview; it goes live with the site.</em></p>
   </div>
-  <form aria-label="Client intake (demonstration only)" onsubmit="return false" style="max-width:34rem;margin-top:1.4rem">
-    <div style="display:grid;gap:1rem">
+  <form class="intake" aria-label="Client intake (demonstration only)" onsubmit="return false">
+    <div class="intake-row">
       <label><span class="lbl">Your name</span><input type="text" name="name" autocomplete="name"></label>
       <label><span class="lbl">Organisation</span><input type="text" name="org" autocomplete="organization"></label>
-      <label><span class="lbl">Email</span><input type="email" name="email" autocomplete="email"></label>
-      <label><span class="lbl">What challenge are you facing?</span><textarea name="challenge" rows="4"></textarea></label>
-      <button class="btn" type="submit" style="cursor:pointer;justify-self:start">Request the call</button>
     </div>
+    <label><span class="lbl">Email</span><input type="email" name="email" autocomplete="email"></label>
+    <label><span class="lbl">What challenge are you facing?</span><textarea name="challenge" rows="4"></textarea></label>
+    <button class="btn" type="submit" style="cursor:pointer;justify-self:start">Request the call</button>
   </form>
 </section>
 
@@ -107,7 +107,8 @@
   <div class="colo-inner">
     <h3>Changelog — this page's own audit trail</h3>
     <ul class="changelog">
-      <li><b>2026-07-09</b> — v1.0: client terms posted with four margin entries; one line struck as unclaimable (testimonials).</li>
+      <li><span class="cl">CL.01</span><b>2026-07-09</b><span>client terms posted with four margin entries; one line struck as unclaimable (testimonials)<span class="vchip">v1.0</span></span></li>
+      <li><span class="cl">CL.02</span><b>2026-07-16</b><span>Critic round 2 applied: margin set legibly and made to follow the reader, evidence bonded to its claims, form and changelog set to full measure<span class="vchip">v1.1</span></span></li>
     </ul>
     <div class="colo-meta">
       <span>delft.rotterdam@180dc.org · Leopoldstraat 7A, 3031 ST Rotterdam</span>
@@ -119,12 +120,61 @@
 <script>
 document.documentElement.classList.add('js');
 (function () {
-  document.querySelectorAll('a.ref').forEach(function (r) {
-    var id = r.getAttribute('href').slice(1);
-    var e = document.getElementById(id);
+  var refs = Array.prototype.slice.call(document.querySelectorAll('a.ref'));
+  var byId = function (id) { return document.getElementById(id); };
+
+  refs.forEach(function (r) {
+    var e = byId(r.getAttribute('href').slice(1));
     if (!e) return;
-    r.addEventListener('mouseenter', function () { e.classList.add('claim-hl'); });
-    r.addEventListener('mouseleave', function () { e.classList.remove('claim-hl'); });
+    var on = function () { e.classList.add('claim-hl'); r.classList.add('ref-hl'); };
+    var off = function () { e.classList.remove('claim-hl'); r.classList.remove('ref-hl'); };
+    r.addEventListener('mouseenter', on); r.addEventListener('mouseleave', off);
+    r.addEventListener('focus', on); r.addEventListener('blur', off);
+  });
+  document.querySelectorAll('.e-entry').forEach(function (e) {
+    var mine = refs.filter(function (r) { return r.getAttribute('href').slice(1) === e.id; });
+    var on = function () { e.classList.add('claim-hl'); mine.forEach(function (r) { r.classList.add('ref-hl'); }); };
+    var off = function () { e.classList.remove('claim-hl'); mine.forEach(function (r) { r.classList.remove('ref-hl'); }); };
+    e.addEventListener('mouseenter', on); e.addEventListener('mouseleave', off);
+  });
+
+  var margin = document.querySelector('.margin');
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main section'));
+  var sectionEntries = sections.map(function (s) {
+    var ids = {};
+    s.querySelectorAll('a.ref').forEach(function (r) { ids[r.getAttribute('href').slice(1)] = 1; });
+    return ids;
+  });
+  if (margin && 'IntersectionObserver' in window && matchMedia('(min-width: 941px)').matches) {
+    margin.setAttribute('data-spy', '');
+    var spy = function () {
+      var mid = scrollY + innerHeight * 0.35, active = 0;
+      for (var i = 0; i < sections.length; i++) { if (sections[i].offsetTop <= mid) active = i; }
+      var ids = sectionEntries[active] || {};
+      var any = Object.keys(ids).length > 0;
+      document.querySelectorAll('.e-entry').forEach(function (e) {
+        e.classList.toggle('spy-on', !any || !!ids[e.id]);
+      });
+    };
+    addEventListener('scroll', function () { requestAnimationFrame(spy); }, { passive: true });
+    spy();
+  }
+
+  refs.forEach(function (r) {
+    r.addEventListener('click', function (ev) {
+      if (!matchMedia('(max-width: 940px)').matches) return;
+      var e = byId(r.getAttribute('href').slice(1));
+      var host = r.closest('p, li, td, .prose, .lede');
+      if (!e || !host) return;
+      ev.preventDefault();
+      var open = host.nextElementSibling;
+      if (open && open.classList.contains('e-inline') && open.dataset.for === e.id) { open.remove(); return; }
+      if (open && open.classList.contains('e-inline')) open.remove();
+      var panel = document.createElement('div');
+      panel.className = 'e-inline'; panel.dataset.for = e.id;
+      panel.innerHTML = e.innerHTML;
+      host.parentNode.insertBefore(panel, host.nextSibling);
+    });
   });
 })();
 </script>

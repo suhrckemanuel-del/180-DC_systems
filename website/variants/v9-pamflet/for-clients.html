@@ -85,14 +85,12 @@
     <div class="plain" style="margin-top:1.2rem">
       <p>We reply within a week, usually faster — one email from a person, never a sequence. <em>In print, honestly: this form is a design preview; it goes live with the site.</em></p>
     </div>
-    <form aria-label="Client intake (demonstration only)" onsubmit="return false" style="max-width:34rem;margin-top:1.6rem">
-      <div style="display:grid;gap:1.1rem">
-        <label><span class="lbl">Your name</span><input type="text" name="name" autocomplete="name"></label>
-        <label><span class="lbl">Organisation</span><input type="text" name="org" autocomplete="organization"></label>
-        <label><span class="lbl">Email</span><input type="email" name="email" autocomplete="email"></label>
-        <label><span class="lbl">What challenge are you facing?</span><textarea name="challenge" rows="4"></textarea></label>
-        <button class="btn" type="submit" style="cursor:pointer;justify-self:start">Request the call</button>
-      </div>
+    <form class="stampform" aria-label="Client intake (demonstration only)" onsubmit="return false">
+      <label><span class="lbl">Your name</span><input type="text" name="name" autocomplete="name"></label>
+      <label><span class="lbl">Organisation</span><input type="text" name="org" autocomplete="organization"></label>
+      <label><span class="lbl">Email</span><input type="email" name="email" autocomplete="email"></label>
+      <label><span class="lbl">What challenge are you facing?</span><textarea name="challenge" rows="4"></textarea></label>
+      <button class="btn btn--wide" type="submit">Request the call</button>
     </form>
   </div>
 </section>

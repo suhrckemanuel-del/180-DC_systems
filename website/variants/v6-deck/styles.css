@@ -47,6 +47,9 @@ header.viewer {
 header.viewer .file { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; color: #fff; min-width: 0; }
 header.viewer .file .logo { background: var(--green); font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.8rem; }
 header.viewer .file b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+/* the filename truncates on its own underscores, never mid-word (round 3) */
+@media (max-width: 760px) { header.viewer .file b .fn-c { display: none; } }
+@media (max-width: 420px) { header.viewer .file b .fn-b { display: none; } }
 header.viewer .file b .pos { color: #9ED4B5; font-weight: 800; }
 header.viewer nav { margin-left: auto; display: flex; gap: 0.2rem; }
 header.viewer nav a {
@@ -122,37 +125,49 @@ h1.s-title, h2.s-title {
 .slide--title .s-foot .cls { color: #C9EBD7; }
 
 /* ---------- agenda ---------- */
+/* round 3: slide numbers right-aligned at the margin so the dot leaders
+   actually connect a row to its number — a leader that ends in air is decoration */
 .agenda { list-style: none; max-width: 52ch; }
 .agenda li { display: flex; gap: 0.9rem; align-items: baseline; padding: 0.7rem 0; }
-.agenda .no { font-weight: 800; color: var(--green); min-width: 1.9rem; font-variant-numeric: tabular-nums; }
+.agenda .no { font-weight: 800; color: var(--green); min-width: 1.9rem; text-align: right; font-variant-numeric: tabular-nums; }
 .agenda a { color: var(--ink); text-decoration: none; font-weight: 600; }
 .agenda a:hover, .agenda a:focus-visible { color: var(--green-deep); }
 .agenda .lead { flex: 1; border-bottom: 2px dotted #B9C2BD; transform: translateY(-4px); min-width: 2rem; }
 .agenda li.dim { color: var(--grey); }
 .agenda li.dim .no { color: #9AA79F; }
 .agenda li.dim span:not(.no):not(.lead) { font-weight: 400; }
+@media (max-width: 640px) {
+  /* too little width for a leader to read as a leader — drop it, keep the alignment */
+  .agenda .lead { display: none; }
+  .agenda .no { margin-left: auto; }
+}
 
 /* title-slide side column: the door */
-.t-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 3rem; align-items: center; }
-@media (max-width: 900px) { .t-grid { grid-template-columns: 1fr; } }
+/* round 3: the door stack matches the headline's height — three timid chips
+   beside a 3.8rem headline read as an afterthought, not as the second door */
+.t-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 3rem; align-items: stretch; }
+@media (max-width: 900px) { .t-grid { grid-template-columns: 1fr; align-items: start; } }
+.t-doors { display: flex; flex-direction: column; justify-content: center; gap: 0.85rem; height: 100%; }
 /* the doors: light tickets on the dark cover */
 .file-chip {
-  display: flex; align-items: center; gap: 0.8rem;
+  display: flex; align-items: center; gap: 0.9rem; flex: 1; min-height: 5.4rem;
   background: #FFFFFF; border: 1.5px solid #FFFFFF; border-radius: 6px;
-  padding: 0.95rem 1.1rem; text-decoration: none; color: var(--ink);
-  font-size: 0.88rem; font-weight: 600;
+  padding: 1.15rem 1.25rem; text-decoration: none; color: var(--ink);
+  font-size: 0.98rem; font-weight: 600;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
 }
-.file-chip + .file-chip { margin-top: 0.7rem; }
-.file-chip .fc-ico { background: var(--green); color: #fff; font-weight: 800; font-size: 0.62rem; border-radius: 3px; padding: 0.25rem 0.4rem; letter-spacing: 0.06em; }
-.file-chip small { display: block; font-weight: 400; color: var(--grey); font-size: 0.74rem; }
+.file-chip .fc-ico { background: var(--green); color: #fff; font-weight: 800; font-size: 0.62rem; border-radius: 3px; padding: 0.25rem 0.4rem; letter-spacing: 0.06em; flex: none; }
+.file-chip small { display: block; font-weight: 400; color: var(--grey); font-size: 0.78rem; margin-top: 0.2rem; }
+/* metadata breaks at its separators or not at all — never mid-filename */
+.file-chip small span { white-space: nowrap; }
 .file-chip:hover, .file-chip:focus-visible { border-color: #9ED4B5; transform: translateY(-1px); }
+@media (max-width: 900px) { .t-doors { height: auto; } .file-chip { flex: none; min-height: 0; } }
 
 /* stacked week list replaces the gantt on narrow screens */
 .gantt-mobile { display: none; }
 @media (max-width: 640px) {
-  /* bars stay as mute duration marks; their labels go — never ship clipped type */
-  .g-bar span { display: none; }
+  /* bars and diamonds stay as mute marks; their labels go — never ship clipped type */
+  .g-bar span, .g-mile span { display: none; }
   .g-row { grid-template-columns: 1fr; gap: 0.2rem; }
   .g-row .g-label { text-align: left; font-size: 0.78rem; }
   .g-row .g-track { height: 0.85rem; }
@@ -167,8 +182,14 @@ h1.s-title, h2.s-title {
 .slide--divider .s-kick { color: #C9EBD7; position: relative; z-index: 1; }
 .slide--divider h2 { font-weight: 800; font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.1; letter-spacing: -0.02em; max-width: 26ch; border: 0; padding: 0; margin: 0; color: #fff; position: relative; z-index: 1; }
 .slide--divider .d-list { position: relative; z-index: 1; margin-top: 1.1rem; font-size: 0.88rem; color: #C9EBD7; font-weight: 600; }
+/* round 3: the ghost numeral is clipped to the content area, stopping short of the
+   footer rule — crossing it made one flat opacity read as two different greys */
+.slide--divider .d-clip {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 3.3rem;
+  overflow: hidden; z-index: 0; pointer-events: none;
+}
 .slide--divider .ghost {
-  position: absolute; right: 1.5rem; bottom: -2.8rem; z-index: 0;
+  position: absolute; right: 1.5rem; bottom: -2.8rem;
   font-weight: 800; font-size: clamp(11rem, 24vw, 19rem); line-height: 1;
   color: rgba(255, 255, 255, 0.09); letter-spacing: -0.04em; user-select: none;
 }
@@ -190,21 +211,77 @@ h1.s-title, h2.s-title {
   .fw > div:last-child { border-bottom: 0 !important; }
 }
 
+/* ---------- one-line area reference row (client deck) ----------
+   round 3: the client deck no longer re-teaches the six areas the intro deck
+   already taught — it names them once and points at the fuller slide. */
+.area-row {
+  list-style: none; display: flex; flex-wrap: wrap; gap: 0 1.4rem;
+  border-top: 1.5px solid var(--ink); border-bottom: 1px solid var(--rule);
+  padding: 0.7rem 0; margin-top: 0.4rem;
+}
+.area-row li { display: flex; align-items: baseline; gap: 0.35rem; font-size: 0.84rem; font-weight: 600; padding: 0.2rem 0; }
+.area-row .an { color: var(--green); font-weight: 800; font-variant-numeric: tabular-nums; }
+
+/* ---------- the scope contract: in / out ---------- */
+.scope-x { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1.5px solid var(--ink); margin-top: 1.6rem; }
+@media (max-width: 860px) { .scope-x { grid-template-columns: 1fr; } .scope-x .sx + .sx { border-left: 0; border-top: 1px solid var(--rule); } }
+.scope-x .sx { padding: 1.1rem 1.2rem 1.2rem; }
+.scope-x .sx + .sx { border-left: 1px solid var(--rule); }
+.scope-x h3 { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.7rem; }
+.scope-x .sx--in h3 { color: var(--green-deep); }
+.scope-x .sx--out h3 { color: #8A6D1F; }
+.scope-x ul { list-style: none; }
+.scope-x li { font-size: 0.85rem; color: var(--grey); line-height: 1.5; padding: 0.3rem 0 0.3rem 1.3rem; position: relative; }
+.scope-x li::before { position: absolute; left: 0; top: 0.3rem; font-weight: 800; }
+.scope-x .sx--in li::before { content: "+"; color: var(--green); }
+.scope-x .sx--out li::before { content: "−"; color: #C9A94E; }
+
+/* ---------- the review gate (client deck exhibit) ----------
+   the rule itself, drawn — not the same stamp the intro deck already used. */
+.gate { margin-top: 1.4rem; border: 1.5px solid var(--rule); border-radius: 6px; padding: 1.1rem 1.2rem 1.2rem; background: #FAFBFA; }
+.gate .gate-h { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey); margin-bottom: 0.7rem; }
+.gate .gate-q { font-weight: 800; font-size: 0.92rem; padding-bottom: 0.8rem; border-bottom: 2px solid var(--ink); }
+.gate-branch { display: block; padding: 0.75rem 0 0.75rem 1.6rem; position: relative; border-bottom: 1px solid var(--rule); }
+.gate-branch:last-child { border-bottom: 0; padding-bottom: 0.2rem; }
+.gate-branch::before { position: absolute; left: 0; top: 0.75rem; font-weight: 800; font-size: 0.95rem; }
+.gate-branch--yes::before { content: "✓"; color: var(--green); }
+.gate-branch--no::before { content: "✕"; color: #8A6D1F; }
+.gate-branch b { display: block; font-size: 0.88rem; font-weight: 800; }
+.gate-branch span { display: block; font-size: 0.82rem; color: var(--grey); line-height: 1.5; margin-top: 0.15rem; }
+
 /* ---------- gantt (timeline) ---------- */
+/* round 3: a point event is a diamond, a duration is a bar. wk 0 and wk 1 are
+   single meetings — drawing them as bars implied a week of work each. Hairline
+   gridlines at wk 3/6/9 give the bars something to be measured against. */
 .gantt { margin-top: 0.6rem; display: grid; gap: 0.55rem; }
 .g-row { display: grid; grid-template-columns: 11rem 1fr; gap: 1rem; align-items: center; }
 .g-row .g-label { font-size: 0.86rem; font-weight: 600; text-align: right; }
-.g-row .g-track { position: relative; height: 1.9rem; background: #F0F2F0; border-radius: 3px; }
+.g-row .g-track {
+  position: relative; height: 1.9rem; border-radius: 3px;
+  background-color: #F0F2F0;
+  background-image: linear-gradient(var(--rule), var(--rule)), linear-gradient(var(--rule), var(--rule)), linear-gradient(var(--rule), var(--rule));
+  background-size: 1px 100%; background-position: 25% 0, 50% 0, 75% 0; background-repeat: no-repeat;
+}
 .g-row .g-bar {
   position: absolute; top: 0; bottom: 0; border-radius: 3px;
   background: var(--green); display: flex; align-items: center;
   padding: 0 0.6rem; color: #fff; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.05em;
   white-space: nowrap; overflow: hidden;
 }
-.g-row .g-bar--light { background: #7FB899; color: var(--ink); }
 .g-row .g-bar--dark { background: var(--green-deep); }
+/* the milestone: a diamond on the week it happens, label riding beside it */
+.g-mile { position: absolute; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 0.5rem; }
+.g-mile::before { content: ""; width: 0.78rem; height: 0.78rem; background: var(--green-deep); transform: rotate(45deg); flex: none; }
+.g-mile span { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.05em; color: var(--ink); white-space: nowrap; }
 .g-axis { display: grid; grid-template-columns: 11rem 1fr; gap: 1rem; margin-top: 0.2rem; }
-.g-axis .g-ticks { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--grey); }
+/* ticks are positioned, not space-between: they must sit on the gridlines they name */
+.g-axis .g-ticks { position: relative; display: block; height: 1.1rem; font-size: 0.68rem; color: var(--grey); }
+.g-axis .g-ticks span { position: absolute; top: 0; white-space: nowrap; transform: translateX(-50%); }
+.g-axis .g-ticks span:nth-child(1) { left: 0; transform: none; }
+.g-axis .g-ticks span:nth-child(2) { left: 25%; }
+.g-axis .g-ticks span:nth-child(3) { left: 50%; }
+.g-axis .g-ticks span:nth-child(4) { left: 75%; }
+.g-axis .g-ticks span:nth-child(5) { left: 100%; transform: translateX(-100%); }
 @media (max-width: 720px) {
   .g-row { grid-template-columns: 1fr; gap: 0.25rem; }
   .g-row .g-label { text-align: left; }
@@ -214,6 +291,11 @@ h1.s-title, h2.s-title {
 /* ---------- two-column slide body ---------- */
 .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4rem; align-items: start; }
 @media (max-width: 860px) { .cols2 { grid-template-columns: 1fr; } }
+/* round 3: the closing CTA sits on the slide's baseline, not floating mid-column */
+.cols2--pin { align-items: stretch; }
+.pin-col { display: flex; flex-direction: column; }
+.pin-col .pin-bottom { margin-top: auto; padding-top: 1.6rem; }
+@media (max-width: 860px) { .cols2--pin { align-items: start; } .pin-col .pin-bottom { margin-top: 1.4rem; padding-top: 0; } }
 
 /* ---------- takeaway box ---------- */
 .takeaway {
@@ -223,11 +305,17 @@ h1.s-title, h2.s-title {
 }
 
 /* ---------- exec table (team roster) ---------- */
-.roster { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+/* round 3: the role column's nowrap was starving the name column — "External
+   Relations Director" held the table open and broke names across three lines.
+   Roles may wrap; names may not exceed two lines. */
+.roster { width: 100%; border-collapse: collapse; font-size: 0.9rem; table-layout: fixed; }
 .roster th, .roster td { text-align: left; padding: 0.6rem 0.9rem 0.6rem 0; border-bottom: 1px solid var(--rule); }
+.roster th:nth-child(1) { width: 37%; }
+.roster th:nth-child(2) { width: 27%; }
 .roster th { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey); }
 .roster td b { font-weight: 600; }
-.roster td:nth-child(2) { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey); white-space: nowrap; }
+.roster td:nth-child(2) { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey); line-height: 1.35; }
+.roster td:nth-child(3) { overflow-wrap: anywhere; }
 .roster td a { color: var(--green-deep); text-decoration: none; font-size: 0.9rem; }
 .roster td a:hover { text-decoration: underline; }
 @media (max-width: 720px) {
@@ -270,6 +358,8 @@ input, textarea {
   background: #fff; font-family: var(--sans); font-size: 0.98rem;
 }
 input:focus, textarea:focus { outline: none; border-color: var(--green); }
+/* round 3: on mobile the stacked form's submit button ran into the slide footer */
+.slide form { margin-bottom: 2rem; }
 label span.lbl { display: block; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--grey); margin-bottom: 0.35rem; }
 
 /* ---------- footer ---------- */

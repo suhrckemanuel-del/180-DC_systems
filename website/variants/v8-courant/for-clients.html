@@ -77,19 +77,19 @@
 <article id="desk" aria-labelledby="dk-h" style="border-bottom:0">
   <span class="kicker">Write to the desk · four lines</span>
   <h2 class="headline--2" id="dk-h">Place the assignment</h2>
-  <div class="front" style="grid-template-columns:1fr 1fr;gap:2rem;margin-top:0.8rem">
+  <div class="desk-grid">
     <div>
       <p>We reply within a week, usually faster — one letter from a person, never a sequence. The scoping call commits you to nothing.</p>
       <p style="margin-top:0.8rem;font-style:italic;color:var(--faint);font-size:0.92rem">Editor's note, honestly: this form is a design preview — it goes live with the site.</p>
     </div>
     <form class="coupon" aria-label="Client intake (demonstration only)" onsubmit="return false">
       <span class="knip">knip uit — clip out</span>
-      <div style="display:grid;gap:0.9rem">
+      <div class="coupon-fields">
         <label><span class="lbl">Your name</span><input type="text" name="name" autocomplete="name"></label>
         <label><span class="lbl">Organisation</span><input type="text" name="org" autocomplete="organization"></label>
         <label><span class="lbl">Email</span><input type="email" name="email" autocomplete="email"></label>
         <label><span class="lbl">What challenge are you facing?</span><textarea name="challenge" rows="4"></textarea></label>
-        <button class="btn" type="submit" style="cursor:pointer;justify-self:start">Post the letter</button>
+        <button class="btn coupon-post" type="submit">Post the letter</button>
       </div>
     </form>
   </div>
