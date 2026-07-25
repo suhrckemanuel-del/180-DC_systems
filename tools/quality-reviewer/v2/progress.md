@@ -397,9 +397,14 @@ match the redesigned rubric (it had still said empty blockingIssues plus any maj
    The issueType half of 1.5i is done (confirmed by the re-measurement: no invented values).
    Do 1.5i and 1.5j (and Path A if the owner chooses it), regression-run the synthetic five on
    the current package, then freeze. One prompt pass, one re-measurement.
-3. The labeling track can start: the workstation is ready, the protocol and worksheet exist,
-   two labelers are secured per the owner decisions. Nothing in the tooling blocks it now.
-   This is the long pole (plan item 1.5c, calibration batch first).
+3. The labeling track can start, and the tooling is now verified end to end (2026-07-25). The
+   labeling workstation's export format matches the adjudication parser exactly (by inspection),
+   and the adjudication workstation was runtime-tested with fabricated fixtures: it parses both
+   R-levels, computes the readiness delta, gates the gold download until the human fills it, and
+   never pre-selects a label, with the different-case and same-labeler guards both firing. The
+   protocol and worksheet exist, two labelers are secured per the owner decisions. Nothing in
+   the tooling blocks it. This is the long pole (plan item 1.5c, the four-case calibration batch
+   first).
 
 See [eval-runs/NEXT-SESSION-PROMPT.md](eval-runs/NEXT-SESSION-PROMPT.md) for the earlier
 paste-ready continuation prompt (now largely superseded by this session).
