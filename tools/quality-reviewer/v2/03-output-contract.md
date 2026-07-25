@@ -108,8 +108,13 @@ Read it alongside this document.
 - **readiness.level** is derived from `blockingIssues`, never from `diagnosticMean`.
   If any blocking issue is present, readiness is at or below the lowest ceiling among
   them. The rules are in [01-rubric-v1.md](01-rubric-v1.md) section B.
-- **blockingIssues** may be empty. If empty, readiness is R2 when any finding is
-  major, R3 when only minor. Every blocking issue carries at least one verbatim quote.
+- **blockingIssues** may be empty. If empty, readiness defaults to R3 (Nearly ready with
+  minor edits) and is demoted to R2 only when a single specific gap changes the client's
+  decision, named in one sentence in mainReason. It does not follow from the major or minor
+  count: a no-blocker deck can carry one major finding and still be R3 if closing it would
+  not change what the client decides. If every finding is minor, readiness is R3. Every
+  blocking issue carries at least one verbatim quote. The rules are in
+  [01-rubric-v1.md](01-rubric-v1.md) section B.
 - **scorecard.dimensions** has exactly ten entries in rubric order. Out-of-scope
   dimensions for the artifact type use `result: "na"` and are excluded from
   `diagnosticMean`. Score per in-scope dimension is `1 + 4 * checksPassed / checksTotal`.
