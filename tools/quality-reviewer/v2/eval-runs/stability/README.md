@@ -1,5 +1,17 @@
 # Run-to-run stability, 2026-07-22 (case 05 extended to five runs 2026-07-23)
 
+> **SUPERSEDED PROMPT, read this first.** These seventeen runs were made on the prompt and
+> rubric as they stood on 2026-07-22 and 2026-07-23. Commit 54171e5 (2026-07-24) then applied
+> the issueType enum and a readiness rewrite to 04 section A, and the rubric's 2026-07-23
+> redesign decoupled no-blocker readiness from the major count. Both postdate these runs.
+> Section D below is itself the proof: two runs invented the issueType value analysis because
+> the prompt then lacked the enum, which the current prompt now lists. So the case 05
+> three-of-five over-escalation is stale, it measures a package that is no longer on disk. The
+> blind re-measurement of the current package on synthetic case 05 is in
+> [current-2026-07-25/README.md](current-2026-07-25/README.md): three of three completed runs
+> land the correct R3 with zero majors, so the over-escalation is not reproduced. Quote that
+> sheet, not the three-of-five number below, for current behaviour.
+
 The measurement [progress.md](../../progress.md) "Next actions" item 1 has been asking for
 since 2026-07-03, and which [effectiveness-review-2026-07-03.md](../../effectiveness-review-2026-07-03.md)
 section 6 calls the single most important pre-pilot number. Until now it was an assumption.

@@ -357,17 +357,36 @@ stability runs, and plan items 1.5i (issueType enum) and 1.5j (blockingIssues pr
 batch into the same single pre-freeze pass with one re-measurement. Awaiting the owner A/B
 decision before touching the frozen-candidate prompt.
 
+**4. Prompt and rubric drift found, and the stale number re-measured.** Setting up Path A
+surfaced that the prompt on disk had already drifted from the seventeen stability runs.
+Commit 54171e5 (2026-07-24, a bulk sync) had applied an unmeasured readiness rewrite and the
+issueType enum to 04 section A, and the rubric's 2026-07-23 redesign had already decoupled
+no-blocker readiness from the major count. None of it was decision-logged and the log still
+read issueType as not yet fixed. So the case 05 three-of-five over-escalation was stale. The
+stale sheet now carries a SUPERSEDED banner, the decision log records the drift, and the
+rubric's dangling See-decision-log reference is resolved. The owner chose to measure the
+current package before changing anything. Re-measurement on synthetic case 05, blind,
+byte-identical pack, current package, Opus 4.8:
+[eval-runs/stability/current-2026-07-25/README.md](eval-runs/stability/current-2026-07-25/README.md).
+Result: three of three completed runs land the correct R3 with zero majors (the session limit
+killed the other two mid-wave, write-per-item saved the three). The over-escalation is not
+reproduced, and it is structural: the redesign removed the any-one-major-forces-R2 rule that
+caused the R2s. **Path A was therefore not applied.** The current rubric already carries
+essentially the Path A clause, so the clause is redundant. It stays drafted here as a fallback
+if the two remaining runs or the real-case baseline resurface over-escalation.
+
 ## Next actions
 
-1. **Owner A/B decision on the over-flagging (teed up this session).** Path B is done and
-   verified. The open call is whether to also run Path A, the source-side severity clause, in
-   the single pre-freeze prompt pass alongside 1.5i and 1.5j, then re-measure stability once.
-   Recommendation: yes. Its marginal measurement cost is near zero because 1.5i and 1.5j
-   already force a full synthetic re-run, and it stops the real-case baseline from measuring a
-   severity calibration we already know over-escalates.
-2. If Path A is chosen: apply the drafted severity clause plus 1.5i and 1.5j in one pass,
-   regression-run the synthetic five blind, re-measure case 05 to five runs with
-   check-stability.js, then freeze. One prompt pass, one re-measurement.
+1. **Over-flagging: resolved on the current package, pending confirmation to five runs.** Path
+   B (readiness gate) is done and verified. Path A is not needed: the current package returns
+   the correct R3 in three of three blind runs. After the session resets (1:10am
+   Europe/Berlin), complete case 05 runs h and j to reach the five-run bar and update the
+   current-2026-07-25 sheet. This is the record-keeping tail, not a blocker.
+2. **Remaining pre-freeze prompt work, still open.** Plan item 1.5i's L-dimension denominator
+   rule (a fixed sub-check count per dimension, vacuous sub-checks resolve to na) and 1.5j
+   (blockingIssues reports the binding blocker as primary) are not yet in the prompt or rubric.
+   The issueType half of 1.5i is done (confirmed by the re-measurement: no invented values).
+   Do 1.5i and 1.5j, regression-run the synthetic five on the current package, then freeze.
 3. The labeling track can start: the workstation is ready, the protocol and worksheet exist,
    two labelers are secured per the owner decisions. Nothing in the tooling blocks it now.
    This is the long pole (plan item 1.5c, calibration batch first).

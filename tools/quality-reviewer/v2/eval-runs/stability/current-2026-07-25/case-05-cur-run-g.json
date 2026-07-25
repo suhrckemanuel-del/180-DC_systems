@@ -1,0 +1,148 @@
+{
+  "meta": {
+    "title": "Client E paid membership scheme",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Nearly ready with minor edits",
+    "mainReason": "No blocking rule fired: the decision is clear, the core recommendation is supported and its load-bearing number is handled as a stated assumption to test, so what remains is refinement.",
+    "highestRiskIssue": "The full-launch trigger of 5% on slide 10 sits below the 8% target that the 5,000 pounds case on slide 8 rests on.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "If the 5% trigger turns out to be an error rather than a deliberate floor, or the underlying accounts do not support the 80% grant figure, the level could tighten to targeted revision."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.7,
+    "confidence": "Medium",
+    "effort": "3-5 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The decision is named on slide 2 and answered plainly on slides 1 and 2, with a first action on slide 10." },
+      { "name": "Problem framing", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Diversify income away from single-year grants, scoped to a single-tier start, held consistently throughout." },
+      { "name": "Storyline and pyramid logic", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The governing insight is on slide 1 and the argument flows problem to evidence to recommendation without a break." },
+      { "name": "Evidence quality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Grant share, list size, attendance and comparable pricing all carry named sources and the key assumption is flagged." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The comparable-pricing benchmark on slide 5 does not feed an explicit reason for the 45 pound choice." },
+      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Action, owner, timing and a measurable trigger are all present on slide 10." },
+      { "name": "Feasibility and implementation", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Sized to existing capacity, sequenced across three months with a soft launch as the first step." },
+      { "name": "Risks, assumptions and uncertainty", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Conversion risk, list accuracy and staff strain are named and the soft launch tests them." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Most content headers are topic labels rather than assertions, though each slide carries one clear message." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, no named individual judged, certainty is appropriately hedged." }
+    ]
+  },
+  "strengths": [
+    { "point": "The recommendation is stated plainly and early, so a busy client gets the answer on the first slide.", "quote": "Client E should launch a paid membership scheme, starting with a single tier in the autumn.", "slide": 1 },
+    { "point": "The load-bearing number is handled honestly as an assumption with a baseline and a test plan, not smuggled in as fact.", "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.", "slide": 8 },
+    { "point": "Major claims and financial figures carry named sources.", "quote": "Project grants are 80% of Client E's income (2024 accounts) and each is single-year.", "slide": 3 },
+    { "point": "The implementation names an owner, a sequence and a measurable trigger.", "quote": "The Client E coordinator owns the launch.", "slide": 10 }
+  ],
+  "findings": [
+    {
+      "short": "Success threshold mismatch",
+      "title": "The full-launch trigger of 5% is below the 8% target the revenue case depends on.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "recommendation",
+      "owner": "team",
+      "principle": "Consistent success metric: the go decision threshold should match the target the business case rests on.",
+      "diagnosis": "Slide 8 sets the year-one target at 8% conversion, which produces the roughly 5,000 pounds. Slide 10 tells Client E to proceed to full launch if the soft launch clears 5%. A 5% result produces well under the 5,000 pounds the case is built on, so the trigger and the target do not line up.",
+      "evidence": [
+        { "slide": 8, "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one." },
+        { "slide": 10, "quote": "Month three: full launch if the soft launch clears 5%." }
+      ],
+      "why": "If the client green-lights the full launch at 5% it will expect the 5,000 pounds the deck promised and get closer to 3,000, which undercuts the income-diversification the scheme is meant to serve.",
+      "reflect": "What conversion rate makes the scheme worth scaling, and should the full-launch trigger be tied to that revenue floor rather than a separate 5%.",
+      "fix": "Reconcile the go trigger with the revenue target: either raise the full-launch threshold to the conversion the business case needs or restate the expected year-one income at the 5% floor so the client scales on a number it can bank on.",
+      "tags": [ "Success Metric", "Actionability" ]
+    },
+    {
+      "short": "Price point unjustified",
+      "title": "The 45 pound price sits at the low end of the comparable range with no stated rationale.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Draw the implication: benchmark data should feed the choice it informs.",
+      "diagnosis": "Slide 5 shows comparable groups charge 40 to 60 pounds. Slide 6 sets the price at 45 pounds, near the bottom of that range, without saying why the low end rather than the middle. For an income-diversification goal the pricing choice deserves an explicit reason.",
+      "evidence": [
+        { "slide": 5, "quote": "Three comparable local arts non-profits run membership at 40 to 60 pounds a year (their public websites, 2025)." },
+        { "slide": 6, "quote": "Launching one tier at 45 pounds, rather than three tiers at once, keeps admin low and lets Client E learn before it scales." }
+      ],
+      "why": "Pricing at the low end may leave recurring income on the table, the very thing the scheme exists to build, and the client cannot weigh that tradeoff without the reasoning.",
+      "reflect": "Why 45 rather than 50 or 55, and does the low price buy conversion the client needs or forgo income it needs more.",
+      "fix": "State the reason for 45 against the 40 to 60 benchmark: name whether the low end is chosen to maximise conversion or whether a higher price better serves the income goal, and let the soft launch test price sensitivity.",
+      "tags": [ "Analysis", "So-What" ]
+    },
+    {
+      "short": "Titles are topic labels",
+      "title": "Most slide headers are topic labels rather than the assertions that carry the argument.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "Minto action titles: the header states the takeaway, not the topic.",
+      "diagnosis": "Headers such as The decision and The numbers name the topic of the slide, not its message. The governing insight is stated up front on slide 1, so the argument still lands, but a reader skimming only the headers gets less than the deck actually says.",
+      "evidence": [
+        { "slide": 2, "quote": "The decision" },
+        { "slide": 8, "quote": "The numbers" }
+      ],
+      "why": "A partner or funder reading only the headers cannot reconstruct the reasoning, so the deck does more work in the room than on the page.",
+      "reflect": "If someone read only your slide headers, would they get your argument or just your table of contents.",
+      "fix": "Convert the topic-label headers into full-sentence assertions that state each slide's takeaway, matching the action-title standard the title slide already meets.",
+      "tags": [ "Minto", "Action Titles" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 3", "problem": "The two grants not expected to renew are not sized in pounds.", "why": "The funding gap the membership must help close is the reason for the whole scheme, so its size matters.", "fix": "Add the pound value of the two grants at risk so the 5,000 pounds target can be read against the gap it fills." }
+  ],
+  "questionsForLead": [
+    "Did the team confirm the full-launch trigger with Client E, given a 5% result delivers well under the 5,000 pounds year-one figure.",
+    "Was 45 pounds chosen to maximise conversion, or should the soft launch test a higher price given comparables run to 60 pounds.",
+    "What is the pound value of the two grants not expected to renew, so the membership target can be sized against the gap."
+  ],
+  "learningNote": {
+    "lesson": "The threshold you use to green-light a scheme should be the same threshold your business case assumes, or the client scales on a number that will not hold.",
+    "weakHabit": "Setting a cautious go trigger separately from the target the revenue case rests on, so the two numbers drift apart.",
+    "exercise": "For each go or no-go trigger in a deck, trace it back to the revenue or outcome the recommendation promises and check the trigger clears that bar.",
+    "principle": "Consistent Success Metric"
+  },
+  "notAssessed": [
+    "Whether the 2024 accounts, box-office data and funder letters say what the deck reports. The underlying documents were not provided.",
+    "Whether the 8% conversion assumption holds. The deck flags it as the main thing to test and the soft launch is designed to check it.",
+    "Visual design, layout and charts. Only slide text was provided.",
+    "Whether Client E's coordinator has capacity to run both the soft launch and the full launch. The deck assumes existing capacity is enough."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Decision", "span": 2 },
+      { "label": "Case", "span": 3 },
+      { "label": "Design", "span": 2 },
+      { "label": "Numbers and risks", "span": 2 },
+      { "label": "Steps", "span": 1 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "partial" },
+      { "slide": 6, "state": "partial" },
+      { "slide": 7, "state": "pass" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 8, "state": "partial", "label": "5% trigger vs 8% target" },
+      { "at": 6, "state": "partial", "label": "45 at low end of range" }
+    ],
+    "connectors": [
+      { "from": 8, "to": 10, "label": "target vs trigger" }
+    ]
+  }
+}

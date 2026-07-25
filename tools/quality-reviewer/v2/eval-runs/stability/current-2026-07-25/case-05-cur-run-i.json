@@ -1,0 +1,131 @@
+{
+  "meta": {
+    "title": "Client E paid membership scheme",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Nearly ready with minor edits",
+    "mainReason": "No blocking rule fired: the decision is stated up front, the core recommendation rests on sourced figures and the one load-bearing number is explicitly flagged as an assumption to test, so only minor refinements remain.",
+    "highestRiskIssue": "The soft launch that gates the full launch runs only to the most engaged 200 contacts (slide 9), so a 5% clear there need not confirm the 8% assumption for the full 1,400-person list (slide 8).",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "The pound size of the grant shortfall and Client E's total income, or the cost of running the member benefits, could turn the materiality question into a decision-changing gap and demote readiness."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.5,
+    "confidence": "Medium",
+    "effort": "2-3 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Decision named, answered yes and turned into a first action the coordinator can run. Materiality against the grant gap is the one soft spot." },
+      { "name": "Problem framing", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Specific question (membership to diversify from grants), scope bounded to a single-tier pilot, conversion targets act as success criteria, one problem held throughout." },
+      { "name": "Storyline and pyramid logic", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Answer-first and the chain is unbroken, but several topic-label titles weaken title-only reconstruction." },
+      { "name": "Evidence quality", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Grants, mailing list and comparable pricing are all sourced and the 8% is marked as an assumption. Primary and secondary sources are not explicitly distinguished." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Findings are interpreted and feed the recommendation. Revenue is not netted or sized against the grant shortfall." },
+      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Action, price, owner, timing and a measurable target are all named." },
+      { "name": "Feasibility and implementation", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Sized to a single coordinator, sequenced month by month with a soft-launch pilot and go/no-go triggers." },
+      { "name": "Risks, assumptions and uncertainty", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Load-bearing assumptions and the main risk are stated and the uncertainty is named as the thing to test." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "One message per slide and content supports the title, but most titles are topic labels rather than assertions." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, no named individual judged, certainty is appropriate and honest." }
+    ]
+  },
+  "strengths": [
+    { "point": "Answers the client's question up front with a clear decision and a deliberately staged start.", "quote": "Our answer is yes, with a deliberately small start.", "slide": 2 },
+    { "point": "Marks the load-bearing number as an assumption and names it as the thing to test rather than presenting it as fact.", "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.", "slide": 8 },
+    { "point": "Gives the recommendation an owner, a month-by-month sequence and a go/no-go trigger sized to the client.", "quote": "Month three: full launch if the soft launch clears 5%.", "slide": 10 }
+  ],
+  "findings": [
+    {
+      "short": "Soft launch not representative",
+      "title": "The soft launch tests the most engaged contacts, so it cannot confirm the 8% assumption for the whole list.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Assumption testing: a validation test must run on a group that behaves like the population the number applies to.",
+      "diagnosis": "Slide 8 sets year-one revenue on 8% of the full 1,400-person mailing list. Slide 9 tests that with a soft launch to the most engaged 200 contacts and slide 10 proceeds to full launch if that clears 5%. The most engaged contacts convert higher than the list average, so a 5% clear among them can still sit below 8% across the whole list.",
+      "evidence": [
+        { "slide": 8, "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one." },
+        { "slide": 9, "quote": "A soft launch to the most engaged 200 contacts tests both before the full launch." },
+        { "slide": 10, "quote": "Month three: full launch if the soft launch clears 5%." }
+      ],
+      "why": "The client could read a passing soft launch as proof the 8% holds and scale on a number the test did not actually confirm.",
+      "reflect": "Does the most engaged 200 convert like the average of the 1,400, and if not, what clearance rate among them would imply 8% across the whole list.",
+      "fix": "Set the soft-launch go threshold from the expected gap between the engaged segment and the full list, or add a small representative sample, so the gate validates the assumption it guards.",
+      "tags": [ "Assumption Testing", "Evidence Grounding" ]
+    },
+    {
+      "short": "Revenue not sized to gap",
+      "title": "The membership revenue is stated gross and is never sized against the grant income at risk.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "So-what: a diversification move should be sized against the shortfall it is meant to address.",
+      "diagnosis": "Slide 3 says grants are 80% of income and two of five are not expected to renew, but the shortfall is never given in pounds. Slide 8 offers about 5,000 pounds gross with no cost of the member benefits netted out, so the deck does not show how far membership goes toward the gap it opens with.",
+      "evidence": [
+        { "slide": 3, "quote": "Two of five grants are not expected to renew, per the funder letters on file." },
+        { "slide": 8, "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one." }
+      ],
+      "why": "A funder or board member will ask whether 5,000 pounds is a meaningful answer to the grant loss, and the deck cannot yet say.",
+      "reflect": "How large is the grant shortfall in pounds, and what is membership worth net of the cost of running it.",
+      "fix": "Size the at-risk grant income and net the member-benefit cost out of the 5,000 pounds, then frame membership as the share of the gap it realistically covers in year one and beyond.",
+      "tags": [ "So-What", "Materiality" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 8", "problem": "The phrase conservative against the 32% attendance rate compares paid conversion to event attendance, which are different behaviors.", "why": "Attending a ticketed event is a lower bar than paying an annual fee, so the 32% is not a clean ceiling for the 8%.", "fix": "Anchor the 8% to a conversion benchmark such as the comparable groups' member-to-contact ratios rather than to the attendance rate." },
+    { "location": "Titles across slides 2, 5, 7, 8, 10", "problem": "Several titles are topic labels (\"The numbers\", \"First steps\") rather than assertions.", "why": "A reader skimming only the titles gets the topics but not the argument, which the answer-first slide 1 otherwise sets up well.", "fix": "Rewrite the label titles as the one takeaway of each slide so the titles alone carry the story." }
+  ],
+  "questionsForLead": [
+    "How large is the grant shortfall in pounds, so the 5,000 pounds of membership revenue can be sized against it.",
+    "Does the 5,000 pounds account for the cost of running the members-only events and partner discounts, or is it gross.",
+    "Is the most engaged 200 representative enough of the full 1,400 list to validate an 8% conversion assumption.",
+    "After year one, is a single tier the ceiling or the first step toward the multi-tier model the comparables run."
+  ],
+  "learningNote": {
+    "lesson": "A test-and-learn gate only proves what its test population represents. Validating a full-list number on the easiest segment reads a favorable result as general when it is not.",
+    "weakHabit": "Testing an assumption on the most willing group and treating the result as representative of the whole.",
+    "exercise": "For each load-bearing assumption, write who you would test it on and whether that group behaves like the full population the number applies to. If it does not, adjust the threshold or the sample before you trust the result.",
+    "principle": "Assumption Testing"
+  },
+  "notAssessed": [
+    "Visual design, layout and charts. Only slide text was provided.",
+    "Whether the cited sources (2024 accounts, funder letters, comparable websites) are accurate. Sources are named but not supplied.",
+    "Client E's total income, so the materiality of 5,000 pounds against the grant shortfall cannot be quantified.",
+    "Whether staff genuinely has spare capacity for the members-only events beyond the deck's claim."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Decision", "span": 2 },
+      { "label": "Case for change", "span": 3 },
+      { "label": "The scheme", "span": 2 },
+      { "label": "Numbers and risks", "span": 2 },
+      { "label": "Action", "span": 1 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "pass" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "pass" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "partial" },
+      { "slide": 10, "state": "pass" }
+    ],
+    "callouts": [
+      { "at": 8, "state": "partial", "label": "Revenue is gross and unsized against the grant gap" },
+      { "at": 9, "state": "partial", "label": "Soft launch tests only the most engaged 200" }
+    ],
+    "connectors": [
+      { "from": 8, "to": 10, "label": "assumption gates full launch" }
+    ]
+  }
+}
