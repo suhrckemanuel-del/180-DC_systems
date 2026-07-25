@@ -15,9 +15,19 @@ Each dimension is scored 1 to 5 through binary sub-checks, the same mechanism v1
 so the future renderer stays a superset of the current one.
 
 - Each sub-check is a yes or no, not a judgment call.
+- Each dimension has a **fixed set of four enumerated sub-checks** (listed under each
+  dimension in section D), so `checksTotal` is not invented per run. It starts at four and
+  falls only as specific sub-checks resolve to na for the deck under review.
+- A sub-check the deck gives no basis to judge resolves to **na**, never to a pass. An na
+  sub-check drops out of both `checksPassed` and `checksTotal`, so a vacuous check cannot
+  inflate the score. If all four sub-checks are na, the dimension `result` is na.
 - `score = 1 + 4 * checksPassed / checksTotal`, rounded to one decimal.
 - `result` is `pass` if all checks pass, `partial` if some pass, `fail` if none or one
   passes.
+- `diagnosticMean` averages the **full-scope** dimensions only (see the scope matrix in
+  section C). Light-touch dimensions are scored and shown but excluded from the mean,
+  because a light dimension is judged only where it applies and its denominator is not
+  comparable across cases.
 - Dimension scores are **diagnostic**. They tell the team where to look. They do not
   decide readiness. Readiness is set separately in section B.
 
@@ -94,8 +104,11 @@ the whole point of the model.
 ## C. Artifact-type scope matrix
 
 The reviewer is told what artifact it is reviewing and does not penalize an artifact
-for lacking something it should not yet have. F = scored in full. L = light touch,
-judged only where it genuinely applies. Dash = not applicable, do not penalize.
+for lacking something it should not yet have. F = scored in full and averaged into
+`diagnosticMean`. L = light touch, scored and shown where it genuinely applies but
+excluded from `diagnosticMean`. Dash = not applicable (scope na), do not penalize and
+do not score. These map to the `scope` field on each dimension: F is `full`, L is
+`light`, dash is `na`.
 
 | Dimension | Kickoff problem frame | Research plan | Interview guide | Synthesis memo | Draft deck | Final rec deck | Implementation roadmap |
 |---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|

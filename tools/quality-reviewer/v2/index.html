@@ -346,6 +346,17 @@
 
 var LEVELS = ['Not ready for client review','Needs substantial revision','Needs targeted revision','Nearly ready with minor edits'];
 var RESULTS = ['pass','partial','fail','na'];
+// Artifact-type scope matrix (01-rubric-v1.md section C), dims 1..10. F full, L light, - na.
+var SCOPE_MATRIX = {
+  'kickoff problem frame':     ['L','F','L','-','L','-','-','F','L','F'],
+  'research plan':             ['L','F','L','F','-','-','L','F','L','F'],
+  'interview guide':           ['L','F','-','F','-','-','-','F','-','F'],
+  'synthesis memo':            ['F','L','F','F','F','L','L','F','L','F'],
+  'draft deck':                ['F','F','F','F','F','F','L','F','F','F'],
+  'final recommendation deck': ['F','F','F','F','F','F','F','F','F','F'],
+  'implementation roadmap':    ['F','L','F','L','L','F','F','F','F','F']
+};
+var SCOPE_LETTER = { F:'full', L:'light', '-':'na' };
 var SEVERITIES = ['critical','major','minor'];
 var SEV_LABEL = { critical:'High impact', major:'Moderate', minor:'Minor' };
 var ISSUE_TYPES = ['thinking','evidence','recommendation','implementation','communication'];
@@ -389,20 +400,45 @@ function validate(r){
     var dims = sc.dimensions;
     if(!Array.isArray(dims) || dims.length !== 10) e.push('scorecard.dimensions must have exactly ten entries');
     else {
-      var inScope = [];
+      // 1.5i: when the review carries scope, the diagnostic mean is over full-scope
+      // dimensions only and checksTotal is capped at the fixed four sub-checks. Reviews
+      // written before 1.5i (no scope field) keep the old in-scope mean.
+      var artScope = SCOPE_MATRIX[m && m.artifactType];
+      var useScope = dims.some(function(d){ return d && d.scope !== undefined; });
+      var meanScores = [];
       dims.forEach(function(d,i){
         if(RESULTS.indexOf(d.result) < 0) e.push('dimension ' + (i+1) + ' has an invalid result: ' + d.result);
+        if(useScope){
+          var want = artScope ? SCOPE_LETTER[artScope[i]] : null;
+          if(['full','light','na'].indexOf(d.scope) < 0) e.push('dimension ' + (i+1) + ' has an invalid scope: ' + d.scope);
+          else if(want && d.scope !== want) e.push('dimension ' + (i+1) + ' scope "' + d.scope + '" does not match the ' + m.artifactType + ' matrix (expected "' + want + '")');
+          if(d.scope === 'full' && d.result === 'na') e.push('dimension ' + (i+1) + ' is full scope but result is na');
+          if(d.scope === 'na' && d.result !== 'na') e.push('dimension ' + (i+1) + ' is out of scope (na) but result is ' + d.result);
+        }
         if(d.result !== 'na'){
-          if(typeof d.checksTotal !== 'number' || d.checksTotal <= 0) e.push('dimension ' + (i+1) + ' has no checksTotal');
-          else inScope.push(1 + 4 * d.checksPassed / d.checksTotal);
+          if(typeof d.checksTotal !== 'number' || d.checksTotal <= 0 || (useScope && d.checksTotal > 4)) e.push('dimension ' + (i+1) + ' has an invalid checksTotal (1 to 4)');
+          else {
+            var inMean = useScope ? (d.scope === 'full') : true;
+            if(inMean) meanScores.push(1 + 4 * d.checksPassed / d.checksTotal);
+          }
         }
       });
-      if(inScope.length && typeof sc.diagnosticMean === 'number'){
-        var mean = Math.round(inScope.reduce(function(a,b){return a+b;},0) / inScope.length * 10) / 10;
+      if(meanScores.length && typeof sc.diagnosticMean === 'number'){
+        var mean = Math.round(meanScores.reduce(function(a,b){return a+b;},0) / meanScores.length * 10) / 10;
         if(Math.abs(mean - sc.diagnosticMean) > 0.05)
           e.push('scorecard.diagnosticMean ' + sc.diagnosticMean + ' does not equal the computed mean ' + mean);
       }
     }
+  }
+
+  // 1.5j: when blocking issues carry the primary flag, exactly one is the binding
+  // (lowest, most severe ceiling) blocker. Legacy multi-blocker reviews are unaffected.
+  if(bi.length && bi.some(function(b){ return b && b.primary !== undefined; })){
+    var prims = bi.filter(function(b){ return b.primary === true; });
+    var ceilIdx = bi.map(function(b){ return LEVELS.indexOf(b.ceiling); }).filter(function(i){ return i >= 0; });
+    if(prims.length !== 1) e.push('blockingIssues must mark exactly one primary blocker, found ' + prims.length);
+    else if(ceilIdx.length && LEVELS.indexOf(prims[0].ceiling) !== Math.min.apply(null, ceilIdx))
+      e.push('the primary blocker is not the binding one: a listed blocker has a more severe ceiling');
   }
 
   var f = r.findings;
@@ -716,8 +752,10 @@ function renderLead(){
 
   var bi = r.blockingIssues || [];
   $('blockCard').classList.toggle('hidden', !bi.length);
+  var hasPrimary = bi.some(function(b){ return b && b.primary !== undefined; });
   $('blocks').innerHTML = bi.map(function(b){
-    return '<div class="block"><div class="bh">Rule ' + esc(b.rule) + '. ' + esc(b.label) + '</div>' +
+    var tag = hasPrimary ? (b.primary ? ' <span class="chip">binding</span>' : ' <span class="chip">secondary</span>') : '';
+    return '<div class="block"><div class="bh">Rule ' + esc(b.rule) + '. ' + esc(b.label) + tag + '</div>' +
       '<div class="bc">Caps readiness at: ' + esc(b.ceiling) + '</div>' +
       (b.evidence || []).map(quoteHtml).join('') + '</div>';
   }).join('');
@@ -742,10 +780,14 @@ function renderLead(){
   $('questions').innerHTML = qs.map(function(q){ return '<li>' + esc(q) + '</li>'; }).join('');
 
   var dims = r.scorecard.dimensions || [];
-  var scoped = dims.filter(function(d){ return d.result !== 'na'; }).length;
-  $('meanNote').textContent = 'Diagnostic, not a verdict. Mean of ' + scoped + ' in-scope dimensions. Readiness above is set by the blocking rules, not by this number.';
+  var useScope = dims.some(function(d){ return d && d.scope !== undefined; });
+  var meaned = dims.filter(function(d){ return useScope ? d.scope === 'full' : d.result !== 'na'; }).length;
+  $('meanNote').textContent = 'Diagnostic, not a verdict. Mean of ' + meaned + (useScope ? ' full-scope' : ' in-scope') +
+    ' dimensions' + (useScope ? ' (light-touch dimensions are shown but not averaged)' : '') +
+    '. Readiness above is set by the blocking rules, not by this number.';
   $('dims').innerHTML = dims.map(function(d){
-    return '<div class="dim"><div class="dn">' + esc(d.name) + '</div>' +
+    var lt = (useScope && d.scope === 'light') ? '<span class="chip">light touch</span>' : '';
+    return '<div class="dim"><div class="dn">' + esc(d.name) + ' ' + lt + '</div>' +
       '<div class="dct">' + (d.result === 'na' ? 'out of scope' : esc(d.checksPassed) + ' / ' + esc(d.checksTotal)) + '</div>' +
       '<span class="res ' + esc(d.result) + '">' + (d.result === 'na' ? 'n/a' : esc(d.result)) + '</span>' +
       (d.note ? '<div class="dnote">' + esc(d.note) + '</div>' : '') +

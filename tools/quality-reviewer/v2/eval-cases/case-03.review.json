@@ -19,28 +19,108 @@
       "rule": 2,
       "label": "Client question unanswered",
       "ceiling": "Needs substantial revision",
-      "evidence": [ { "slide": 9, "quote": "Further analysis may be useful." } ]
+      "primary": true,
+      "evidence": [
+        {
+          "slide": 9,
+          "quote": "Further analysis may be useful."
+        }
+      ]
     }
   ],
   "scorecard": {
-    "diagnosticMean": 2.6,
+    "diagnosticMean": 2.7,
     "confidence": "Medium",
     "effort": "4-6 hrs",
     "dimensions": [
-      { "name": "Client decision usefulness", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "No service is chosen, so the client cannot act." },
-      { "name": "Problem framing", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The choice among three services under one-service capacity is clear." },
-      { "name": "Storyline and pyramid logic", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "No governing insight, the deck is a findings list." },
-      { "name": "Evidence quality", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Survey and demand evidence are named, sources not provided." },
-      { "name": "Analysis and insight", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "Findings are described, implications not drawn." },
-      { "name": "Recommendation specificity", "result": "fail", "checksPassed": 0, "checksTotal": 4, "note": "There is no recommendation to judge." },
-      { "name": "Feasibility and implementation", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "No recommendation, so no implementation path." },
-      { "name": "Risks, assumptions and uncertainty", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "No assumptions or risks named." },
-      { "name": "Slide-level communication", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "Titles are topic labels." },
-      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, no confidentiality issue." }
+      {
+        "name": "Client decision usefulness",
+        "scope": "full",
+        "result": "fail",
+        "checksPassed": 1,
+        "checksTotal": 4,
+        "note": "No service is chosen, so the client cannot act."
+      },
+      {
+        "name": "Problem framing",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4,
+        "note": "The choice among three services under one-service capacity is clear."
+      },
+      {
+        "name": "Storyline and pyramid logic",
+        "scope": "full",
+        "result": "fail",
+        "checksPassed": 1,
+        "checksTotal": 4,
+        "note": "No governing insight, the deck is a findings list."
+      },
+      {
+        "name": "Evidence quality",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4,
+        "note": "Survey and demand evidence are named, sources not provided."
+      },
+      {
+        "name": "Analysis and insight",
+        "scope": "full",
+        "result": "fail",
+        "checksPassed": 1,
+        "checksTotal": 4,
+        "note": "Findings are described, implications not drawn."
+      },
+      {
+        "name": "Recommendation specificity",
+        "scope": "full",
+        "result": "fail",
+        "checksPassed": 0,
+        "checksTotal": 4,
+        "note": "There is no recommendation to judge."
+      },
+      {
+        "name": "Feasibility and implementation",
+        "scope": "light",
+        "result": "fail",
+        "checksPassed": 1,
+        "checksTotal": 4,
+        "note": "No recommendation, so no implementation path."
+      },
+      {
+        "name": "Risks, assumptions and uncertainty",
+        "scope": "full",
+        "result": "fail",
+        "checksPassed": 1,
+        "checksTotal": 4,
+        "note": "No assumptions or risks named."
+      },
+      {
+        "name": "Slide-level communication",
+        "scope": "full",
+        "result": "fail",
+        "checksPassed": 1,
+        "checksTotal": 4,
+        "note": "Titles are topic labels."
+      },
+      {
+        "name": "Professionalism, tone and confidentiality",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Professional throughout, no confidentiality issue."
+      }
     ]
   },
   "strengths": [
-    { "point": "The evidence gathering is honest and multi-source for an early draft, which gives the team a real basis to decide from.", "quote": "We interviewed staff, surveyed 120 patients and reviewed local health data.", "slide": 4 }
+    {
+      "point": "The evidence gathering is honest and multi-source for an early draft, which gives the team a real basis to decide from.",
+      "quote": "We interviewed staff, surveyed 120 patients and reviewed local health data.",
+      "slide": 4
+    }
   ],
   "findings": [
     {
@@ -53,11 +133,19 @@
       "owner": "team",
       "principle": "Governing insight: a deck must state its one answer.",
       "diagnosis": "The client asked which of three services to launch first under one-service capacity. Slide 9 lists considerations and defers to further analysis. No option is chosen.",
-      "evidence": [ { "slide": 9, "quote": "Further analysis may be useful." } ],
+      "evidence": [
+        {
+          "slide": 9,
+          "quote": "Further analysis may be useful."
+        }
+      ],
       "why": "The client commissioned a decision and received a summary of options. They cannot act on considerations.",
       "reflect": "Given your own evidence, which service would you launch first and what is the one reason.",
       "fix": "State the recommendation up front and let the findings defend it. Your evidence already leans one way, so commit to it and show the reasoning.",
-      "tags": [ "Pyramid Principle", "ERIP Performance" ]
+      "tags": [
+        "Pyramid Principle",
+        "ERIP Performance"
+      ]
     },
     {
       "short": "Evidence not interpreted",
@@ -70,13 +158,22 @@
       "principle": "Analysis over description: state the implication of each finding.",
       "diagnosis": "Slide 8 shows mental health is the top unmet need and slide 5 shows matching demand. The deck reports this and moves on without drawing the implication for the decision.",
       "evidence": [
-        { "slide": 8, "quote": "40% of surveyed patients said mental health was their top unmet need, 30% said diabetes, 20% physiotherapy, 10% other." },
-        { "slide": 5, "quote": "Patients report long waits for mental-health support elsewhere. Staff see demand." }
+        {
+          "slide": 8,
+          "quote": "40% of surveyed patients said mental health was their top unmet need, 30% said diabetes, 20% physiotherapy, 10% other."
+        },
+        {
+          "slide": 5,
+          "quote": "Patients report long waits for mental-health support elsewhere. Staff see demand."
+        }
       ],
       "why": "The interpretation is the value the client is paying for. The raw facts they could gather themselves.",
       "reflect": "What does the 40% top-need figure, read with the demand signal, imply for which service to launch first.",
       "fix": "For each finding add its so-what, then connect the so-whats to a single recommendation.",
-      "tags": [ "Analytical Rigor", "Minto" ]
+      "tags": [
+        "Analytical Rigor",
+        "Minto"
+      ]
     },
     {
       "short": "Topic-label titles",
@@ -89,16 +186,27 @@
       "principle": "Action titles: titles carry the message.",
       "diagnosis": "Titles such as Agenda, Background and Considerations name topics not conclusions. A reader skimming the titles learns nothing about the answer.",
       "evidence": [
-        { "slide": 2, "quote": "Background. Methodology. Findings. Appendix." }
+        {
+          "slide": 2,
+          "quote": "Background. Methodology. Findings. Appendix."
+        }
       ],
       "why": "A busy client or funder reads the titles first. Labels waste that read.",
       "reflect": "If a reader saw only your titles, what would they learn about your recommendation.",
       "fix": "Once you have chosen the recommendation, rewrite each content title as a full-sentence assertion that supports it.",
-      "tags": [ "Pyramid Principle", "Minto" ]
+      "tags": [
+        "Pyramid Principle",
+        "Minto"
+      ]
     }
   ],
   "comments": [
-    { "location": "Slide 3", "problem": "\"capacity to add one new service\" is not quantified in staff hours or budget.", "why": "The launch decision depends on what running one service actually costs.", "fix": "State the capacity envelope so the options can be compared against it." }
+    {
+      "location": "Slide 3",
+      "problem": "\"capacity to add one new service\" is not quantified in staff hours or budget.",
+      "why": "The launch decision depends on what running one service actually costs.",
+      "fix": "State the capacity envelope so the options can be compared against it."
+    }
   ],
   "questionsForLead": [
     "Did the team reach a recommendation and leave it out, or not reach one at all.",
@@ -120,23 +228,65 @@
   ],
   "timeline": {
     "tiles": [
-      { "slide": 1, "state": "pass" },
-      { "slide": 2, "state": "partial" },
-      { "slide": 3, "state": "pass" },
-      { "slide": 4, "state": "pass" },
-      { "slide": 5, "state": "partial" },
-      { "slide": 6, "state": "pass" },
-      { "slide": 7, "state": "pass" },
-      { "slide": 8, "state": "partial" },
-      { "slide": 9, "state": "critical" },
-      { "slide": 10, "state": "pass" }
+      {
+        "slide": 1,
+        "state": "pass"
+      },
+      {
+        "slide": 2,
+        "state": "partial"
+      },
+      {
+        "slide": 3,
+        "state": "pass"
+      },
+      {
+        "slide": 4,
+        "state": "pass"
+      },
+      {
+        "slide": 5,
+        "state": "partial"
+      },
+      {
+        "slide": 6,
+        "state": "pass"
+      },
+      {
+        "slide": 7,
+        "state": "pass"
+      },
+      {
+        "slide": 8,
+        "state": "partial"
+      },
+      {
+        "slide": 9,
+        "state": "critical"
+      },
+      {
+        "slide": 10,
+        "state": "pass"
+      }
     ],
     "callouts": [
-      { "at": 9, "state": "critical", "label": "No recommendation" },
-      { "at": 8, "state": "partial", "label": "So-what missing" }
+      {
+        "at": 9,
+        "state": "critical",
+        "label": "No recommendation"
+      },
+      {
+        "at": 8,
+        "state": "partial",
+        "label": "So-what missing"
+      }
     ],
     "connectors": [
-      { "from": 8, "to": 9, "label": "evidence points, deck does not commit" }
+      {
+        "from": 8,
+        "to": 9,
+        "label": "evidence points, deck does not commit"
+      }
     ]
   }
 }

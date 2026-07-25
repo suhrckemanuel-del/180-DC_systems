@@ -42,8 +42,11 @@ Read it alongside this document.
       "rule": 1,
       "label": "short name of the blocking rule that fired",
       "ceiling": "the readiness level this rule caps at",
+      "primary": true,
       "evidence": [ { "slide": 0, "quote": "verbatim text" } ]
     }
+    // ... when more than one rule fires, exactly one is primary: the binding blocker
+    // with the lowest (most severe) ceiling. The rest are primary: false (secondary).
   ],
 
   "scorecard": {
@@ -51,8 +54,11 @@ Read it alongside this document.
     "confidence": "Low | Medium | High",
     "effort": "string, for example 4-6 hrs",
     "dimensions": [
-      { "name": "Client decision usefulness", "result": "pass | partial | fail | na", "checksPassed": 0, "checksTotal": 4, "note": "string" }
-      // ... exactly the ten dimensions in rubric order, na for out-of-scope dimensions
+      { "name": "Client decision usefulness", "scope": "full | light | na", "result": "pass | partial | fail | na", "checksPassed": 0, "checksTotal": 4, "note": "string" }
+      // ... exactly the ten dimensions in rubric order. scope comes from the artifact-type
+      // matrix (01 section C): full is scored and averaged, light is scored but not averaged,
+      // na is out of scope. checksTotal is 1 to 4 (the four enumerated sub-checks minus any
+      // that resolve to na for this deck). diagnosticMean averages full-scope dimensions only.
     ]
   },
 
@@ -108,6 +114,11 @@ Read it alongside this document.
 - **readiness.level** is derived from `blockingIssues`, never from `diagnosticMean`.
   If any blocking issue is present, readiness is at or below the lowest ceiling among
   them. The rules are in [01-rubric-v1.md](01-rubric-v1.md) section B.
+- **blockingIssues[].primary** marks the binding blocker (plan item 1.5j). When more than
+  one rule fires, exactly one blocking issue is `primary: true`, and it is the one with the
+  lowest (most severe) ceiling, which is the ceiling that sets readiness. The rest are
+  `primary: false` and are reported as secondary. `mainReason` names the primary blocker.
+  A single blocking issue is the primary by default.
 - **blockingIssues** may be empty. If empty, readiness defaults to R3 (Nearly ready with
   minor edits) and is demoted to R2 only when a single specific gap changes the client's
   decision, named in one sentence in mainReason. It does not follow from the major or minor
@@ -115,11 +126,18 @@ Read it alongside this document.
   not change what the client decides. If every finding is minor, readiness is R3. Every
   blocking issue carries at least one verbatim quote. The rules are in
   [01-rubric-v1.md](01-rubric-v1.md) section B.
-- **scorecard.dimensions** has exactly ten entries in rubric order. Out-of-scope
-  dimensions for the artifact type use `result: "na"` and are excluded from
-  `diagnosticMean`. Score per in-scope dimension is `1 + 4 * checksPassed / checksTotal`.
-  `diagnosticMean` is the mean of in-scope dimension scores to one decimal and is
-  labelled diagnostic, not a verdict.
+- **scorecard.dimensions** has exactly ten entries in rubric order, each carrying a
+  `scope` from the artifact-type matrix in [01-rubric-v1.md](01-rubric-v1.md) section C
+  (plan item 1.5i). `scope: "full"` dimensions are scored and averaged. `scope: "light"`
+  dimensions are scored and shown but excluded from `diagnosticMean`, because a light-touch
+  dimension is judged only where it genuinely applies and its denominator is not comparable
+  across cases. `scope: "na"` dimensions are out of scope for the artifact type, use
+  `result: "na"`, and carry no checks. Each dimension has four enumerated sub-checks in the
+  rubric, so `checksTotal` is a fixed 1 to 4: it starts at four and shrinks only as specific
+  sub-checks resolve to na for this deck (a sub-check the deck gives no basis to judge is na,
+  not a pass). If all four sub-checks are na, the dimension result is na. Score per scored
+  dimension is `1 + 4 * checksPassed / checksTotal`. `diagnosticMean` is the mean of the
+  full-scope dimension scores to one decimal and is labelled diagnostic, not a verdict.
 - **findings** honor the noise budget: at most 3 in short mode, at most 5 in deep mode.
   Every finding has at least one evidence quote or it is dropped (quote or abstain).
   `severityLabel` maps from `severity`: critical to High impact, major to Moderate,
@@ -169,7 +187,11 @@ than extending the renderer-coupled v1 `check-review.js`. Usage:
 `node check-review-v2.js <review.json> [deliverable.md]`. It checks:
 
 1. All required fields present and correctly typed.
-2. `scorecard.dimensions` has exactly ten entries with valid `result` values.
+2. `scorecard.dimensions` has exactly ten entries with valid `result` values. When the
+   review carries `scope` (plan item 1.5i), each scope matches the artifact-type matrix,
+   full-scope dimensions are never na, na dimensions carry no positive result, `checksTotal`
+   is 1 to 4, and `diagnosticMean` equals the full-scope mean. Reviews written before 1.5i
+   (no scope field) fall back to the old in-scope mean so they still validate.
 3. Every finding and every blocking issue has a non-empty `evidence` array, and each
    quote is a verbatim substring of the supplied deliverable text. The comparison is
    whitespace-normalized: non-breaking spaces (U+00A0 from PDF extractions) become
@@ -177,7 +199,8 @@ than extending the renderer-coupled v1 `check-review.js`. Usage:
    as a single space.
 4. Finding count is within the mode budget, comments plus findings do not exceed 8.
 5. `readiness.level` is consistent with `blockingIssues`: if a blocking issue exists,
-   readiness is at or below its ceiling.
+   readiness is at or below its ceiling. When blocking issues carry `primary` (plan item
+   1.5j), exactly one is primary and it holds the lowest (most severe) ceiling.
 6. No em or en dash appears in any authored field (a plain lint over the string
    fields). Quotes are exempt.
 7. `notAssessed` is non-empty.

@@ -20,22 +20,104 @@
     "confidence": "Medium",
     "effort": "1-2 hrs",
     "dimensions": [
-      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The decision and the answer are stated on slide 1." },
-      { "name": "Problem framing", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The question and the reason to diversify are clear." },
-      { "name": "Storyline and pyramid logic", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Answer first, each slide supports it." },
-      { "name": "Evidence quality", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Well sourced, two minor claims are thin." },
-      { "name": "Analysis and insight", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The single-tier logic is a real interpretation, not a description." },
-      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Price, tier, owner and timing are named." },
-      { "name": "Feasibility and implementation", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Soft launch sized to the coordinator, with a trigger." },
-      { "name": "Risks, assumptions and uncertainty", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The 8% assumption and the main risk are named and tested." },
-      { "name": "Slide-level communication", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Titles carry the message." },
-      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout." }
+      {
+        "name": "Client decision usefulness",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The decision and the answer are stated on slide 1."
+      },
+      {
+        "name": "Problem framing",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The question and the reason to diversify are clear."
+      },
+      {
+        "name": "Storyline and pyramid logic",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Answer first, each slide supports it."
+      },
+      {
+        "name": "Evidence quality",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4,
+        "note": "Well sourced, two minor claims are thin."
+      },
+      {
+        "name": "Analysis and insight",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The single-tier logic is a real interpretation, not a description."
+      },
+      {
+        "name": "Recommendation specificity",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Price, tier, owner and timing are named."
+      },
+      {
+        "name": "Feasibility and implementation",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Soft launch sized to the coordinator, with a trigger."
+      },
+      {
+        "name": "Risks, assumptions and uncertainty",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The 8% assumption and the main risk are named and tested."
+      },
+      {
+        "name": "Slide-level communication",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Titles carry the message."
+      },
+      {
+        "name": "Professionalism, tone and confidentiality",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Professional throughout."
+      }
     ]
   },
   "strengths": [
-    { "point": "The answer is stated on the title slide and confirmed on slide 2, so a reader gets the decision immediately.", "quote": "Client E should launch a paid membership scheme, starting with a single tier in the autumn.", "slide": 1 },
-    { "point": "The headline number is marked as an assumption and a test is built around it, which is exactly the right instinct.", "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.", "slide": 8 },
-    { "point": "The first steps name an owner and a go or no-go trigger, so the plan is genuinely executable.", "quote": "Month three: full launch if the soft launch clears 5%.", "slide": 10 }
+    {
+      "point": "The answer is stated on the title slide and confirmed on slide 2, so a reader gets the decision immediately.",
+      "quote": "Client E should launch a paid membership scheme, starting with a single tier in the autumn.",
+      "slide": 1
+    },
+    {
+      "point": "The headline number is marked as an assumption and a test is built around it, which is exactly the right instinct.",
+      "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.",
+      "slide": 8
+    },
+    {
+      "point": "The first steps name an owner and a go or no-go trigger, so the plan is genuinely executable.",
+      "quote": "Month three: full launch if the soft launch clears 5%.",
+      "slide": 10
+    }
   ],
   "findings": [
     {
@@ -48,11 +130,18 @@
       "owner": "team",
       "principle": "Evidence grounding: do not promise what is not yet secured.",
       "diagnosis": "Slide 7 lists a discount with local partners as a member benefit. The deck does not say whether partners have agreed or what the discount is.",
-      "evidence": [ { "slide": 7, "quote": "a discount with local partners" } ],
+      "evidence": [
+        {
+          "slide": 7,
+          "quote": "a discount with local partners"
+        }
+      ],
       "why": "Advertising an unsecured benefit risks a member promise Client E cannot keep.",
       "reflect": "Which partners have confirmed, and what exactly have they agreed to.",
       "fix": "Confirm the partner terms before listing the benefit, or mark it as planned rather than confirmed.",
-      "tags": [ "Evidence Grounding" ]
+      "tags": [
+        "Evidence Grounding"
+      ]
     },
     {
       "short": "Comparability basis",
@@ -64,11 +153,18 @@
       "owner": "team",
       "principle": "Evidence relevance: show why a benchmark applies.",
       "diagnosis": "Slide 5 cites three comparable arts non-profits charging 40 to 60 pounds without stating the basis for comparability such as size, art form or area.",
-      "evidence": [ { "slide": 5, "quote": "Three comparable local arts non-profits run membership at 40 to 60 pounds a year" } ],
+      "evidence": [
+        {
+          "slide": 5,
+          "quote": "Three comparable local arts non-profits run membership at 40 to 60 pounds a year"
+        }
+      ],
       "why": "A benchmark only informs the price if the comparators genuinely resemble Client E.",
       "reflect": "On what dimension are these three groups comparable to Client E.",
       "fix": "Add one line on why these three are the right comparators, or note the limitation.",
-      "tags": [ "Evidence Grounding" ]
+      "tags": [
+        "Evidence Grounding"
+      ]
     }
   ],
   "comments": [],
@@ -90,19 +186,53 @@
   ],
   "timeline": {
     "tiles": [
-      { "slide": 1, "state": "pass" },
-      { "slide": 2, "state": "pass" },
-      { "slide": 3, "state": "pass" },
-      { "slide": 4, "state": "pass" },
-      { "slide": 5, "state": "partial" },
-      { "slide": 6, "state": "pass" },
-      { "slide": 7, "state": "partial" },
-      { "slide": 8, "state": "pass" },
-      { "slide": 9, "state": "pass" },
-      { "slide": 10, "state": "pass" }
+      {
+        "slide": 1,
+        "state": "pass"
+      },
+      {
+        "slide": 2,
+        "state": "pass"
+      },
+      {
+        "slide": 3,
+        "state": "pass"
+      },
+      {
+        "slide": 4,
+        "state": "pass"
+      },
+      {
+        "slide": 5,
+        "state": "partial"
+      },
+      {
+        "slide": 6,
+        "state": "pass"
+      },
+      {
+        "slide": 7,
+        "state": "partial"
+      },
+      {
+        "slide": 8,
+        "state": "pass"
+      },
+      {
+        "slide": 9,
+        "state": "pass"
+      },
+      {
+        "slide": 10,
+        "state": "pass"
+      }
     ],
     "callouts": [
-      { "at": 7, "state": "partial", "label": "Confirm discount" }
+      {
+        "at": 7,
+        "state": "partial",
+        "label": "Confirm discount"
+      }
     ],
     "connectors": []
   }

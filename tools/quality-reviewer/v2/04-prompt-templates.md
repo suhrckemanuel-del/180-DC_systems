@@ -69,9 +69,16 @@ Score the ten dimensions in rubric order, each as binary sub-checks:
 4 Evidence quality. 5 Analysis and insight. 6 Recommendation specificity.
 7 Feasibility and implementation. 8 Risks, assumptions and uncertainty.
 9 Slide-level communication. 10 Professionalism, tone and confidentiality.
-Use result na for a dimension out of scope for the artifact type (see the scope matrix
-you were given). Score = 1 + 4 * checksPassed / checksTotal. diagnosticMean is the mean
-of in-scope scores to one decimal. It is diagnostic, not a verdict.
+Each dimension has exactly four enumerated sub-checks in the rubric. Set scope from the
+artifact-type matrix you were given: full (scored and averaged), light (scored but not
+averaged, judged only where it genuinely applies), or na (out of scope, result na, no
+checks). For a full or light dimension, start from the four sub-checks and set checksTotal
+to four, then drop to na any sub-check the deck gives you no basis to judge, so checksTotal
+falls to three, two or one. A sub-check you cannot judge is na, never a pass. Do not invent
+a denominator: it is always four minus the sub-checks that are genuinely na for this deck.
+If all four are na, the dimension result is na. Score = 1 + 4 * checksPassed / checksTotal.
+diagnosticMean is the mean of the full-scope scores only to one decimal, light and na
+dimensions excluded. It is diagnostic, not a verdict.
 
 SEVERITY
 Grade each surviving finding critical, major or minor.
@@ -102,7 +109,10 @@ revision, Nearly ready with minor edits. Apply the blocking rules:
   number drives the decision. Ceiling Needs targeted revision.
 5 A confidentiality or safety breach inside the deliverable. Ceiling Needs substantial
   revision, and raise it as delivery-critical.
-Readiness is the lowest ceiling among the blocking issues that fired.
+Readiness is the lowest ceiling among the blocking issues that fired. When more than one
+rule fires, mark exactly one blocking issue primary: the binding one, the blocker with the
+lowest, most severe ceiling that sets readiness. Mark the rest primary false, they are
+secondary. State the primary blocker in mainReason. A single blocking issue is the primary.
 
 If no blocking rule fired, readiness is Nearly ready with minor edits by default, and you
 do NOT decide it by counting major findings. A no-blocker deck has a clear decision, a
@@ -191,7 +201,7 @@ change, the rubric and the rules do not.
 |---|---|---|---|
 | Who | the team, a fast self-check | the team, the full pre-client review | the project lead |
 | Findings | at most 3, delivery-critical only | at most 5 | the delivery-critical subset of a deep review |
-| Dimensions | score the in-scope core (1, 3, 4, 6) in full, the rest light | all ten in scope for the artifact type | all ten, shown compact |
+| Dimensions | all ten scored per the artifact-type scope matrix, core dimensions (1, 3, 4, 6) in depth and the rest quickly | all ten per the artifact-type scope matrix | all ten, shown compact |
 | Comments | none | at most 8 total | hidden |
 | Coaching | learningNote only, no gate | full findings with the reflect-and-fix gate | hidden, lead sees delivery risk not coaching |
 | Questions for lead | none | up to 5 | up to 5, front and centre |

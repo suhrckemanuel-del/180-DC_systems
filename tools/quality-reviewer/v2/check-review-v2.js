@@ -39,6 +39,18 @@ const DIMENSIONS = [
   'Feasibility and implementation', 'Risks, assumptions and uncertainty',
   'Slide-level communication', 'Professionalism, tone and confidentiality'
 ];
+// Artifact-type scope matrix from 01-rubric-v1.md section C, dims 1..10 in rubric order.
+// F full (scored and averaged), L light (scored, not averaged), - na (not scored).
+const SCOPE_MATRIX = {
+  'kickoff problem frame':     ['L', 'F', 'L', '-', 'L', '-', '-', 'F', 'L', 'F'],
+  'research plan':             ['L', 'F', 'L', 'F', '-', '-', 'L', 'F', 'L', 'F'],
+  'interview guide':           ['L', 'F', '-', 'F', '-', '-', '-', 'F', '-', 'F'],
+  'synthesis memo':            ['F', 'L', 'F', 'F', 'F', 'L', 'L', 'F', 'L', 'F'],
+  'draft deck':                ['F', 'F', 'F', 'F', 'F', 'F', 'L', 'F', 'F', 'F'],
+  'final recommendation deck': ['F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F'],
+  'implementation roadmap':    ['F', 'L', 'F', 'L', 'L', 'F', 'F', 'F', 'F', 'F']
+};
+const SCOPE_LETTER = { F: 'full', L: 'light', '-': 'na' };
 const TOP_KEYS = ['meta', 'readiness', 'blockingIssues', 'scorecard', 'strengths',
   'findings', 'comments', 'questionsForLead', 'learningNote', 'notAssessed', 'timeline'];
 const FINDING_KEYS = ['short', 'title', 'severity', 'severityLabel', 'deliveryCritical',
@@ -74,29 +86,50 @@ if (r.readiness) {
   });
 }
 
-// 2. Exactly ten dimensions in rubric order
+// 2. Exactly ten dimensions in rubric order, plus scope, fixed checks and the
+//    full-scope diagnosticMean (plan item 1.5i). The scope, checksTotal cap and
+//    full-only mean are enforced when the review carries the scope field, so legacy
+//    reviews written before 1.5i still validate under the old in-scope-mean rule.
 if (r.scorecard) {
   const dims = r.scorecard.dimensions;
+  const artScope = SCOPE_MATRIX[r.meta && r.meta.artifactType];
+  const useScope = Array.isArray(dims) && dims.some(d => d && d.scope !== undefined);
   if (!Array.isArray(dims) || dims.length !== 10) {
     errs.push('scorecard.dimensions must have exactly 10 entries, has ' + (dims ? dims.length : 'none'));
   } else {
     dims.forEach((d, i) => {
       if (d.name !== DIMENSIONS[i]) errs.push('dimension ' + (i + 1) + ' out of rubric order: "' + d.name + '" expected "' + DIMENSIONS[i] + '"');
       if (!RESULTS.includes(d.result)) errs.push('dimension "' + d.name + '" invalid result: ' + d.result);
+      if (useScope) {
+        const want = artScope ? SCOPE_LETTER[artScope[i]] : null;
+        if (!['full', 'light', 'na'].includes(d.scope))
+          errs.push('dimension "' + d.name + '" invalid scope: ' + d.scope);
+        else if (want && d.scope !== want)
+          errs.push('dimension "' + d.name + '" scope "' + d.scope + '" does not match the ' + r.meta.artifactType + ' matrix (expected "' + want + '")');
+        if (d.scope === 'full' && d.result === 'na')
+          errs.push('dimension "' + d.name + '" is full scope but result is na (a full-scope dimension is always scored)');
+        if (d.scope === 'na' && d.result !== 'na')
+          errs.push('dimension "' + d.name + '" is out of scope (na) but result is "' + d.result + '"');
+      }
       if (d.result !== 'na') {
-        if (typeof d.checksPassed !== 'number' || typeof d.checksTotal !== 'number' || d.checksTotal < 1)
-          errs.push('dimension "' + d.name + '" checks malformed');
+        const cap = useScope ? 4 : Infinity; // fixed 4 enumerated sub-checks per dimension
+        if (typeof d.checksPassed !== 'number' || typeof d.checksTotal !== 'number' ||
+            d.checksTotal < 1 || d.checksTotal > cap || d.checksPassed < 0 || d.checksPassed > d.checksTotal)
+          errs.push('dimension "' + d.name + '" checks malformed (checksPassed 0..checksTotal, checksTotal 1..4)');
         else {
           const expect = d.checksPassed === d.checksTotal ? 'pass' : d.checksPassed <= 1 ? 'fail' : 'partial';
           if (d.result !== expect) warns.push('dimension "' + d.name + '" result "' + d.result + '" does not match checks ' + d.checksPassed + '/' + d.checksTotal + ' (expected ' + expect + ')');
         }
       }
     });
-    const scored = dims.filter(d => d.result !== 'na' && typeof d.checksPassed === 'number' && d.checksTotal > 0);
-    if (scored.length) {
-      const mean = scored.reduce((s, d) => s + 1 + 4 * d.checksPassed / d.checksTotal, 0) / scored.length;
+    // diagnosticMean: full-scope dimensions only when scope is present, else legacy (all non-na)
+    const inMean = dims.filter(d => (useScope ? d.scope === 'full' : d.result !== 'na')
+      && typeof d.checksPassed === 'number' && d.checksTotal > 0);
+    if (inMean.length) {
+      const mean = inMean.reduce((s, d) => s + 1 + 4 * d.checksPassed / d.checksTotal, 0) / inMean.length;
       if (typeof r.scorecard.diagnosticMean !== 'number' || Math.abs(r.scorecard.diagnosticMean - mean) > 0.05)
-        errs.push('scorecard.diagnosticMean ' + r.scorecard.diagnosticMean + ' does not equal computed mean ' + mean.toFixed(1));
+        errs.push('scorecard.diagnosticMean ' + r.scorecard.diagnosticMean + ' does not equal the computed ' +
+          (useScope ? 'full-scope' : 'in-scope') + ' mean ' + mean.toFixed(1));
     }
   }
   if (!CONFIDENCE.includes(r.scorecard.confidence)) errs.push('scorecard.confidence invalid');
@@ -217,6 +250,30 @@ if (r.timeline) {
         ', check it is not padding');
     else if (!seen.has(k)) seen.set(k, i);
   }));
+}
+
+/* 9. blockingIssues primary/secondary (plan item 1.5j). When more than one blocking rule
+   fires, exactly one is the binding blocker (the lowest, most severe ceiling) and is marked
+   primary, the rest are secondary. Enforced when the review carries the primary field, so
+   legacy multi-blocker reviews still validate. */
+{
+  const bi = r.blockingIssues || [];
+  const usePrimary = bi.some(b => b && b.primary !== undefined);
+  if (usePrimary && bi.length) {
+    const idx = b => READINESS.indexOf(b.ceiling); // 0 is the most severe ceiling
+    const valid = bi.filter(b => idx(b) > -1);
+    const primaries = bi.filter(b => b.primary === true);
+    bi.forEach(b => { if (b.primary !== undefined && typeof b.primary !== 'boolean')
+      errs.push('blocking issue rule ' + b.rule + ' primary must be boolean'); });
+    if (primaries.length !== 1)
+      errs.push('blockingIssues must mark exactly one primary (binding) blocker, found ' + primaries.length);
+    else if (valid.length) {
+      const minIdx = Math.min.apply(null, valid.map(idx));
+      if (idx(primaries[0]) !== minIdx)
+        errs.push('the primary blocker (rule ' + primaries[0].rule + ', ceiling "' + primaries[0].ceiling +
+          '") is not the binding one: a listed blocker has a more severe ceiling');
+    }
+  }
 }
 
 function report() {
