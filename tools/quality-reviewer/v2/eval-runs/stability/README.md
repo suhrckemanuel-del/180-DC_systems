@@ -8,9 +8,10 @@
 > the prompt then lacked the enum, which the current prompt now lists. So the case 05
 > three-of-five over-escalation is stale, it measures a package that is no longer on disk. The
 > blind re-measurement of the current package on synthetic case 05 is in
-> [current-2026-07-25/README.md](current-2026-07-25/README.md): three of three completed runs
-> land the correct R3 with zero majors, so the over-escalation is not reproduced. Quote that
-> sheet, not the three-of-five number below, for current behaviour.
+> [current-2026-07-25/README.md](current-2026-07-25/README.md): across five runs it lands the
+> correct R3 in four and over-escalates to R2 in one, down from three in five. The
+> over-escalation is reduced, not eliminated. Quote that sheet, not the three-of-five number
+> below, for current behaviour.
 
 The measurement [progress.md](../../progress.md) "Next actions" item 1 has been asking for
 since 2026-07-03, and which [effectiveness-review-2026-07-03.md](../../effectiveness-review-2026-07-03.md)

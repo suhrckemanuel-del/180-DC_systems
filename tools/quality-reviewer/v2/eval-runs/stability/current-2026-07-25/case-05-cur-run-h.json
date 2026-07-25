@@ -1,0 +1,133 @@
+{
+  "meta": {
+    "title": "Client E paid membership scheme",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Needs targeted revision",
+    "mainReason": "The deck is sound and well sourced, but its full-launch trigger of 5% (slide 10) sits below the 8% conversion the year-one revenue case rests on (slide 8), so what the client must require before committing to a full launch changes once the two figures are reconciled.",
+    "highestRiskIssue": "The month-three full-launch gate of 5% (slide 10) is below the 8% conversion the 5,000 pound revenue case depends on (slide 8), and the deck never reconciles them.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "If the team shows 5% is a deliberate minimum floor and gives the revenue at each conversion level, or aligns the gate with the 8% target, readiness rises to Nearly ready."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.5,
+    "confidence": "Medium",
+    "effort": "4-6 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The decision, the answer and the first step are stated plainly and early." },
+      { "name": "Problem framing", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Specific problem and success target present, what is out of scope is not stated explicitly." },
+      { "name": "Storyline and pyramid logic", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The governing insight leads on slide 1 and the flow is unbroken, but several interior titles are labels so title-only reconstruction is weaker." },
+      { "name": "Evidence quality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Grant risk, base and benchmark are sourced, and the conversion figure is marked as an assumption to test." },
+      { "name": "Analysis and insight", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Findings are interpreted, the single-tier versus three-tier choice is reasoned and each feeds the recommendation." },
+      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Action, owner, timeframe and metric are all named." },
+      { "name": "Feasibility and implementation", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Sized to one coordinator with a real pilot, but one dependency (the partner discount) is not named." },
+      { "name": "Risks, assumptions and uncertainty", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Load-bearing assumptions and risks are stated and the soft launch tests them." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Slide 1 leads with the answer, but many interior titles are bare labels rather than assertions." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, roles not names, certainty is appropriate." }
+    ]
+  },
+  "strengths": [
+    { "point": "The deck answers the client question in the title and opens with the decision, so a busy reader knows the recommendation immediately.", "quote": "Client E should launch a paid membership scheme, starting with a single tier in the autumn.", "slide": 1 },
+    { "point": "The case for diversifying is quantified and sourced, which gives the recommendation a defensible starting point.", "quote": "Project grants are 80% of Client E's income (2024 accounts) and each is single-year.", "slide": 3 },
+    { "point": "The load-bearing number is honestly flagged as an assumption to test rather than presented as fact.", "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.", "slide": 8 },
+    { "point": "The plan is specific with a named owner, a phased sequence and a pilot the current team can run.", "quote": "The Client E coordinator owns the launch.", "slide": 10 }
+  ],
+  "findings": [
+    {
+      "short": "Gate below revenue case",
+      "title": "The full-launch gate of 5% is below the 8% conversion the revenue case depends on, and the two are never reconciled.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Decision consistency: the criterion you gate a decision on must match the case that justifies it.",
+      "diagnosis": "Slide 8 builds the year-one revenue of about 5,000 pounds on 8% of the mailing list joining. Slide 10 then sets the trigger for a full launch at clearing 5% in the soft launch. Nothing on the deck reconciles the two, so the gate authorizes scaling at a conversion the revenue case does not support.",
+      "evidence": [
+        { "slide": 8, "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one." },
+        { "slide": 10, "quote": "Month three: full launch if the soft launch clears 5%." }
+      ],
+      "why": "This is the reason readiness is not Nearly ready: the client will plan around 5,000 pounds while the plan lets them commit to a full launch at a level that would deliver closer to 3,000 pounds, so the month-three go decision rests on a target the gate does not enforce.",
+      "reflect": "Is 5% a floor below which you would stop, or the level that makes the scheme worth scaling, and what revenue does each conversion level produce.",
+      "fix": "Reconcile the gate with the revenue case: either raise the trigger to the conversion the year-one target needs, or keep 5% as an explicit floor and show the revenue at 5% and at 8% so the client commits with the real number in view. Gate on the number that defines success.",
+      "tags": [ "Decision consistency", "Actionability" ]
+    },
+    {
+      "short": "Partner discount unconfirmed",
+      "title": "A promised member benefit, the local-partner discount, depends on partners agreeing and is not listed among the assumptions to test.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "implementation",
+      "owner": "team",
+      "principle": "Feasibility: a promised benefit that depends on a third party is an assumption until the third party is secured.",
+      "diagnosis": "Slide 7 promises a discount with local partners as a core member benefit. The assumptions on slide 9 cover mailing-list accuracy and staff strain but not whether any partner has agreed the discount, and the soft launch does not test it.",
+      "evidence": [
+        { "slide": 7, "quote": "Priority booking, two members-only events a year and a discount with local partners." },
+        { "slide": 9, "quote": "We assume the mailing list is accurate and that members-only events do not strain staff." }
+      ],
+      "why": "If no partner has agreed a discount at launch, the membership advertises a benefit it cannot deliver and erodes trust with the first cohort. The recommendation still holds, so this only strengthens an already-sound plan.",
+      "reflect": "Which local partners have agreed the discount, and what is the fallback benefit if none has by launch.",
+      "fix": "Add the partner discount to the assumptions on the risk slide and confirm at least one partner before the soft launch, or lead with benefits fully within Client E's control.",
+      "tags": [ "Feasibility", "Dependencies" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slides 2 to 10 titles", "problem": "Several interior titles are bare topic labels (\"The numbers\", \"What members get\", \"First steps\").", "why": "The answer is clear from slide 1, but a reader skimming the interior titles gets topics not takeaways.", "fix": "Turn each interior title into the one-line takeaway of its slide." },
+    { "location": "Slide 8", "problem": "Only gross revenue is shown (\"about 5,000 pounds in year one\") with no admin cost or net contribution.", "why": "For an income-diversification decision the net matters, though the deck argues admin is low and uses existing capacity.", "fix": "State the expected admin cost or the net so the 5,000 pounds is read correctly." }
+  ],
+  "questionsForLead": [
+    "Is the 5% full-launch gate a deliberate minimum floor, or should it match the 8% the revenue case assumes.",
+    "Have any local partners agreed the member discount, or is that still to be secured.",
+    "Does the 5,000 pounds year-one figure net off any admin or event cost, or is it gross.",
+    "How large is the funding gap from the two grants not renewing, so the board can judge whether 5,000 pounds is a material first step."
+  ],
+  "learningNote": {
+    "lesson": "Gate a decision on the number that defines success. When the business case rests on one conversion rate, that rate is the threshold to proceed, not a lower one.",
+    "weakHabit": "Setting a go/no-go trigger separately from the revenue case it is meant to protect, so the two drift apart.",
+    "exercise": "For the recommendation, write the single number the case depends on, then write the go-criterion beside it. If they differ, decide on purpose which one governs and put the reason on the slide.",
+    "principle": "Decision consistency"
+  },
+  "notAssessed": [
+    "Whether the comparator membership prices (40 to 60 pounds) are current or complete. Only the deck's citation was provided, not the underlying sources.",
+    "Whether Client E has confirmed any local-partner discount. The deck does not say.",
+    "The size of the funding gap from the two non-renewing grants, so whether 5,000 pounds is a material first step could not be judged.",
+    "Visual design, layout and charts. Only slide text was provided.",
+    "Intended audience and known constraints were left blank in the input, so feasibility is judged only against constraints the deck itself states."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Decision", "span": 2 },
+      { "label": "The case", "span": 3 },
+      { "label": "Design", "span": 2 },
+      { "label": "Numbers and risks", "span": 2 },
+      { "label": "Steps", "span": 1 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "pass" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "partial" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 7, "state": "partial", "label": "Partner discount not yet secured" },
+      { "at": 8, "state": "partial", "label": "Revenue assumes 8%, gate is 5%" },
+      { "at": 10, "state": "partial", "label": "Full-launch trigger below the revenue target" }
+    ],
+    "connectors": [
+      { "from": 8, "to": 10, "label": "8% target vs 5% gate" }
+    ]
+  }
+}

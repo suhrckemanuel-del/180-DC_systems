@@ -366,27 +366,37 @@ read issueType as not yet fixed. So the case 05 three-of-five over-escalation wa
 stale sheet now carries a SUPERSEDED banner, the decision log records the drift, and the
 rubric's dangling See-decision-log reference is resolved. The owner chose to measure the
 current package before changing anything. Re-measurement on synthetic case 05, blind,
-byte-identical pack, current package, Opus 4.8:
+byte-identical pack, current package, Opus 4.8, five runs:
 [eval-runs/stability/current-2026-07-25/README.md](eval-runs/stability/current-2026-07-25/README.md).
-Result: three of three completed runs land the correct R3 with zero majors (the session limit
-killed the other two mid-wave, write-per-item saved the three). The over-escalation is not
-reproduced, and it is structural: the redesign removed the any-one-major-forces-R2 rule that
-caused the R2s. **Path A was therefore not applied.** The current rubric already carries
-essentially the Path A clause, so the clause is redundant. It stays drafted here as a fallback
-if the two remaining runs or the real-case baseline resurface over-escalation.
+Result: readiness R3, R3, R2, R3, R3, correct in four of five and over-escalated in one, down
+from the superseded package's R2 in three of five. **The over-escalation is reduced, not
+eliminated.** An interim reading after the first three runs (all R3, the other two killed by
+the session limit) said it was fixed and retired Path A. The fourth run reproduced it, the
+same three-run trap the earlier case 05 measurement fell into, so that interim call is
+reversed. The one R2 (run h) promotes the 5-versus-8 percent launch-gate finding to major,
+the finding adjudicated on 2026-07-03 as a real observation graded too high on a deliberate
+pilot deck, and run h is also contract-invalid (deliveryCritical with no blocking issue). So
+Path A is back in play: the residual is a severity wobble on one borderline finding, which is
+exactly what the clause targets. Applying it or accepting one in five is an owner call, teed
+up with the real number. The contract prose (03 section B) was also corrected this session to
+match the redesigned rubric (it had still said empty blockingIssues plus any major means R2).
 
 ## Next actions
 
-1. **Over-flagging: resolved on the current package, pending confirmation to five runs.** Path
-   B (readiness gate) is done and verified. Path A is not needed: the current package returns
-   the correct R3 in three of three blind runs. After the session resets (1:10am
-   Europe/Berlin), complete case 05 runs h and j to reach the five-run bar and update the
-   current-2026-07-25 sheet. This is the record-keeping tail, not a blocker.
+1. **Over-flagging: reduced to one in five, owner call re-opened.** Path B (readiness gate) is
+   done and verified, so no student sees the false R2 regardless. The current package cut
+   over-escalation from three in five to one in five but did not remove it. Owner decision:
+   apply Path A (tighten the major test, then re-measure) to push toward zero, or accept one in
+   five as within the rubric's stated err-toward-R3 tolerance and let the real-case baseline be
+   the judge. Recommendation leans accept-and-proceed, because the improvement is already large,
+   the residual is a genuine borderline judgment, and Path B contains the student-facing risk,
+   but it is the owner's call.
 2. **Remaining pre-freeze prompt work, still open.** Plan item 1.5i's L-dimension denominator
    rule (a fixed sub-check count per dimension, vacuous sub-checks resolve to na) and 1.5j
    (blockingIssues reports the binding blocker as primary) are not yet in the prompt or rubric.
    The issueType half of 1.5i is done (confirmed by the re-measurement: no invented values).
-   Do 1.5i and 1.5j, regression-run the synthetic five on the current package, then freeze.
+   Do 1.5i and 1.5j (and Path A if the owner chooses it), regression-run the synthetic five on
+   the current package, then freeze. One prompt pass, one re-measurement.
 3. The labeling track can start: the workstation is ready, the protocol and worksheet exist,
    two labelers are secured per the owner decisions. Nothing in the tooling blocks it now.
    This is the long pole (plan item 1.5c, calibration batch first).

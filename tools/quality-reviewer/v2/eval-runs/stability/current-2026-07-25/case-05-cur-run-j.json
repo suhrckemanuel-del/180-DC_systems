@@ -1,0 +1,128 @@
+{
+  "meta": {
+    "title": "Client E paid membership scheme",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Nearly ready with minor edits",
+    "mainReason": "No blocking rule fired: the decision is clear, the recommendation is supported and gated on a soft-launch test, the framing holds and no decision-driving number is ungrounded, so only refinements remain.",
+    "highestRiskIssue": "The 8% conversion assumption on slide 8 is anchored to a 32% attendance rate that measures a different behavior, though the soft launch tests it before scaling.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "If the named sources could not be produced, or the soft launch showed conversion well below the 5% floor, evidence quality and the recommendation's support would drop."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.6,
+    "confidence": "Medium",
+    "effort": "3-5 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The decision is named, answered and given a first action, all early and for the client who must act." },
+      { "name": "Problem framing", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Specific problem (income diversification), bounded to a single-tier start, with a stated success target and no drift." },
+      { "name": "Storyline and pyramid logic", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Answer-first with an unbroken build, but several titles are labels so the argument is not fully readable from the titles alone." },
+      { "name": "Evidence quality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Each figure is sourced inline or flagged as an assumption, and the key limitation is stated." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Evidence is interpreted and tied to the recommendation, but the 8% anchor rests on a proxy metric." },
+      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Action, owner, timeframe and measure are all present." },
+      { "name": "Feasibility and implementation", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Fits a small team, sequences the launch and offers a soft-launch pilot as the first step." },
+      { "name": "Risks, assumptions and uncertainty", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Load-bearing assumptions are named, the main risk is stated and the tier tradeoff is acknowledged." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "One message per slide and content matches, but several titles are bare topic labels." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Professional throughout, roles not names, certainty appropriate." }
+    ]
+  },
+  "strengths": [
+    { "point": "The deck answers first: the recommendation is the title, so a busy reader knows the decision on slide one.", "quote": "Client E should launch a paid membership scheme, starting with a single tier in the autumn.", "slide": 1 },
+    { "point": "Key figures carry their source inline, which makes the case defensible.", "quote": "Project grants are 80% of Client E's income (2024 accounts) and each is single-year.", "slide": 3 },
+    { "point": "The plan de-risks itself with a soft-launch pilot that tests the load-bearing assumptions before scaling.", "quote": "A soft launch to the most engaged 200 contacts tests both before the full launch.", "slide": 9 }
+  ],
+  "findings": [
+    {
+      "short": "Attendance as pay proxy",
+      "title": "The 8% conversion assumption is justified by an attendance rate that measures a different behavior.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Assumption discipline: a proxy metric must predict the behavior you are forecasting.",
+      "diagnosis": "Slide 8 calls the 8% conversion conservative against the 32% event-attendance rate. Attending an event and paying 45 pounds a year for membership are different behaviors, so attendance is a weak anchor for the conversion rate. The deck does flag the 8% as the main thing to test, which is the right instinct.",
+      "evidence": [ { "slide": 8, "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test." } ],
+      "why": "If the client reads the 8% as well anchored it may under-plan for a lower result, although the soft launch limits the downside.",
+      "reflect": "What behavior does attendance actually predict, and is it the same behavior as paying an annual fee.",
+      "fix": "Separate engagement from willingness to pay. Present the soft-launch conversion as the real test of the 8% rather than leaning on the attendance rate to justify it.",
+      "tags": [ "Assumption discipline", "Evidence Grounding" ]
+    },
+    {
+      "short": "Titles mix labels",
+      "title": "Several content-slide titles are topic labels rather than assertions.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "Minto: the title carries the message, not the topic.",
+      "diagnosis": "The recommendation sits on slide 1 and the argument is easy to follow, but several content titles are bare labels. Slide 8 is titled The numbers and slide 10 is titled First steps, so a reader skimming only the titles gets the topic of each slide, not its takeaway.",
+      "evidence": [
+        { "slide": 8, "quote": "The numbers" },
+        { "slide": 10, "quote": "First steps" }
+      ],
+      "why": "A board member who reads only the titles sees the shape of the deck but not each slide's point, so some of the argument's force is lost.",
+      "reflect": "If a reader saw only your titles, could they state the takeaway of each slide and not just its subject.",
+      "fix": "Rewrite the label titles as full-sentence assertions that state each slide's takeaway. Keep the answer-first opening you already have.",
+      "tags": [ "Minto", "Slide titles" ]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 10", "problem": "Month two reviews conversion against an 8% target but month three gates the full launch at 5%, and the deck does not explain the gap.", "why": "The coordinator needs one clear decision rule for whether to go to full launch.", "fix": "State that 5% is the floor to proceed and 8% is the year-one target, or reconcile the two numbers." },
+    { "location": "Slide 5", "problem": "Comparator pricing of 40 to 60 pounds is cited but not what those groups include for it, so the 45 pound value is not benchmarked.", "why": "The client may want to know if its benefits justify sitting near the low end of the range.", "fix": "Add a one-line note on what the comparators offer at that price." },
+    { "location": "Slide 8", "problem": "The 5,000 pounds is presented as year-one income without saying if it is gross or net of the members-only events and any costs.", "why": "A client planning cash flow needs the net figure.", "fix": "Label the figure gross or net." }
+  ],
+  "questionsForLead": [
+    "Are the named sources (2024 accounts, funder letters and comparator websites) available for a reviewer to check, since they were not attached.",
+    "Is the 5,000 pound estimate gross revenue or net of the cost of the two members-only events.",
+    "Why is the full-launch gate set at 5% when the year-one target is 8%."
+  ],
+  "learningNote": {
+    "lesson": "A forecast is only as good as the behavior its anchor predicts. Anchor a conversion rate to a comparable paying decision, not to a broader engagement metric.",
+    "weakHabit": "Using the metric that is on hand (attendance) as a proxy for the behavior you actually need to predict (paying for membership).",
+    "exercise": "For each assumption in a deck, write the behavior it predicts and the behavior you need, then check they match. Where they do not, name the test that would close the gap.",
+    "principle": "Assumption discipline"
+  },
+  "notAssessed": [
+    "Whether the named sources (2024 accounts, funder letters and comparator websites) are accurate. They are named in the deck but were not provided.",
+    "Whether the 1,400 mailing list size and 32% attendance rate are current. Both are taken from the deck.",
+    "Visual design, layout and charts. Only slide text was provided.",
+    "Whether Client E has the staff capacity to run the two members-only events beyond the deck's stated assumption."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Decision", "span": 2 },
+      { "label": "Case for change", "span": 3 },
+      { "label": "Design", "span": 2 },
+      { "label": "Numbers and risk", "span": 2 },
+      { "label": "Implementation", "span": 1 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "partial" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "pass" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 8, "state": "partial", "label": "8% anchored to an attendance proxy" },
+      { "at": 10, "state": "partial", "label": "8% target versus 5% go-gate" }
+    ],
+    "connectors": [
+      { "from": 4, "to": 8, "label": "mailing list size drives the revenue estimate" },
+      { "from": 8, "to": 10, "label": "8% target becomes the launch gate" }
+    ]
+  }
+}
