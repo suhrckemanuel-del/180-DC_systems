@@ -14,8 +14,8 @@ Voice rules apply.
 
 - Real eval cases in [eval-cases-real/](eval-cases-real/), numbered real-01 onward,
   each built from an actual past deliverable, pseudonymised, with extraction noise kept.
-- A blind labeling kit so the two human labelers write gold labels without seeing any
-  AI review or any machine quality guess.
+- A blind labeling kit so the team writes gold labels without seeing any AI review or any
+  machine quality guess.
 - Seeded-flaw variants of one strong deck, where the ground truth is mechanical because
   the flaw was injected on purpose.
 - A sealed selection memo recording why each deck was picked, kept away from the
@@ -33,10 +33,15 @@ Real cases never replace it, they extend it.
    agents into rough quality bands only to pick a spread. The bands live in the sealed
    memo. Labelers must not read them before labeling, so the machine guess cannot
    anchor the human judgment.
-3. **Two labelers, blind, then adjudication.** Both humans label each case
-   independently using the kit, then meet, compare and adjudicate. The adjudicated
-   label is gold. Disagreement rate is recorded per case; a high rate is a rubric
-   problem to fix before any prompt work.
+3. **Single-pass team labeling, blind, with a calibration round.** The team labels each
+   case once using the kit, blind. It starts with a calibration round on four cases done
+   together, which surfaces rubric ambiguity the way the old two-reader stop rule did: if
+   the team cannot settle the four, fix the rubric before labeling the rest. An AI
+   mechanical consistency check runs on every finished gold and flags internal
+   contradictions for the humans to resolve, never a label. This replaces the earlier
+   two-labeler blind-then-adjudicate design, which the team cannot staff. The trade, the
+   loss of an inter-rater agreement number, is recorded and read into the baseline. See the
+   2026-07-25 decision-log entry and [eval-cases-real/labeling/PROTOCOL.md](eval-cases-real/labeling/PROTOCOL.md).
 4. **Seeded flaws are the exception.** For seeded-flaw variants the ground truth is the
    injected flaw itself, so no human label is needed beyond a sanity pass. They are
    regression tests, not the core eval.
@@ -88,19 +93,18 @@ Mirrors the synthetic cases so the reviewer input template fills the same way:
 4. **Case build.** AI agents extract, segment, pseudonymise and write case files plus
    extraction notes. Gate: an anonymisation pass finds no names, no handles and no live
    client identifiers in any case body.
-5. **Human gold labeling.** Both labelers work through the kit independently, then
-   adjudicate. Gate: every case has an adjudicated gold file in the section C template
-   of [05-eval-harness.md](05-eval-harness.md), and the per-case disagreement rate is
-   logged.
+5. **Human gold labeling.** Single pass: the team runs the calibration round then labels
+   the rest once, blind, per [eval-cases-real/labeling/PROTOCOL.md](eval-cases-real/labeling/PROTOCOL.md).
+   Gate: every case has a gold file in the section C template of
+   [05-eval-harness.md](05-eval-harness.md) and the AI consistency check on it is clean.
 6. **Baseline run.** The frozen reviewer prompt runs every real case blind under the
    [eval-runs/README.md](eval-runs/README.md) protocol. A fresh-context scorer fills
    the scoring sheet. Gate: this produces the first honest number for how the reviewer
    performs on real work. No prompt changes until the whole set has run.
 
-Kill criterion for the pipeline: if labeler disagreement is severe across cases (no
-agreement on readiness level on a third or more of the set), stop. The rubric, not the
-reviewer, is the problem, and prompt tuning against unstable gold is overfitting to
-noise.
+Kill criterion for the pipeline: if the team cannot reach a stable shared readiness during
+the calibration round (two or more of the four unsettled), stop. The rubric, not the
+reviewer, is the problem, and prompt tuning against unstable gold is overfitting to noise.
 
 ## E2. Gate status (updated 2026-07-07)
 
@@ -118,9 +122,10 @@ noise.
    found clean bodies everywhere; one fix applied (seven speaker-note source URLs in
    real-05 stripped, logged in that file's extraction notes). The generic 180DC org
    contact kept in real-02 is documented there and is not client PII.
-5. Human gold labeling: **next**. Both labelers work the kit in
+5. Human gold labeling: **next**, single pass. The team runs the calibration round then
+   labels the rest once, blind, per
    [eval-cases-real/labeling/PROTOCOL.md](eval-cases-real/labeling/PROTOCOL.md).
-6. Baseline run: blocked until every case has adjudicated gold.
+6. Baseline run: blocked until every case has a gold file and a clean consistency check.
 
 ## F. What this pipeline refuses to do
 

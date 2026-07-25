@@ -47,6 +47,14 @@ expert and the pilot depend on runs through it.
 
 ## B. The critical path
 
+> **Update 2026-07-25.** Labeling moved to a single human pass (team constraint), see the
+> decision log and [eval-cases-real/labeling/PROTOCOL.md](eval-cases-real/labeling/PROTOCOL.md).
+> The chain below and the D1 estimates were written for two independent labelers plus
+> adjudication. Under a single pass the shape holds but the labeling arithmetic roughly halves
+> (one read per case, no reconciliation), the two-reader stop rule becomes the team calibration
+> round on four cases, and an AI mechanical consistency check replaces the second reader's
+> catch. Read the person-hour figures below as the two-pass upper bound.
+
 The single chain that gates a pilot, verified against the files rather than assumed.
 
 ```
