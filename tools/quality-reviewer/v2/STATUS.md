@@ -53,7 +53,10 @@ the first honest measurement.
 Blind labeling (labeling-workstation.html) produces one gold worksheet per case, enforcing
 the shape before export. The team runs a calibration round on four cases together first (the
 rubric-health check), then labels the rest once each. An AI mechanical consistency check
-(to be built, see the handoff) flags internal contradictions on each finished gold, never a
-label. The two-worksheet adjudication-workstation.html is not used in a single-pass run,
-kept for reference. Nothing in the tooling writes or suggests a gold label. All of it lives
-in [eval-cases-real/labeling/](eval-cases-real/labeling/).
+([check-gold.js](check-gold.js), built and tested 2026-07-25) flags internal contradictions
+on each finished gold, never a label: run `node ../../check-gold.js real-NN.gold.md` from
+the labeling dir. It mirrors check-review-v2.js rules 8a-8d and is exercised by two
+fabricated real-00 fixtures under [eval-cases-real/labeling/fixtures/](eval-cases-real/labeling/fixtures/).
+The two-worksheet adjudication-workstation.html is not used in a single-pass run, kept for
+reference. Nothing in the tooling writes or suggests a gold label. All of it lives in
+[eval-cases-real/labeling/](eval-cases-real/labeling/).

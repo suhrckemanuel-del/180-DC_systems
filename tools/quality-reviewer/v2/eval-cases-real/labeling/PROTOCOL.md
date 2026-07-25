@@ -63,14 +63,26 @@ is kept for reference only.
 
 ## Step 4. AI consistency check (mechanical, never a label)
 
-Once a gold exists, the AI runs a mechanical check and reports only internal contradictions
-for you to resolve: exactly one must-catch or a declared restraint case, a valid readiness
-level, readiness at or below any blocking rule you cite, a blocking rule present if
-readiness is R0 or R1, no critical finding sitting under an R3, valid severities and
-dimensions, every section filled. The AI never proposes or changes a label, you resolve
-every flag. This is the compensating control for the missing second reader. (The checker is
-specified for the next work session, see the handoff. It runs after a gold exists, so it
-does not block labeling from starting.)
+Once a gold exists, run the mechanical check and resolve any internal contradictions it
+reports. From this directory:
+
+```
+node ../../check-gold.js real-NN.gold.md
+```
+
+It reports only internal contradictions for you to resolve: exactly one must-catch or a
+declared restraint case, a valid readiness level, readiness at or below any blocking rule
+you cite, a blocking rule present if readiness is R0 or R1, no critical issue sitting under
+an R3, valid severities, dimensions and issue types, every section filled. It never
+proposes or changes a label, you resolve every flag. It exits 0 when the sheet is
+internally consistent and 1 with a flag list otherwise, and it runs locally with no API
+cost. This is the compensating control for the missing second reader. It runs after a gold
+exists, so it does not block labeling from starting.
+
+The checker is exercised by two fabricated fixtures under [fixtures/](fixtures/) (fake case
+real-00, no real client): `real-00.gold.PASS.md` must read CONSISTENT and
+`real-00.gold.FAIL.md` must report contradictions. Run them any time to confirm the checker
+still works before trusting it on a real gold.
 
 ## Step 5. Optional expert spot-check
 
