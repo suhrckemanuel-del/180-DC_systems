@@ -3690,6 +3690,10 @@ function boot(){
   buildWorld();
   packWorld();
   labelsInit();
+  /* the canvas must exist before input binds to it: glInit() runs
+     later, and binding to a null CV silently dropped every touch
+     listener, which left the game unplayable on a phone */
+  CV = document.getElementById('scene');
   bindInput();
   /* the Wilhelminapier waterline: the poster, and the first thing you see */
   spawn(-251, 75, Math.atan2(-40 - (-251), -(50 - 75)));

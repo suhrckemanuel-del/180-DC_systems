@@ -4217,6 +4217,10 @@ function boot(){
   packWorld();
   packInstances();
   labelsInit();
+  /* the canvas must exist before input binds to it: glInit() runs
+     later, and binding to a null CV silently dropped every touch
+     listener, which left the game unplayable on a phone */
+  CV = document.getElementById('scene');
   bindInput();
   /* start on the Markt, facing the Nieuwe Kerk down the square */
   spawn(-10, -62, Math.PI * 0.5);
