@@ -1,0 +1,2527 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Delft — Ochtendlicht</title>
+<meta name="description" content="A walkable Delft at eight in the morning: canals, brick, and travelling sunlight under moving clouds." />
+<meta name="color-scheme" content="dark" />
+<style>
+  /* ============================================================
+     DELFT — "Ochtendlicht"
+     A walking simulator of the historic canal town at ~8 a.m.,
+     in the light Vermeer painted the View of Delft in: a low warm
+     sun from the south-east, huge cumulus, and cloud shadows
+     travelling over the roofs.
+
+     One file. No libraries, no fonts, no images, no network. Raw
+     WebGL2, everything procedural, deterministic from one seed.
+     1 unit = 1 metre.
+
+     If this page is ever embedded, the iframe needs
+     allow="pointer-lock; fullscreen" (and allow-pointer-lock in
+     the sandbox attribute if it is sandboxed).
+     ============================================================ */
+
+  :root{
+    --bg:        #070B11;
+    --bg-2:      #0B1219;
+    --ink:       #E8EEF2;
+    --ink-2:     #9FB0BC;
+    --ink-3:     #6B7C89;
+    --accent:    #5FE3D0;
+    --accent-2:  #2FB9AE;
+    --hair:      rgba(159,176,188,.16);
+    --ease:      cubic-bezier(.22,.61,.36,1);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+    overflow:hidden;
+    overscroll-behavior:none;
+    user-select:none;
+    -webkit-user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .stage{
+    position:relative;
+    width:100%;
+    height:100vh;
+    height:100svh;
+    min-height:420px;
+    overflow:hidden;
+    isolation:isolate;
+    background:#0B1219;
+  }
+
+  /* ---------- layer 1: the world ---------- */
+  #scene{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+    touch-action:none;
+    cursor:default;
+  }
+
+  /* ---------- layer 1b: static fallback when there is no WebGL2 ---------- */
+  .fallback{
+    position:absolute;
+    inset:0;
+    display:none;
+    place-items:center;
+    text-align:center;
+    padding:32px;
+    background:
+      radial-gradient(62% 46% at 66% 24%, rgba(255,233,184,.18) 0%, rgba(255,233,184,0) 64%),
+      linear-gradient(to bottom, #6E9BC0 0%, #9FC0D6 38%, #D8E4E4 62%, #C8D6D4 74%, #0B1219 74.4%, #070B11 100%);
+  }
+  .fallback .fb-card{
+    max-width:440px;
+    padding:26px 28px;
+    border:1px solid var(--hair);
+    border-radius:2px;
+    background:rgba(7,11,17,.86);
+    backdrop-filter:blur(9px);
+  }
+  .fallback h2{
+    margin:0 0 10px;
+    font-size:13px; font-weight:700;
+    letter-spacing:.34em; text-transform:uppercase;
+    color:var(--ink);
+  }
+  .fallback p{ margin:0; font-size:13.5px; line-height:1.62; color:var(--ink-2); }
+  body.nogl #scene, body.nogl #labels, body.nogl #ui{ display:none; }
+  body.nogl .fallback{ display:grid; }
+
+  /* ---------- layer 2: readability scrims ---------- */
+  .scrim{ position:absolute; inset:0; pointer-events:none; }
+  .scrim--vig{ background:radial-gradient(126% 100% at 50% 44%, transparent 46%, rgba(60,52,40,.34) 100%); }
+  .scrim--low{
+    background:linear-gradient(to bottom,
+      rgba(7,11,17,.34) 0%,
+      rgba(7,11,17,0) 20%,
+      rgba(7,11,17,0) 54%,
+      rgba(7,11,17,.52) 100%);
+    opacity:0; transition:opacity .8s var(--ease);
+  }
+  .stage.chromed .scrim--low{ opacity:1; }
+
+  /* ---------- layer 3: distant landmark callouts ---------- */
+  #labels{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+  .lbl{
+    position:absolute; left:0; top:0; width:0; height:0;
+    opacity:0;
+    transform:translate3d(-3000px,-3000px,0);
+    transition:opacity .55s var(--ease);
+    will-change:transform,opacity;
+  }
+  .lbl.on{ opacity:1; }
+  .lbl .dot{
+    position:absolute; left:-2.5px; top:-2.5px;
+    width:5px; height:5px; border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 10px rgba(95,227,208,.72);
+  }
+  .lbl .stem{
+    position:absolute; left:0; top:-28px;
+    width:1px; height:28px;
+    background:linear-gradient(to bottom, rgba(95,227,208,.08), rgba(95,227,208,.66));
+  }
+  .lbl .bar{
+    position:absolute; left:0; top:-28px;
+    width:22px; height:1px;
+    background:linear-gradient(to right, rgba(95,227,208,.66), rgba(95,227,208,.10));
+  }
+  .lbl .nm{
+    position:absolute; left:28px; top:-36px;
+    white-space:nowrap;
+    font-size:9.5px; font-weight:600;
+    letter-spacing:.22em; text-transform:uppercase;
+    color:#EAF6F3;
+    text-shadow:0 1px 12px rgba(6,10,16,.92), 0 0 3px rgba(6,10,16,.85);
+  }
+  .lbl.seen .dot{ background:var(--ink-2); box-shadow:none; }
+  .lbl.seen .stem{ background:linear-gradient(to bottom, rgba(159,176,188,.05), rgba(159,176,188,.42)); }
+  .lbl.seen .bar{ background:linear-gradient(to right, rgba(159,176,188,.42), rgba(159,176,188,.06)); }
+  .lbl.seen .nm{ color:#D7E2E8; }
+
+  /* ---------- layer 4: typography-only UI ---------- */
+  #ui{ position:absolute; inset:0; pointer-events:none; }
+  #ui .clickable{ pointer-events:auto; }
+
+  /* title card */
+  .title{
+    position:absolute; left:0; right:0; top:34%;
+    text-align:center;
+    transition:opacity 1s var(--ease), transform 1s var(--ease);
+  }
+  .title h1{
+    margin:0;
+    font-size:clamp(30px,6.6vw,66px);
+    font-weight:700;
+    letter-spacing:.35em;
+    text-indent:.35em;
+    color:#F4F6F2;
+    text-shadow:0 2px 30px rgba(20,26,20,.55);
+  }
+  .title p{
+    margin:14px 0 0;
+    font-size:12px; font-weight:500;
+    letter-spacing:.28em; text-transform:uppercase;
+    color:#D9E3E2;
+    text-shadow:0 1px 16px rgba(20,26,20,.6);
+  }
+  .title.off{ opacity:0; transform:translateY(-8px); }
+
+  /* controls hint */
+  .hint{
+    position:absolute; left:0; right:0; bottom:5.4%;
+    text-align:center;
+    font-size:11px; letter-spacing:.16em;
+    color:#DCE6E4;
+    text-shadow:0 1px 14px rgba(12,18,16,.9);
+    opacity:0;
+    transition:opacity .9s var(--ease);
+  }
+  .hint.on{ opacity:.86; }
+  .hint b{ color:#F4F6F2; font-weight:600; }
+
+  /* place name, lower-third left */
+  .place{
+    position:absolute; left:clamp(20px,4.6vw,64px); bottom:clamp(64px,13vh,132px);
+    opacity:0;
+    transform:translateY(6px);
+    transition:opacity .5s var(--ease), transform .5s var(--ease);
+  }
+  .place.on{ opacity:1; transform:translateY(0); }
+  .place .nm{
+    display:block;
+    font-size:14.5px; font-weight:600;
+    letter-spacing:.26em; text-transform:uppercase;
+    color:#F1F5F4;
+    text-shadow:0 1px 18px rgba(12,18,16,.95), 0 0 3px rgba(12,18,16,.7);
+  }
+  .place.new .nm{ color:var(--accent); text-shadow:0 1px 18px rgba(6,20,18,.95); }
+  .place .rule{
+    display:block; margin-top:9px; height:1px; width:0;
+    background:linear-gradient(to right, rgba(159,176,188,.55), rgba(159,176,188,0));
+  }
+  .place.on .rule{ width:180px; transition:width 1.9s var(--ease); }
+  .place.new .rule{ background:linear-gradient(to right, rgba(95,227,208,.85), rgba(95,227,208,0)); }
+  .place .sub{
+    display:block; margin-top:8px;
+    font-size:10.5px; letter-spacing:.2em; text-transform:uppercase;
+    color:#C6D2D4;
+    text-shadow:0 1px 14px rgba(12,18,16,.9);
+  }
+
+  /* fact card */
+  .card{
+    position:absolute; right:clamp(20px,4.4vw,60px); bottom:clamp(58px,12vh,120px);
+    width:min(360px,74vw);
+    padding:20px 22px 21px;
+    border:1px solid var(--hair);
+    border-left:1px solid rgba(95,227,208,.5);
+    border-radius:2px;
+    background:rgba(9,14,20,.82);
+    backdrop-filter:blur(11px);
+    -webkit-backdrop-filter:blur(11px);
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .55s var(--ease), transform .55s var(--ease);
+  }
+  .card.on{ opacity:1; transform:translateY(0); }
+  .card .nm{
+    font-size:11.5px; font-weight:650;
+    letter-spacing:.26em; text-transform:uppercase;
+    color:var(--ink);
+  }
+  .card .tx{
+    margin:12px 0 0;
+    font-size:13px; line-height:1.66;
+    color:var(--ink-2);
+  }
+
+  /* landmark panel (Tab) */
+  .panel{
+    position:absolute; inset:0;
+    display:grid; place-items:center;
+    background:rgba(6,10,16,.62);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    opacity:0; visibility:hidden;
+    transition:opacity .35s var(--ease), visibility .35s var(--ease);
+  }
+  .panel.on{ opacity:1; visibility:visible; }
+  .panel .sheet{
+    width:min(460px,86vw);
+    padding:30px 32px 30px;
+    border:1px solid var(--hair);
+    border-radius:2px;
+    background:rgba(7,11,17,.84);
+  }
+  .panel .city{
+    font-size:12px; font-weight:700;
+    letter-spacing:.34em; text-transform:uppercase;
+    color:var(--ink);
+  }
+  .panel .sub{
+    margin:9px 0 20px;
+    font-size:11px; letter-spacing:.18em;
+    color:var(--ink-3);
+  }
+  .panel .rule{ height:1px; background:var(--hair); margin:0 0 18px; }
+  .panel ul{ margin:0; padding:0; list-style:none; }
+  .panel li{
+    display:flex; align-items:center; gap:11px;
+    padding:6.5px 0;
+    font-size:12.5px; letter-spacing:.06em;
+    color:var(--ink-3);
+  }
+  .panel li i{
+    width:5px; height:5px; border-radius:50%;
+    background:transparent;
+    border:1px solid rgba(159,176,188,.28);
+    flex:none;
+  }
+  .panel li.got{ color:var(--ink); }
+  .panel li.got i{ background:var(--accent); border-color:transparent; box-shadow:0 0 8px rgba(95,227,208,.55); }
+  .panel .foot{
+    margin-top:22px; padding-top:16px;
+    border-top:1px solid var(--hair);
+    font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-3);
+    line-height:2;
+  }
+  .panel .foot b{ color:var(--ink-2); font-weight:600; }
+
+  /* start / resume overlay */
+  .gate{
+    position:absolute; inset:0;
+    display:grid; place-items:center;
+    background:rgba(6,10,16,.5);
+    backdrop-filter:blur(3px);
+    -webkit-backdrop-filter:blur(3px);
+    opacity:0; visibility:hidden;
+    transition:opacity .4s var(--ease), visibility .4s var(--ease);
+    cursor:pointer;
+  }
+  .gate.on{ opacity:1; visibility:visible; }
+  .gate .txt{
+    font-size:11.5px; font-weight:600;
+    letter-spacing:.3em; text-transform:uppercase;
+    color:#F1F5F4;
+    padding:14px 22px;
+    border:1px solid var(--hair);
+    border-radius:2px;
+    background:rgba(7,11,17,.72);
+    text-align:center;
+  }
+  .gate .txt small{
+    display:block; margin-top:9px;
+    font-size:10px; font-weight:500; letter-spacing:.2em;
+    color:var(--ink-3);
+  }
+
+  /* toast (respawn line, mute, unlocks) */
+  .toast{
+    position:absolute; left:0; right:0; top:12%;
+    text-align:center;
+    font-size:12px; letter-spacing:.2em;
+    color:#EDF2F1;
+    text-shadow:0 1px 16px rgba(12,18,16,.95);
+    opacity:0;
+    transition:opacity .6s var(--ease);
+  }
+  .toast.on{ opacity:1; }
+
+  /* mode tag (fly / photo / bike) */
+  .tag{
+    position:absolute; left:clamp(20px,4.6vw,64px); top:clamp(18px,3.4vh,32px);
+    font-size:10px; font-weight:650;
+    letter-spacing:.3em; text-transform:uppercase;
+    color:var(--accent);
+    opacity:0;
+    transition:opacity .35s var(--ease);
+  }
+  .tag.on{ opacity:.9; }
+
+  /* fade-to-black for the water fall-in */
+  .dip{
+    position:absolute; inset:0;
+    background:#0A1418;
+    opacity:0; pointer-events:none;
+    transition:opacity .45s linear;
+  }
+  .dip.on{ opacity:1; }
+
+  /* photo mode frame */
+  .frame{
+    position:absolute; inset:0;
+    opacity:0; visibility:hidden;
+    transition:opacity .4s var(--ease), visibility .4s var(--ease);
+  }
+  .frame.on{ opacity:1; visibility:visible; }
+  .frame span{ position:absolute; background:rgba(232,238,242,.5); }
+  .frame .t{ left:6%; right:6%; top:9%; height:1px; }
+  .frame .b{ left:6%; right:6%; bottom:9%; height:1px; }
+  .frame .l{ top:9%; bottom:9%; left:6%; width:1px; }
+  .frame .r{ top:9%; bottom:9%; right:6%; width:1px; }
+  .frame .cap{
+    position:absolute; left:6%; bottom:5.4%;
+    font-size:10px; letter-spacing:.26em; text-transform:uppercase;
+    color:var(--ink-2);
+  }
+
+  /* touch controls */
+  .stick{
+    position:absolute; width:96px; height:96px; margin:-48px 0 0 -48px;
+    border-radius:50%;
+    border:1px solid rgba(232,238,242,.26);
+    background:rgba(232,238,242,.05);
+    opacity:0; transition:opacity .2s linear;
+  }
+  .stick.on{ opacity:1; }
+  .stick i{
+    position:absolute; left:50%; top:50%;
+    width:44px; height:44px; margin:-22px 0 0 -22px;
+    border-radius:50%;
+    background:rgba(232,238,242,.16);
+    border:1px solid rgba(232,238,242,.3);
+  }
+  .tbtn{
+    position:absolute; right:22px; bottom:24px;
+    width:64px; height:64px; border-radius:50%;
+    display:grid; place-items:center;
+    border:1px solid rgba(95,227,208,.4);
+    background:rgba(7,11,17,.6);
+    color:#EAF6F3;
+    font-size:9.5px; font-weight:650; letter-spacing:.14em; text-transform:uppercase;
+    opacity:0; visibility:hidden;
+    transition:opacity .3s var(--ease), visibility .3s var(--ease);
+  }
+  .tbtn.on{ opacity:1; visibility:visible; }
+
+  @media (prefers-reduced-motion: reduce){
+    .place.on .rule{ transition:none; width:180px; }
+  }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <canvas id="scene"></canvas>
+
+  <div class="fallback">
+    <div class="fb-card">
+      <h2>Delft — Ochtendlicht</h2>
+      <p>This game needs WebGL2. Every current desktop and mobile browser supports it — if you are seeing this card, try another browser, or switch hardware acceleration back on.</p>
+    </div>
+  </div>
+
+  <div class="scrim scrim--vig"></div>
+  <div class="scrim scrim--low"></div>
+  <div id="labels"></div>
+
+  <div id="ui">
+    <div class="title" id="title">
+      <h1>DELFT</h1>
+      <p id="titleSub">Een ochtend in Delft</p>
+    </div>
+
+    <div class="hint" id="hint"></div>
+
+    <div class="place" id="place">
+      <span class="nm" id="placeNm"></span>
+      <span class="rule" id="placeRule"></span>
+      <span class="sub" id="placeSub"></span>
+    </div>
+
+    <div class="card" id="card">
+      <div class="nm" id="cardNm"></div>
+      <p class="tx" id="cardTx"></p>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <div class="tag" id="tag"></div>
+
+    <div class="frame" id="frame">
+      <span class="t"></span><span class="b"></span><span class="l"></span><span class="r"></span>
+      <span class="cap">wheel — lens · Q E — roll · click — leg vast · P — terug</span>
+    </div>
+
+    <div class="stick" id="stick"><i></i></div>
+    <div class="tbtn clickable" id="tbtn">Lees</div>
+
+    <div class="panel" id="panel">
+      <div class="sheet">
+        <div class="city">Delft</div>
+        <div class="sub" id="panelSub">Een ochtend in Delft</div>
+        <div class="rule"></div>
+        <ul id="panelList"></ul>
+        <div class="foot" id="panelFoot"></div>
+      </div>
+    </div>
+
+    <div class="gate clickable" id="gate">
+      <div class="txt" id="gateTxt">Klik om te verkennen<small>WASD — lopen · muis — kijken · shift — sneller</small></div>
+    </div>
+  </div>
+
+  <div class="dip" id="dip"></div>
+</div>
+
+<script>
+/* ==================================================================
+   DELFT — "Ochtendlicht".  Contents
+   ------------------------------------------------------------------
+     [1]  TUNE — every tunable constant, one block
+     [2]  PALETTE — the fixed hex ramps
+     [3]  math, RNG, small helpers
+     [4]  mesh emitters (chunk-bucketed, LOD-aware)
+     [5]  DATA — landmarks, canals, streets, respawns, tiles, facts
+     [6]  world: terrain, water, quays, bridges
+     [7]  world: canal houses, gables, props
+     [8]  world: the named buildings (kerken, Stadhuis, Oostpoort, ...)
+     [9]  world: instanced props + animated life
+     [10] collision: grid, colliders, height patches
+     [11] packing: chunks, buffers, stats
+     [12] GL: shaders
+     [13] GL: init, shadow map, resources
+     [14] renderer: culling, passes, frame
+     [15] input: pointer lock, keyboard, touch, gamepad
+     [16] player: walk / fly / bike, ground solver, respawn
+     [17] systems: discovery, places, tiles, audio, photo mode
+     [18] UI plumbing
+     [19] loop + boot + window.__game
+   ================================================================== */
+
+'use strict';
+
+/* ==================================================================
+   [1] TUNE
+   ================================================================== */
+
+var TUNE = {
+  SEED: 20260726,
+
+  /* world */
+  WORLD: 350,             /* playable half-extent, metres            */
+  RIM: 900,               /* polder plane half-extent                */
+  CHUNK: 64,              /* static geometry chunk size              */
+  COL_CELL: 8,            /* collision grid cell                     */
+  WATER_Y: -1.45,         /* canal surface                           */
+  BED_Y: -3.30,           /* canal bed                               */
+
+  /* player */
+  EYE: 1.65,
+  PLAYER_R: 0.35,
+  STEP_UP: 0.45,
+  GRAVITY: 22,
+  WALK: 4.3,
+  SPRINT: 7.5,
+  FLY: 18, FLY_FAST: 55,
+  BIKE: 9.5,
+  ACCEL_K: 12, DECEL_K: 9,
+  BIKE_ACCEL_K: 2.5, BIKE_COAST_K: 1.2, BIKE_BRAKE_K: 6,
+  GROUND_SNAP_K: 16,
+  CAM_Y_K: 14,
+  LAND_DIP: 0.08,
+
+  /* look */
+  SENS: 0.0023,           /* rad per mouse movement count            */
+  TOUCH_LOOK: 0.0060,     /* rad per css px                          */
+  PITCH_MAX: 1.55,
+  FOV: 62 * Math.PI / 180,
+  FOV_SPRINT: 5 * Math.PI / 180,
+  FOV_K: 8,
+  NEAR: 0.1,
+
+  /* render */
+  FOG_OPAQUE: 450,        /* Delft is intimate                       */
+  LOD_DIST: 180, LOD_HYST: 15,
+  DPR_DESKTOP: 1.5, DPR_TOUCH: 1.25,
+  DYN_STEPS: [1.0, 0.85, 0.7, 0.55],
+  DYN_DOWN_MS: 19, DYN_UP_MS: 12,
+  DYN_DOWN_FRAMES: 40, DYN_UP_FRAMES: 300,
+  SHADOW_SIZE: 2048,
+  SHADOW_BIAS: 0.9,       /* metres, along the normal                */
+
+  /* light story: sun azimuth 110 deg (SE), elevation 15 deg          */
+  SUN_AZ: 110 * Math.PI / 180,
+  SUN_EL: 15 * Math.PI / 180,
+  CLOUD_H: 260,           /* cloud deck height for shadow projection */
+  CLOUD_DRIFT: 1.5,       /* m/s                                     */
+
+  /* sim */
+  STEP: 1 / 120,
+  DT_CLAMP: 0.1,
+
+  /* game */
+  TRIGGER_DOT: 0.35,
+  TRIGGER_HOLD: 0.4,
+  LABEL_MIN: 60,          /* distant name labels beyond this range   */
+  CARD_MS: 8000,
+  PLACE_HOLD: 2500,
+  PLACE_SUPPRESS: 30000,
+  TILE_R: 2.2,
+
+  /* audio */
+  VOL_WIND: 0.06, VOL_WATER: 0.12, VOL_BELL: 0.22, VOL_UI: 0.16,
+
+  /* budgets — mirrored by verify.mjs */
+  MAX_TRIS: 400000,
+  MAX_CHUNK_TRIS: 12000,
+  MAX_DRAWS: 150,
+  MAX_VBO_MB: 32
+};
+
+TUNE.FAR = TUNE.FOG_OPAQUE + 100;
+TUNE.STORE = 'delft.ochtendlicht.v1';
+
+/* ==================================================================
+   [2] PALETTE
+      Straight from the design direction's hex ramps. Three accents
+      only: Delft-Blue cobalt, sunlight gold, foliage green. Anything
+      not in this table is the wrong colour.
+   ================================================================== */
+
+function hx(s){
+  var n = parseInt(s.slice(1), 16);
+  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+}
+
+var P = {
+  /* sky, zenith -> horizon */
+  sky0: hx('#6E9BC0'), sky1: hx('#9FC0D6'), sky2: hx('#D8E4E4'), sky3: hx('#F0E6CC'),
+  cloudLit: hx('#F7F3E8'), cloudDark: hx('#9AA8B4'),
+  sun: hx('#FFE9B8'), sunGlow: hx('#FFD98F'),
+
+  /* brick, sunlit -> shadow */
+  brick: [hx('#C97B54'), hx('#B4674A'), hx('#9E5540'), hx('#7A4234'), hx('#5E3630')],
+  /* plaster / cream */
+  cream: hx('#F0E9D6'), cream2: hx('#E2D8BE'), creamSh: hx('#B8AE96'),
+  /* roofs */
+  tile: hx('#C05A38'), tileSh: hx('#8A3E2C'),
+  slate: hx('#55606A'), slateSh: hx('#39424C'),
+  /* stone */
+  stone: hx('#C4BCA8'), stone2: hx('#A69E8A'), stone3: hx('#7E7866'),
+  /* Delft blue */
+  porcelain: hx('#F4F6F2'), cobalt: hx('#2B5FB4'), cobaltDeep: hx('#1B3D7A'),
+  /* water */
+  water: hx('#35504C'), waterSky: hx('#A9C4CE'), glitter: hx('#FFE9B8'),
+  /* foliage */
+  leafLit: hx('#8FAE62'), leaf: hx('#6E9048'), leafSh: hx('#4C6B38'),
+  /* misc */
+  mist: hx('#DCE6E4'),
+  shadowTint: hx('#4C6484'),
+  fog: hx('#C8D6D4'),
+  wood: hx('#6B5844'), woodPale: hx('#B9A98C'),
+  iron: hx('#3B3F42'),
+  glass: hx('#3E4E55'),
+  bakery: hx('#FFC46B'),
+  grass: hx('#7E9A5C'), grass2: hx('#6C8A50'), field: hx('#93A868'),
+  gold: hx('#D8B25E')
+};
+
+/* material ids, packed into the vertex colour's alpha byte */
+var M_SOLID = 0;    /* ordinary lit surface                          */
+var M_GLASS = 1;    /* dark glass: sky reflection + fresnel          */
+var M_LEAF  = 2;    /* foliage: softer normals, slight translucency  */
+var M_EMIT  = 3;    /* the one warm interior (the bakery window)     */
+var M_FLAT  = 4;    /* unlit flat colour (far rim, mist boards)      */
+
+/* ==================================================================
+   [3] math, RNG, helpers
+   ================================================================== */
+
+function clamp(v,a,b){ return v < a ? a : (v > b ? b : v); }
+function mix(a,b,t){ return a + (b - a) * t; }
+function smoothstep(t){ t = clamp(t,0,1); return t*t*(3-2*t); }
+function sign(v){ return v < 0 ? -1 : 1; }
+
+var RS = 0;
+function mulberry32(a){
+  return function(){
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+var rnd = mulberry32(TUNE.SEED);
+function seedRng(s){ rnd = mulberry32(s); }
+function rr(a,b){ return a + (b - a) * rnd(); }
+function ri(a,b){ return Math.floor(rr(a, b + 0.999999)); }
+function pick(arr){ return arr[Math.floor(rnd() * arr.length) % arr.length]; }
+function chance(p){ return rnd() < p; }
+
+/* deterministic value noise, used for cloud fields and small jitter */
+function hash2(x, y){
+  var h = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
+  return h - Math.floor(h);
+}
+function vnoise(x, y){
+  var xi = Math.floor(x), yi = Math.floor(y);
+  var xf = x - xi, yf = y - yi;
+  var u = xf*xf*(3-2*xf), v = yf*yf*(3-2*yf);
+  var a = hash2(xi,yi), b = hash2(xi+1,yi), c = hash2(xi,yi+1), d = hash2(xi+1,yi+1);
+  return mix(mix(a,b,u), mix(c,d,u), v);
+}
+
+/* --- 4x4 matrices (column major, GL order) ------------------------ */
+function m4(){ var m = new Float32Array(16); m[0]=m[5]=m[10]=m[15]=1; return m; }
+function m4id(m){ m[0]=1;m[1]=0;m[2]=0;m[3]=0; m[4]=0;m[5]=1;m[6]=0;m[7]=0; m[8]=0;m[9]=0;m[10]=1;m[11]=0; m[12]=0;m[13]=0;m[14]=0;m[15]=1; return m; }
+
+function perspective(o, fovy, aspect, near, far){
+  var f = 1 / Math.tan(fovy / 2), nf = 1 / (near - far);
+  o[0]=f/aspect; o[1]=0; o[2]=0; o[3]=0;
+  o[4]=0; o[5]=f; o[6]=0; o[7]=0;
+  o[8]=0; o[9]=0; o[10]=(far+near)*nf; o[11]=-1;
+  o[12]=0; o[13]=0; o[14]=2*far*near*nf; o[15]=0;
+  return o;
+}
+function ortho(o, l,r,b,t,n,f){
+  o[0]=2/(r-l); o[1]=0; o[2]=0; o[3]=0;
+  o[4]=0; o[5]=2/(t-b); o[6]=0; o[7]=0;
+  o[8]=0; o[9]=0; o[10]=-2/(f-n); o[11]=0;
+  o[12]=-(r+l)/(r-l); o[13]=-(t+b)/(t-b); o[14]=-(f+n)/(f-n); o[15]=1;
+  return o;
+}
+function lookAt(o, ex,ey,ez, cx,cy,cz, ux,uy,uz){
+  var zx=ex-cx, zy=ey-cy, zz=ez-cz;
+  var L=Math.sqrt(zx*zx+zy*zy+zz*zz); if (L < 1e-9) { zz = 1; L = 1; }
+  zx/=L; zy/=L; zz/=L;
+  var xx=uy*zz-uz*zy, xy=uz*zx-ux*zz, xz=ux*zy-uy*zx;
+  L=Math.sqrt(xx*xx+xy*xy+xz*xz); if (L < 1e-9) { xx=1; xy=0; xz=0; L=1; }
+  xx/=L; xy/=L; xz/=L;
+  var yx=zy*xz-zz*xy, yy=zz*xx-zx*xz, yz=zx*xy-zy*xx;
+  o[0]=xx; o[1]=yx; o[2]=zx; o[3]=0;
+  o[4]=xy; o[5]=yy; o[6]=zy; o[7]=0;
+  o[8]=xz; o[9]=yz; o[10]=zz; o[11]=0;
+  o[12]=-(xx*ex+xy*ey+xz*ez);
+  o[13]=-(yx*ex+yy*ey+yz*ez);
+  o[14]=-(zx*ex+zy*ey+zz*ez);
+  o[15]=1;
+  return o;
+}
+function mul4(o, a, b){
+  for (var c = 0; c < 4; c++){
+    var b0=b[c*4], b1=b[c*4+1], b2=b[c*4+2], b3=b[c*4+3];
+    o[c*4  ] = a[0]*b0 + a[4]*b1 + a[8 ]*b2 + a[12]*b3;
+    o[c*4+1] = a[1]*b0 + a[5]*b1 + a[9 ]*b2 + a[13]*b3;
+    o[c*4+2] = a[2]*b0 + a[6]*b1 + a[10]*b2 + a[14]*b3;
+    o[c*4+3] = a[3]*b0 + a[7]*b1 + a[11]*b2 + a[15]*b3;
+  }
+  return o;
+}
+/* translate * rotateY * scale, for the handful of dynamic meshes */
+function trs(o, px,py,pz, yaw, s){
+  var c = Math.cos(yaw), sn = Math.sin(yaw);
+  s = (s === undefined) ? 1 : s;
+  o[0]=c*s;  o[1]=0; o[2]=-sn*s; o[3]=0;
+  o[4]=0;    o[5]=s; o[6]=0;     o[7]=0;
+  o[8]=sn*s; o[9]=0; o[10]=c*s;  o[11]=0;
+  o[12]=px;  o[13]=py; o[14]=pz; o[15]=1;
+  return o;
+}
+
+/* sun direction (unit vector pointing TOWARDS the sun) */
+var SUN = (function(){
+  var ce = Math.cos(TUNE.SUN_EL), se = Math.sin(TUNE.SUN_EL);
+  /* azimuth measured clockwise from north; +x east, -z north */
+  return [ce * Math.sin(TUNE.SUN_AZ), se, -ce * Math.cos(TUNE.SUN_AZ)];
+})();
+
+/* ==================================================================
+   [4] mesh emitters
+      Everything static goes into per-chunk buckets so the renderer
+      can cull. Every builder runs twice: DET=1 emits the full mesh,
+      DET=0 emits massing only. Emitters guarantee CCW-outward
+      winding (back-face culling is on from day one) by swapping the
+      winding whenever the stored normal disagrees with the
+      geometric one — check W3 in verify.mjs proves it stayed true.
+
+      Bucket vertex stride is 10 floats: pos3 nrm3 col3 mat1.
+   ================================================================== */
+
+var CHN = 12;                                   /* chunks per axis   */
+var CHO = -(CHN * TUNE.CHUNK) / 2;              /* -384              */
+var BK = null;      /* BK[chunk*2 + det] = flat array of floats      */
+var FARB = null;    /* rim geometry, never culled, one detail level  */
+var DET = 1;
+var TGT = null;
+
+function bucketsInit(){
+  BK = new Array(CHN * CHN * 2);
+  for (var i = 0; i < BK.length; i++) { BK[i] = []; }
+  FARB = [];
+}
+function chunkIndex(x, z){
+  var ix = Math.floor((x - CHO) / TUNE.CHUNK);
+  var iz = Math.floor((z - CHO) / TUNE.CHUNK);
+  if (ix < 0 || iz < 0 || ix >= CHN || iz >= CHN) { return -1; }
+  return iz * CHN + ix;
+}
+/* select the bucket for everything emitted from here on */
+function part(x, z){
+  var c = chunkIndex(x, z);
+  TGT = (c < 0) ? FARB : BK[c * 2 + DET];
+}
+function partFar(){ TGT = FARB; }
+
+/* --- builder-space transform (rotate Y, then X, then Z; translate) - */
+var xfOn = false;
+var xR = new Float64Array(9);
+var xT = new Float64Array(3);
+
+function setXF(px,py,pz, ry, rx, rz){
+  var cy = Math.cos(ry), sy = Math.sin(ry);
+  var cx = Math.cos(rx), sx = Math.sin(rx);
+  var cz = Math.cos(rz), sz = Math.sin(rz);
+  var m00 = cy,  m01 = sy*sx, m02 = sy*cx;
+  var m10 = 0,   m11 = cx,    m12 = -sx;
+  var m20 = -sy, m21 = cy*sx, m22 = cy*cx;
+  xR[0] = m00*cz + m01*sz;  xR[1] = -m00*sz + m01*cz;  xR[2] = m02;
+  xR[3] = m10*cz + m11*sz;  xR[4] = -m10*sz + m11*cz;  xR[5] = m12;
+  xR[6] = m20*cz + m21*sz;  xR[7] = -m20*sz + m21*cz;  xR[8] = m22;
+  xT[0] = px; xT[1] = py; xT[2] = pz;
+  xfOn = true;
+}
+function noXF(){ xfOn = false; }
+
+var _wa = [0,0,0], _wb = [0,0,0], _wc = [0,0,0], _wn = [0,0,0];
+function toWorld(x,y,z,out){
+  if (!xfOn) { out[0]=x; out[1]=y; out[2]=z; return out; }
+  out[0] = xR[0]*x + xR[1]*y + xR[2]*z + xT[0];
+  out[1] = xR[3]*x + xR[4]*y + xR[5]*z + xT[1];
+  out[2] = xR[6]*x + xR[7]*y + xR[8]*z + xT[2];
+  return out;
+}
+function rotOnly(x,y,z,out){
+  if (!xfOn) { out[0]=x; out[1]=y; out[2]=z; return out; }
+  out[0] = xR[0]*x + xR[1]*y + xR[2]*z;
+  out[1] = xR[3]*x + xR[4]*y + xR[5]*z;
+  out[2] = xR[6]*x + xR[7]*y + xR[8]*z;
+  return out;
+}
+
+function pushV(p, nx,ny,nz, col, mat){
+  TGT.push(p[0],p[1],p[2], nx,ny,nz, col[0],col[1],col[2], mat);
+}
+
+/* triangle with an explicit normal; winding is corrected to match it */
+function triN(a,b,c, nx,ny,nz, col, mat){
+  toWorld(a[0],a[1],a[2],_wa); toWorld(b[0],b[1],b[2],_wb); toWorld(c[0],c[1],c[2],_wc);
+  rotOnly(nx,ny,nz,_wn);
+  var L = Math.sqrt(_wn[0]*_wn[0] + _wn[1]*_wn[1] + _wn[2]*_wn[2]);
+  if (L < 1e-9) { return; }
+  var nX = _wn[0]/L, nY = _wn[1]/L, nZ = _wn[2]/L;
+  var ux=_wb[0]-_wa[0], uy=_wb[1]-_wa[1], uz=_wb[2]-_wa[2];
+  var vx=_wc[0]-_wa[0], vy=_wc[1]-_wa[1], vz=_wc[2]-_wa[2];
+  var gx=uy*vz-uz*vy, gy=uz*vx-ux*vz, gz=ux*vy-uy*vx;
+  if (gx*gx + gy*gy + gz*gz < 1e-14) { return; }   /* degenerate */
+  if (gx*nX + gy*nY + gz*nZ < 0){
+    pushV(_wa, nX,nY,nZ, col, mat);
+    pushV(_wc, nX,nY,nZ, col, mat);
+    pushV(_wb, nX,nY,nZ, col, mat);
+  } else {
+    pushV(_wa, nX,nY,nZ, col, mat);
+    pushV(_wb, nX,nY,nZ, col, mat);
+    pushV(_wc, nX,nY,nZ, col, mat);
+  }
+}
+function quadN(a,b,c,d, nx,ny,nz, col, mat){
+  triN(a,b,c, nx,ny,nz, col, mat);
+  triN(a,c,d, nx,ny,nz, col, mat);
+}
+/* normal from winding, flipped to face away from (ox,oy,oz) */
+function triO(a,b,c, col, mat, ox,oy,oz){
+  var ux=b[0]-a[0], uy=b[1]-a[1], uz=b[2]-a[2];
+  var vx=c[0]-a[0], vy=c[1]-a[1], vz=c[2]-a[2];
+  var nx=uy*vz-uz*vy, ny=uz*vx-ux*vz, nz=ux*vy-uy*vx;
+  var L=Math.sqrt(nx*nx+ny*ny+nz*nz);
+  if (L < 1e-9) { return; }
+  nx/=L; ny/=L; nz/=L;
+  if (nx*(a[0]-ox) + ny*(a[1]-oy) + nz*(a[2]-oz) < 0) { nx=-nx; ny=-ny; nz=-nz; }
+  triN(a,b,c, nx,ny,nz, col, mat);
+}
+function quadO(a,b,c,d, col, mat, ox,oy,oz){
+  triO(a,b,c, col,mat, ox,oy,oz);
+  triO(a,c,d, col,mat, ox,oy,oz);
+}
+
+/* --- primitives ---------------------------------------------------- */
+
+var _bp = [];
+for (var _i = 0; _i < 8; _i++) { _bp.push([0,0,0]); }
+
+/* axis-aligned box; skip bits: 1 -x, 2 +x, 4 -y, 8 +y, 16 -z, 32 +z */
+function box(cx,cy,cz, hx,hy,hz, col, mat, skip){
+  skip = skip || 0;
+  var i, p = _bp;
+  for (i = 0; i < 8; i++){
+    p[i][0] = cx + ((i & 4) ? hx : -hx);
+    p[i][1] = cy + ((i & 2) ? hy : -hy);
+    p[i][2] = cz + ((i & 1) ? hz : -hz);
+  }
+  if (!(skip & 2))  { quadN(p[4],p[5],p[7],p[6],  1,0,0, col,mat); }
+  if (!(skip & 1))  { quadN(p[0],p[1],p[3],p[2], -1,0,0, col,mat); }
+  if (!(skip & 4))  { quadN(p[0],p[1],p[5],p[4],  0,-1,0, col,mat); }
+  if (!(skip & 8))  { quadN(p[2],p[3],p[7],p[6],  0,1,0, col,mat); }
+  if (!(skip & 32)) { quadN(p[1],p[3],p[7],p[5],  0,0,1, col,mat); }
+  if (!(skip & 16)) { quadN(p[0],p[2],p[6],p[4],  0,0,-1, col,mat); }
+}
+
+/* flat quad on the XZ plane, facing up */
+function slab(x0,z0, x1,z1, y, col, mat){
+  quadN([x0,y,z0],[x0,y,z1],[x1,y,z1],[x1,y,z0], 0,1,0, col, mat);
+}
+
+/* prism / cone: base at cy, rising h, radius r0 -> r1, n sides */
+function cyl(cx,cy,cz, r0, r1, h, n, col, mat, capTop, capBot, rot0){
+  var i, top = [], bot = [];
+  rot0 = rot0 || 0;
+  for (i = 0; i < n; i++){
+    var a0 = rot0 + i * Math.PI * 2 / n;
+    var cs = Math.cos(a0), sn = Math.sin(a0);
+    bot.push([cx + cs*r0, cy,     cz + sn*r0]);
+    top.push([cx + cs*r1, cy + h, cz + sn*r1]);
+  }
+  for (i = 0; i < n; i++){
+    var j = (i + 1) % n;
+    var ma = rot0 + (i + 0.5) * Math.PI * 2 / n;
+    var slope = (r0 - r1) / Math.max(h, 1e-4);
+    var nx = Math.cos(ma), nz = Math.sin(ma);
+    var ny = slope;
+    if (r1 < 1e-5)      { triN(bot[i], bot[j], top[i], nx,ny,nz, col, mat); }
+    else if (r0 < 1e-5) { triN(top[i], top[j], bot[i], nx,ny,nz, col, mat); }
+    else                { quadN(bot[i], bot[j], top[j], top[i], nx,ny,nz, col, mat); }
+  }
+  if (capTop && r1 > 1e-5){
+    for (i = 1; i < n - 1; i++){ triN(top[0], top[i], top[i+1], 0,1,0, col, mat); }
+  }
+  if (capBot && r0 > 1e-5){
+    for (i = 1; i < n - 1; i++){ triN(bot[0], bot[i], bot[i+1], 0,-1,0, col, mat); }
+  }
+}
+
+/* orient the builder frame so local +x runs from A to B; returns length */
+function alignX(ax,ay,az, bx,by,bz){
+  var dx=bx-ax, dy=by-ay, dz=bz-az;
+  var L = Math.sqrt(dx*dx + dy*dy + dz*dz);
+  if (L < 1e-6) { setXF(ax,ay,az, 0,0,0); return 0; }
+  dx/=L; dy/=L; dz/=L;
+  var rz = Math.asin(clamp(dy,-1,1));
+  var cz = Math.cos(rz);
+  var ry = (Math.abs(cz) < 1e-6) ? 0 : Math.atan2(-dz, dx);
+  setXF(ax,ay,az, ry, 0, rz);
+  return L;
+}
+/* thin bar between two world points (ropes, rails, laundry lines) */
+function bar(ax,ay,az, bx,by,bz, r, col, mat){
+  var L = alignX(ax,ay,az, bx,by,bz);
+  if (L > 0){
+    box(L*0.5, 0, 0, L*0.5, r, r, col, mat);
+  }
+  noXF();
+}
+
+/* gable roof over a footprint: ridge runs along X ('x') or Z ('z') */
+function gableRoof(cx, cy, cz, hx, hz, rise, along, col, mat){
+  var a, b, c, d, r0, r1;
+  if (along === 'x'){
+    a=[cx-hx,cy,cz-hz]; b=[cx+hx,cy,cz-hz]; c=[cx+hx,cy,cz+hz]; d=[cx-hx,cy,cz+hz];
+    r0=[cx-hx,cy+rise,cz]; r1=[cx+hx,cy+rise,cz];
+    quadO(a,b,r1,r0, col,mat, cx,cy,cz);
+    quadO(c,d,r0,r1, col,mat, cx,cy,cz);
+    triO(a,r0,d, col,mat, cx,cy,cz);
+    triO(b,c,r1, col,mat, cx,cy,cz);
+  } else {
+    a=[cx-hx,cy,cz-hz]; b=[cx-hx,cy,cz+hz]; c=[cx+hx,cy,cz+hz]; d=[cx+hx,cy,cz-hz];
+    r0=[cx,cy+rise,cz-hz]; r1=[cx,cy+rise,cz+hz];
+    quadO(a,b,r1,r0, col,mat, cx,cy,cz);
+    quadO(c,d,r0,r1, col,mat, cx,cy,cz);
+    triO(a,r0,d, col,mat, cx,cy,cz);
+    triO(b,c,r1, col,mat, cx,cy,cz);
+  }
+}
+
+/* hipped / pyramid roof (churches, gate turrets, the mill cap) */
+function pyramid(cx, cy, cz, hx, hz, rise, col, mat){
+  var a=[cx-hx,cy,cz-hz], b=[cx+hx,cy,cz-hz], c=[cx+hx,cy,cz+hz], d=[cx-hx,cy,cz+hz];
+  var t=[cx,cy+rise,cz];
+  triO(a,b,t, col,mat, cx,cy,cz);
+  triO(b,c,t, col,mat, cx,cy,cz);
+  triO(c,d,t, col,mat, cx,cy,cz);
+  triO(d,a,t, col,mat, cx,cy,cz);
+}
+
+/* a stepped gable wall (trapstopgevel) drawn as stacked boxes */
+function stepGable(cx, cz, y0, w, d, rise, steps, col, mat){
+  var i, sh = rise / steps, sw = w / (steps * 2 + 1);
+  for (i = 0; i < steps; i++){
+    var hw = w * 0.5 - i * sw;
+    if (hw < sw * 0.5) { break; }
+    box(cx, y0 + i * sh + sh * 0.5, cz, hw, sh * 0.5, d, col, mat);
+  }
+  box(cx, y0 + steps * sh + 0.16, cz, Math.max(w*0.5 - steps*sw, sw*0.6), 0.16, d + 0.04, col, mat);
+}
+
+/* a bell / neck gable: a stack of narrowing slabs with a soft top */
+function bellGable(cx, cz, y0, w, d, rise, col, mat){
+  var n = 5, i;
+  for (i = 0; i < n; i++){
+    var t = i / n, t2 = (i + 1) / n;
+    var w0 = w * 0.5 * (1 - t * t * 0.78);
+    box(cx, y0 + rise * (t + t2) * 0.5, cz, w0, rise / (n * 2), d, col, mat);
+  }
+  box(cx, y0 + rise + 0.14, cz, w * 0.16, 0.14, d + 0.05, col, mat);
+}
+
+/* ==================================================================
+   [5] DATA
+      The city plan in plain tables. +X is east, -Z is north, y = 0 is
+      street level, the canals sit 1.45 m below it. The layout is
+      Delft's real topology — one long north-south canal on the west
+      (Oude Delft), a second on the east (Verwersdijk), three
+      cross-canals, the Markt between the Stadhuis and the Nieuwe
+      Kerk, the Kolk basin in the south where Vermeer set up his
+      easel — stylised so the sightlines work at eye level.
+   ================================================================== */
+
+/* canal rectangles: [x0, z0, x1, z1] */
+var CANALS = [
+  [-156, -330, -144,  150],    /* Oude Delft          */
+  [ 124, -300,  136,  140],    /* Verwersdijk         */
+  [-150, -122,   40, -112],    /* Voldersgracht       */
+  [-150,  -28,  130,  -18],    /* Oude Langendijk     */
+  [-150,   96,  130,  108],    /* Zuidergracht        */
+  [-160,  140,  135,  206],    /* de Kolk (basin)     */
+  [ 135,  176,  300,  190],    /* Oostpoortvaart      */
+  [-300, -200, -288,  120]     /* Westsingel          */
+];
+
+/* bridges: [x, z, along ('x' = deck runs along x), span (half), width (half)] */
+var BRIDGES = [
+  [-150, -240, 'x', 15, 4.0], [-150, -150, 'x', 15, 4.5], [-150,  -70, 'x', 15, 4.0],
+  [-150,    2, 'x', 15, 5.0], [-150,   62, 'x', 15, 4.0],
+  [ 130, -200, 'x', 15, 4.0], [ 130,  -62, 'x', 15, 4.5], [ 130,   40, 'x', 15, 4.0],
+  [-100, -117, 'z', 14, 4.0], [ -40, -117, 'z', 14, 4.0], [  20, -117, 'z', 14, 4.5],
+  [-100,  -23, 'z', 14, 4.5], [ -30,  -23, 'z', 14, 5.0], [  40,  -23, 'z', 14, 5.0],
+  [ 100,  -23, 'z', 14, 4.0],
+  [-100,  102, 'z', 15, 4.0], [ -20,  102, 'z', 15, 4.5], [  60,  102, 'z', 15, 4.0],
+  [ 180,  183, 'z', 16, 4.0], [ 240,  183, 'z', 16, 4.5],
+  [-294,  -60, 'x', 15, 3.5], [-294,   40, 'x', 15, 3.5]
+];
+
+/* the eleven landmarks — the discovery spine.
+   pos = trigger centre, ay = label anchor height, r = trigger radius */
+var LM = [
+  { id:'nieuwekerk', nm:'De Nieuwe Kerk', x:88, y:0, z:-40, ay:104, r:26,
+    tx:'Begun in 1396 and finished a century later, the Nieuwe Kerk closes the east end of the Markt with a tower of 108.75 metres — the second tallest in the Netherlands. Beneath the choir lies the royal crypt: William of Orange was buried here in 1584, and every Orange-Nassau since has followed him down. The carillon rings the hour whether anyone is listening or not.' },
+  { id:'oudekerk', nm:'De Oude Kerk', x:-118, y:0, z:-150, ay:74, r:24,
+    tx:'Delft calls this tower Scheve Jan — crooked John. It was built over a filled-in canal, and the soft ground let it settle almost two metres out of plumb, which is why it leans over the water the way it does. Johannes Vermeer is buried somewhere in the floor of the nave; nobody knows exactly where.' },
+  { id:'stadhuis', nm:'Het Stadhuis', x:-70, y:0, z:-62, ay:30, r:22,
+    tx:'The grey stone tower in the middle is Het Steen, a medieval prison tower that survived the fire of 1618. Hendrick de Keyser wrapped a new Renaissance town hall around it two years later, in red shutters and sandstone. It has faced the Nieuwe Kerk across the length of the Markt ever since.' },
+  { id:'markt', nm:'De Markt', x:0, y:0, z:-62, ay:6, r:30,
+    tx:'A market has stood here since the thirteenth century, and it still does on Thursdays. The square is deliberately long: the Stadhuis at one end and the church at the other were meant to be seen against each other, civic power and divine, with the traders in between.' },
+  { id:'oostpoort', nm:'De Oostpoort', x:250, y:0, z:160, ay:34, r:26,
+    tx:'The last of Delft\'s eight city gates, built around 1400 and given its slender spires a century later. A land gate and a water gate stand side by side, so a boat and a cart were checked by the same guard. Everything else in the wall was pulled down for building stone.' },
+  { id:'molen', nm:'Molen de Roos', x:-262, y:0, z:20, ay:34, r:24,
+    tx:'A mill has ground grain on this stretch of the western rampart since 1679. De Roos is a stellingmolen — a stage mill — raised so its sails can find the wind above the roofs of the town. On a morning like this it turns slowly, one full turn every twelve seconds or so.' },
+  { id:'gezicht', nm:'Gezicht op Delft', x:56, y:0, z:236, ay:8, r:26,
+    tx:'This is where Vermeer set up, some time around 1660: across the water from the town, the gates and the roofs laid out flat, the Nieuwe Kerk catching the sun over the top. Astronomers have since read the shadows in the painting and put the hour at about eight in the morning. You are standing in it.' },
+  { id:'vermeer', nm:'Vermeermerk', x:-4, y:0, z:-104, ay:14, r:18,
+    tx:'Vermeer was born in this quarter and registered as a master painter with the Guild of Saint Luke in 1653, in a hall that stood on the Voldersgracht. He hardly ever left Delft, sold few pictures, and left thirty-odd behind. Two of them are of this street corner and the one next to it.' },
+  { id:'prinsenhof', nm:'Het Prinsenhof', x:-208, y:0, z:-150, ay:22, r:24,
+    tx:'A convent of Saint Agatha until the Revolt, when it became William of Orange\'s residence. On 10 July 1584 Balthasar Gerards shot him on the stairs here — the first head of state killed with a handgun. The bullet holes are still in the wall, and visitors still put their fingers in them.' },
+  { id:'hofje', nm:'Het hofje', x:-201, y:0, z:-48, ay:9, r:15,
+    tx:'You found it. Behind an unmarked door in the brick, a courtyard of almshouses built by some long-dead merchant for elderly women of the parish, and kept quiet ever since. Delft has a handful of these, and none of them advertise. The mist never gets in here.' },
+  { id:'oudedelft', nm:'De Oude Delft', x:-150, y:0, z:-95, ay:12, r:20,
+    tx:'The oldest canal in the country, dug around 1100 to drain the peat — a delf, a ditch, and the town that grew along it took the name. Lindens on both banks, brick on both banks, and the water holding the sky between them.' }
+];
+
+/* place names that are not landmarks: quiet wayfinding, no fact card */
+var PLACES = [
+  { nm:'Voldersgracht',     x:-40,  z:-108, r:26 },
+  { nm:'Oude Langendijk',   x:30,   z:-12,  r:26 },
+  { nm:'De Kolk',           x:0,    z:170,  r:44 },
+  { nm:'Westsingel',        x:-294, z:-10,  r:30 },
+  { nm:'Verwersdijk',       x:130,  z:-120, r:28 },
+  { nm:'Oostpoortvaart',    x:190,  z:196,  r:26 },
+  { nm:'Het Steen',         x:-88,  z:-62,  r:12 }
+];
+
+/* fifteen Delft Blue tiles, hand-placed in the nooks landmarks ignore */
+var TILES = [
+  { x:-166, y:1.2,  z:-49 },   /* the alley to the hofje              */
+  { x:-198, y:0.9,  z:-58 },   /* hofje, under the bench              */
+  { x:-150, y:-0.6, z:2  },    /* under the Oude Delft bridge         */
+  { x:130,  y:-0.6, z:-62 },   /* under the Verwersdijk bridge        */
+  { x:-30,  y:-0.6, z:-23 },   /* under the Langendijk bridge         */
+  { x:96,   y:2.4,  z:-24 },   /* church buttress niche               */
+  { x:-129, y:2.0,  z:-141 },  /* the leaning tower's north face      */
+  { x:-88,  y:1.5,  z:-48 },   /* Stadhuis, behind a pillar           */
+  { x:-262, y:5.6,  z:26 },    /* the mill stage                      */
+  { x:248,  y:2.2,  z:172 },   /* Oostpoort turret niche              */
+  { x:-212, y:1.4,  z:-166 },  /* Prinsenhof courtyard wall           */
+  { x:62,   y:1.0,  z:230 },   /* the Kolk quay, Vermeer's spot       */
+  { x:20,   y:1.6,  z:-100 },  /* the bakery windowsill               */
+  { x:-140, y:0.4,  z:-236 },  /* north end of Oude Delft             */
+  { x:113,  y:1.2,  z:120 }    /* a garden wall behind Verwersdijk    */
+];
+
+/* bicycle racks: E to mount */
+var BIKE_SPOTS = [
+  { x:-24, z:-42, yaw: 0 },
+  { x:-150, z:-88, yaw: Math.PI * 0.5 },
+  { x:126, z:14, yaw: Math.PI },
+  { x:40, z:196, yaw: Math.PI * 1.5 }
+];
+
+/* the sloop's route through the canals (Catmull-Rom control points) */
+var SLOOP = [
+  [-150, -260], [-150, -150], [-150, -60], [-150, 20], [-150, 120],
+  [-100, 172], [0, 178], [90, 176], [130, 172], [130, 60], [130, -40],
+  [130, -150], [130, -250]
+];
+
+var RESPAWNS = [];   /* filled from BRIDGES + authored spots in [10] */
+
+/* ==================================================================
+   [6] collision
+      Two orthogonal systems, both fed by the same records the mesh
+      builders emit (never hand-authored — they would drift):
+        * wall solver, XZ only: player circle vs boxes / discs / OBBs
+          in a uniform 8 m grid;
+        * ground solver, Y only: analytic height patches, "highest
+          patch whose height is at most feet + step-up wins".
+   ================================================================== */
+
+var K_GROUND = 0, K_WATER = 1, K_BRIDGE = 2, K_STONE = 3, K_COURT = 4, K_GRASS = 5;
+
+var COL = {
+  cell: TUNE.COL_CELL,
+  x0: -400, z0: -400, n: 100,
+  boxes: [], discs: [], obbs: [],
+  patches: [],
+  grid: null,      /* grid[i] = Int32Array of packed shape refs       */
+  pgrid: null      /* pgrid[i] = Int32Array of patch indices          */
+};
+
+function colBox(x0, z0, x1, z1){
+  if (DET !== 1) { return; }
+  COL.boxes.push(Math.min(x0,x1), Math.min(z0,z1), Math.max(x0,x1), Math.max(z0,z1));
+}
+function colDisc(x, z, r){
+  if (DET !== 1) { return; }
+  COL.discs.push(x, z, r);
+}
+function colOBB(x, z, hx, hz, ang){
+  if (DET !== 1) { return; }
+  COL.obbs.push(x, z, hx, hz, Math.cos(ang), Math.sin(ang));
+}
+/* flat height patch */
+function patchRect(x0, z0, x1, z1, y, kind){
+  if (DET !== 1) { return; }
+  COL.patches.push({ x0:Math.min(x0,x1), z0:Math.min(z0,z1), x1:Math.max(x0,x1), z1:Math.max(z0,z1),
+                     y0:y, y1:y, axis:0, kind:kind });
+}
+/* linear ramp: height goes y0 -> y1 along axis 'x' (0) or 'z' (1) */
+function patchRamp(x0, z0, x1, z1, ya, yb, axis, kind){
+  if (DET !== 1) { return; }
+  COL.patches.push({ x0:Math.min(x0,x1), z0:Math.min(z0,z1), x1:Math.max(x0,x1), z1:Math.max(z0,z1),
+                     y0:ya, y1:yb, axis:(axis === 'z') ? 1 : 0, kind:kind });
+}
+
+function colCellIndex(x, z){
+  var ix = Math.floor((x - COL.x0) / COL.cell);
+  var iz = Math.floor((z - COL.z0) / COL.cell);
+  if (ix < 0 || iz < 0 || ix >= COL.n || iz >= COL.n) { return -1; }
+  return iz * COL.n + ix;
+}
+function colSpread(list, x0, z0, x1, z1, pad, ref){
+  var ix0 = Math.floor((x0 - pad - COL.x0) / COL.cell);
+  var ix1 = Math.floor((x1 + pad - COL.x0) / COL.cell);
+  var iz0 = Math.floor((z0 - pad - COL.z0) / COL.cell);
+  var iz1 = Math.floor((z1 + pad - COL.z0) / COL.cell);
+  ix0 = clamp(ix0, 0, COL.n - 1); ix1 = clamp(ix1, 0, COL.n - 1);
+  iz0 = clamp(iz0, 0, COL.n - 1); iz1 = clamp(iz1, 0, COL.n - 1);
+  for (var iz = iz0; iz <= iz1; iz++){
+    for (var ix = ix0; ix <= ix1; ix++){
+      var c = iz * COL.n + ix;
+      if (!list[c]) { list[c] = []; }
+      list[c].push(ref);
+    }
+  }
+}
+
+function colFinalize(){
+  var i, tmp = new Array(COL.n * COL.n), ptmp = new Array(COL.n * COL.n);
+  var pad = TUNE.PLAYER_R + 0.05;
+  for (i = 0; i < COL.boxes.length; i += 4){
+    colSpread(tmp, COL.boxes[i], COL.boxes[i+1], COL.boxes[i+2], COL.boxes[i+3], pad, i);
+  }
+  for (i = 0; i < COL.discs.length; i += 3){
+    var dx = COL.discs[i], dz = COL.discs[i+1], dr = COL.discs[i+2];
+    colSpread(tmp, dx-dr, dz-dr, dx+dr, dz+dr, pad, -(i + 1));
+  }
+  for (i = 0; i < COL.obbs.length; i += 6){
+    var ox = COL.obbs[i], oz = COL.obbs[i+1];
+    var rr2 = Math.sqrt(COL.obbs[i+2]*COL.obbs[i+2] + COL.obbs[i+3]*COL.obbs[i+3]);
+    colSpread(tmp, ox-rr2, oz-rr2, ox+rr2, oz+rr2, pad, 1000000 + i);
+  }
+  for (i = 0; i < COL.patches.length; i++){
+    var p = COL.patches[i];
+    colSpread(ptmp, p.x0, p.z0, p.x1, p.z1, 0.5, i);
+  }
+  COL.grid = new Array(COL.n * COL.n);
+  COL.pgrid = new Array(COL.n * COL.n);
+  for (i = 0; i < tmp.length; i++){
+    COL.grid[i] = tmp[i] ? Int32Array.from(tmp[i]) : null;
+    COL.pgrid[i] = ptmp[i] ? Int32Array.from(ptmp[i]) : null;
+  }
+}
+
+/* --- ground query --------------------------------------------------
+   Returns the surface the player stands on. gKind / gTop are read
+   after the call; gTop is the highest patch regardless of step-up,
+   used to tell "under a bridge" from "off the quay".               */
+var gY = 0, gKind = K_GROUND, gTop = 0, gFound = false;
+
+function groundAt(x, z, feet){
+  var c = colCellIndex(x, z);
+  gY = -999; gKind = K_GROUND; gTop = -999; gFound = false;
+  if (c < 0) { gY = 0; gTop = 0; gFound = true; return 0; }
+  var list = COL.pgrid[c];
+  if (!list) { gY = 0; gTop = 0; gFound = true; return 0; }
+  var lim = feet + TUNE.STEP_UP;
+  for (var i = 0; i < list.length; i++){
+    var p = COL.patches[list[i]];
+    if (x < p.x0 || x > p.x1 || z < p.z0 || z > p.z1) { continue; }
+    var h;
+    if (p.y0 === p.y1) { h = p.y0; }
+    else {
+      var t = (p.axis === 0) ? (x - p.x0) / Math.max(p.x1 - p.x0, 1e-4)
+                             : (z - p.z0) / Math.max(p.z1 - p.z0, 1e-4);
+      h = p.y0 + (p.y1 - p.y0) * clamp(t, 0, 1);
+    }
+    if (h > gTop) { gTop = h; }
+    if (h <= lim && h > gY) { gY = h; gKind = p.kind; gFound = true; }
+  }
+  if (!gFound) { gY = 0; }
+  return gY;
+}
+
+/* --- wall solver ----------------------------------------------------
+   Circle vs shapes, closest-point pushout, 3 iterations. Sliding
+   falls out of the pushout; the last contact normal is kept so the
+   caller can cancel the into-wall velocity component.              */
+var colNX = 0, colNZ = 0, colHits = 0;
+var colOut = [0, 0];
+
+function colResolve(px, pz, R){
+  var iter, i, j, k;
+  colNX = 0; colNZ = 0; colHits = 0;
+  for (iter = 0; iter < 3; iter++){
+    var moved = false;
+    var cix = Math.floor((px - COL.x0) / COL.cell);
+    var ciz = Math.floor((pz - COL.z0) / COL.cell);
+    for (j = -1; j <= 1; j++){
+      for (i = -1; i <= 1; i++){
+        var ix = cix + i, iz = ciz + j;
+        if (ix < 0 || iz < 0 || ix >= COL.n || iz >= COL.n) { continue; }
+        var list = COL.grid[iz * COL.n + ix];
+        if (!list) { continue; }
+        for (k = 0; k < list.length; k++){
+          var ref = list[k], dx, dz, d2, d, push;
+          if (ref >= 1000000){
+            /* rotated box: work in its local frame */
+            var o = ref - 1000000;
+            var ox = COL.obbs[o], oz = COL.obbs[o+1];
+            var hx = COL.obbs[o+2], hz = COL.obbs[o+3];
+            var ca = COL.obbs[o+4], sa = COL.obbs[o+5];
+            var rx = (px - ox) * ca + (pz - oz) * sa;
+            var rz = -(px - ox) * sa + (pz - oz) * ca;
+            var qx = clamp(rx, -hx, hx), qz = clamp(rz, -hz, hz);
+            dx = rx - qx; dz = rz - qz; d2 = dx*dx + dz*dz;
+            if (d2 >= R*R) { continue; }
+            if (d2 > 1e-9){
+              d = Math.sqrt(d2); push = (R - d) / d;
+              rx += dx * push; rz += dz * push;
+            } else {
+              var pxr = hx - Math.abs(rx), pzr = hz - Math.abs(rz);
+              if (pxr < pzr) { rx = (rx < 0 ? -1 : 1) * (hx + R); }
+              else           { rz = (rz < 0 ? -1 : 1) * (hz + R); }
+            }
+            var nx2 = px, nz2 = pz;
+            px = ox + rx * ca - rz * sa;
+            pz = oz + rx * sa + rz * ca;
+            colNX += px - nx2; colNZ += pz - nz2; colHits++;
+            moved = true;
+            continue;
+          }
+          if (ref < 0){
+            var di = -ref - 1;
+            var cx2 = COL.discs[di], cz2 = COL.discs[di+1], cr = COL.discs[di+2];
+            dx = px - cx2; dz = pz - cz2; d2 = dx*dx + dz*dz;
+            var RR = R + cr;
+            if (d2 >= RR*RR) { continue; }
+            if (d2 > 1e-9){
+              d = Math.sqrt(d2); push = (RR - d) / d;
+              px += dx * push; pz += dz * push;
+              colNX += dx / d; colNZ += dz / d; colHits++;
+            } else {
+              px += RR; colNX += 1; colHits++;
+            }
+            moved = true;
+            continue;
+          }
+          var bx0 = COL.boxes[ref], bz0 = COL.boxes[ref+1];
+          var bx1 = COL.boxes[ref+2], bz1 = COL.boxes[ref+3];
+          var qx2 = clamp(px, bx0, bx1), qz2 = clamp(pz, bz0, bz1);
+          dx = px - qx2; dz = pz - qz2; d2 = dx*dx + dz*dz;
+          if (d2 >= R*R) { continue; }
+          if (d2 > 1e-9){
+            d = Math.sqrt(d2); push = (R - d) / d;
+            px += dx * push; pz += dz * push;
+            colNX += dx / d; colNZ += dz / d; colHits++;
+          } else {
+            /* centre inside the box: out along the least penetration */
+            var pL = px - bx0, pR = bx1 - px, pB = pz - bz0, pT = bz1 - pz;
+            var m = Math.min(Math.min(pL, pR), Math.min(pB, pT));
+            if (m === pL)      { px = bx0 - R; colNX -= 1; }
+            else if (m === pR) { px = bx1 + R; colNX += 1; }
+            else if (m === pB) { pz = bz0 - R; colNZ -= 1; }
+            else               { pz = bz1 + R; colNZ += 1; }
+            colHits++;
+          }
+          moved = true;
+        }
+      }
+    }
+    if (!moved) { break; }
+  }
+  if (colHits > 0){
+    var L = Math.sqrt(colNX*colNX + colNZ*colNZ);
+    if (L > 1e-6) { colNX /= L; colNZ /= L; } else { colNX = 0; colNZ = 0; }
+  }
+  colOut[0] = px; colOut[1] = pz;
+  return colOut;
+}
+
+/* how deep is a point inside any collider? (verification + spawn checks) */
+function colPenetration(px, pz, R){
+  var worst = 0, i, k;
+  var cix = Math.floor((px - COL.x0) / COL.cell);
+  var ciz = Math.floor((pz - COL.z0) / COL.cell);
+  for (var j = -1; j <= 1; j++){
+    for (i = -1; i <= 1; i++){
+      var ix = cix + i, iz = ciz + j;
+      if (ix < 0 || iz < 0 || ix >= COL.n || iz >= COL.n) { continue; }
+      var list = COL.grid[iz * COL.n + ix];
+      if (!list) { continue; }
+      for (k = 0; k < list.length; k++){
+        var ref = list[k], dx, dz, d;
+        if (ref >= 1000000){
+          var o = ref - 1000000;
+          var ox = COL.obbs[o], oz = COL.obbs[o+1];
+          var hx = COL.obbs[o+2], hz = COL.obbs[o+3];
+          var ca = COL.obbs[o+4], sa = COL.obbs[o+5];
+          var rx = (px - ox) * ca + (pz - oz) * sa;
+          var rz = -(px - ox) * sa + (pz - oz) * ca;
+          dx = rx - clamp(rx, -hx, hx); dz = rz - clamp(rz, -hz, hz);
+          d = Math.sqrt(dx*dx + dz*dz);
+          if (R - d > worst) { worst = R - d; }
+        } else if (ref < 0){
+          var di = -ref - 1;
+          dx = px - COL.discs[di]; dz = pz - COL.discs[di+1];
+          d = Math.sqrt(dx*dx + dz*dz) - COL.discs[di+2];
+          if (R - d > worst) { worst = R - d; }
+        } else {
+          dx = px - clamp(px, COL.boxes[ref], COL.boxes[ref+2]);
+          dz = pz - clamp(pz, COL.boxes[ref+1], COL.boxes[ref+3]);
+          d = Math.sqrt(dx*dx + dz*dz);
+          if (R - d > worst) { worst = R - d; }
+        }
+      }
+    }
+  }
+  return worst;
+}
+
+/* 2D DDA ray over the collision grid — interaction hints only */
+function rayHit(ox, oz, dx, dz, maxD){
+  var t = 0, step = COL.cell * 0.5;
+  var L = Math.sqrt(dx*dx + dz*dz);
+  if (L < 1e-6) { return maxD; }
+  dx /= L; dz /= L;
+  while (t < maxD){
+    var x = ox + dx * t, z = oz + dz * t;
+    if (colPenetration(x, z, 0.05) > 0) { return t; }
+    t += step;
+  }
+  return maxD;
+}
+
+/* ==================================================================
+   [7] world: terrain, water, quays, bridges
+   ================================================================== */
+
+/* instanced prop registry: 8 floats per instance (pos3 yaw tint3 scale) */
+var INST = {};
+function inst(type, x, y, z, yaw, scale, tint){
+  if (DET !== 1) { return; }
+  var a = INST[type] || (INST[type] = []);
+  a.push(x, y, z, yaw, tint[0], tint[1], tint[2], scale);
+}
+
+var WATERV = [];   /* water surface quads: pos3 per vertex */
+
+function inCanal(x, z){
+  for (var i = 0; i < CANALS.length; i++){
+    var c = CANALS[i];
+    if (x > c[0] && x < c[2] && z > c[1] && z < c[3]) { return i; }
+  }
+  return -1;
+}
+/* distance to the nearest canal water, for the audio bed and mist */
+function canalDist(x, z){
+  var best = 1e9;
+  for (var i = 0; i < CANALS.length; i++){
+    var c = CANALS[i];
+    var dx = Math.max(c[0] - x, 0, x - c[2]);
+    var dz = Math.max(c[1] - z, 0, z - c[3]);
+    var d = Math.sqrt(dx*dx + dz*dz);
+    if (d < best) { best = d; }
+  }
+  return best;
+}
+
+/* --- the land: rectangle decomposition around the canals ----------- */
+function buildTerrain(){
+  var EXT = 360, i, j;
+  var xs = [-EXT, EXT], zs = [-EXT, EXT];
+  for (i = 0; i < CANALS.length; i++){
+    var c = CANALS[i];
+    xs.push(c[0], c[2]); zs.push(c[1], c[3]);
+  }
+  var ux = [], uz = [];
+  xs.sort(function(a,b){ return a - b; });
+  zs.sort(function(a,b){ return a - b; });
+  for (i = 0; i < xs.length; i++){
+    if (xs[i] < -EXT || xs[i] > EXT) { continue; }
+    if (!ux.length || xs[i] - ux[ux.length-1] > 0.01) { ux.push(xs[i]); }
+  }
+  for (i = 0; i < zs.length; i++){
+    if (zs[i] < -EXT || zs[i] > EXT) { continue; }
+    if (!uz.length || zs[i] - uz[uz.length-1] > 0.01) { uz.push(zs[i]); }
+  }
+
+  for (j = 0; j < uz.length - 1; j++){
+    for (i = 0; i < ux.length - 1; i++){
+      var x0 = ux[i], x1 = ux[i+1], z0 = uz[j], z1 = uz[j+1];
+      var mx = (x0 + x1) * 0.5, mz = (z0 + z1) * 0.5;
+      var ci = inCanal(mx, mz);
+      if (ci >= 0){
+        patchRect(x0, z0, x1, z1, TUNE.BED_Y, K_WATER);
+        var sx, sz, S = 32;   /* split so one chunk never owns a whole canal */
+        for (sz = z0; sz < z1 - 0.01; sz += S){
+          for (sx = x0; sx < x1 - 0.01; sx += S){
+            buildCanalCell(sx, sz, Math.min(sx + S, x1), Math.min(sz + S, z1));
+          }
+        }
+      } else {
+        var grass = (Math.abs(mx) > 270 || mz > 250 || mz < -290);
+        patchRect(x0, z0, x1, z1, 0, grass ? K_GRASS : K_GROUND);
+        pave(x0, z0, x1, z1, grass);
+      }
+    }
+  }
+  /* the polder beyond the rim: one flat plate, never culled */
+  partFar();
+  var R = TUNE.RIM;
+  slab(-R, -R, R, -EXT, -0.06, P.field, M_SOLID);
+  slab(-R,  EXT, R,  R, -0.06, P.field, M_SOLID);
+  slab(-R, -EXT, -EXT, EXT, -0.06, P.field, M_SOLID);
+  slab( EXT, -EXT, R,  EXT, -0.06, P.field, M_SOLID);
+  /* hedgerows, so the polder is not a bare plane */
+  seedRng(TUNE.SEED + 71);
+  for (i = 0; i < 42; i++){
+    var hx0 = rr(-820, 820), hz0 = rr(-820, 820);
+    if (Math.abs(hx0) < EXT + 20 && Math.abs(hz0) < EXT + 20) { continue; }
+    var len = rr(60, 210), horiz = chance(0.5);
+    var col = chance(0.5) ? P.leafSh : P.grass2;
+    if (horiz) { box(hx0, 1.4, hz0, len * 0.5, 1.4, 1.2, col, M_SOLID); }
+    else       { box(hx0, 1.4, hz0, 1.2, 1.4, len * 0.5, col, M_SOLID); }
+  }
+  /* one clean modern sliver far to the south: the city continues */
+  box(120, 16, 470, 44, 16, 12, P.porcelain, M_SOLID);
+  box(210, 11, 486, 26, 11, 10, [0.86,0.88,0.88], M_SOLID);
+}
+
+/* paving / grass, tiled so each chunk owns its own ground */
+function pave(x0, z0, x1, z1, grass){
+  var STEP = 16, x, z;
+  for (z = z0; z < z1 - 0.01; z += STEP){
+    for (x = x0; x < x1 - 0.01; x += STEP){
+      var ex = Math.min(x + STEP, x1), ez = Math.min(z + STEP, z1);
+      var mx = (x + ex) * 0.5, mz = (z + ez) * 0.5;
+      part(mx, mz);
+      var n = vnoise(mx * 0.06, mz * 0.06);
+      var col;
+      if (grass){
+        col = [mix(P.grass[0], P.grass2[0], n), mix(P.grass[1], P.grass2[1], n), mix(P.grass[2], P.grass2[2], n)];
+      } else {
+        var onMarkt = (mx > -72 && mx < 78 && mz > -90 && mz < -34);
+        var a = onMarkt ? P.stone : P.stone2, b = onMarkt ? P.stone2 : P.stone3;
+        col = [mix(a[0], b[0], n * 0.8), mix(a[1], b[1], n * 0.8), mix(a[2], b[2], n * 0.8)];
+      }
+      slab(x, z, ex, ez, grass ? -0.02 : 0, col, M_SOLID);
+    }
+  }
+}
+
+/* one water cell: surface quad, bed, and the quay walls that bound it */
+function buildCanalCell(x0, z0, x1, z1){
+  var mx = (x0 + x1) * 0.5, mz = (z0 + z1) * 0.5;
+  part(mx, mz);
+  /* surface goes into its own buffer, drawn by the water program */
+  if (DET === 1){
+    WATERV.push(x0, TUNE.WATER_Y, z0,  x0, TUNE.WATER_Y, z1,  x1, TUNE.WATER_Y, z1,
+                x0, TUNE.WATER_Y, z0,  x1, TUNE.WATER_Y, z1,  x1, TUNE.WATER_Y, z0);
+  }
+  slab(x0, z0, x1, z1, TUNE.BED_Y, [0.10,0.14,0.14], M_SOLID);
+  /* quay walls: only on edges that face land */
+  var W = 0.9;
+  if (inCanal(mx, z0 - 1) < 0){
+    box(mx, TUNE.BED_Y * 0.5, z0 - W * 0.5, (x1-x0)*0.5, -TUNE.BED_Y*0.5, W*0.5, P.stone2, M_SOLID);
+    kerb(x0, z0 - W, x1, z0);
+  }
+  if (inCanal(mx, z1 + 1) < 0){
+    box(mx, TUNE.BED_Y * 0.5, z1 + W * 0.5, (x1-x0)*0.5, -TUNE.BED_Y*0.5, W*0.5, P.stone2, M_SOLID);
+    kerb(x0, z1, x1, z1 + W);
+  }
+  if (inCanal(x0 - 1, mz) < 0){
+    box(x0 - W * 0.5, TUNE.BED_Y * 0.5, mz, W*0.5, -TUNE.BED_Y*0.5, (z1-z0)*0.5, P.stone2, M_SOLID);
+    kerb(x0 - W, z0, x0, z1);
+  }
+  if (inCanal(x1 + 1, mz) < 0){
+    box(x1 + W * 0.5, TUNE.BED_Y * 0.5, mz, W*0.5, -TUNE.BED_Y*0.5, (z1-z0)*0.5, P.stone2, M_SOLID);
+    kerb(x1, z0, x1 + W, z1);
+  }
+}
+/* the pale stone lip along a quay edge */
+function kerb(x0, z0, x1, z1){
+  box((x0+x1)*0.5, 0.09, (z0+z1)*0.5, (x1-x0)*0.5 + 0.1, 0.11, (z1-z0)*0.5 + 0.1, P.stone, M_SOLID);
+}
+
+/* --- bridges -------------------------------------------------------
+   Humped brick with stone caps, or white-railed wooden ones. Each
+   crest is a micro-vista: 1.6 m of elevation is a summit in a town
+   this flat.                                                        */
+function buildBridge(b, wooden){
+  var cx = b[0], cz = b[1], along = b[2], span = b[3], hw = b[4];
+  var crest = 1.62, N = 8, i;
+  var brick = P.brick[1], capc = P.stone;
+  part(cx, cz);
+
+  function pt(u, v, y){
+    return (along === 'x') ? [cx + u, y, cz + v] : [cx + v, y, cz + u];
+  }
+  function hAt(u){ var t = u / span; return crest * (1 - t * t); }
+
+  for (i = 0; i < N; i++){
+    var u0 = -span + (2 * span) * i / N, u1 = -span + (2 * span) * (i + 1) / N;
+    var y0 = hAt(u0), y1 = hAt(u1);
+    var a = pt(u0, -hw, y0), bb = pt(u0, hw, y0), c = pt(u1, hw, y1), d = pt(u1, -hw, y1);
+    quadO(a, bb, c, d, wooden ? P.woodPale : capc, M_SOLID, cx, -6, cz);
+    /* skirt down to the water, so the deck is not a floating ribbon */
+    var sy = Math.min(y0, y1);
+    if (!wooden && Math.abs(u0) < span * 0.86){
+      var e0 = pt(u0, -hw, y0), e1 = pt(u1, -hw, y1);
+      var f0 = pt(u0, -hw, TUNE.WATER_Y - 0.3), f1 = pt(u1, -hw, TUNE.WATER_Y - 0.3);
+      quadO(e0, e1, f1, f0, brick, M_SOLID, cx, sy, cz);
+      var g0 = pt(u0, hw, y0), g1 = pt(u1, hw, y1);
+      var h0 = pt(u0, hw, TUNE.WATER_Y - 0.3), h1 = pt(u1, hw, TUNE.WATER_Y - 0.3);
+      quadO(g0, g1, h1, h0, brick, M_SOLID, cx, sy, cz);
+    }
+  }
+  /* parapets: brick with a stone cap, or white posts and rails */
+  for (i = 0; i < N; i++){
+    var uu = -span + (2 * span) * (i + 0.5) / N;
+    var yy = hAt(uu), seg = (2 * span) / N;
+    if (wooden){
+      if (DET === 1 && i % 2 === 0){
+        var p0 = pt(uu, -hw - 0.12, yy), p1 = pt(uu, hw + 0.12, yy);
+        box(p0[0], yy + 0.45, p0[2], 0.07, 0.45, 0.07, P.porcelain, M_SOLID);
+        box(p1[0], yy + 0.45, p1[2], 0.07, 0.45, 0.07, P.porcelain, M_SOLID);
+      }
+      var r0 = pt(uu, -hw - 0.12, yy), r1 = pt(uu, hw + 0.12, yy);
+      box(r0[0], yy + 0.86, r0[2], (along === 'x') ? seg*0.5 : 0.05, 0.05, (along === 'x') ? 0.05 : seg*0.5, P.porcelain, M_SOLID);
+      box(r1[0], yy + 0.86, r1[2], (along === 'x') ? seg*0.5 : 0.05, 0.05, (along === 'x') ? 0.05 : seg*0.5, P.porcelain, M_SOLID);
+    } else {
+      var q0 = pt(uu, -hw - 0.16, yy + 0.38), q1 = pt(uu, hw + 0.16, yy + 0.38);
+      var lx = (along === 'x') ? seg * 0.5 : 0.16, lz = (along === 'x') ? 0.16 : seg * 0.5;
+      box(q0[0], q0[1], q0[2], lx, 0.38, lz, brick, M_SOLID);
+      box(q1[0], q1[1], q1[2], lx, 0.38, lz, brick, M_SOLID);
+      box(q0[0], yy + 0.82, q0[2], lx, 0.07, lz + 0.04, capc, M_SOLID);
+      box(q1[0], yy + 0.82, q1[2], lx, 0.07, lz + 0.04, capc, M_SOLID);
+    }
+  }
+  /* colliders: the two parapets. The deck itself is two ramp patches. */
+  var ax = (along === 'x');
+  if (ax){
+    colBox(cx - span, cz - hw - 0.32, cx + span, cz - hw + 0.02);
+    colBox(cx - span, cz + hw - 0.02, cx + span, cz + hw + 0.32);
+    patchRamp(cx - span, cz - hw, cx, cz + hw, 0, crest, 'x', K_BRIDGE);
+    patchRamp(cx, cz - hw, cx + span, cz + hw, crest, 0, 'x', K_BRIDGE);
+    RESPAWNS.push([cx - span - 2.5, cz], [cx + span + 2.5, cz]);
+  } else {
+    colBox(cx - hw - 0.32, cz - span, cx - hw + 0.02, cz + span);
+    colBox(cx + hw - 0.02, cz - span, cx + hw + 0.32, cz + span);
+    patchRamp(cx - hw, cz - span, cx + hw, cz, 0, crest, 'z', K_BRIDGE);
+    patchRamp(cx - hw, cz, cx + hw, cz + span, crest, 0, 'z', K_BRIDGE);
+    RESPAWNS.push([cx, cz - span - 2.5], [cx, cz + span + 2.5]);
+  }
+  /* a bicycle or two leaning on the rail — the cheapest Dutch signifier */
+  if (DET === 1 && chance(0.7)){
+    var bu = rr(-span * 0.5, span * 0.5);
+    var bp = pt(bu, hw - 0.55, hAt(bu));
+    inst('bike', bp[0], bp[1], bp[2], (ax ? 0 : Math.PI * 0.5) + rr(-0.2, 0.2), 1,
+         pick([P.cobalt, P.iron, P.cream2, P.cobaltDeep]));
+  }
+}
+
+/* stone stairs from the quay down to the water */
+function quayStair(x, z, dirx, dirz){
+  part(x, z);
+  var i, n = 5, len = 3.6, w = 1.6;
+  for (i = 0; i < n; i++){
+    var t = (i + 0.5) / n;
+    var px = x + dirx * len * t, pz = z + dirz * len * t;
+    var y = -1.0 * t;
+    box(px, y - 0.35, pz, (dirx ? len/(2*n) : w*0.5), 0.4, (dirz ? len/(2*n) : w*0.5), P.stone2, M_SOLID);
+  }
+  patchRamp(Math.min(x, x + dirx*len) - (dirz ? w*0.5 : 0), Math.min(z, z + dirz*len) - (dirx ? w*0.5 : 0),
+            Math.max(x, x + dirx*len) + (dirz ? w*0.5 : 0), Math.max(z, z + dirz*len) + (dirx ? w*0.5 : 0),
+            (dirx > 0 || dirz > 0) ? 0 : -1.0, (dirx > 0 || dirz > 0) ? -1.0 : 0,
+            dirx ? 'x' : 'z', K_STONE);
+  RESPAWNS.push([x - dirx * 2.2, z - dirz * 2.2]);
+}
+
+function buildBridges(){
+  seedRng(TUNE.SEED + 907);
+  for (var i = 0; i < BRIDGES.length; i++){
+    buildBridge(BRIDGES[i], (i % 5) === 3);
+  }
+  quayStair(-144, -100, 1, 0);
+  quayStair(-144, 60, 1, 0);
+  quayStair(136, 20, -1, 0);
+  quayStair(60, 140, 0, 1);
+  quayStair(-40, 206, 0, -1);
+  quayStair(124, -170, 1, 0);
+}
+
+/* ==================================================================
+   [8] world: canal houses
+      Every house is unique: width, depth, height, gable type, brick
+      step and window rhythm all vary. Detail lives in the silhouette
+      (the gable) and the window rhythm — never in surface texture.
+   ================================================================== */
+
+var _fp = [0,0,0,0];
+function footprint(cx, cz, yaw, w, d, out){
+  var c = Math.cos(yaw), s = Math.sin(yaw), i;
+  var minx = 1e9, maxx = -1e9, minz = 1e9, maxz = -1e9;
+  for (i = 0; i < 4; i++){
+    var lx = (i & 1) ? w * 0.5 : -w * 0.5, lz = (i & 2) ? d : 0;
+    var wx = cx + c * lx + s * lz, wz = cz - s * lx + c * lz;
+    if (wx < minx) { minx = wx; } if (wx > maxx) { maxx = wx; }
+    if (wz < minz) { minz = wz; } if (wz > maxz) { maxz = wz; }
+  }
+  out[0] = minx; out[1] = minz; out[2] = maxx; out[3] = maxz;
+  return out;
+}
+
+/* a window: dark glass, sky-reflecting, sitting just proud of the wall */
+function window2(lx, ly, lz, w, h, mat){
+  quadN([lx - w*0.5, ly - h*0.5, lz], [lx + w*0.5, ly - h*0.5, lz],
+        [lx + w*0.5, ly + h*0.5, lz], [lx - w*0.5, ly + h*0.5, lz],
+        0, 0, -1, (mat === M_EMIT) ? P.bakery : P.glass, mat);
+}
+
+function canalHouse(cx, cz, yaw, w, d, h, style, tint, roofc, feat){
+  var i, j;
+  footprint(cx, cz, yaw, w, d, _fp);
+  part((_fp[0] + _fp[2]) * 0.5, (_fp[1] + _fp[3]) * 0.5);
+  colBox(_fp[0], _fp[1], _fp[2], _fp[3]);
+  setXF(cx, 0, cz, yaw, 0, 0);
+
+  var hw = w * 0.5, rise = Math.min(w * 0.44, 3.4);
+  var eaves = h;
+  /* body */
+  box(0, h * 0.5, d * 0.5, hw, h * 0.5, d * 0.5, tint, M_SOLID, 4);
+  /* roof: ridge runs front-to-back, so the gable faces the street */
+  gableRoof(0, eaves, d * 0.5, hw + 0.16, d * 0.5 + 0.1, rise, 'z', roofc, M_SOLID);
+
+  /* the street gable — this is the whole silhouette story */
+  if (style === 0){
+    stepGable(0, 0.06, eaves, w, 0.18, rise, 4, tint, M_SOLID);
+  } else if (style === 1){
+    bellGable(0, 0.06, eaves, w, 0.18, rise, tint, M_SOLID);
+  } else if (style === 2){
+    box(0, eaves + rise * 0.5, 0.06, hw * 0.42, rise * 0.5, 0.18, tint, M_SOLID);
+    box(0, eaves + rise + 0.16, 0.06, hw * 0.5, 0.16, 0.22, P.stone, M_SOLID);
+    if (DET === 1){
+      box(-hw * 0.62, eaves + rise * 0.22, 0.06, hw * 0.2, rise * 0.22, 0.14, tint, M_SOLID);
+      box( hw * 0.62, eaves + rise * 0.22, 0.06, hw * 0.2, rise * 0.22, 0.14, tint, M_SOLID);
+    }
+  } else if (style === 3){
+    box(0, eaves + rise * 0.5, 0.06, hw * 0.30, rise * 0.55, 0.18, tint, M_SOLID);
+  } else {
+    box(0, eaves + 0.22, 0.02, hw + 0.22, 0.22, 0.3, P.stone, M_SOLID);
+  }
+
+  /* windows: 2-4 columns, floors every ~3.1 m, rhythm varies per house */
+  if (DET === 1){
+    var cols = clamp(Math.round(w / 2.9), 2, 4);
+    var floors = Math.max(1, Math.floor((h - 1.2) / 3.1));
+    var ww = Math.min(1.15, (w / cols) * 0.52), wh = 1.72;
+    for (j = 0; j < floors; j++){
+      var wy = 1.9 + j * 3.1;
+      if (wy + wh * 0.5 > h - 0.3) { break; }
+      for (i = 0; i < cols; i++){
+        var wx = (i - (cols - 1) * 0.5) * (w / cols);
+        if (j === 0 && i === Math.floor(cols / 2) && feat !== 'plates') { continue; }  /* the door */
+        var mat = (feat === 'bakery' && j === 0) ? M_EMIT : M_GLASS;
+        window2(wx, wy, -0.055, ww, wh * (j === 0 ? 1.08 : 1), mat);
+        box(wx, wy - wh * 0.5 - 0.07, -0.02, ww * 0.62, 0.07, 0.09, P.stone, M_SOLID);
+        if (chance(0.22)){
+          box(wx - ww * 0.5 - 0.13, wy, -0.09, 0.12, wh * 0.5, 0.05, P.cobalt, M_SOLID);
+          box(wx + ww * 0.5 + 0.13, wy, -0.09, 0.12, wh * 0.5, 0.05, P.cobalt, M_SOLID);
+        }
+      }
+    }
+    /* door + stoop */
+    var dw = 0.95;
+    box(0, 1.12, -0.05, dw * 0.5, 1.12, 0.06, chance(0.5) ? P.cobaltDeep : P.cobalt, M_SOLID);
+    box(0, 2.32, -0.05, dw * 0.5 + 0.1, 0.08, 0.09, P.stone, M_SOLID);
+    box(0, 0.07, -0.36, dw * 0.6, 0.08, 0.34, P.stone, M_SOLID);
+    /* a plinth of darker brick */
+    box(0, 0.34, d * 0.5, hw + 0.04, 0.34, d * 0.5 + 0.02, P.brick[3], M_SOLID, 4);
+
+    if (feat === 'plates'){
+      /* a shop window of Delft porcelain: white discs with cobalt rings */
+      box(0, 1.5, -0.12, w * 0.34, 0.9, 0.06, P.porcelain, M_SOLID);
+      for (i = 0; i < 5; i++){
+        var px2 = (i - 2) * (w * 0.13);
+        cyl(px2, 1.5, -0.2, 0.26, 0.26, 0.03, 10, P.porcelain, M_SOLID, 1, 0, 0);
+        cyl(px2, 1.53, -0.21, 0.17, 0.17, 0.02, 10, P.cobalt, M_SOLID, 1, 0, 0);
+      }
+    }
+    if (feat === 'mural'){
+      /* a blue-tile gable mural: the city palette, explained on a wall */
+      var mw = Math.min(hw * 1.4, 4.4);
+      box(0, h * 0.62, -0.09, mw * 0.5, mw * 0.5, 0.05, P.porcelain, M_SOLID);
+      for (i = 0; i < 5; i++){
+        for (j = 0; j < 5; j++){
+          if (((i * 7 + j * 3) % 4) > 1) { continue; }
+          box((i - 2) * (mw * 0.19), h * 0.62 + (j - 2) * (mw * 0.19), -0.13,
+              mw * 0.07, mw * 0.07, 0.02, P.cobalt, M_SOLID);
+        }
+      }
+    }
+    if (feat === 'cat'){
+      /* twelve triangles of cat on a windowsill; the tail flicks in [10] */
+      addLife('cat', cx + Math.sin(yaw) * -0.5, 2.55, cz - Math.cos(yaw) * 0.5, yaw);
+    }
+  }
+  noXF();
+
+  /* the frontage: bicycles, milk bottles, a bollard */
+  if (DET === 1){
+    var fnx = -Math.sin(yaw), fnz = -Math.cos(yaw);
+    var tx = Math.cos(yaw), tz = -Math.sin(yaw);
+    var nb = ri(0, 2);
+    for (i = 0; i < nb; i++){
+      var o = rr(-w * 0.42, w * 0.42);
+      inst('bike', cx + tx * o + fnx * 0.62, 0, cz + tz * o + fnz * 0.62,
+           yaw + Math.PI * 0.5 + rr(-0.12, 0.12), rr(0.95, 1.05),
+           pick([P.cobalt, P.iron, P.cream2, P.cobaltDeep, P.iron]));
+    }
+    if (chance(0.18)){
+      var mo = rr(-w * 0.3, w * 0.3);
+      cyl(cx + tx * mo + fnx * 0.5, 0.02, cz + tz * mo + fnz * 0.5, 0.07, 0.05, 0.26, 6, P.porcelain, M_SOLID, 1, 0, 0);
+      cyl(cx + tx * (mo + 0.22) + fnx * 0.5, 0.02, cz + tz * (mo + 0.22) + fnz * 0.5, 0.07, 0.05, 0.26, 6, P.porcelain, M_SOLID, 1, 0, 0);
+    }
+  }
+}
+
+/* a run of houses along a street line; front plane sits on the line */
+function houseRow(ax, az, bx, bz, yaw, opt){
+  opt = opt || {};
+  var dx = bx - ax, dz = bz - az;
+  var L = Math.sqrt(dx*dx + dz*dz);
+  if (L < 6) { return; }
+  var ux = dx / L, uz = dz / L;
+  var t = rr(0, 2.5), guard = 0;
+  while (t < L - 5 && guard++ < 200){
+    var w = rr(5.4, 9.4);
+    if (t + w > L - 0.5) { w = L - 0.5 - t; }
+    if (w < 4.6) { break; }
+    var d = opt.depth ? opt.depth : rr(9, 14.5);
+    var h = (opt.h0 || 9.4) + rnd() * ((opt.h1 || 15.6) - (opt.h0 || 9.4));
+    var style = ri(0, 4);
+    var cream = chance(0.26);
+    var tint = cream ? (chance(0.5) ? P.cream : P.cream2) : P.brick[ri(0, 2)];
+    var roofc = chance(0.78) ? (chance(0.5) ? P.tile : P.tileSh) : P.slate;
+    var feat = null;
+    if (opt.feat && opt.featAt !== undefined && Math.abs(t + w * 0.5 - opt.featAt) < 6){ feat = opt.feat; }
+    else if (chance(0.05)) { feat = 'cat'; }
+    else if (chance(0.03)) { feat = 'mural'; }
+    canalHouse(ax + ux * (t + w * 0.5), az + uz * (t + w * 0.5), yaw, w, d, h, style, tint, roofc, feat);
+    t += w + rr(0.05, 0.4);
+  }
+}
+
+/* lindens, bollards and mooring posts along a quay line */
+function quayLine(ax, az, bx, bz, side, opt){
+  opt = opt || {};
+  var dx = bx - ax, dz = bz - az;
+  var L = Math.sqrt(dx*dx + dz*dz);
+  var ux = dx / L, uz = dz / L;
+  var nx = -uz * side, nz = ux * side;
+  var t = rr(4, 12);
+  while (t < L - 6){
+    var x = ax + ux * t + nx * (opt.off || 2.2);
+    var z = az + uz * t + nz * (opt.off || 2.2);
+    if (opt.trees !== false && chance(0.72)){
+      inst('tree', x, 0, z, rr(0, 6.28), rr(0.85, 1.25), P.leaf);
+      colDisc(x, z, 0.45);
+    } else {
+      inst('bollard', x, 0, z, rr(0, 6.28), rr(0.9, 1.1), P.iron);
+      colDisc(x, z, 0.28);
+    }
+    /* mooring posts and a moored sloop at the water's edge */
+    if (chance(0.34)){
+      var mx = ax + ux * (t + 3) + nx * 0.55, mz = az + uz * (t + 3) + nz * 0.55;
+      inst('post', mx, 0, mz, 0, rr(0.9, 1.15), P.wood);
+    }
+    if (chance(0.3)){
+      var bxp = ax + ux * (t + 5) - nx * 2.6, bzp = az + uz * (t + 5) - nz * 2.6;
+      inst('boat', bxp, TUNE.WATER_Y, bzp, Math.atan2(ux, uz) + rr(-0.06, 0.06), rr(0.9, 1.1),
+           pick([P.cobaltDeep, P.wood, P.iron, P.cobalt]));
+    }
+    t += rr(11, 17);
+  }
+}
+
+/* ==================================================================
+   [9] world: the named buildings
+      These are the HERO silhouettes — identifiable unlit, at fog
+      distance, from their outline alone. Their chunks always draw at
+      full detail; they are the skyline and there are few of them.
+   ================================================================== */
+
+var FORCE_HI = {};
+function markHi(x, z){
+  var c = chunkIndex(x, z);
+  if (c >= 0) { FORCE_HI[c] = 1; }
+}
+function markHiArea(x0, z0, x1, z1){
+  for (var z = z0; z <= z1; z += TUNE.CHUNK * 0.5){
+    for (var x = x0; x <= x1; x += TUNE.CHUNK * 0.5){ markHi(x, z); }
+  }
+}
+
+/* a pointed gothic window in the local frame, facing -Z */
+function gothicWin(lx, ly, lz, w, h){
+  var hwv = w * 0.5;
+  quadN([lx-hwv, ly, lz], [lx+hwv, ly, lz], [lx+hwv, ly+h, lz], [lx-hwv, ly+h, lz], 0,0,-1, P.glass, M_GLASS);
+  triN([lx-hwv, ly+h, lz], [lx+hwv, ly+h, lz], [lx, ly+h+hwv*1.5, lz], 0,0,-1, P.glass, M_GLASS);
+}
+
+/* --- Nieuwe Kerk: 108.75 m, the brightest built thing in any frame - */
+function buildNieuweKerk(){
+  var TX = 88, TZ = -62, i;
+  markHiArea(TX - 20, TZ - 30, TX + 70, TZ + 30);
+  part(TX, TZ);
+  var stone = P.stone, stone2 = P.stone2, roof = P.slate;
+
+  /* tower: four diminishing stages */
+  box(TX, 22.5, TZ, 7.2, 22.5, 7.2, stone2, M_SOLID, 4);
+  box(TX, 51,   TZ, 6.6, 6.0,  6.6, stone2, M_SOLID);
+  box(TX, 62,   TZ, 6.0, 5.0,  6.0, stone,  M_SOLID);
+  colBox(TX - 7.2, TZ - 7.2, TX + 7.2, TZ + 7.2);
+
+  if (DET === 1){
+    /* corner buttresses give the shaft its vertical rhythm */
+    for (i = 0; i < 4; i++){
+      var sx = (i & 1) ? 1 : -1, sz = (i & 2) ? 1 : -1;
+      box(TX + sx * 7.0, 20, TZ + sz * 7.0, 1.3, 20, 1.3, stone, M_SOLID);
+      box(TX + sx * 6.6, 44, TZ + sz * 6.6, 1.0, 22, 1.0, stone, M_SOLID);
+      cyl(TX + sx * 6.2, 67, TZ + sz * 6.2, 1.1, 0, 6.5, 6, stone, M_SOLID, 0, 1, 0);
+    }
+    /* tall lancets up the west face */
+    setXF(TX, 0, TZ - 7.25, 0, 0, 0);
+    gothicWin(0, 8, 0, 3.0, 7.5);
+    gothicWin(0, 27, 0, 2.6, 8.0);
+    gothicWin(0, 40, 0, 2.2, 5.0);
+    noXF();
+    /* belfry openings, with the bells hanging in them */
+    for (i = 0; i < 4; i++){
+      var a = i * Math.PI * 0.5;
+      setXF(TX + Math.sin(a) * -6.05, 0, TZ + Math.cos(a) * -6.05, a, 0, 0);
+      quadN([-2.2, 47, 0], [2.2, 47, 0], [2.2, 55.5, 0], [-2.2, 55.5, 0], 0,0,-1, [0.10,0.11,0.13], M_SOLID);
+      noXF();
+    }
+    addLife('bell', TX, 53.0, TZ - 6.0, 0);
+    addLife('bell', TX - 6.0, 53.0, TZ, Math.PI * 0.5);
+    /* clock face on the south, porcelain and cobalt */
+    cyl(TX, 58.4, TZ + 6.1, 2.1, 2.1, 0.18, 14, P.porcelain, M_SOLID, 1, 0, 0);
+    setXF(TX, 58.4, TZ + 6.32, 0, 0, 0);
+    box(0, 0.55, 0, 0.11, 0.62, 0.06, P.cobaltDeep, M_SOLID);
+    box(0.5, 0, 0, 0.52, 0.09, 0.06, P.cobaltDeep, M_SOLID);
+    noXF();
+  }
+  /* octagonal lantern and the spire */
+  cyl(TX, 67, TZ, 5.6, 4.6, 12, 8, stone, M_SOLID, 0, 0, Math.PI / 8);
+  cyl(TX, 79, TZ, 4.7, 4.2, 3.0, 8, stone2, M_SOLID, 0, 0, Math.PI / 8);
+  cyl(TX, 82, TZ, 4.2, 0.35, 24.0, 8, P.slate, M_SOLID, 0, 0, Math.PI / 8);
+  cyl(TX, 106, TZ, 0.5, 0.12, 2.4, 6, P.gold, M_SOLID, 1, 0, 0);
+  if (DET === 1){
+    for (i = 0; i < 8; i++){
+      var b = i * Math.PI / 4 + Math.PI / 8;
+      cyl(TX + Math.cos(b) * 4.9, 79, TZ + Math.sin(b) * 4.9, 0.5, 0.1, 4.2, 5, stone, M_SOLID, 0, 1, 0);
+    }
+  }
+
+  /* the nave, running east from the tower */
+  var NX0 = TX + 8, NX1 = TX + 62, NZ = TZ, NHW = 16;
+  box((NX0 + NX1) * 0.5, 12, NZ, (NX1 - NX0) * 0.5, 12, NHW, stone2, M_SOLID, 4);
+  gableRoof((NX0 + NX1) * 0.5, 24, NZ, (NX1 - NX0) * 0.5 + 0.4, NHW + 0.5, 9.5, 'x', roof, M_SOLID);
+  colBox(NX0, NZ - NHW, NX1, NZ + NHW);
+  /* apse */
+  cyl(NX1, 0, NZ, 12, 12, 15, 7, stone2, M_SOLID, 0, 0, -Math.PI / 2);
+  cyl(NX1, 15, NZ, 12.4, 1.0, 8, 7, roof, M_SOLID, 0, 0, -Math.PI / 2);
+  if (DET === 1){
+    for (i = 0; i < 7; i++){
+      var wx = NX0 + 5 + i * 7.6;
+      setXF(wx, 0, NZ - NHW - 0.06, 0, 0, 0);
+      gothicWin(0, 7.5, 0, 3.2, 10.5);
+      noXF();
+      setXF(wx, 0, NZ + NHW + 0.06, Math.PI, 0, 0);
+      gothicWin(0, 7.5, 0, 3.2, 10.5);
+      noXF();
+      box(wx + 3.8, 8, NZ - NHW - 0.9, 0.8, 8, 1.0, stone, M_SOLID);
+      box(wx + 3.8, 8, NZ + NHW + 0.9, 0.8, 8, 1.0, stone, M_SOLID);
+    }
+  }
+}
+
+/* --- Oude Kerk: Scheve Jan, leaning honestly over its canal ------- */
+function buildOudeKerk(){
+  var TX = -128, TZ = -150, i;
+  markHiArea(TX - 20, TZ - 30, TX + 70, TZ + 30);
+  part(TX, TZ);
+  var LEAN = 0.063;           /* 3.6 degrees, tipped toward the water */
+  var brick = P.brick[2], stone = P.stone2;
+
+  setXF(TX, 0, TZ, 0, 0, LEAN);
+  box(0, 24, 0, 6.4, 24, 6.4, brick, M_SOLID, 4);
+  box(0, 51, 0, 6.0, 3.5, 6.0, stone, M_SOLID);
+  if (DET === 1){
+    for (i = 0; i < 4; i++){
+      var a = i * Math.PI * 0.5;
+      setXF(TX + Math.sin(a) * -6.45, 0, TZ + Math.cos(a) * -6.45, a, 0, LEAN);
+      quadN([-1.8, 40, 0], [1.8, 40, 0], [1.8, 48, 0], [-1.8, 48, 0], 0,0,-1, [0.10,0.11,0.13], M_SOLID);
+      box(0, 20, 0.04, 2.4, 8, 0.14, stone, M_SOLID);
+      noXF();
+    }
+    setXF(TX, 0, TZ, 0, 0, LEAN);
+  }
+  /* spire with four corner spirelets — the whole silhouette story */
+  cyl(0, 54.5, 0, 6.2, 0.3, 20.5, 4, P.slate, M_SOLID, 0, 0, Math.PI / 4);
+  for (i = 0; i < 4; i++){
+    var b = i * Math.PI / 2 + Math.PI / 4;
+    cyl(Math.cos(b) * 5.4, 54.5, Math.sin(b) * 5.4, 1.5, 0.15, 8.5, 4, P.slate, M_SOLID, 0, 1, 0);
+  }
+  cyl(0, 74.5, 0, 0.4, 0.1, 1.6, 5, P.gold, M_SOLID, 1, 0, 0);
+  noXF();
+  colBox(TX - 6.8, TZ - 6.8, TX + 6.8, TZ + 6.8);
+
+  /* nave and choir, stretching east away from the canal */
+  box(TX + 32, 9.5, TZ, 25, 9.5, 14, brick, M_SOLID, 4);
+  gableRoof(TX + 32, 19, TZ, 25.4, 14.5, 7.5, 'x', P.tileSh, M_SOLID);
+  box(TX + 30, 11, TZ + 21, 17, 11, 8.5, brick, M_SOLID, 4);
+  gableRoof(TX + 30, 22, TZ + 21, 17.4, 9, 6.0, 'x', P.tileSh, M_SOLID);
+  colBox(TX + 7, TZ - 14, TX + 57, TZ + 14);
+  colBox(TX + 13, TZ + 12.5, TX + 47, TZ + 29.5);
+  if (DET === 1){
+    for (i = 0; i < 6; i++){
+      var wx = TX + 12 + i * 8.2;
+      setXF(wx, 0, TZ - 14.06, 0, 0, 0); gothicWin(0, 5.5, 0, 2.8, 8.0); noXF();
+      box(wx + 4.1, 6, TZ - 14.7, 0.7, 6, 0.8, stone, M_SOLID);
+    }
+  }
+}
+
+/* --- Stadhuis: de Keyser's Renaissance front around Het Steen ----- */
+function buildStadhuis(){
+  var SX = -86, SZ = -62, i, j;
+  markHiArea(SX - 30, SZ - 30, SX + 20, SZ + 30);
+  part(SX, SZ);
+  var body = P.stone, trim = P.cream;
+
+  box(SX, 7.5, SZ, 15, 7.5, 13, body, M_SOLID, 4);
+  gableRoof(SX, 15, SZ, 15.4, 13.4, 5.5, 'z', P.slate, M_SOLID);
+  colBox(SX - 15, SZ - 13, SX + 15, SZ + 13);
+  /* Het Steen: the medieval tower that survived the 1618 fire */
+  box(SX - 4, 13, SZ, 4.2, 13, 4.2, P.stone3, M_SOLID, 4);
+  cyl(SX - 4, 26, SZ, 4.4, 3.4, 3.0, 8, P.stone3, M_SOLID, 0, 0, Math.PI / 8);
+  cyl(SX - 4, 29, SZ, 3.4, 0.2, 9.0, 8, P.slate, M_SOLID, 0, 0, Math.PI / 8);
+  cyl(SX - 4, 38, SZ, 0.35, 0.1, 1.4, 5, P.gold, M_SOLID, 1, 0, 0);
+
+  if (DET === 1){
+    /* the east front, facing the length of the Markt */
+    setXF(SX + 15.04, 0, SZ, -Math.PI * 0.5, 0, 0);
+    for (j = 0; j < 3; j++){
+      for (i = 0; i < 5; i++){
+        var wy = 2.6 + j * 4.2, wxx = (i - 2) * 4.4;
+        if (wy > 13) { break; }
+        window2(wxx, wy, 0.02, 1.5, 2.3, M_GLASS);
+        box(wxx - 1.05, wy, -0.08, 0.16, 1.2, 0.06, P.tile, M_SOLID);
+        box(wxx + 1.05, wy, -0.08, 0.16, 1.2, 0.06, P.tile, M_SOLID);
+        box(wxx, wy - 1.28, -0.04, 0.95, 0.1, 0.1, trim, M_SOLID);
+      }
+    }
+    box(0, 1.6, -0.1, 1.5, 1.6, 0.14, P.cobaltDeep, M_SOLID);
+    box(0, 3.4, -0.12, 2.1, 0.22, 0.2, trim, M_SOLID);
+    box(0, 15.4, -0.1, 4.0, 1.8, 0.18, trim, M_SOLID);      /* the crowned centre */
+    box(0, 17.5, -0.1, 2.2, 0.6, 0.2, trim, M_SOLID);
+    noXF();
+    /* the two flanking stair towers */
+    for (i = 0; i < 2; i++){
+      var tz = SZ + (i ? 9.5 : -9.5);
+      cyl(SX + 14.5, 0, tz, 2.0, 2.0, 12, 8, body, M_SOLID, 0, 0, 0);
+      cyl(SX + 14.5, 12, tz, 2.2, 0.15, 5.5, 8, P.slate, M_SOLID, 0, 1, 0);
+      colDisc(SX + 14.5, tz, 2.0);
+    }
+  }
+}
+
+/* --- the Markt: stalls with cobalt awnings, forever a Thursday ---- */
+function buildMarkt(){
+  var i;
+  seedRng(TUNE.SEED + 311);
+  for (i = 0; i < 16; i++){
+    var col = i % 4, row = Math.floor(i / 4);
+    var x = -46 + col * 21 + rr(-1.6, 1.6);
+    var z = -80 + row * 14 + rr(-1.2, 1.2);
+    if (Math.abs(x - 0) < 6 && Math.abs(z + 62) < 6) { continue; }
+    inst('stall', x, 0, z, (chance(0.5) ? 0 : Math.PI * 0.5) + rr(-0.05, 0.05), rr(0.94, 1.08), P.cobalt);
+    colBox(x - 1.8, z - 1.3, x + 1.8, z + 1.3);
+  }
+  /* the town pump, and a linden at each corner of the square */
+  part(0, -62);
+  cyl(4, 0, -50, 0.7, 0.55, 1.5, 8, P.stone3, M_SOLID, 1, 0, 0);
+  box(4, 1.9, -50, 0.16, 0.5, 0.16, P.iron, M_SOLID);
+  colDisc(4, -50, 0.8);
+  var corners = [[-64,-84],[70,-84],[-64,-40],[70,-40]];
+  for (i = 0; i < 4; i++){
+    inst('tree', corners[i][0], 0, corners[i][1], rr(0, 6.28), 1.15, P.leaf);
+    colDisc(corners[i][0], corners[i][1], 0.5);
+  }
+}
+
+/* --- reserved ground: landmarks claim their footprint first ------- */
+var RESERVED = [];
+function reserve(x0, z0, x1, z1){ RESERVED.push([x0, z0, x1, z1]); }
+
+function blocked(x0, z0, x1, z1){
+  var i;
+  for (i = 0; i < CANALS.length; i++){
+    var c = CANALS[i];
+    if (x1 > c[0] - 3.5 && x0 < c[2] + 3.5 && z1 > c[1] - 3.5 && z0 < c[3] + 3.5) { return true; }
+  }
+  for (i = 0; i < RESERVED.length; i++){
+    var r = RESERVED[i];
+    if (x1 > r[0] && x0 < r[2] && z1 > r[1] && z0 < r[3]) { return true; }
+  }
+  for (i = 0; i < BRIDGES.length; i++){
+    var b = BRIDGES[i];
+    var bx = (b[2] === 'x') ? b[3] : b[4] + 6, bz = (b[2] === 'x') ? b[4] + 6 : b[3];
+    if (x1 > b[0] - bx && x0 < b[0] + bx && z1 > b[1] - bz && z0 < b[1] + bz) { return true; }
+  }
+  return false;
+}
+
+/* --- Oostpoort: the last gate, land gate and water gate together -- */
+function buildOostpoort(){
+  var GX = 252, GZ = 183, i;
+  markHiArea(GX - 30, GZ - 30, GX + 30, GZ + 30);
+  reserve(GX - 18, GZ - 26, GX + 18, GZ + 26);
+  part(GX, GZ);
+  var brick = P.brick[2], stone = P.stone;
+
+  /* twin turrets flanking the water */
+  for (i = 0; i < 2; i++){
+    var tz = GZ + (i ? 13.5 : -13.5);
+    cyl(GX, 0, tz, 4.6, 4.2, 19, 10, brick, M_SOLID, 0, 0, 0);
+    cyl(GX, 19, tz, 5.0, 4.6, 1.2, 10, stone, M_SOLID, 0, 0, 0);
+    cyl(GX, 20.2, tz, 4.6, 0.25, 15.5, 10, P.slate, M_SOLID, 0, 0, 0);
+    cyl(GX, 35.6, tz, 0.35, 0.1, 1.6, 5, P.gold, M_SOLID, 1, 0, 0);
+    colDisc(GX, tz, 4.6);
+    if (DET === 1){
+      for (var j = 0; j < 3; j++){
+        setXF(GX - 4.65, 0, tz, -Math.PI * 0.5, 0, 0);
+        window2(0, 6 + j * 5, 0.02, 0.8, 1.6, M_GLASS);
+        noXF();
+      }
+    }
+  }
+  /* the body of the gate spanning between them, with the arch over the water */
+  box(GX, 11, GZ, 3.4, 11, 9.4, brick, M_SOLID, 4);
+  gableRoof(GX, 22, GZ, 3.8, 9.8, 3.6, 'z', P.tileSh, M_SOLID);
+  /* the water passage: two piers and a low arch, so boats can pass */
+  box(GX, 5.4, GZ, 3.6, 5.4, 4.2, brick, M_SOLID, 4);
+  box(GX, 1.6, GZ - 6.2, 3.8, 1.6, 3.2, brick, M_SOLID, 4);
+  box(GX, 1.6, GZ + 6.2, 3.8, 1.6, 3.2, brick, M_SOLID, 4);
+  colBox(GX - 3.8, GZ - 9.4, GX + 3.8, GZ - 3.6);
+  colBox(GX - 3.8, GZ + 3.6, GX + 3.8, GZ + 9.4);
+  if (DET === 1){
+    setXF(GX - 3.45, 0, GZ, -Math.PI * 0.5, 0, 0);
+    window2(0, 14, 0.02, 1.4, 2.2, M_GLASS);
+    box(0, 17.6, -0.06, 1.0, 0.9, 0.12, stone, M_SOLID);
+    noXF();
+  }
+  /* the white wooden drawbridge frame just west of the gate */
+  var DX = 240;
+  box(DX, 4.2, GZ - 6.0, 0.22, 4.2, 0.22, P.porcelain, M_SOLID);
+  box(DX, 4.2, GZ + 6.0, 0.22, 4.2, 0.22, P.porcelain, M_SOLID);
+  box(DX, 8.2, GZ, 0.2, 0.2, 6.2, P.porcelain, M_SOLID);
+  bar(DX, 8.2, GZ - 6.0, DX - 4.5, 5.4, GZ - 6.0, 0.09, P.porcelain, M_SOLID);
+  bar(DX, 8.2, GZ + 6.0, DX - 4.5, 5.4, GZ + 6.0, 0.09, P.porcelain, M_SOLID);
+}
+
+/* --- Molen de Roos: a stage mill on the western rampart ----------- */
+function buildMolen(){
+  var MX = -262, MZ = 20, i;
+  markHiArea(MX - 25, MZ - 25, MX + 25, MZ + 25);
+  reserve(MX - 14, MZ - 14, MX + 14, MZ + 14);
+  part(MX, MZ);
+  /* brick base */
+  cyl(MX, 0, MZ, 7.2, 6.2, 6.0, 8, P.brick[3], M_SOLID, 0, 0, Math.PI / 8);
+  colDisc(MX, MZ, 6.6);
+  /* the stage (stelling), a walkable gallery */
+  cyl(MX, 6.0, MZ, 8.6, 8.6, 0.34, 8, P.wood, M_SOLID, 1, 1, Math.PI / 8);
+  patchRect(MX - 8.0, MZ - 8.0, MX + 8.0, MZ + 8.0, 6.34, K_STONE);
+  /* the octagonal body and cap */
+  cyl(MX, 6.3, MZ, 6.0, 3.9, 13.5, 8, P.wood, M_SOLID, 0, 0, Math.PI / 8);
+  cyl(MX, 19.8, MZ, 4.2, 3.0, 2.6, 8, P.brick[4], M_SOLID, 1, 0, Math.PI / 8);
+  if (DET === 1){
+    for (i = 0; i < 8; i++){
+      var a = i * Math.PI / 4 + Math.PI / 8;
+      box(MX + Math.cos(a) * 8.5, 6.9, MZ + Math.sin(a) * 8.5, 0.16, 0.55, 0.16, P.wood, M_SOLID);
+    }
+    setXF(MX, 0, MZ + 6.1, Math.PI, 0, 0);
+    window2(0, 9.5, 0, 0.9, 1.3, M_GLASS);
+    noXF();
+    /* the stairs up to the stage */
+    for (i = 0; i < 8; i++){
+      box(MX + 9.4, 0.4 + i * 0.78, MZ - 7.0 + i * 0.55, 1.1, 0.2, 0.34, P.wood, M_SOLID);
+    }
+    patchRamp(MX + 8.3, MZ - 7.4, MX + 10.5, MZ - 2.6, 0.4, 6.34, 'z', K_STONE);
+    RESPAWNS.push([MX + 9.4, MZ - 9.0]);
+  }
+  addLife('sails', MX + 4.0, 21.4, MZ, 0);
+}
+
+/* --- Prinsenhof: the convent where the Republic lost its Prince --- */
+function buildPrinsenhof(){
+  var PX = -212, PZ = -150, i;
+  markHiArea(PX - 30, PZ - 30, PX + 30, PZ + 30);
+  reserve(PX - 26, PZ - 22, PX + 26, PZ + 22);
+  part(PX, PZ);
+  var brick = P.brick[3], roof = P.tileSh;
+  /* three wings around an open court */
+  var wings = [[PX, PZ - 16, 24, 5], [PX - 21, PZ, 5, 16], [PX, PZ + 16, 24, 5]];
+  for (i = 0; i < wings.length; i++){
+    var w = wings[i];
+    box(w[0], 6.0, w[1], w[2], 6.0, w[3], brick, M_SOLID, 4);
+    gableRoof(w[0], 12, w[1], w[2] + 0.3, w[3] + 0.3, 3.2, (w[2] > w[3]) ? 'x' : 'z', roof, M_SOLID);
+    colBox(w[0] - w[2], w[1] - w[3], w[0] + w[2], w[1] + w[3]);
+  }
+  /* the chapel tower on the corner */
+  box(PX + 20, 9, PZ - 14, 3.4, 9, 3.4, brick, M_SOLID, 4);
+  cyl(PX + 20, 18, PZ - 14, 3.4, 0.2, 8.0, 4, P.slate, M_SOLID, 0, 0, Math.PI / 4);
+  colBox(PX + 16.6, PZ - 17.4, PX + 23.4, PZ - 10.6);
+  if (DET === 1){
+    for (i = 0; i < 7; i++){
+      setXF(PX - 22 + i * 0, 0, PZ, -Math.PI * 0.5, 0, 0);
+      noXF();
+      var wx = PX - 20 + i * 6.8;
+      setXF(wx, 0, PZ - 21.06, 0, 0, 0);
+      window2(0, 3.2, 0, 1.2, 2.0, M_GLASS);
+      window2(0, 7.6, 0, 1.2, 1.7, M_GLASS);
+      noXF();
+    }
+    /* the stair where it happened, and the two bullet holes in the wall */
+    box(PX + 2, 0.28, PZ - 10.4, 2.2, 0.28, 0.9, P.stone2, M_SOLID);
+    box(PX + 2, 0.62, PZ - 9.6, 2.2, 0.2, 0.5, P.stone2, M_SOLID);
+    box(PX + 1.6, 1.9, PZ - 10.98, 0.09, 0.09, 0.05, [0.10,0.09,0.09], M_SOLID);
+    box(PX + 2.3, 2.05, PZ - 10.98, 0.08, 0.08, 0.05, [0.10,0.09,0.09], M_SOLID);
+  }
+  /* garden trees inside the court */
+  inst('tree', PX + 4, 0, PZ, 0.7, 1.1, P.leaf);
+  colDisc(PX + 4, PZ, 0.5);
+}
+
+/* --- the hofje: the secret room. No signage, ever. ---------------- */
+function buildHofje(){
+  var CX0 = -224, CZ0 = -68, CX1 = -184, CZ1 = -28, i;
+  markHiArea(CX0 - 10, CZ0 - 10, CX1 + 30, CZ1 + 10);
+  reserve(CX0 - 2, CZ0 - 2, CX1 + 2, CZ1 + 2);
+  reserve(-184, -52, -160, -44);            /* the alley from the canal */
+  part((CX0 + CX1) * 0.5, (CZ0 + CZ1) * 0.5);
+  var brick = P.brick[3];
+
+  /* the courtyard floor: grass, and the only place the mist never reaches */
+  patchRect(CX0, CZ0, CX1, CZ1, 0, K_COURT);
+  slab(CX0, CZ0, CX1, CZ1, 0.01, P.grass, M_SOLID);
+  /* enclosing walls, with a gap for the alley on the east side */
+  box((CX0+CX1)*0.5, 1.6, CZ0 - 0.3, (CX1-CX0)*0.5 + 0.6, 1.6, 0.3, brick, M_SOLID);
+  box((CX0+CX1)*0.5, 1.6, CZ1 + 0.3, (CX1-CX0)*0.5 + 0.6, 1.6, 0.3, brick, M_SOLID);
+  box(CX0 - 0.3, 1.6, (CZ0+CZ1)*0.5, 0.3, 1.6, (CZ1-CZ0)*0.5, brick, M_SOLID);
+  colBox(CX0 - 0.9, CZ0 - 0.9, CX1 + 0.9, CZ0 + 0.1);
+  colBox(CX0 - 0.9, CZ1 - 0.1, CX1 + 0.9, CZ1 + 0.9);
+  colBox(CX0 - 0.9, CZ0, CX0 + 0.1, CZ1);
+  /* east wall in two pieces, leaving the doorway at z -52..-44 */
+  box(CX1 + 0.3, 1.6, (CZ0 - 52) * 0.5 + 0, 0.3, 1.6, Math.abs(CZ0 + 52) * 0.5, brick, M_SOLID);
+  box(CX1 + 0.3, 1.6, (-44 + CZ1) * 0.5, 0.3, 1.6, Math.abs(CZ1 + 44) * 0.5, brick, M_SOLID);
+  colBox(CX1 - 0.1, CZ0, CX1 + 0.9, -52);
+  colBox(CX1 - 0.1, -44, CX1 + 0.9, CZ1);
+
+  /* the almshouses: one storey and a gable, on two sides */
+  for (i = 0; i < 5; i++){
+    var hx = CX0 + 5 + i * 7.6;
+    canalHouse(hx, CZ0 + 0.4, Math.PI, 6.6, 7.0, 5.2, 3, P.brick[2], P.tileSh, null);
+  }
+  part((CX0 + CX1) * 0.5, (CZ0 + CZ1) * 0.5);
+  for (i = 0; i < 4; i++){
+    var hz = CZ0 + 10 + i * 7.4;
+    canalHouse(CX0 + 0.4, hz, -Math.PI * 0.5, 6.4, 6.6, 5.0, 4, P.brick[3], P.tileSh, null);
+  }
+  part((CX0 + CX1) * 0.5, (CZ0 + CZ1) * 0.5);
+  /* one tree, one bench, a pump, and the sparrows */
+  inst('tree', -202, 0, -48, 0.4, 1.45, P.leafLit);
+  colDisc(-202, -48, 0.55);
+  box(-198, 0.42, -58, 1.2, 0.07, 0.28, P.wood, M_SOLID);
+  box(-198.9, 0.2, -58, 0.09, 0.2, 0.26, P.wood, M_SOLID);
+  box(-197.1, 0.2, -58, 0.09, 0.2, 0.26, P.wood, M_SOLID);
+  cyl(-206, 0, -38, 0.34, 0.28, 1.1, 6, P.stone3, M_SOLID, 1, 0, 0);
+  addLife('sparrows', -202, 1.2, -46, 0);
+
+  /* the alley: an unmarked door in the brick off the Oude Delft */
+  part(-172, -48);
+  box(-172, 3.4, -52.6, 12, 3.4, 1.2, P.brick[2], M_SOLID);
+  box(-172, 3.4, -43.4, 12, 3.4, 1.2, P.brick[2], M_SOLID);
+  colBox(-184, -53.8, -160, -51.4);
+  colBox(-184, -44.6, -160, -42.2);
+  patchRect(-184, -51.4, -160, -44.6, 0, K_GROUND);
+  box(-183.6, 1.15, -48, 0.12, 1.15, 0.95, P.cobaltDeep, M_SOLID);
+}
+
+/* --- the Kolk: the south gates, the town profile, Vermeer's spot -- */
+function buildKolk(){
+  var i;
+  markHiArea(0, 120, 120, 150);
+  part(56, 134);
+  var brick = P.brick[2];
+  /* twin gate towers on the north bank — the Schiedam and Rotterdam gates */
+  var gates = [[26, 134, 4.4, 17], [84, 134, 4.0, 15]];
+  for (i = 0; i < gates.length; i++){
+    var g = gates[i];
+    part(g[0], g[1]);
+    cyl(g[0], 0, g[1], g[2], g[2] * 0.94, g[3], 10, brick, M_SOLID, 0, 0, 0);
+    cyl(g[0], g[3], g[1], g[2] + 0.4, g[2] + 0.1, 0.9, 10, P.stone, M_SOLID, 0, 0, 0);
+    cyl(g[0], g[3] + 0.9, g[1], g[2] + 0.1, 0.2, g[2] * 2.6, 10, P.slate, M_SOLID, 0, 0, 0);
+    colDisc(g[0], g[1], g[2]);
+    reserve(g[0] - 7, g[1] - 7, g[0] + 7, g[1] + 7);
+    if (DET === 1){
+      for (var j = 0; j < 3; j++){
+        setXF(g[0], 0, g[1] + g[2] + 0.02, Math.PI, 0, 0);
+        window2(0, 5 + j * 4.5, 0, 0.9, 1.5, M_GLASS);
+        noXF();
+      }
+    }
+  }
+  /* the curtain between them, with an arch onto the water */
+  part(56, 134);
+  box(55, 5.2, 134, 25, 5.2, 2.4, brick, M_SOLID, 4);
+  box(55, 11.0, 134, 25, 0.6, 2.8, P.stone, M_SOLID);
+  colBox(30, 131.6, 80, 136.4);
+  reserve(28, 130, 82, 139);
+  /* a small guard house with a stepped gable, and moored barges */
+  canalHouse(8, 133.6, Math.PI, 8.5, 9, 8.5, 0, P.brick[1], P.tileSh, null);
+  part(56, 134);
+  for (i = 0; i < 5; i++){
+    inst('boat', -10 + i * 26 + rr(-3, 3), TUNE.WATER_Y, 142 + rr(0, 3), rr(-0.08, 0.08), rr(1.2, 1.7),
+         pick([P.wood, P.cobaltDeep, P.iron]));
+  }
+  /* the south quay: where the easel stood */
+  part(56, 232);
+  patchRect(-40, 208, 120, 240, 0, K_STONE);
+  for (i = 0; i < 8; i++){
+    inst('post', -20 + i * 18, 0, 209.5, 0, 1.1, P.wood);
+  }
+  addLife('heron', 44, 0.1, 209.0, -1.9);
+}
+
+/* --- the streets: rows of houses along every canal and the Markt -- */
+function buildCity(){
+  var W = Math.PI * 0.5, E = -Math.PI * 0.5, N = 0, S = Math.PI;
+  seedRng(TUNE.SEED + 4001);
+
+  /* Oude Delft, east bank (facing the water) and west bank */
+  houseRow(-140, -320, -140, 130, W, { depth: 12 });
+  houseRow(-160, 130, -160, -320, E, { depth: 12, feat: 'plates', featAt: 210 });
+  /* Verwersdijk */
+  houseRow(140, -300, 140, 130, W, { depth: 11 });
+  houseRow(120, 130, 120, -300, E, { depth: 11 });
+  /* Voldersgracht — Vermeer's street */
+  houseRow(-146, -126, 36, -126, N, { depth: 9, h0: 9, h1: 13.5, feat: 'bakery', featAt: 166 });
+  houseRow(36, -108, -146, -108, S, { depth: 9, h0: 9, h1: 13 });
+  /* Oude Langendijk, along the south of the Markt */
+  houseRow(-146, -32, 126, -32, N, { depth: 7, h0: 10, h1: 14.5 });
+  houseRow(126, -14, -146, -14, S, { depth: 10, h0: 9, h1: 13.5 });
+  /* Zuidergracht */
+  houseRow(-146, 92, 126, 92, N, { depth: 10, h0: 8.5, h1: 12.5 });
+  houseRow(126, 112, -146, 112, S, { depth: 10, h0: 8.5, h1: 12.5 });
+  /* the north bank of the Kolk: the town profile in the painting */
+  houseRow(-140, 136, 120, 136, N, { depth: 12, h0: 10, h1: 15 });
+  /* the Markt: north side, and the block behind it */
+  houseRow(-70, -92, 78, -92, S, { depth: 11, h0: 11, h1: 16 });
+  /* two inner streets, so the core is not all canal frontage */
+  houseRow(-64, -100, -64, -40, W, { depth: 9, h0: 9, h1: 13 });
+  houseRow(-44, -40, -44, -100, E, { depth: 9, h0: 9, h1: 13 });
+  houseRow(56, -100, 56, -40, W, { depth: 9, h0: 9, h1: 13 });
+  houseRow(-40, 40, 100, 40, N, { depth: 10, h0: 9, h1: 13 });
+  houseRow(100, 60, -40, 60, S, { depth: 10, h0: 9, h1: 13 });
+  houseRow(-140, 200, -20, 200, N, { depth: 10, h0: 8, h1: 12 });
+  houseRow(160, 168, 230, 168, S, { depth: 10, h0: 8, h1: 12 });
+
+  /* quay planting: lindens, bollards, mooring posts, moored sloops */
+  seedRng(TUNE.SEED + 5501);
+  quayLine(-144, -320, -144, 140, 1, {});
+  quayLine(-156, 140, -156, -320, 1, {});
+  quayLine(136, -300, 136, 130, 1, {});
+  quayLine(124, 130, 124, -300, 1, {});
+  quayLine(-140, -112, 30, -112, 1, { trees: false });
+  quayLine(30, -122, -140, -122, 1, { trees: false });
+  quayLine(-140, -18, 120, -18, 1, {});
+  quayLine(120, -28, -140, -28, 1, {});
+  quayLine(-140, 108, 120, 108, 1, {});
+  quayLine(120, 96, -140, 96, 1, {});
+  quayLine(140, 190, 300, 190, 1, { trees: false });
+  quayLine(-288, -190, -288, 110, 1, {});
+
+  /* the laundry line over a side alley: here it is right */
+  addLife('laundry', -108, 6.4, -78, 0);
+  addLife('laundry', 62, 6.0, 8, Math.PI * 0.5);
+  addLife('laundry', -166, 5.8, -190, 0);
+  addLife('heron', -146.5, 0.1, -196, 1.3);
+  addLife('sloop', 0, TUNE.WATER_Y, 0, 0);
+}
+
+/* ==================================================================
+   [10] world: animated life and instanced prop meshes
+      Twelve to twenty hand-placed details, each under ~100 tris,
+      all moving at 0.1-0.5 Hz. Nothing twitchy.
+   ================================================================== */
+
+var LIFE = [];
+function addLife(type, x, y, z, yaw){
+  if (DET !== 1) { return; }
+  LIFE.push({ type: type, x: x, y: y, z: z, yaw: yaw, ph: LIFE.length * 1.37 });
+}
+
+var PROTO = {};      /* name -> flat vertex array, built once        */
+function proto(name, fn){
+  var save = TGT, saveDet = DET;
+  var arr = [];
+  TGT = arr; DET = 1;
+  fn();
+  TGT = save; DET = saveDet;
+  PROTO[name] = arr;
+  return arr;
+}
+
+function buildProtos(){
+  /* linden: trunk plus three flattened canopy shells */
+  proto('tree', function(){
+    cyl(0, 0, 0, 0.24, 0.19, 3.2, 6, P.wood, M_SOLID, 0, 0, 0);
+    cyl(0, 3.0, 0, 1.9, 2.3, 1.6, 7, P.leaf, M_LEAF, 0, 0, 0.3);
+    cyl(0, 4.5, 0, 2.4, 1.8, 2.0, 7, P.leafLit, M_LEAF, 0, 0, 1.1);
+    cyl(0, 6.4, 0, 1.7, 0.4, 1.8, 6, P.leaf, M_LEAF, 1, 0, 0.6);
+  });
+  /* bicycle: two wheels, a frame, handlebars. ~60 triangles. */
+  proto('bike', function(){
+    var i;
+    for (i = 0; i < 2; i++){
+      var wx = i ? 0.52 : -0.52;
+      cyl(wx, 0.33, 0, 0.33, 0.33, 0.045, 9, P.iron, M_SOLID, 0, 0, 0.2);
+    }
+    box(0, 0.62, 0, 0.5, 0.035, 0.035, P.cobalt, M_SOLID);
+    box(-0.12, 0.46, 0, 0.035, 0.2, 0.035, P.cobalt, M_SOLID);
+    box(0.34, 0.55, 0, 0.035, 0.28, 0.035, P.cobalt, M_SOLID);
+    box(-0.52, 0.72, 0, 0.03, 0.42, 0.03, P.cobalt, M_SOLID);
+    box(-0.52, 0.94, 0, 0.03, 0.03, 0.22, P.iron, M_SOLID);
+    box(0.42, 0.86, 0, 0.14, 0.04, 0.09, P.iron, M_SOLID);
+  });
+  proto('bollard', function(){
+    cyl(0, 0, 0, 0.15, 0.13, 0.72, 6, P.iron, M_SOLID, 0, 0, 0);
+    cyl(0, 0.72, 0, 0.15, 0.05, 0.16, 6, P.iron, M_SOLID, 1, 0, 0);
+  });
+  proto('post', function(){
+    cyl(0, -1.6, 0, 0.13, 0.11, 2.5, 5, P.wood, M_SOLID, 1, 0, 0);
+  });
+  /* a low open sloop */
+  proto('boat', function(){
+    var hull = P.wood;
+    box(0, 0.16, 0, 2.4, 0.28, 0.85, hull, M_SOLID, 8);
+    box(0, 0.36, 0.88, 2.4, 0.12, 0.05, P.cream2, M_SOLID);
+    box(0, 0.36, -0.88, 2.4, 0.12, 0.05, P.cream2, M_SOLID);
+    box(2.5, 0.24, 0, 0.3, 0.2, 0.45, hull, M_SOLID);
+    box(-2.5, 0.24, 0, 0.3, 0.2, 0.45, hull, M_SOLID);
+    box(0.6, 0.32, 0, 0.3, 0.06, 0.7, P.wood, M_SOLID);
+  });
+  /* market stall: trestle plus a cobalt-striped awning */
+  proto('stall', function(){
+    var i;
+    box(0, 0.85, 0, 1.7, 0.08, 1.15, P.wood, M_SOLID);
+    for (i = 0; i < 4; i++){
+      box((i & 1 ? 1 : -1) * 1.55, 0.42, (i & 2 ? 1 : -1) * 1.0, 0.06, 0.42, 0.06, P.wood, M_SOLID);
+      box((i & 1 ? 1 : -1) * 1.55, 1.5, (i & 2 ? 1 : -1) * 1.0, 0.05, 1.5, 0.05, P.iron, M_SOLID);
+    }
+    for (i = 0; i < 7; i++){
+      var x0 = -1.75 + i * 0.5;
+      box(x0 + 0.25, 2.34, 0, 0.25, 0.05, 1.35, (i % 2) ? P.cobalt : P.porcelain, M_SOLID);
+    }
+    box(0, 2.18, 1.3, 1.75, 0.22, 0.05, P.cobalt, M_SOLID);
+    box(0, 1.02, 0, 1.4, 0.09, 0.85, P.porcelain, M_SOLID);
+  });
+  /* the life meshes */
+  proto('bell', function(){
+    cyl(0, -1.5, 0, 0.15, 0.62, 1.5, 8, [0.34,0.30,0.22], M_SOLID, 1, 0, 0);
+    box(0, 0.12, 0, 0.5, 0.12, 0.12, P.wood, M_SOLID);
+  });
+  proto('sails', function(){
+    var i;
+    for (i = 0; i < 4; i++){
+      var a = i * Math.PI * 0.5;
+      setXF(0, 0, 0, 0, a, 0);
+      box(0, 6.6, 0, 0.12, 6.4, 0.12, P.wood, M_SOLID);
+      box(0, 6.6, 0.62, 0.05, 6.0, 0.55, P.cream2, M_SOLID);
+      noXF();
+    }
+    cyl(-0.5, 0, 0, 0.3, 0.3, 1.0, 6, P.wood, M_SOLID, 1, 1, 0);
+    setXF(0, 0, 0, 0, 0, 0); noXF();
+  });
+  proto('cat', function(){
+    box(0, 0.11, 0, 0.24, 0.09, 0.1, [0.22,0.20,0.20], M_SOLID);
+    box(0.22, 0.2, 0, 0.09, 0.09, 0.08, [0.22,0.20,0.20], M_SOLID);
+    box(0.26, 0.3, -0.05, 0.03, 0.05, 0.03, [0.22,0.20,0.20], M_SOLID);
+    box(0.26, 0.3, 0.05, 0.03, 0.05, 0.03, [0.22,0.20,0.20], M_SOLID);
+  });
+  proto('cattail', function(){
+    box(-0.28, 0.13, 0, 0.14, 0.03, 0.03, [0.22,0.20,0.20], M_SOLID);
+  });
+  proto('sparrow', function(){
+    box(0, 0.04, 0, 0.07, 0.04, 0.04, [0.42,0.34,0.26], M_SOLID);
+    box(0.07, 0.06, 0, 0.03, 0.03, 0.03, [0.32,0.26,0.20], M_SOLID);
+  });
+  proto('heron', function(){
+    box(0, 0.30, 0, 0.03, 0.30, 0.03, [0.72,0.74,0.76], M_SOLID);
+    box(0.02, 0.70, 0, 0.16, 0.13, 0.09, [0.80,0.82,0.83], M_SOLID);
+    box(0.12, 0.92, 0, 0.03, 0.12, 0.03, [0.80,0.82,0.83], M_SOLID);
+    box(0.20, 0.99, 0, 0.09, 0.02, 0.02, [0.86,0.78,0.42], M_SOLID);
+    box(-0.14, 0.66, 0, 0.14, 0.08, 0.07, [0.62,0.65,0.68], M_SOLID);
+  });
+  proto('laundry', function(){
+    var i;
+    for (i = 0; i < 5; i++){
+      var w = 0.5 + (i % 3) * 0.12;
+      box(-2.4 + i * 1.2, -0.34, 0, w * 0.5, 0.34, 0.02,
+          [P.porcelain, P.cream, [0.78,0.84,0.88], P.cream2, P.porcelain][i], M_SOLID);
+    }
+  });
+  proto('sloop', function(){
+    box(0, 0.2, 0, 3.0, 0.34, 1.0, P.cobaltDeep, M_SOLID, 8);
+    box(0, 0.44, 1.02, 3.0, 0.1, 0.05, P.cream, M_SOLID);
+    box(0, 0.44, -1.02, 3.0, 0.1, 0.05, P.cream, M_SOLID);
+    box(3.1, 0.3, 0, 0.35, 0.25, 0.55, P.cobaltDeep, M_SOLID);
+    box(-3.1, 0.3, 0, 0.35, 0.25, 0.55, P.cobaltDeep, M_SOLID);
+    box(-1.6, 0.5, 0, 0.5, 0.32, 0.6, P.wood, M_SOLID);
+    box(1.2, 0.42, 0, 0.4, 0.08, 0.8, P.wood, M_SOLID);
+  });
+  /* the collectible tile: porcelain white with a cobalt figure */
+  proto('tile', function(){
+    box(0, 0, 0, 0.16, 0.16, 0.022, P.porcelain, M_SOLID);
+    box(0, 0, -0.026, 0.10, 0.02, 0.005, P.cobalt, M_SOLID);
+    box(0, 0, -0.026, 0.02, 0.10, 0.005, P.cobalt, M_SOLID);
+    box(0.07, 0.07, -0.026, 0.025, 0.025, 0.005, P.cobalt, M_SOLID);
+    box(-0.07, -0.07, -0.026, 0.025, 0.025, 0.005, P.cobalt, M_SOLID);
+  });
+}
+
+/* ==================================================================
+   buildWorld — only a call sheet
+   ================================================================== */
+function buildWorld(){
+  bucketsInit();
+  WATERV.length = 0; LIFE.length = 0; RESPAWNS.length = 0;
+  COL.boxes.length = 0; COL.discs.length = 0; COL.obbs.length = 0; COL.patches.length = 0;
+  INST = {};
+  FORCE_HI = {};
+
+  for (var pass = 1; pass >= 0; pass--){
+    DET = pass;
+    RESERVED.length = 0;
+    seedRng(TUNE.SEED);
+    /* landmarks first: they claim their ground before the filler */
+    buildNieuweKerk();  reserve(74, -94, 154, -30);
+    buildOudeKerk();    reserve(-136, -168, -68, -118);
+    buildStadhuis();    reserve(-104, -78, -68, -46);
+    reserve(-72, -92, 78, -32);                        /* the Markt itself */
+    buildOostpoort();
+    buildMolen();
+    buildPrinsenhof();
+    buildHofje();
+    buildKolk();
+    buildTerrain();
+    buildBridges();
+    buildCity();
+    buildMarkt();
+  }
+  DET = 1;
+  buildProtos();
+  /* authored respawn points: the two squares and the courtyard */
+  RESPAWNS.push([0, -62], [56, 232], [-201, -48], [-262, 34], [232, 168], [-150, -95]);
+  colFinalize();
+}
+</script>
+</body>
+</html>
