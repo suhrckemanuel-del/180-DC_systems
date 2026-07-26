@@ -19,7 +19,9 @@
     </a>
     <nav aria-label="Main">
       <a href="index.html">Home</a>
-      <a href="for-clients.html">For clients</a>
+      <a class="page-link" href="mission.html">Mission</a>
+      <a class="page-link" href="for-clients.html">For clients</a>
+      <a class="page-link" href="for-students.html">Students</a>
       <a href="guide.html">Guide</a>
     </nav>
   </div>
@@ -56,7 +58,7 @@
     <h2>How it was made &amp; how to extend it</h2>
     <div style="max-width:62ch;margin-top:1.2rem">
       <p style="margin-bottom:1rem"><strong>Build:</strong> hand-written static HTML/CSS, one stylesheet, no framework, no build step, no web fonts. The only assets are three compressed WebP logo files shared across the golden-set variants (globe mark + branch lockup + white wordmark). One JS-gated, reduced-motion-gated fade-in; everything renders without JavaScript.</p>
-      <p style="margin-bottom:1rem"><strong>Born correct on the rebrand spec:</strong> unlike the other variants, Lumen was built after the 2026-07-23 client feedback round, so it starts already-correct — the verified brand green (never the invented pine-green), the real logo and a green favicon, the affordable-not-free terminology, Project Manager / Branch President roles, the Mission and Our Work sections, the two real consulting cycles (Oct–Jan, Mar–Jun) and recruitment windows (Sept, Jan/Feb), and every honest placeholder. Content source: <code>website/variants/content-v2v3v7.md</code>.</p>
+      <p style="margin-bottom:1rem"><strong>Born correct on the rebrand spec:</strong> unlike the other variants, Lumen was built after the 2026-07-23 client feedback round, so it starts already-correct — the verified brand green (never the invented pine-green), the real logo and a green favicon, the affordable-not-free terminology, Team Leader / Branch President roles, the Mission and Our Work sections, the two real consulting cycles (Oct–Jan, Mar–Jun) and recruitment windows (Sept, Jan/Feb), and every honest placeholder. Content source: <code>website/variants/content-v2v3v7.md</code>.</p>
       <p style="margin-bottom:1rem"><strong>Honesty devices:</strong> every gap is a visible green-tinted placeholder chip — impact numbers, case studies (with the Situation → Approach → Outcome structure shown), team photos, the roster (flagged pending Monday.com confirmation), recruitment portal, events, testimonials, partner logos, and the non-submitting form. Nothing is invented: no fake clients, numbers, photos, or logos.</p>
       <p style="margin-bottom:1rem"><strong>To extend:</strong> new pages reuse <code>.card</code>, <code>.facts</code>, <code>.chip</code>, and the alternating band rhythm. Keep the one-accent rule — if a second colour wants in, it belongs to another variant. Keep the whitespace generous; the point of this variant is calm.</p>
     </div>
@@ -71,6 +73,7 @@
       <p style="margin-bottom:1rem"><strong>2026-07-24 — initial build (golden-set addition).</strong> Created as the fourth "golden set" variant alongside V2 (Port), V3 (De Stijl), and V7 (Polder) — the set the branch will A/B and human-label this semester. Passes the automated eval (<code>tools/eval-v2v3v7.mjs</code>, extended to cover v11): 0 FAIL. Zero horizontal overflow at 390px (<code>tools/check-overflow.mjs</code>). Distinct visual register from the other ten variants — none of them was clean-institutional.</p>
       <p style="margin-bottom:1rem"><strong>Outstanding blockers (shared with the golden set):</strong> (1) Monday.com roster confirmation pending — the <code>monday</code> MCP needs interactive OAuth; the roster shown is the live-page snapshot, flagged pending. (2) The "first multi-city branch" claim is confirmed live on 180dc.org and kept as-is; a one-line sign-off from Stefan Kluwer (Branch President) is recommended before treating it as fully final. (3) Case studies, team photos, testimonials, partner logos, and the recruitment/events links remain honest placeholders awaiting real content.</p>
       <p><strong>Still owed:</strong> standard Critic rounds (three, per the pipeline in <code>website/variants/RESUME-STATE.md</code>) — Lumen has had none yet.</p>
+      <p style="margin-top:1.4rem"><strong>2026-07-25 — client live-review feedback round.</strong> The nav split into scroll-anchor links (What we do, Our work, Committee) and own-page links (Mission, For clients, Students), the latter given a bordered pill treatment so the two behaviours are visually distinct before a click — this is also the fix for the "committee becomes team, mission leads nowhere" nav-mismatch the client hit between <code>index.html</code> and <code>for-clients.html</code>. Mission and Get Involved graduated from home-page sections into their own pages (<code>mission.html</code>, <code>for-students.html</code>), each with a condensed teaser left on the home page; Mission page adds an explicit "part of 180DC worldwide" section linking to <code>180dc.org</code>. The stray "Activities › Consultancy" breadcrumb was removed. A Rotterdam port photo (reused from V2, already Pexels-credited) now sits beside the Welcome teaser. Booking-request form moved to directly under the hero on <code>for-clients.html</code>. Every "Project Manager" mention became "Team Leader" per the client's explicit instruction — this reverses the org's own Terminology Requirement doc (which lists Team Leader as the disallowed term); flagged to the client, who confirmed Team Leader is what should ship.</p>
     </div>
   </div>
 </section>

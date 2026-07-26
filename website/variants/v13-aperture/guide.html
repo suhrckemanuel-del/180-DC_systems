@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design guide — V13 Aperture</title>
+<meta name="description" content="How V13 Aperture was made: the scroll-driven masked-type hero, its three motion drivers, the photography provenance, and the critique log.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2378B038'/%3E%3Ctext x='16' y='21' font-family='Segoe UI,Arial,sans-serif' font-size='12' fill='white' text-anchor='middle' font-weight='800'%3E180%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="index.html">
+      <img src="img/180dc-globe.webp" alt="" width="30" height="21">
+      <span><b>180 Degrees Consulting</b><small>Delft–Rotterdam</small></span>
+    </a>
+    <nav aria-label="Main">
+      <a href="index.html#services">What we do</a>
+      <a href="index.html#work">Our work</a>
+      <a href="index.html#committee">Committee</a>
+      <a class="nav-page" href="mission.html">Mission</a>
+      <a class="nav-page" href="for-clients.html">For clients</a>
+      <a class="nav-page" href="for-students.html">Students</a>
+      <a class="cta" href="for-clients.html#intake">Work with us</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="duo">
+  <div class="wrap">
+    <p class="crumb"><a href="index.html">180DC Delft–Rotterdam</a><span>›</span>Design guide</p>
+    <h1>V13 — <em>Aperture</em></h1>
+    <p class="lede">The headline is a window. Real photography of Rotterdam appears only inside its letterforms, and scrolling opens the aperture until the photograph takes the whole frame.</p>
+  </div>
+</section>
+
+<section class="plain">
+  <div class="wrap narrow">
+    <span class="eyebrow">The thesis</span>
+    <h2>One idea, carried end to end</h2>
+    <p class="lede">Every other variant in this set leans on a structural metaphor — a drawing, a manifest, a polder, a broadsheet, a ledger, a network map. Aperture is the only one whose thesis is <em>optical</em>: the site treats type as a lens onto real places, and treats the act of scrolling as the act of opening that lens.</p>
+    <p style="margin-top:1.1rem;color:var(--ink-soft)">That thesis had to survive one hard constraint. The branch's differentiator is that it does not invent things, so the "it plays like a video" quality could not come from a video file, a synthetic render, or an AI-generated cityscape. It comes from CSS driving one number across a real photograph.</p>
+
+    <h2 style="margin-top:2.4rem">The device, in three drivers</h2>
+    <p>The entire hero choreography is expressed once, in CSS, as functions of a single custom property <code>--ap-p</code> (aperture progress, 0&nbsp;→&nbsp;1). That property is then driven three ways, and because there is only one set of visual rules the three paths cannot drift apart:</p>
+    <div class="grid grid-3" style="margin-top:1.2rem">
+      <div class="card">
+        <span class="num">Driver 1</span>
+        <h3>Native, no JS</h3>
+        <p>A CSS scroll-driven animation (<code>animation-timeline: scroll(root block)</code>) interpolates <code>--ap-p</code> over the first 150vh. Zero JavaScript involved.</p>
+      </div>
+      <div class="card">
+        <span class="num">Driver 2</span>
+        <h3>rAF fallback</h3>
+        <p>Where scroll-driven animations are unsupported, ten lines of JS keep the same property up to date on scroll. Same visual, no duplicated choreography.</p>
+      </div>
+      <div class="card">
+        <span class="num">Driver 3</span>
+        <h3>Nothing at all</h3>
+        <p>With JS off and no native support, <code>--ap-p</code> keeps its initial value of 0.34 — a composed, fully legible resting state. Nothing is hidden or broken.</p>
+      </div>
+    </div>
+    <p style="margin-top:1.2rem;color:var(--ink-soft)"><code>prefers-reduced-motion: reduce</code> takes the same path as Driver 3: the aperture simply rests, the sticky stage collapses to static, and no animation runs anywhere on the site.</p>
+
+    <h2 style="margin-top:2.4rem">Two decisions that came out of looking at it</h2>
+    <p><strong>The headline never fades out.</strong> The first build dissolved the display type once the aperture had opened. On screen it read as a washed-out grey smear rather than a transition — and it meant animating the page's only <code>h1</code> to invisibility, which is an accessibility failure as much as a design one. The type now stays: it is the window, for the whole scroll.</p>
+    <p style="margin-top:0.9rem"><strong>The frame never gets as bright as the fill.</strong> Because the letterforms are filled with the same photograph that lands behind them, there is a scroll position where the headline camouflages itself into total invisibility. The scrim over the background photograph therefore never opens past 0.62 opacity, so the type is always the brighter window. This is the one number in the file that is load-bearing for legibility.</p>
+
+    <h2 style="margin-top:2.4rem">Where the aperture recurs — and where it deliberately doesn't</h2>
+    <p>The masked-type treatment appears exactly twice, both on the home page: the headline, and the "What we do" section header — which is filled with the <em>same</em> hero photograph, so it reads as a callback rather than an unrelated image, and costs no extra bytes because the file is already cached. Interior pages never use it, which is what keeps the aperture feeling like it belongs to the front door.</p>
+    <p style="margin-top:0.9rem">It is also <strong>not</strong> used on the mosaic callouts. Photographic fill inside small type is a contrast failure dressed up as craft, and the six service areas are the copy a paying client most needs to read.</p>
+    <p style="margin-top:0.9rem">Instead the aperture recurs as a <em>gesture</em>: each mosaic tile's photograph opens from a tight crop to full as it enters view, via <code>clip-path: inset()</code> on a <code>view()</code> timeline. Same idea, executed where it doesn't cost legibility.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <span class="eyebrow">Specification</span>
+    <h2>Build sheet</h2>
+    <div class="scroll-x" style="margin-top:1.2rem">
+      <table class="spec">
+        <tbody>
+          <tr><th scope="row">Pages</th><td><code>index.html</code>, <code>for-clients.html</code>, <code>for-students.html</code>, <code>mission.html</code>, <code>guide.html</code>, one <code>styles.css</code></td></tr>
+          <tr><th scope="row">Build</th><td>Hand-written static HTML/CSS. No framework, no build step, no dependencies at runtime.</td></tr>
+          <tr><th scope="row">Signature device</th><td>Scroll-driven masked-type aperture hero · glass panel carrying the engagement cycle · irregular photo mosaic whose tiles open from a tight crop.</td></tr>
+          <tr><th scope="row">Second register</th><td>Interior pages open full-bleed dark with one large Archivo Black headline and minimal chrome — no photographic mask, so the aperture stays unique to the home page.</td></tr>
+          <tr><th scope="row">Colour</th><td>Verified 180DC greens only, per <code>_brand/BRAND.md</code>: <code>#78B038</code> for large/decorative use, <code>#4A7322</code> for AA text on white, <code>#3D6B1C</code> for small text. No invented palette.</td></tr>
+          <tr><th scope="row">Type</th><td>Archivo Black (display/masked), Archivo 400/600 (body), Space Mono 400/700 (eyebrows, metadata, step numerals). Self-hosted woff2 latin subsets, ~105&nbsp;KB total.</td></tr>
+          <tr><th scope="row">Motion</th><td>One thesis-native motion. All of it gated behind <code>prefers-reduced-motion</code>; all of it optional (the site is complete without any).</td></tr>
+          <tr><th scope="row">JavaScript</th><td>Progressive enhancement only: the <code>--ap-p</code> fallback driver, IntersectionObserver reveals, and the carousel's arrows and dots — which are hidden until JS is present, so no control is ever dead.</td></tr>
+          <tr><th scope="row">Imagery</th><td>Six real, credited photographs of Delft and Rotterdam. No AI imagery. No stock faces. Nobody presented as our team. See provenance below.</td></tr>
+          <tr><th scope="row">Weight</th><td><code>img/</code> totals ~502&nbsp;KB across the whole variant; mosaic tiles are lazy-loaded, so a first paint carries the hero only. Under the 1&nbsp;MB budget.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="plain">
+  <div class="wrap">
+    <span class="eyebrow">Provenance</span>
+    <h2>Every photograph, sourced and credited</h2>
+    <p class="lede" style="margin-bottom:1.2rem">All from Pexels, compressed to WebP with <code>sharp</code> via <code>tools/prep-v13.mjs</code>. Each was opened and looked at before use, to confirm it is a real photograph of the real city rather than synthetic or AI-generated content.</p>
+    <div class="scroll-x">
+      <table class="spec">
+        <thead><tr><th>File</th><th>Subject</th><th>Photographer</th><th>Pexels ID</th></tr></thead>
+        <tbody>
+          <tr><td><code>hero-rotterdam.webp</code></td><td>Rotterdam, the Erasmus Bridge over the Maas</td><td>Steshka Croes</td><td>5402027</td></tr>
+          <tr><td><code>tile-rotterdam-skyline.webp</code></td><td>Rotterdam skyline from above</td><td>Werner Hilversum</td><td>20053087</td></tr>
+          <tr><td><code>tile-rotterdam-maas.webp</code></td><td>Rotterdam waterfront across the Maas</td><td>Fleur van Deijck</td><td>11661493</td></tr>
+          <tr><td><code>tile-delft-above.webp</code></td><td>Delft's historic centre from above</td><td>George F</td><td>6197871</td></tr>
+          <tr><td><code>tile-delft-oostpoort.webp</code></td><td>The Oostpoort, Delft</td><td>Igor Passchier</td><td>19104574</td></tr>
+          <tr><td><code>tile-delft-canal.webp</code></td><td>A canal in Delft</td><td>Leslie Lankhorst</td><td>7116030</td></tr>
+          <tr><td><code>tile-port.webp</code></td><td>Port of Rotterdam terminal</td><td>Pexels (reused from V2)</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:1.2rem;color:var(--ink-soft)"><strong>Two sourcing notes worth recording.</strong> First, Pexels titles one Delft frame as the Nieuwe Kerk when the tower shown is the Oude Kerk; rather than propagate a wrong landmark name on a site whose whole pitch is accuracy, the captions name cities, not churches. Second, several otherwise excellent Port of Rotterdam frames were rejected because they are dominated by third-party corporate liveries (Maersk, COSCO, Evergreen) — V2's own critique round had already established that the photography should be brand-free, and that precedent was followed here.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap narrow">
+    <span class="eyebrow">Content integrity</span>
+    <h2>What is real, and what is visibly reserved</h2>
+    <p>Every factual claim on this variant is carried by the shared source of truth (<code>content-v2v3v7.md</code>, <code>_brand/BRAND.md</code>) and matches the other twelve variants: founded 2019, first multi-city branch, TU&nbsp;Delft × Erasmus Rotterdam, six service areas, two roles (Consultant / Team&nbsp;Leader), two cycles a year (Oct–Jan, Mar–Jun), recruitment in September and January/February.</p>
+    <p style="margin-top:0.9rem">Cost language is "uniquely affordable" / "low-cost" throughout — never free, pro bono, or €0 — per the client's approved terminology. Board titles are Branch President and Branch Vice-President.</p>
+    <p style="margin-top:0.9rem"><strong>Note on terminology.</strong> "Team Leader" is used for the role that leads a consulting team. This reverses the org's own Terminology Requirement document, which lists Team Leader as the disallowed term and Project Manager as the approved one. The conflict was flagged to the client, who confirmed Team Leader is what should ship; this variant follows that instruction, consistently with V2, V7, and V11.</p>
+    <p style="margin-top:0.9rem">Case studies, committee photographs, member testimonials, the event calendar, and the application portal are all <span class="placeholder">visibly reserved</span> rather than filled with something plausible. One honesty register, used consistently, and quieter than the real content.</p>
+  </div>
+</section>
+
+<section class="plain">
+  <div class="wrap narrow">
+    <span class="eyebrow">Log</span>
+    <h2>Critique rounds</h2>
+    <p class="lede">Built 2026-07-26. This variant runs the same discipline as the original ten: three independent fresh-context art-director rounds, each hunting for anything generic, any motion that doesn't earn itself, and any place real craft was substituted with a cliché.</p>
+
+    <h3 style="margin-top:1.8rem">Pre-critique — fixes from the first look at rendered output</h3>
+    <p style="color:var(--ink-soft)">Four bugs the first build only revealed once screenshotted at real viewport sizes: (1) the display headline overflowed the right edge at every width, because its measure was set in <code>em</code> against a <code>vw</code> font-size — now set in <code>ch</code>; (2) the headline dissolved to a grey smear at the end of the scroll, and animated the page's only <code>h1</code> to opacity 0 — the dissolve was removed entirely; (3) the lede, absolutely positioned at the bottom of the stage, collided with the display type — it is now in normal flow beneath it, where a collision is structurally impossible; (4) the mobile header wrapped into three unusable rows — it is now a single non-wrapping strip that scrolls horizontally, with no JS drawer. Two smaller ones: the rotated photo credit was clipped and is now horizontal, and the masked type was muddy on phones because small glyphs sample only a dark patch of the frame, so mobile pulls the zoom back and lifts brightness.</p>
+
+    <h3 style="margin-top:1.6rem">Round 1</h3>
+    <p><span class="placeholder">Pending — art-director round 1</span></p>
+    <h3 style="margin-top:1.6rem">Round 2</h3>
+    <p><span class="placeholder">Pending — art-director round 2</span></p>
+    <h3 style="margin-top:1.6rem">Round 3</h3>
+    <p><span class="placeholder">Pending — art-director round 3</span></p>
+  </div>
+</section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <img class="lockup-white" src="img/180dc-lockup-white.webp" alt="180 Degrees Consulting Delft–Rotterdam" width="200" height="57" loading="lazy">
+        <p>A branch of 180 Degrees Consulting, the world's largest university-based consultancy.</p>
+      </div>
+      <div>
+        <h3>Site</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="mission.html">Mission</a></li>
+          <li><a href="for-clients.html">For clients</a></li>
+          <li><a href="for-students.html">Students</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Elsewhere</h3>
+        <ul>
+          <li><a href="https://180dc.org/branches/Delft-Rotterdam">180dc.org branch page</a></li>
+          <li><a href="https://github.com/suhrckemanuel-del/180-DC_systems">The quality system on GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-legal">
+      <span>180 Degrees Consulting Delft–Rotterdam · 2026 · V13 Aperture</span>
+      <a href="index.html">Back to the site</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

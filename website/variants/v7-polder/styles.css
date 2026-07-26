@@ -108,6 +108,10 @@ header.top nav a {
 }
 header.top nav a:hover, header.top nav a:focus-visible { border-bottom-color: var(--green); }
 header.top nav a[aria-current="page"] { border-bottom-color: var(--dike); color: var(--dike); }
+/* nav-page: marks nav items that open a separate page — an always-on underline,
+   vs. the plain scroll-anchor links which only underline on hover/focus */
+header.top nav a.nav-page { border-bottom-color: var(--dike); }
+header.top nav a.nav-page:hover, header.top nav a.nav-page:focus-visible { border-bottom-color: var(--green); }
 @media (max-width: 720px) { header.top nav { margin-left: 0; gap: 0.9rem; } }
 
 /* ---------- type ---------- */

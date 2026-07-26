@@ -30,7 +30,10 @@ for (const v of variants) {
     g = g
       .replaceAll('href="styles.css"', 'href="../styles.css"')
       .replaceAll('href="index.html"', 'href="../"')
+      .replaceAll('href="mission.html"', 'href="../mission.html"')
       .replaceAll('href="for-clients.html"', 'href="../for-clients.html"')
+      .replaceAll('href="for-students.html"', 'href="../for-students.html"')
+      .replaceAll('href="guide.html"', 'href="./"')
       .replaceAll('src="img/', 'src="../img/');
     mkdirSync(join(out, "guide"), { recursive: true });
     writeFileSync(join(out, "guide", "index.html"), g);

@@ -11,6 +11,14 @@ _client-private/
 tools/quality-reviewer/v2/eval-cases-real/intake-work/
 tools/quality-reviewer/v2/eval-cases-real/real-*.md
 tools/quality-reviewer/v2/eval-cases-real/real-*.gold.md
+# Labeling worksheets and gold carry real client deck content: local-only.
+tools/quality-reviewer/v2/eval-cases-real/labeling/real-*.worksheet.*.md
+tools/quality-reviewer/v2/eval-cases-real/labeling/real-*.gold.md
+# Local case reader (renders real client decks): local-only.
+tools/quality-reviewer/v2/eval-cases-real/_case-reader.html
+
+# Local Cloudflare Wrangler build cache — not source.
+website/variants/tools/.wrangler/
 
 # Heavy binaries (decks, image dumps) are kept out to keep the repo lean.
 *.pptx

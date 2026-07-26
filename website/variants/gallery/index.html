@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>180DC Delft–Rotterdam — ten design variants</title>
-<meta name="description" content="Ten radically different live design proposals for the 180 Degrees Consulting Delft–Rotterdam website. Same content, ten designs — pick one.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2300693C'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='800' font-size='10' fill='white' text-anchor='middle'%3E10%3C/text%3E%3C/svg%3E">
+<title>180DC Delft–Rotterdam — thirteen published design variants</title>
+<meta name="description" content="Thirteen radically different live design proposals for the 180 Degrees Consulting Delft–Rotterdam website. Same true content, thirteen designs — pick one.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2300693C'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='800' font-size='10' fill='white' text-anchor='middle'%3E13%3C/text%3E%3C/svg%3E">
 <style>
 :root { --ink: #16211B; --faint: #5A6961; --green: #00693C; --green-deep: #00512E; --line: #E2E5E0; --bg: #FAFBF9; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,14 +49,30 @@ footer { border-top: 1px solid var(--line); padding: 1.6rem 0 2.6rem; color: var
 footer .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 a:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
 .note { font-size: 0.82rem; color: var(--faint); margin-top: 1rem; }
+.spotlight { margin-top: 1.6rem; background: #EDF3EE; border: 1px solid var(--line); border-radius: 10px; padding: 1.2rem 1.4rem 1.4rem; }
+.spot-head { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--green-deep); margin-bottom: 0.9rem; }
+.spot-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.1rem; }
+@media (max-width: 780px) { .spot-grid { grid-template-columns: 1fr; } }
+@media (max-width: 380px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.spot-grid b { display: block; font-size: 0.96rem; margin-bottom: 0.3rem; }
+.spot-grid span { display: block; font-size: 0.88rem; color: var(--faint); }
 </style>
 </head>
 <body>
 
 <header>
   <div class="wrap">
-    <h1>Ten designs. One branch. <em>Same true content in every one.</em></h1>
-    <p class="sub">Live, clickable proposals for the 180 Degrees Consulting Delft–Rotterdam website — each built as a complete homepage, a For-Clients page, and a guide documenting its design system. Content is identical across all ten (<a href="https://github.com/suhrckemanuel-del/180-DC_systems">single source of truth</a>, honesty rules enforced: no invented statistics, no fake testimonials, no stock faces). The winner gets the full six-page build. Pick your three favourites, then read the guides.</p>
+    <h1>Thirteen published designs. One branch. <em>Same true content in every one.</em></h1>
+    <p class="sub">Live, clickable proposals for the 180 Degrees Consulting Delft–Rotterdam website — each built as a complete homepage, a For-Clients page, and a guide documenting its design system. Content is identical across all thirteen published variants (<a href="https://github.com/suhrckemanuel-del/180-DC_systems">single source of truth</a>, honesty rules enforced: no invented statistics, no fake testimonials, no stock faces). The winner gets the full six-page build. Pick your three favourites, then read the guides.</p>
+    <div class="spotlight">
+      <div class="spot-head">Currently under active review — four variants, four different answers</div>
+      <div class="spot-grid">
+        <div><b>V7 · Polder</b><span>The Dutch landscape as design system — strata, a NAP datum line, the branch's quality system drawn as the pump that keeps the polder dry.</span></div>
+        <div><b>V11 · Lumen</b><span>Clean university-consultancy clarity — white-dominant, one green accent, the calm register of a well-run student society.</span></div>
+        <div><b>V12 · Atlas</b><span>New this round: the branch as one lit node in 180DC's worldwide network — a night-map hero and an honest, unlabeled network graphic, nothing invented.</span></div>
+        <div><b>V14 · Confluence</b><span>One deliberately abstract delta-port still becomes cinematic mood through restrained CSS motion; the content below stays crisp, white-dominant, and professional.</span></div>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -163,11 +179,41 @@ a:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
       </div>
     </div>
 
+    <div class="card">
+      <a class="shot" href="v11-lumen/"><span class="no">V11</span><img src="thumbs/v11-lumen.webp" alt="V11 Lumen homepage preview" loading="lazy" width="720" height="450"></a>
+      <div class="body">
+        <h2>Lumen</h2>
+        <p>Clean institutional clarity — white-dominant, one green accent, the calm register of a university consultancy society: a welcome block, a prev/next service carousel, and a stacked committee list. Born on the verified 180DC brand.</p>
+        <div class="meta"><span class="chip">Perf 100 · A11y 100</span><span class="chip--w chip">86 KB</span><span class="chip--w chip">golden set</span></div>
+        <div class="links"><a class="primary" href="v11-lumen/">Open site</a><a href="v11-lumen/guide/">Guide</a></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="shot" href="v12-atlas/"><span class="no">V12</span><img src="thumbs/v12-atlas.webp" alt="V12 Atlas homepage preview" loading="lazy" width="720" height="450"></a>
+      <div class="body">
+        <h2>Atlas</h2>
+        <p>The branch as one lit node in 180DC's worldwide network — a night-map hero with an inline-SVG network graphic, real Delft/Rotterdam coordinates as the signature detail, nothing plotted that isn't verified.</p>
+        <div class="meta"><span class="chip">New — creative test</span><span class="chip--w chip">no images</span><span class="chip--w chip">SVG network graphic</span></div>
+        <div class="links"><a class="primary" href="v12-atlas/">Open site</a><a href="v12-atlas/guide/">Guide</a></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <a class="shot" href="v14-confluence/"><span class="no">V14</span><img src="thumbs/v14-confluence.webp" alt="V14 Confluence homepage preview" loading="lazy" width="720" height="450"></a>
+      <div class="body">
+        <h2>Confluence</h2>
+        <p>Cinematic confluence — one explicitly invented delta-port atmosphere behind a rigorous institutional site, with quiet green light, water and dike lines, and motion that disappears when requested.</p>
+        <div class="meta"><span class="chip">Perf 99 · A11y 100</span><span class="chip--w chip">72 KB</span><span class="chip--w chip">one abstract WebP</span></div>
+        <div class="links"><a class="primary" href="v14-confluence/">Open site</a><a href="v14-confluence/guide/">Guide</a></div>
+      </div>
+    </div>
+
   </div>
 
   <section class="compare" aria-labelledby="cmp-h">
     <h2 id="cmp-h">Side by side</h2>
-    <p class="sub">Every variant passed three independent critique-and-improve rounds by a fresh-context "art director" agent (logs in each guide) and both quality bars: Lighthouse Performance and Accessibility ≥ 95, first load far under 1 MB, keyboard-navigable, WCAG AA, works without JavaScript.</p>
+    <p class="sub">V1–V10 and V14 each passed three independent critique-and-improve rounds by a fresh-context "art director" agent (logs in each guide) and both quality bars: Lighthouse Performance and Accessibility ≥ 95, first load far under 1 MB, keyboard-navigable, WCAG AA, works without JavaScript. <strong>V11 Lumen scores a clean 100 / 100 / 100 / 100 on Lighthouse. V12 Atlas remains a newer creative test without a recorded Lighthouse or three-round critique result.</strong> V2, V7, and V11 have also been through a live-review client feedback round (Team Leader terminology, dedicated Mission/Students pages, and navigation that distinguishes scroll anchors from own-page links); V14 carries those requirements from its first draft.</p>
     <div class="tblwrap">
       <table>
         <thead><tr><th>Nº</th><th>Variant</th><th>Design thesis in one line</th><th>Imagery</th><th>JS</th><th>Motion</th><th>Weight</th><th>Perf / A11y</th></tr></thead>
@@ -182,16 +228,19 @@ a:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
           <tr><td>V8</td><td class="nm"><a href="v8-courant/">De Courant</a></td><td>A broadsheet whose colophon is our honesty rulebook</td><td>none</td><td>none</td><td>none — newsprint</td><td>233 KB</td><td><span class="sc">97 / 100</span></td></tr>
           <tr><td>V9</td><td class="nm"><a href="v9-pamflet/">Pamflet</a></td><td>Protest brutalism: enormous type, one green, all true</td><td>none</td><td>none</td><td>none — paper</td><td>89 KB</td><td><span class="sc">100 / 100</span></td></tr>
           <tr><td>V10</td><td class="nm"><a href="v10-ledger/">The Ledger</a></td><td>Every claim shows its evidence; the rest is struck through</td><td>none</td><td>hover evidence links</td><td>none — ledgers don't move</td><td>126 KB</td><td><span class="sc">95 / 95</span></td></tr>
+          <tr><td>V11</td><td class="nm"><a href="v11-lumen/">Lumen</a></td><td>Clean university-consultancy clarity; one green accent on white</td><td>180DC logo only</td><td>carousel + reveals</td><td>service carousel, gentle scroll reveals</td><td>86 KB</td><td><span class="sc">100 / 100</span></td></tr>
+          <tr><td>V12</td><td class="nm"><a href="v12-atlas/">Atlas</a></td><td>The branch as one lit node in 180DC's worldwide network</td><td>none — inline SVG only</td><td>reveals + node pulse</td><td>home-node pulse, one travelling connection dot</td><td>—</td><td><span class="sc">not yet run</span></td></tr>
+          <tr><td>V14</td><td class="nm"><a href="v14-confluence/">Confluence</a></td><td>One invented delta-port atmosphere; professional clarity below</td><td>one abstract generated WebP</td><td>parallax only</td><td>34s Ken Burns + scroll depth</td><td>72 KB</td><td><span class="sc">99 / 100</span></td></tr>
         </tbody>
       </table>
     </div>
-    <p class="note">Scores are Lighthouse desktop runs against the deployed pages (V6–V10 latest local runs; refreshed after final critique rounds). Weight = homepage transfer size. The written recommendation with a ranked top three lives in the repo: <code>website/variants/RECOMMENDATION.md</code>.</p>
+    <p class="note">Scores are Lighthouse desktop runs against the deployed pages unless noted (V6–V10 latest local runs; refreshed after final critique rounds). V11 Lumen's Lighthouse (desktop) is Performance 100, Accessibility 100, Best-Practices 100, SEO 100. V12 Atlas has not been deployed or measured yet. V14 Confluence's scores are final local Lighthouse results. Weight = homepage transfer size.</p>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <span>180 Degrees Consulting Delft–Rotterdam · an AI-lab build — ten variants, one honest content spec</span>
+    <span>180 Degrees Consulting Delft–Rotterdam · an AI-lab build — thirteen published variants, one honest content spec</span>
     <span>Built 2026-07 · hosted on Cloudflare Pages</span>
   </div>
 </footer>

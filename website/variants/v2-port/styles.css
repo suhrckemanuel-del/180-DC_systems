@@ -82,6 +82,10 @@ header.bar nav a {
 }
 header.bar nav a:hover, header.bar nav a:focus-visible { background: var(--orange-loud); color: var(--ink); }
 header.bar nav a[aria-current="page"] { background: var(--white); color: var(--ink); }
+/* nav-page: marks nav items that open a separate page, distinct from plain scroll-anchor links */
+header.bar nav a.nav-page { color: var(--yellow); }
+header.bar nav a.nav-page::after { content: " \2192"; }
+header.bar nav a.nav-page:hover, header.bar nav a.nav-page:focus-visible { color: var(--ink); }
 @media (max-width: 900px) {
   header.bar { position: static; }
   header.bar nav { width: 100%; flex-wrap: wrap; }
@@ -257,6 +261,9 @@ h2 {
 .band-green .lede, .band-green p { color: #D3E8DC; }
 .band-green a { color: #EAF7EF; }  /* mint on green is too low-contrast; pale mint reads AA */
 
+/* band-light: alternate light section ground so categories on the home page don't visually merge */
+.band-light { background: var(--white); }
+
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
 @media (max-width: 860px) { .split { grid-template-columns: 1fr; gap: 2rem; } }
 .prose p + p { margin-top: 1rem; }
@@ -350,8 +357,14 @@ label .tag { display: block; margin-bottom: 0.35rem; color: var(--ink); }
 /* mission */
 .mission-grid { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 3rem; align-items: center; }
 @media (max-width: 860px) { .mission-grid { grid-template-columns: 1fr; gap: 2rem; } }
-.mission-grid .lockup-branch { justify-self: end; background: var(--white); padding: 1.4rem; border: 2px solid var(--ink); }
-@media (max-width: 860px) { .mission-grid .lockup-branch { justify-self: start; } }
+.mission-plate {
+  justify-self: center; text-align: center; background: var(--white);
+  border: 2px solid var(--ink); box-shadow: 8px 8px 0 var(--orange-loud);
+  padding: 2rem 1.6rem 1.4rem;
+}
+.mission-plate img { max-width: 200px; width: 100%; height: auto; display: block; margin: 0 auto; }
+.mission-plate figcaption { margin-top: 1rem; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--steel); border-top: 1px dashed var(--steel); padding-top: 0.7rem; }
+@media (max-width: 860px) { .mission-plate { justify-self: start; } }
 
 /* reserved portrait frames — dashed + diagonal hatch, container-placard style */
 .crew-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.1rem; margin-top: 2.2rem; }

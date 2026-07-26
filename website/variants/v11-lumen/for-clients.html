@@ -18,12 +18,12 @@
       <span><b>180 Degrees Consulting</b><small>Delft–Rotterdam</small></span>
     </a>
     <nav aria-label="Main">
-      <a href="index.html#mission">Mission</a>
       <a href="index.html#services">What we do</a>
       <a href="index.html#work">Our work</a>
-      <a href="for-clients.html">For clients</a>
-      <a href="index.html#join">Join</a>
-      <a href="index.html#team">Team</a>
+      <a href="index.html#committee">Committee</a>
+      <a class="page-link" href="mission.html">Mission</a>
+      <a class="page-link" href="for-clients.html">For clients</a>
+      <a class="page-link" href="for-students.html">Students</a>
       <a class="cta" href="#intake">Start a call</a>
     </nav>
   </div>
@@ -46,13 +46,37 @@
         </div>
         <div class="chips">
           <span class="chip"><b>Oct–Jan &amp; Mar–Jun</b> two cycles a year</span>
-          <span class="chip"><b>4–6</b> consultants + a Project Manager</span>
+          <span class="chip"><b>4–6</b> consultants + a Team Leader</span>
           <span class="chip"><b>~1 hr/week</b> of your time</span>
         </div>
       </div>
       <div class="hero-art reveal">
         <img src="img/180dc-lockup-branch.webp" alt="180 Degrees Consulting Delft–Rotterdam logo" width="230" height="287">
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="intake" class="plain">
+  <div class="wrap">
+    <div class="cols">
+      <div class="reveal">
+        <span class="eyebrow">Booking request</span>
+        <h2>Start the scoping call</h2>
+        <p class="lede">Five fields. We reply within a week, usually faster. The call itself commits you to nothing.</p>
+        <div class="card card--tint" style="margin-top:1.6rem">
+          <h3>What happens after you press send</h3>
+          <p style="margin-top:0.5rem">Your note goes to our consulting directors. They read it, check the fit against the six service areas, and reply with two or three call slots — one email from a person, never a sequence.</p>
+        </div>
+        <p style="margin-top:1.4rem"><span class="placeholder">Placeholder — form UI only, not yet wired to a backend.</span></p>
+      </div>
+      <form class="reveal" aria-label="Client intake (demonstration only)" onsubmit="return false">
+        <label><span class="lbl">Your name</span><input type="text" name="name" autocomplete="name"></label>
+        <label><span class="lbl">Organisation</span><input type="text" name="org" autocomplete="organization"></label>
+        <label><span class="lbl">Email</span><input type="email" name="email" autocomplete="email"></label>
+        <label><span class="lbl">What challenge are you facing?</span><textarea name="challenge" rows="4"></textarea></label>
+        <button class="btn btn--primary" type="submit">Request the call →</button>
+      </form>
     </div>
   </div>
 </section>
@@ -78,7 +102,7 @@
       <div class="tl-step">
         <span class="when">Through the cycle</span>
         <h3>The project</h3>
-        <p>A team of 4–6 student consultants with a dedicated Project Manager. A mid-point review where you course-correct, and working sessions as the analysis firms up. Your time: about an hour a week.</p>
+        <p>A team of 4–6 student consultants with a dedicated Team Leader. A mid-point review where you course-correct, and working sessions as the analysis firms up. Your time: about an hour a week.</p>
       </div>
       <div class="tl-step">
         <span class="when">End of cycle</span>
@@ -124,30 +148,6 @@
   </div>
 </section>
 
-<section id="intake" class="plain">
-  <div class="wrap">
-    <div class="cols">
-      <div class="reveal">
-        <span class="eyebrow">Booking request</span>
-        <h2>Start the scoping call</h2>
-        <p class="lede">Five fields. We reply within a week, usually faster. The call itself commits you to nothing.</p>
-        <div class="card card--tint" style="margin-top:1.6rem">
-          <h3>What happens after you press send</h3>
-          <p style="margin-top:0.5rem">Your note goes to our consulting directors. They read it, check the fit against the six service areas, and reply with two or three call slots — one email from a person, never a sequence.</p>
-        </div>
-        <p style="margin-top:1.4rem"><span class="placeholder">Placeholder — form UI only, not yet wired to a backend.</span></p>
-      </div>
-      <form class="reveal" aria-label="Client intake (demonstration only)" onsubmit="return false">
-        <label><span class="lbl">Your name</span><input type="text" name="name" autocomplete="name"></label>
-        <label><span class="lbl">Organisation</span><input type="text" name="org" autocomplete="organization"></label>
-        <label><span class="lbl">Email</span><input type="email" name="email" autocomplete="email"></label>
-        <label><span class="lbl">What challenge are you facing?</span><textarea name="challenge" rows="4"></textarea></label>
-        <button class="btn btn--primary" type="submit">Request the call →</button>
-      </form>
-    </div>
-  </div>
-</section>
-
 </main>
 
 <footer id="contact">
@@ -159,15 +159,16 @@
         <p style="margin-top:0.7rem">Leopoldstraat 7A, 3031 ST Rotterdam<br><a href="mailto:delft.rotterdam@180dc.org">delft.rotterdam@180dc.org</a></p>
       </div>
       <div>
-        <h4>Site</h4>
+        <h3>Site</h3>
         <ul>
           <li><a href="index.html">Home</a></li>
-          <li><a href="index.html#join">Join us</a></li>
-          <li><a href="index.html#team">Team</a></li>
+          <li><a href="mission.html">Mission</a></li>
+          <li><a href="for-students.html">Students</a></li>
+          <li><a href="index.html#committee">Committee</a></li>
         </ul>
       </div>
       <div>
-        <h4>Elsewhere</h4>
+        <h3>Elsewhere</h3>
         <ul>
           <li><a href="https://180dc.org/branches/Delft-Rotterdam">180dc.org branch page</a></li>
           <li><a href="https://www.instagram.com/180dc_delftrotterdam/">Instagram</a></li>

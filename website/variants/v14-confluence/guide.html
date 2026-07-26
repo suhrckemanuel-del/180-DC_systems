@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guide — V14 Confluence | 180DC Delft–Rotterdam</title>
+  <meta name="description" content="Design specification, implementation notes, and critique log for the V14 Confluence static-site variant.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2378B038'/%3E%3Ctext x='16' y='21' font-family='Segoe UI,Arial,sans-serif' font-size='12' fill='%2311180F' text-anchor='middle' font-weight='800'%3E180%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap nav-shell">
+      <a class="brand" href="index.html" aria-label="180 Degrees Consulting Delft–Rotterdam home">
+        <img src="img/180dc-globe.webp" alt="" width="38" height="27">
+        <span><strong>180 Degrees Consulting</strong><small>Delft–Rotterdam</small></span>
+      </a>
+      <nav class="main-nav" aria-label="Guide navigation">
+        <a href="index.html">Home</a>
+        <a class="nav-page" href="mission.html">Mission</a>
+        <a class="nav-page" href="for-clients.html">For clients</a>
+        <a class="nav-page" href="for-students.html">Students</a>
+        <a class="nav-page" href="guide.html" aria-current="page">Guide</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="guide-hero">
+      <div class="wrap">
+        <p class="eyebrow">Design specification · not client-facing</p>
+        <h1>V14 — Confluence</h1>
+        <p><strong>Thesis:</strong> a professional two-city narrative—clean institutional copy beside a contained, credited city film rather than over a full-bleed background. Home moves from real Rotterdam footage through a restrained brand-green confluence into real Delft footage; Mission, For clients, and Students each carry a different route-specific film. It differs from Port's photographic maritime system, Polder's diagrammatic landscape, Lumen's image-light calm, and Atlas's information-first mapping by making the branch's Delft–Rotterdam connection a sequence across pages while keeping motion bounded, optional, and outside the reading layer.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="spec-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Design system</p>
+          <h2 id="spec-title">Specification</h2>
+        </div>
+        <table class="spec-table">
+          <tbody>
+            <tr><th>Palette</th><td>Verified 180DC green <code>#78B038</code> for surfaces and large decorative marks; AA-safe <code>#4A7322</code> for links and small green text; extra-safe <code>#3D6B1C</code> for dense labels. White, pale green wash, and green-black neutrals support those three brand greens. No competing hue.</td></tr>
+            <tr><th>Typography</th><td>System UI stack only—Segoe UI, Helvetica Neue, Arial. No font request, no flash, and no font-license or transfer cost. Large editorial headings use tight spacing; body copy stays conventional and calm.</td></tr>
+            <tr><th>Layout</th><td>1160px maximum measure, white-dominant split heroes with copy and facts in one column and a contained 8:5 film in the other, then alternating content bands. At 860px the film moves below the complete text block. Cards use 18px corners, hairline green-tinted rules, and restrained elevation.</td></tr>
+            <tr><th>Signature</th><td>Four real, route-specific city films framed as editorial context; visible place labels and documentary credits; a restrained <code>#78B038</code> grade and two static “confluence” lines inside the media frame; and disciplined fact grids. The green treatment supplies the slight atmospheric quality without fabricating either city.</td></tr>
+            <tr><th>Navigation</th><td>On Home, plain links scroll to What we do (<code>#services</code>), Our work (<code>#work</code>), and Team (<code>#committee</code>). Bordered links with an arrow open Mission, For clients, and Students. On own pages, those scroll links explicitly return to <code>index.html#services</code>, <code>index.html#work</code>, and <code>index.html#committee</code>.</td></tr>
+            <tr><th>Accessibility</th><td>Skip links, visible focus rings, semantic headings, labelled form fields, responsive navigation, AA-safe text colors, descriptive film labels, visible source captions, and 44px playback controls. The text never sits over video. Each source-less video has a poster fallback; reduced motion never attaches the MP4, no-JavaScript renders the poster and full copy, and Data Saver requires an explicit play action.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section section--wash" aria-labelledby="image-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Real places, visibly credited</p>
+          <h2 id="image-title">Four contained films make the two-city story explicit.</h2>
+          <p class="lede">The media is city context, not evidence of 180DC work. Every film sits beside the claim-bearing copy, carries its city in the frame, and names its creator, source, and licence in a visible caption.</p>
+        </div>
+        <div class="grid grid--2">
+          <article class="card">
+            <span class="card-index">01</span>
+            <h3>Home · Rotterdam → Delft</h3>
+            <p>The opening film begins with Rotterdam's river scale, passes through a short <code>#78B038</code> confluence treatment, and resolves in Delft. Its Rotterdam and Delft excerpts are unique to Home and credited separately; the transition is editorial treatment, not a claim that the two views form one continuous geography.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">02</span>
+            <h3>Mission · Delft origin</h3>
+            <p>A separate Oostpoort and water film anchors the branch story where it began. Its caption identifies Delft and explicitly says that the footage is not an 180DC project or team event.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">03</span>
+            <h3>For clients · Rotterdam scale</h3>
+            <p>A distinct Maasvlakte film supplies port, water, and infrastructure scale beside the engagement proposition. It is contextual footage—not a client, case study, outcome, or branch engagement.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">04</span>
+            <h3>Students · Delft making</h3>
+            <p>A different TU Delft engineering film gives the student page a practical, campus-specific register. The people and work shown belong to the credited source and are never presented as this branch's members or consulting work.</p>
+          </article>
+        </div>
+        <div class="prose" style="margin-top:2rem">
+          <p>The public pages self-host their compressed MP4s and WebP posters; no third-party player, tracking request, remote embed, or audio stream is shipped. The earlier generated <code>img/hero-confluence.webp</code> remains as historical build material but is no longer referenced by a public page. Its slight fantasy quality survives only as a transparent brand-green grade and static diagonal lines inside each bounded film frame.</p>
+          <p><strong>Documentary ledger:</strong> each public <code>figcaption</code> links to the exact Wikimedia Commons source and its licence. The redesign's final verification must check those links, attribution terms, city identity, file sizes, and the absence of footage reuse across routes before release.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="motion-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">One-shot motion, poster-first delivery</p>
+          <h2 id="motion-title">The film is an enhancement, never the hero's foundation.</h2>
+        </div>
+        <div class="grid grid--3">
+          <article class="card"><span class="card-index">A</span><h3>Source-less baseline</h3><p>Initial HTML stores the route's MP4 path in <code>data-src</code>; the <code>video</code> element has no media source. Its WebP poster, place label, credit, and all hero copy are complete before JavaScript runs. With JavaScript disabled, a matching <code>noscript</code> image fills the same reserved 8:5 frame.</p></article>
+          <article class="card"><span class="card-index">B</span><h3>One route, one request</h3><p><code>media-controller.js</code> attaches only the film present on the visited page, and only when its frame approaches the viewport. Normal-mode playback is muted, inline, and one-shot: it pauses off-screen or when the tab is hidden, exposes a 44px Pause control, stops at the final frame, and offers Replay rather than looping.</p></article>
+          <article class="card"><span class="card-index">C</span><h3>Preferences are authoritative</h3><p><code>prefers-reduced-motion: reduce</code> keeps the MP4 detached and the poster static, including when the preference changes at runtime. Data Saver and 2G connections retain the poster until the visitor explicitly chooses Play. If loading or autoplay fails, the credited poster remains legible and the controller never hides the copy.</p></article>
+        </div>
+        <table class="spec-table" style="margin-top:2rem">
+          <tbody>
+            <tr><th>Home</th><td>Rotterdam → green confluence → Delft. MP4 ceiling: <strong>720 KB</strong>; visited-page ceiling: <strong>900 KB</strong>.</td></tr>
+            <tr><th>Mission</th><td>Delft origin. MP4 ceiling: <strong>520 KB</strong>; visited-page ceiling: <strong>700 KB</strong>.</td></tr>
+            <tr><th>For clients</th><td>Rotterdam port scale. MP4 ceiling: <strong>420 KB</strong>; visited-page ceiling: <strong>650 KB</strong>.</td></tr>
+            <tr><th>Students</th><td>TU Delft making. MP4 ceiling: <strong>440 KB</strong>; visited-page ceiling: <strong>650 KB</strong>.</td></tr>
+          </tbody>
+        </table>
+        <p class="lede" style="margin-top:1.5rem">The repository now stores several films, so the relevant performance invariant is the transfer for the page a visitor actually opens. No route references, preloads, or prefetches another route's MP4. Posters target 40 KB or less, and final measured transfer—not nominal bitrate—is the release gate.</p>
+      </div>
+    </section>
+
+    <section class="section section--mist" aria-labelledby="content-title">
+      <div class="wrap split">
+        <div class="prose">
+          <p class="eyebrow">Content and honesty</p>
+          <h2 id="content-title">Same facts, no invented proof.</h2>
+          <p>The copy follows the current V2/V11 public pages: founded in 2019; first multi-city branch; TU Delft × Erasmus Rotterdam; six service areas; two consulting cycles, October–January and March–June; recruitment in September and January/February; and exactly two roles, Consultant and Team Leader.</p>
+          <p>The source brand document contains older terminology that prefers Project Manager. Current V2/V11 guides record the later explicit client override to Team Leader, and the user repeated that requirement for V14. Public pages therefore use Team Leader and contain no Project Manager reference.</p>
+          <p>Real footage changes the evidence standard, not the branch facts. Place labels and source captions say only what the linked documentary source supports. Every caption separates city or campus context from 180DC projects, clients, members, and events; no film may be used to fill a missing case study, team portrait, testimonial, partner, or impact result.</p>
+        </div>
+        <div class="card">
+          <h3>Visible placeholder register</h3>
+          <p>Impact numbers; three case studies with Situation → Approach → Outcome; team photos; provisional roster; partner logos; non-submitting intake form; recruitment portal; events calendar; and two member testimonials. Those gaps remain visibly reserved. No city film, still frame, fake client, outcome, statistic, person, quote, or partner fills any one of them.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--wash" aria-labelledby="build-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Build and critique log</p>
+          <h2 id="build-title">Every material build earns three rounds.</h2>
+          <p>The original still-image version completed three critiques and a verification pass. The contained-film redesign is a second material build, so it receives three fresh screenshot reviews and a new final verification rather than inheriting the earlier result.</p>
+        </div>
+        <div class="log">
+          <article>
+            <h3>2026-07-26 — original still-image build · historical</h3>
+            <p>Created five static HTML pages and one stylesheet under <code>v14-confluence</code>. Added the one compressed hero still plus three official compressed logo assets. No framework, external font, video, analytics, or runtime dependency. The missing <code>RECOMMENDATION.md</code> precondition was explicitly waived by the user.</p>
+          </article>
+          <article id="round-1">
+            <h3>Original still-image critique round 1 — mobile hierarchy, honesty, and distinctiveness</h3>
+            <p><strong>Fresh review findings:</strong> mobile skip/header collision; clipped horizontal navigation; a demo form styled too much like a working endpoint; an overlong one-column mobile roster; a hero crop that leaned too heavily toward plausible crane forms on small screens; identical hero treatment across all four public pages; generic rounded-card repetition below the hero; and repeated long placeholder labels becoming visual noise.</p>
+            <p><strong>Applied fixes:</strong> made the skip link fully invisible until <code>:focus-visible</code>; converted the mobile nav to a complete two-row grid and made the header static; disabled and relabelled the demonstration submit control while replacing the final dead-end CTA with email; retained two roster columns at 390px; shifted the mobile crop toward the dike/water curve; added distinct Mission/Clients/Students crop and opacity treatments; flattened the service cards into a connected institutional grid and added confluence hairlines to content bands; consolidated section-level placeholder explanations and shortened repeated card markers without hiding their full accessible labels.</p>
+          </article>
+          <article id="round-2">
+            <h3>Original still-image critique round 2 — production credibility under gallery constraints</h3>
+            <p><strong>Fresh review findings:</strong> internal guide material and the variant label read as prototype exposure; the disabled client form was still too prominent relative to a live action; placeholders and Home depth still dominated the public experience; the mobile hero needed more midtone detail; large branch and quality claims needed direct evidence; and repeated defensive headings risked making honesty itself feel synthetic.</p>
+            <p><strong>Applied fixes:</strong> marked the non-client guide <code>noindex, nofollow</code>; made email the live navigation and primary intake action while retaining the explicitly required, disabled form preview; compressed reserved mobile portraits to wide compact frames; raised Home-mobile image midtones and kept differentiated subpage crops; linked to the official global network and Delft–Rotterdam branch history; and replaced several defensive “template/verified/real voices” headlines with plain institutional language.</p>
+            <p><strong>Constraints retained deliberately:</strong> the guide remains linked because every recent gallery variant includes its design write-up; placeholder sections remain because visible honest gaps are a direct content-parity requirement; and Home retains the shared facts, services, work, student, partner, and team sections rather than becoming a reduced campaign page.</p>
+          </article>
+          <article id="round-3">
+            <h3>Original still-image critique round 3 — exact parity and release polish</h3>
+            <p><strong>Fresh review findings:</strong> the same six services had drifted into slightly different descriptions on Home and For clients; mobile navigation targets were still cramped; the client-journey connector did not run cleanly through its nodes; desktop portrait and testimonial placeholders remained too tall; the guide abbreviated its real anchor destinations; and one mobile inline-link arrow could wrap onto a line by itself.</p>
+            <p><strong>Applied fixes:</strong> made the full six-description set byte-for-byte consistent across both pages; raised mobile navigation to 44px targets and 12px labels, with the contextual action spanning two columns; connected desktop timeline nodes center-to-center and used per-step vertical connectors in the single-column layout; shortened desktop portrait frames and removed testimonial minimum height; documented every literal anchor destination; and kept the final link word and arrow together.</p>
+          </article>
+          <article id="verification">
+            <h3>Original still-image verification — passed at that checkpoint</h3>
+            <p><strong>Integrity at that checkpoint:</strong> all five built HTML routes and every local link, fragment, stylesheet, and image resolved. The public-page audit found all required branch facts, all six canonical service descriptions in exact parity, Consultant and Team Leader terminology, and honest case-study, team-photo, and testimonial gaps. That build shipped one non-logo still and zero video; its full directory was under 220 KB, and <code>hero-confluence.webp</code> was 18,244 bytes.</p>
+            <p><strong>Responsive and motion at that checkpoint:</strong> no horizontal overflow appeared at 320px, 390px, or 768px on any route. Mobile navigation targets were at least 44px high. No-JavaScript screenshots retained every heading and content section. Normal mode reported the 34-second Ken Burns animation and a changing parallax offset; reduced-motion mode reported a zero offset, no image animation, and zero running animations.</p>
+            <p><strong>Lighthouse at that checkpoint:</strong> Home 99/100/100/100 at 72 KB; Mission 100/100/100/100 at 66 KB; For clients 100/100/100/100 at 68 KB; For students 100/100/100/100 at 67 KB. Values were Performance/Accessibility/Best Practices/SEO from local runs. Those measurements describe the retired still-image presentation and are not performance evidence for the film redesign.</p>
+            <p><strong>Gallery at that checkpoint:</strong> a real 1280×800 render was compressed into the 720px WebP thumbnail, and the card, comparison-table row, and distinguishing one-line thesis were present. The redesign requires a replacement thumbnail and revised comparison data after its own verification.</p>
+          </article>
+          <article id="redesign-build">
+            <h3>2026-07-26 — contained city-film redesign build</h3>
+            <p>Replaced the full-bleed generated-image heroes with white-dominant split layouts across Home, Mission, For clients, and Students while preserving their copy, fact grids, calls to action, navigation pattern, and content gaps. Each route now contains one source-less <code>video</code>, its own WebP poster and MP4 path, a visible city label, a documentary caption, and a distinct real-footage role: Home Rotterdam → Delft; Mission Delft origin; For clients Rotterdam scale; Students TU Delft making.</p>
+            <p>Added one shared <code>media-controller.js</code> for route-local source attachment, viewport and tab pausing, one-shot Play/Pause/Replay state, runtime reduced-motion changes, Data Saver and 2G opt-in, and poster retention on failure. Removed the live Ken Burns and parallax treatment. The prior abstract still remains unreferenced historical material; verified brand-green grading and static confluence lines provide continuity inside the contained media frames.</p>
+            <p><strong>Status:</strong> implementation complete; independent redesign critiques and final verification remain required below. No earlier screenshot, transfer figure, Lighthouse result, or gallery thumbnail is carried forward as proof.</p>
+          </article>
+          <article id="redesign-round-1">
+            <h3>Contained-film critique round 1 — visual hierarchy and city clarity</h3>
+            <p><strong>Status:</strong> Pending fresh desktop and mobile screenshots. Record whether the split hero feels professional, whether Rotterdam and Delft read clearly without tourism-page spectacle, whether each crop remains useful at 320px/390px/768px, and whether labels, controls, captions, and the slight green treatment compete with the primary message.</p>
+            <p><strong>Fresh review findings:</strong> Pending.</p>
+            <p><strong>Applied fixes:</strong> Pending.</p>
+          </article>
+          <article id="redesign-round-2">
+            <h3>Contained-film critique round 2 — motion, accessibility, and performance</h3>
+            <p><strong>Status:</strong> Pending a fresh reviewer plus normal, reduced-motion, no-JavaScript, Data Saver, off-screen pause, tab-visibility, autoplay-rejection, replay, and media-error checks. Record actual route-local requests and transfer totals against the ceilings above.</p>
+            <p><strong>Fresh review findings:</strong> Pending.</p>
+            <p><strong>Applied fixes:</strong> Pending.</p>
+          </article>
+          <article id="redesign-round-3">
+            <h3>Contained-film critique round 3 — documentary honesty and release polish</h3>
+            <p><strong>Status:</strong> Pending a fresh reviewer. Recheck every creator/source/licence link, city identification, contextual disclaimer, unique-footage assignment, copy-parity fact, service description, Consultant/Team Leader reference, visible placeholder, local link, fragment, focus state, and final responsive detail.</p>
+            <p><strong>Fresh review findings:</strong> Pending.</p>
+            <p><strong>Applied fixes:</strong> Pending.</p>
+          </article>
+          <article id="redesign-verification">
+            <h3>Contained-film final verification — pending</h3>
+            <p><strong>Integrity:</strong> Pending asset, codec, duration, attribution, content-parity, local-link, and route-specific loading results.</p>
+            <p><strong>Responsive and degraded modes:</strong> Pending 320px/390px/768px overflow, keyboard, no-JavaScript, reduced-motion, Data Saver, poster, controls, and playback-state results.</p>
+            <p><strong>Performance:</strong> Pending final per-route MP4 sizes, visited-page transfer totals, and Lighthouse Performance/Accessibility/Best Practices/SEO results.</p>
+            <p><strong>Gallery:</strong> Pending a stable reduced-motion screenshot, replacement 720px WebP thumbnail, revised card thesis, and updated comparison row.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="extend-title">
+      <div class="wrap cta-panel">
+        <div>
+          <p class="eyebrow">Extension rule</p>
+          <h2 id="extend-title">Reuse the system, never the footage.</h2>
+          <p>A new public route may reuse the split hero, fact grids, service list, cards, static green grade, source-less loading controller, and caption pattern. It must receive its own verified footage and lightweight poster, its own visible creator/source/licence credit and “context, not branch work” disclaimer, and its own measured route budget. Never turn the film back into a full-page text background, preload another route's source, reuse a clip to imply a new context, add audio, loop automatically, or let motion carry information that is absent from the poster and copy.</p>
+        </div>
+        <a class="button button--deep" href="index.html">Back to the site</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-legal" style="margin-top:0;border-top:0">
+        <span>V14 Confluence · specification sheet · not client-facing</span>
+        <a href="index.html">Back to the site</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

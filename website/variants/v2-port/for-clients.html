@@ -17,13 +17,13 @@
     <span class="name">Degrees Consulting<small>Delft–Rotterdam · Port of ideas</small></span>
   </a>
   <nav aria-label="Main">
-    <a href="index.html#mission">Mission</a>
     <a href="index.html#services-h">What we do</a>
     <a href="index.html#work">Our work</a>
-    <a href="for-clients.html" aria-current="page">For clients</a>
-    <a href="index.html#join">Join</a>
     <a href="index.html#team">Team</a>
     <a href="index.html#contact">Contact</a>
+    <a class="nav-page" href="mission.html">Mission</a>
+    <a class="nav-page" href="for-clients.html" aria-current="page">For clients</a>
+    <a class="nav-page" href="for-students.html">Students</a>
   </nav>
 </header>
 
@@ -41,12 +41,12 @@
         </div>
         <p style="margin-top:1.4rem"><a class="link-cmd" href="#route">02 · See how it works →</a></p>
       </div>
-      <div class="bol" role="img" aria-label="Engagement summary: two consulting cycles a year, crew 4 to 6 consultants plus a Project Manager, deliverable board-ready deck, cost uniquely affordable">
+      <div class="bol" role="img" aria-label="Engagement summary: two consulting cycles a year, crew 4 to 6 consultants plus a Team Leader, deliverable board-ready deck, cost uniquely affordable">
         <div class="bol-head">Engagement summary · 180U-2019-DR</div>
         <dl>
           <dt>Client</dt><dd>Your organisation</dd>
           <dt>Cycles</dt><dd>Oct–Jan &amp; Mar–Jun</dd>
-          <dt>Crew</dt><dd>4–6 consultants + Project Manager</dd>
+          <dt>Crew</dt><dd>4–6 consultants + Team Leader</dd>
           <dt>Cargo</dt><dd>Board-ready strategy deck</dd>
           <dt>Your time</dt><dd>~1 hour / week</dd>
           <dt>Cost</dt><dd>Uniquely affordable</dd>
@@ -66,7 +66,27 @@
   </svg>
 </div>
 
-<section id="route" aria-labelledby="route-h">
+<section id="intake" aria-labelledby="intake-h">
+  <div class="inner split">
+    <div class="reveal">
+      <div class="sec-head"><span class="sec-num">00</span><span class="tag">Booking request</span></div>
+      <h2 id="intake-h">Start the scoping call</h2>
+      <p class="lede">Five fields. We reply within a week, usually faster. The call itself commits you to nothing.</p>
+      <p style="margin-top:1.4rem"><span class="placeholder">[Placeholder — form UI only, not yet wired to a backend]</span></p>
+    </div>
+    <form class="reveal" aria-label="Client intake (demonstration only)" onsubmit="return false">
+      <div style="display:grid;gap:1rem">
+        <label><span class="tag">Your name</span><input type="text" name="name" autocomplete="name"></label>
+        <label><span class="tag">Organisation</span><input type="text" name="org" autocomplete="organization"></label>
+        <label><span class="tag">Email</span><input type="email" name="email" autocomplete="email"></label>
+        <label><span class="tag">What challenge are you facing?</span><textarea name="challenge" rows="4"></textarea></label>
+        <button class="btn btn--dark" type="submit" style="cursor:pointer;justify-self:start;background:transparent">→ Request the call</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="route" aria-labelledby="route-h" class="band-light">
   <div class="inner reveal">
     <div class="sec-head"><span class="sec-num">01</span><span class="tag">Route plan — scoping call to board-ready deck</span></div>
     <h2 id="route-h">The engagement, step by step</h2>
@@ -85,7 +105,7 @@
       <div class="port-stop reveal">
         <span class="p-code">Port 02 · Through the cycle</span>
         <h3>The project</h3>
-        <p>A team of 4–6 student consultants with a dedicated Project Manager. A mid-point review where you course-correct, and working sessions as the analysis firms up. Your time: about an hour a week.</p>
+        <p>A team of 4–6 student consultants with a dedicated Team Leader. A mid-point review where you course-correct, and working sessions as the analysis firms up. Your time: about an hour a week.</p>
       </div>
       <div class="port-stop reveal">
         <span class="p-code">Port 03 · End of cycle</span>
@@ -132,26 +152,6 @@
   </div>
 </section>
 
-<section id="intake" aria-labelledby="intake-h">
-  <div class="inner split">
-    <div class="reveal">
-      <div class="sec-head"><span class="sec-num">04</span><span class="tag">Booking request</span></div>
-      <h2 id="intake-h">Start the scoping call</h2>
-      <p class="lede">Five fields. We reply within a week, usually faster. The call itself commits you to nothing.</p>
-      <p style="margin-top:1.4rem"><span class="placeholder">[Placeholder — form UI only, not yet wired to a backend]</span></p>
-    </div>
-    <form class="reveal" aria-label="Client intake (demonstration only)" onsubmit="return false">
-      <div style="display:grid;gap:1rem">
-        <label><span class="tag">Your name</span><input type="text" name="name" autocomplete="name"></label>
-        <label><span class="tag">Organisation</span><input type="text" name="org" autocomplete="organization"></label>
-        <label><span class="tag">Email</span><input type="email" name="email" autocomplete="email"></label>
-        <label><span class="tag">What challenge are you facing?</span><textarea name="challenge" rows="4"></textarea></label>
-        <button class="btn btn--dark" type="submit" style="cursor:pointer;justify-self:start;background:transparent">→ Request the call</button>
-      </div>
-    </form>
-  </div>
-</section>
-
 </main>
 
 <footer id="contact">
@@ -165,7 +165,8 @@
       <span class="tag">Site</span>
       <ul>
         <li><a href="index.html">Home</a></li>
-        <li><a href="index.html#join">Join us</a></li>
+        <li><a href="mission.html">Mission</a></li>
+        <li><a href="for-students.html">Students</a></li>
         <li><a href="index.html#team">Team</a></li>
       </ul>
     </div>

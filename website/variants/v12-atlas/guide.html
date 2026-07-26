@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — V12 Atlas — 180DC Delft–Rotterdam</title>
+<meta name="description" content="How the Atlas variant was designed and built, its design system, and how to extend it.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B1220'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%2378B038'/%3E%3Ccircle cx='6' cy='9' r='2' fill='%2378B038' opacity='0.6'/%3E%3Ccircle cx='26' cy='23' r='2' fill='%2378B038' opacity='0.6'/%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="index.html">
+      <img class="logo-mark" src="img/180dc-globe.webp" alt="" width="34" height="24">
+      <span><b>180 Degrees Consulting</b><small>Delft–Rotterdam</small></span>
+    </a>
+    <nav aria-label="Main">
+      <a href="index.html">Home</a>
+      <a class="nav-page" href="mission.html">Mission</a>
+      <a class="nav-page" href="for-clients.html">For clients</a>
+      <a class="nav-page" href="for-students.html">Students</a>
+      <a href="guide.html">Guide</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero night">
+  <div class="starfield" aria-hidden="true"></div>
+  <div class="wrap">
+    <span class="eyebrow">Design specification — not client-facing</span>
+    <h1>V12 — Atlas</h1>
+    <p class="lede narrow"><strong>Thesis:</strong> the branch as one lit node in a worldwide network. Every other variant tells the Delft–Rotterdam story on its own; Atlas is the one built to answer the client's recurring feedback point head-on — "we explain who Delft–Rotterdam is, but not the big picture of 180DC worldwide." Its signature device is an inline-SVG network graph: a home node for Delft–Rotterdam, connected by faint lines to an abstract field of unlabeled nodes standing in for the rest of the network. Nothing on the map is invented — no specific branch names, cities, or counts are plotted, only the two verified claims the rest of the site already makes ("first multi-city branch," "world's largest university-based consultancy") plus Delft and Rotterdam's real coordinates.</p>
+  </div>
+</section>
+
+<section class="wash">
+  <div class="wrap">
+    <span class="eyebrow">Design system</span>
+    <h2>Specification</h2>
+    <div class="grid grid-2" style="margin-top:1.6rem">
+      <div class="node-card"><h3>Palette</h3><p>Two registers, alternating: a deep "night map" navy (<code>#0B1220</code>/<code>#060A10</code>) for the network graphic and header/footer, and paper white with a faint green wash (<code>#F5F8F1</code>) for content. The verified 180DC greens (<code>#78B038</code> / <code>#4A7322</code> / <code>#3D6B1C</code>, from <code>_brand/BRAND.md</code>) are the only accent in both registers.</p></div>
+      <div class="node-card"><h3>Type</h3><p>System sans for display and body (zero font-loading weight), paired with a monospace stack for the signature detail: real geographic coordinates and timeline labels set in <code>ui-monospace</code>, reading like map annotations.</p></div>
+      <div class="node-card"><h3>Layout &amp; motion</h3><p>1120px measure. Sections alternate night / plain / wash so the "wide view" and "the work itself" stay visually distinct. One signature move: the home node pulses and one connection line carries a travelling dot (both CSS, both <code>prefers-reduced-motion</code>-gated) — nothing else animates on entrance beyond the shared scroll-reveal fade.</p></div>
+      <div class="node-card"><h3>Signature devices</h3><p>The network-graph hero and mission diagrams; "node cards" for services/roles/work with a dot-and-rule marker on the left edge, echoing the map; a nav-page marker (a small green dot before Mission/For clients/Students) distinguishing page links from in-page scroll anchors.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="plain">
+  <div class="wrap">
+    <span class="eyebrow">Method &amp; honesty</span>
+    <h2>How it was made &amp; how to extend it</h2>
+    <div class="narrow" style="margin-top:1.2rem">
+      <p style="margin-bottom:1rem"><strong>Build:</strong> hand-written static HTML/CSS, one stylesheet, no framework, no build step, no web fonts, no raster photography — the network graphics are inline SVG. The only binary assets are the three shared WebP logo files. One JS-gated, reduced-motion-gated fade-in for scroll reveals, plus the CSS-only node pulse/travel; everything renders without JavaScript.</p>
+      <p style="margin-bottom:1rem"><strong>Built already-correct, from the 2026-07-25 feedback round:</strong> unlike the original ten (and V11, which launched a round before this feedback existed), Atlas starts with every lesson from both feedback rounds already applied — the verified brand green, Team Leader terminology, a nav that visually distinguishes scroll anchors from own-page links, dedicated Mission and Students pages from day one (no retrofit), the booking form already at the top of <code>for-clients.html</code>, and an explicit "part of 180DC worldwide" section with a link to <code>180dc.org</code>.</p>
+      <p style="margin-bottom:1rem"><strong>Honesty devices:</strong> every gap is a visible tinted placeholder — impact numbers, case studies (Situation → Approach → Outcome shown), team photos, the roster (flagged pending Monday.com confirmation), recruitment portal, events, testimonials. The network map is deliberately abstract for the same reason: plotting specific unverified branch locations or a specific worldwide branch count would be inventing a fact the way the honesty rules forbid. Nothing here is invented — no fake clients, numbers, photos, or logos, and no fake pins on the map.</p>
+      <p><strong>To extend:</strong> new pages reuse <code>.node-card</code>, <code>.chip</code>, <code>.coords</code>, and the night/plain/wash alternation. Keep the rule: the night register is reserved for "wide view" moments (hero, the worldwide-network section, footer) — don't spend it on routine content or it stops meaning anything.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wash">
+  <div class="wrap">
+    <span class="eyebrow">Build log</span>
+    <h2>Log</h2>
+    <div class="narrow" style="margin-top:1.2rem">
+      <p style="margin-bottom:1rem"><strong>2026-07-26 — initial build.</strong> Built as a fresh, deliberately different twelfth variant — a creative test, not a retrofit — alongside the feedback pass on V7 and V11. Content parity with every other variant (same six service areas, two roles, two cycles, honest placeholders); same golden-set quality bar to hit before it's considered a real contender: Lighthouse Performance/Accessibility ≥ 95, keyboard-navigable, WCAG AA, works without JavaScript.</p>
+      <p><strong>Outstanding blockers (shared with the rest of the set):</strong> (1) Monday.com roster confirmation pending. (2) The "first multi-city branch" and "world's largest university-based consultancy" claims are the org's own live-page language, kept as-is; a one-line sign-off from Stefan Kluwer (Branch President) is still recommended before treating them as fully final for a formal deck. (3) Case studies, team photos, testimonials, and the recruitment/events links remain honest placeholders awaiting real content.</p>
+      <p><strong>Still owed:</strong> Lighthouse run against a real deploy; standard Critic rounds, per the pipeline the rest of the set went through — Atlas has had none yet.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer id="contact">
+  <div class="starfield" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="foot-legal" style="margin-top:0;border-top:0">
+      <span>V12 Atlas · specification sheet · not client-facing</span>
+      <a href="index.html">Back to the site</a>
+    </div>
+  </div>
+</footer>
+
+<script>document.documentElement.classList.add('js');</script>
+</body>
+</html>
