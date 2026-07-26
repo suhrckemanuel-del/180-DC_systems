@@ -5,7 +5,7 @@ Two standalone, browser-based walking simulators — one per home city — built
 | | |
 |---|---|
 | [delft/](delft/) | **Playable.** "Ochtendlicht" — the canal town at eight in the morning under drifting cloud shadows. 13/13 verification checks pass. |
-| [rotterdam/](rotterdam/) | **Incomplete.** "Nachtstad aan de Maas" — world generators exist; the renderer, controls and game systems are not built yet. Do not expect it to run. |
+| [rotterdam/](rotterdam/) | **Playable.** "Nachtstad aan de Maas" — the harbour city at late blue hour, lit only by what it switches on. 13/13 verification checks pass. |
 | [research/](research/) | The design and engineering research both games are built from. |
 
 The research came first and is worth reading on its own:

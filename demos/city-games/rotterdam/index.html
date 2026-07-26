@@ -611,6 +611,7 @@ function mulberry32(a){
   };
 }
 var rnd = mulberry32(SEED);
+function seedRng(s){ rnd = mulberry32(s); }
 function rr(a, b){ return a + (b - a) * rnd(); }
 function ri(a, b){ return floor(rr(a, b + 1)); }
 function pick(arr){ return arr[floor(rnd() * arr.length) % arr.length]; }
@@ -1345,19 +1346,26 @@ function heightField(x, z){
   return m * clamp(rim / 130, 0.40, 1);
 }
 
+/* Block metrics are shared by the district grid and the streetlights.
+   Finer blocks than the first pass: at 76 x 66 with a 16 m clearance
+   test only 7 of 80 blocks survived the river, the rim and the
+   reserved sightlines, and the skyline came out empty. */
+var BLK_PX = 48, BLK_PZ = 44, BLK_ROAD = 12, BLK_MARGIN = 6;
+
 var CFG_CENTRUM = { piece: 25, h0: 11, h1: 34, hp: 1.9, floor: 3.3 };
 var CFG_ZUID    = { piece: 32, h0: 14, h1: 44, hp: 2.2, floor: 3.5 };
 
 function buildDistricts(){
-  var PX = 76, PZ = 66, ROAD = 16;
+  var PX = BLK_PX, PZ = BLK_PZ, ROAD = BLK_ROAD;
   for (var bx = -MAP_HALF; bx < MAP_HALF; bx += PX){
     for (var bz = -MAP_HALF; bz < MAP_HALF; bz += PZ){
       var x0 = bx + ROAD * 0.5, z0 = bz + ROAD * 0.5;
       var x1 = bx + PX - ROAD * 0.5, z1 = bz + PZ - ROAD * 0.5;
       if (x1 > MAP_HALF - 6 || z1 > MAP_HALF - 6) continue;
       var mx = (x0 + x1) * 0.5, mz = (z0 + z1) * 0.5;
-      if (!isLandM(x0, z0, 16) || !isLandM(x1, z1, 16) ||
-          !isLandM(x0, z1, 16) || !isLandM(x1, z0, 16)) continue;
+      if (!isLandM(x0, z0, BLK_MARGIN) || !isLandM(x1, z1, BLK_MARGIN) ||
+          !isLandM(x0, z1, BLK_MARGIN) || !isLandM(x1, z0, BLK_MARGIN) ||
+          !isLandM(mx, mz, BLK_MARGIN)) continue;
       if (reserved(x0, z0, x1, z1)) continue;
       var south = riverS(mx, mz) > 0;
       var cfg = south ? CFG_ZUID : CFG_CENTRUM;
@@ -1378,7 +1386,7 @@ function buildDistricts(){
         this game has.
    ------------------------------------------------------------------ */
 function buildStreetlights(){
-  var PX = 76, PZ = 66, i, x, z;
+  var PX = BLK_PX, PZ = BLK_PZ, i, x, z;
   for (var bx = -MAP_HALF; bx < MAP_HALF; bx += PX){
     x = bx + 4;
     for (z = -MAP_HALF + 12; z < MAP_HALF - 12; z += 25) lamp(x, z + ((bx / PX) & 1 ? 12 : 0));
@@ -1947,7 +1955,1779 @@ function luchtStair(x, z, dir){
   colDisc(x + dir * (N + 1.4), z, 0.6);
 }
 
-/* __APPEND__ */
+/* ==================================================================
+   [5]  collision
+        Two orthogonal solvers, both fed by the same builders that
+        emit the meshes.
+
+        Walls (XZ only): player circle vs boxes / discs / oriented
+        boxes in a uniform 8 m grid.
+
+        Ground (Y only): Rotterdam's street level is flat, so the base
+        surface is analytic — isLand() decides pavement or river, and
+        no generator has to register a patch per tile. Only the raised
+        surfaces (the bridge deck, the Luchtsingel and its stair) push
+        height patches, and the highest patch within step-up wins.
+        That one rule gives walking over the bridge, under it, and off
+        the quay into the water.
+   ================================================================== */
+
+var K_GROUND = 0, K_WATER = 1, K_DECK = 2;
+var PT_RECT = 0, PT_RAMP = 1, PT_ARC = 2;
+
+var COL = {
+  cell: TUNE.COL_CELL, x0: -400, z0: -400, n: 100,
+  boxes: [], discs: [], obbs: [], patches: [],
+  grid: null, pgrid: null
+};
+
+function colBox(x0, z0, x1, z1){
+  if (!DET) return;
+  COL.boxes.push(min(x0, x1), min(z0, z1), max(x0, x1), max(z0, z1));
+}
+function colDisc(x, z, r){
+  if (!DET) return;
+  COL.discs.push(x, z, r);
+}
+/* centre, yaw, half-length along local x, half-thickness along local
+   z, and an offset along local z (the two bridge parapets differ only
+   in the sign of that offset). */
+function colObb(cx, cz, yaw, hx, hz, offZ){
+  if (!DET) return;
+  var c = cos(yaw), s = sin(yaw);
+  offZ = offZ || 0;
+  COL.obbs.push(cx + s * offZ, cz + c * offZ, hx, hz, c, s);
+}
+
+function patchRect(x0, z0, x1, z1, y, kind){
+  if (!DET) return;
+  COL.patches.push({ t: PT_RECT, x0: min(x0, x1), z0: min(z0, z1), x1: max(x0, x1), z1: max(z0, z1),
+                     y0: y, y1: y, ax: 0, kind: kind || K_DECK });
+}
+function patchRamp(x0, z0, x1, z1, ya, yb, axis){
+  if (!DET) return;
+  /* axis > 0: height runs with +x, axis < 0: with -x, 0: with +z */
+  var flip = (axis < 0);
+  COL.patches.push({ t: PT_RAMP,
+    x0: min(x0, x1), z0: min(z0, z1), x1: max(x0, x1), z1: max(z0, z1),
+    y0: flip ? yb : ya, y1: flip ? ya : yb, ax: (axis === 0) ? 1 : 0, kind: K_DECK });
+}
+/* the Erasmusbrug deck: a parabola in the bridge's own frame */
+function patchArc(cx, cz, yaw, half, wide, crest){
+  if (!DET) return;
+  var c = cos(yaw), s = sin(yaw);
+  var r = Math.sqrt(half * half + wide * wide);
+  COL.patches.push({ t: PT_ARC, cx: cx, cz: cz, c: c, s: s, half: half, wide: wide, crest: crest,
+    x0: cx - r, z0: cz - r, x1: cx + r, z1: cz + r, kind: K_DECK });
+}
+
+function colCellIndex(x, z){
+  var ix = floor((x - COL.x0) / COL.cell), iz = floor((z - COL.z0) / COL.cell);
+  if (ix < 0 || iz < 0 || ix >= COL.n || iz >= COL.n) return -1;
+  return iz * COL.n + ix;
+}
+function colSpread(list, x0, z0, x1, z1, pad, ref){
+  var ix0 = floor((x0 - pad - COL.x0) / COL.cell), ix1 = floor((x1 + pad - COL.x0) / COL.cell);
+  var iz0 = floor((z0 - pad - COL.z0) / COL.cell), iz1 = floor((z1 + pad - COL.z0) / COL.cell);
+  ix0 = max(ix0, 0); iz0 = max(iz0, 0);
+  ix1 = min(ix1, COL.n - 1); iz1 = min(iz1, COL.n - 1);
+  for (var iz = iz0; iz <= iz1; iz++)
+    for (var ix = ix0; ix <= ix1; ix++){
+      var k = iz * COL.n + ix;
+      (list[k] || (list[k] = [])).push(ref);
+    }
+}
+function colFinalize(){
+  var i, tmp = new Array(COL.n * COL.n), ptmp = new Array(COL.n * COL.n);
+  var pad = TUNE.PLAYER_R + 0.05;
+  for (i = 0; i < COL.boxes.length; i += 4)
+    colSpread(tmp, COL.boxes[i], COL.boxes[i + 1], COL.boxes[i + 2], COL.boxes[i + 3], pad, i);
+  for (i = 0; i < COL.discs.length; i += 3){
+    var dx = COL.discs[i], dz = COL.discs[i + 1], dr = COL.discs[i + 2];
+    colSpread(tmp, dx - dr, dz - dr, dx + dr, dz + dr, pad, -(i + 1));
+  }
+  for (i = 0; i < COL.obbs.length; i += 6){
+    var ox = COL.obbs[i], oz = COL.obbs[i + 1];
+    var rr2 = Math.sqrt(COL.obbs[i + 2] * COL.obbs[i + 2] + COL.obbs[i + 3] * COL.obbs[i + 3]);
+    colSpread(tmp, ox - rr2, oz - rr2, ox + rr2, oz + rr2, pad, 1000000 + i);
+  }
+  for (i = 0; i < COL.patches.length; i++){
+    var p = COL.patches[i];
+    colSpread(ptmp, p.x0, p.z0, p.x1, p.z1, 0.5, i);
+  }
+  COL.grid = new Array(COL.n * COL.n);
+  COL.pgrid = new Array(COL.n * COL.n);
+  for (i = 0; i < tmp.length; i++){
+    COL.grid[i] = tmp[i] ? Int32Array.from(tmp[i]) : null;
+    COL.pgrid[i] = ptmp[i] ? Int32Array.from(ptmp[i]) : null;
+  }
+}
+
+/* --- ground query --------------------------------------------------
+   gY / gKind / gTop are read straight after the call. gTop is the
+   highest patch regardless of step-up, which is how "standing under
+   the bridge" is told from "standing on it".                        */
+var gY = 0, gKind = K_GROUND, gTop = 0, gFound = false;
+
+function patchHeight(p, x, z){
+  if (p.t === PT_RECT) return p.y0;
+  if (p.t === PT_RAMP){
+    var t = p.ax ? (z - p.z0) / max(p.z1 - p.z0, 1e-4) : (x - p.x0) / max(p.x1 - p.x0, 1e-4);
+    return p.y0 + (p.y1 - p.y0) * clamp(t, 0, 1);
+  }
+  /* arc: rotate into the bridge frame */
+  var dx = x - p.cx, dz = z - p.cz;
+  var lx = p.c * dx - p.s * dz, lz = p.s * dx + p.c * dz;
+  if (abs(lx) > p.half || abs(lz) > p.wide) return null;
+  var u = lx / p.half;
+  return p.crest * (1 - u * u);
+}
+
+function groundAt(x, z, feet){
+  /* the analytic base surface */
+  var land = isLand(x, z);
+  gY = land ? 0 : TUNE.BED_Y;
+  gKind = land ? K_GROUND : K_WATER;
+  gTop = gY; gFound = true;
+
+  var c = colCellIndex(x, z);
+  if (c < 0) return gY;
+  var list = COL.pgrid[c];
+  if (!list) return gY;
+  var lim = feet + TUNE.STEP_UP;
+  for (var i = 0; i < list.length; i++){
+    var p = COL.patches[list[i]];
+    if (p.t !== PT_ARC && (x < p.x0 || x > p.x1 || z < p.z0 || z > p.z1)) continue;
+    var h = patchHeight(p, x, z);
+    if (h === null) continue;
+    if (h > gTop) gTop = h;
+    if (h <= lim && h > gY){ gY = h; gKind = p.kind; }
+  }
+  return gY;
+}
+
+/* --- wall solver: circle vs shapes, closest-point pushout ---------- */
+var colNX = 0, colNZ = 0, colHits = 0;
+var colOut = [0, 0];
+
+function pushCircleBox(px, pz, R, x0, z0, x1, z1, o){
+  var cx = clamp(px, x0, x1), cz = clamp(pz, z0, z1);
+  var dx = px - cx, dz = pz - cz, d2 = dx * dx + dz * dz;
+  if (d2 >= R * R) return false;
+  if (d2 > 1e-9){
+    var d = sqrt(d2), k = (R - d) / d;
+    o[0] = px + dx * k; o[1] = pz + dz * k;
+    colNX += dx / d; colNZ += dz / d;
+  } else {
+    /* centre inside the box: out along the axis of least penetration */
+    var l = px - x0, r = x1 - px, u = pz - z0, dn = z1 - pz;
+    var m = min(min(l, r), min(u, dn));
+    o[0] = px; o[1] = pz;
+    if (m === l){ o[0] = x0 - R; colNX -= 1; }
+    else if (m === r){ o[0] = x1 + R; colNX += 1; }
+    else if (m === u){ o[1] = z0 - R; colNZ -= 1; }
+    else { o[1] = z1 + R; colNZ += 1; }
+  }
+  colHits++;
+  return true;
+}
+
+function colResolve(px, pz, R){
+  var iter, i, j;
+  colNX = 0; colNZ = 0; colHits = 0;
+  var o = [0, 0];
+  for (iter = 0; iter < 3; iter++){
+    var moved = false;
+    var cix = floor((px - COL.x0) / COL.cell), ciz = floor((pz - COL.z0) / COL.cell);
+    for (j = -1; j <= 1; j++){
+      for (i = -1; i <= 1; i++){
+        var ix = cix + i, iz = ciz + j;
+        if (ix < 0 || iz < 0 || ix >= COL.n || iz >= COL.n) continue;
+        var list = COL.grid[iz * COL.n + ix];
+        if (!list) continue;
+        for (var k = 0; k < list.length; k++){
+          var ref = list[k];
+          if (ref >= 1000000){
+            var b = ref - 1000000;
+            var ox = COL.obbs[b], oz = COL.obbs[b + 1], hx = COL.obbs[b + 2], hz = COL.obbs[b + 3];
+            var c = COL.obbs[b + 4], s = COL.obbs[b + 5];
+            var rx = c * (px - ox) - s * (pz - oz), rz = s * (px - ox) + c * (pz - oz);
+            if (pushCircleBox(rx, rz, R, -hx, -hz, hx, hz, o)){
+              px = ox + c * o[0] + s * o[1];
+              pz = oz - s * o[0] + c * o[1];
+              moved = true;
+            }
+          } else if (ref < 0){
+            var d = -ref - 1;
+            var dx0 = COL.discs[d], dz0 = COL.discs[d + 1], dr = COL.discs[d + 2];
+            var ex = px - dx0, ez = pz - dz0, e2 = ex * ex + ez * ez;
+            var rr3 = R + dr;
+            if (e2 < rr3 * rr3){
+              var e = sqrt(e2);
+              if (e > 1e-9){
+                px = dx0 + ex / e * rr3; pz = dz0 + ez / e * rr3;
+                colNX += ex / e; colNZ += ez / e;
+              } else { px = dx0 + rr3; colNX += 1; }
+              colHits++; moved = true;
+            }
+          } else {
+            if (pushCircleBox(px, pz, R, COL.boxes[ref], COL.boxes[ref + 1],
+                              COL.boxes[ref + 2], COL.boxes[ref + 3], o)){
+              px = o[0]; pz = o[1]; moved = true;
+            }
+          }
+        }
+      }
+    }
+    if (!moved) break;
+  }
+  if (colHits > 0){
+    var L = sqrt(colNX * colNX + colNZ * colNZ);
+    if (L > 1e-6){ colNX /= L; colNZ /= L; } else { colNX = 0; colNZ = 0; }
+  }
+  colOut[0] = px; colOut[1] = pz;
+  return colOut;
+}
+
+/* how deep inside a collider is this point? (verification + spawns) */
+function colPenetration(px, pz, R){
+  var worst = 0, i, j;
+  var cix = floor((px - COL.x0) / COL.cell), ciz = floor((pz - COL.z0) / COL.cell);
+  for (j = -1; j <= 1; j++){
+    for (i = -1; i <= 1; i++){
+      var ix = cix + i, iz = ciz + j;
+      if (ix < 0 || iz < 0 || ix >= COL.n || iz >= COL.n) continue;
+      var list = COL.grid[iz * COL.n + ix];
+      if (!list) continue;
+      for (var k = 0; k < list.length; k++){
+        var ref = list[k], d2, pen = 0;
+        if (ref >= 1000000){
+          var b = ref - 1000000;
+          var ox = COL.obbs[b], oz = COL.obbs[b + 1], hx = COL.obbs[b + 2], hz = COL.obbs[b + 3];
+          var c = COL.obbs[b + 4], s = COL.obbs[b + 5];
+          var rx = c * (px - ox) - s * (pz - oz), rz = s * (px - ox) + c * (pz - oz);
+          var qx = clamp(rx, -hx, hx), qz = clamp(rz, -hz, hz);
+          d2 = (rx - qx) * (rx - qx) + (rz - qz) * (rz - qz);
+          pen = R - sqrt(d2);
+        } else if (ref < 0){
+          var d = -ref - 1;
+          var ex = px - COL.discs[d], ez = pz - COL.discs[d + 1];
+          pen = (R + COL.discs[d + 2]) - sqrt(ex * ex + ez * ez);
+        } else {
+          var bx = clamp(px, COL.boxes[ref], COL.boxes[ref + 2]);
+          var bz = clamp(pz, COL.boxes[ref + 1], COL.boxes[ref + 3]);
+          d2 = (px - bx) * (px - bx) + (pz - bz) * (pz - bz);
+          pen = R - sqrt(d2);
+        }
+        if (pen > worst) worst = pen;
+      }
+    }
+  }
+  return worst;
+}
+
+/* ==================================================================
+   [6]  the two remaining landmarks, and the call sheet
+   ================================================================== */
+
+/* De Rotterdam: three offset slabs, stacked and shifted, so the
+   silhouette breaks halfway up the way the real thing does. */
+function buildDeRotterdam(){
+  var cx = -120, cz = 128, i;
+  var base = P.built[1];
+  var towers = [[-19, 0, 17, 15, 96], [2, 6, 16, 14, 149], [22, -4, 17, 15, 118]];
+  for (i = 0; i < 3; i++){
+    var t = towers[i];
+    var x = cx + t[0], z = cz + t[1], hw = t[2], hd = t[3], h = t[4];
+    box(x, h * 0.5, z, hw, h * 0.5, hd, base, 0, MAT.GLASS, 1);
+    if (DET){
+      /* the offset upper block: the kink in the silhouette */
+      var oy = h * 0.62;
+      box(x + (i - 1) * 3.4, (h + oy) * 0.5, z + (i === 1 ? 3.2 : -2.4),
+          hw * 0.92, (h - oy) * 0.5, hd * 0.92, P.built[0], 0, MAT.GLASS, 1);
+      box(x, h + 0.5, z, hw + 0.3, 0.5, hd + 0.3, P.concrete, 0, MAT.SOLID, 1);
+      glowQuad(x, h + 2.6, z, 2.4, P.red, 0.85, 2, i * 1.9);
+      reflector(x, h + 2.6, z, P.red, 0.55);
+    }
+    windows(x, z, hw * 2, hd * 2, h, { floor: 3.6, lit: 0.44, cool: 0.86 });
+    colBox(x - hw, z - hd, x + hw, z + hd);
+  }
+}
+
+/* Hotel New York: the old Holland-America line headquarters — low,
+   pale, two little clock towers, the one warm building on the pier. */
+function buildHotelNewYork(){
+  var cx = -195, cz = 99;
+  var brick = [P.built[0][0] * 1.5, P.built[0][1] * 1.35, P.built[0][2] * 1.25];
+  box(cx, 11, cz, 26, 11, 13, brick, 0, MAT.SOLID, 1);
+  if (DET){
+    box(cx, 22.6, cz, 26.4, 0.6, 13.4, P.concrete2, 0, MAT.SOLID, 1);
+    var i;
+    for (i = 0; i < 2; i++){
+      var tx = cx + (i ? 17 : -17);
+      box(tx, 26, cz, 3.4, 4, 3.4, brick, 0, MAT.SOLID, 1);
+      box(tx, 30.6, cz, 2.2, 1.4, 2.2, P.concrete, 0, MAT.SOLID, 1);
+      cyl(tx, 32, cz, 2.0, 0.1, 3.2, 6, P.built[2], 0, MAT.SOLID, 1, 0, 0);
+      glowQuad(tx, 29.6, cz, 3.0, P.warm, 0.5, 1, i * 2.2);
+      reflector(tx, 29.6, cz, P.warm, 0.5);
+    }
+    /* the café front spilling amber onto wet quay stone */
+    glowQuad(cx, 1.2, cz + 14.5, 16, P.sodium, 0.34, 0, 0);
+    reflector(cx, 2.5, cz + 14, P.warm, 1.5);
+  }
+  windows(cx, cz, 52, 26, 22, { floor: 3.8, lit: 0.62, cool: 0.10 });
+  colBox(cx - 26, cz - 13, cx + 26, cz + 13);
+}
+
+function buildWorld(){
+  MB_HI = meshNew(1 << 16);
+  MB_LO = meshNew(1 << 14);
+  GLOW.length = 0; REFL.length = 0;
+  COL.boxes.length = 0; COL.discs.length = 0; COL.obbs.length = 0; COL.patches.length = 0;
+  for (var k in PROPS) PROPS[k].length = 0;
+
+  for (var pass = 1; pass >= 0; pass--){
+    DET = pass;
+    meshUse(pass ? MB_HI : MB_LO);
+    seedRng(TUNE.SEED);
+    buildGround();
+    buildQuays();
+    buildDeRotterdam();
+    buildHotelNewYork();
+    buildErasmusbrug();
+    buildEuromast();
+    buildMarkthal();
+    buildKubus();
+    buildLaurenskerk();
+    buildWitteHuis();
+    buildDeHef();
+    buildLuchtsingel();
+    buildDistricts();
+    buildStreetlights();
+  }
+  DET = 1;
+  meshUse(MB_HI);
+  colFinalize();
+  respawnFinalize();
+}
+
+/* A respawn inside a wall is worse than no respawn: nudge each point
+   to free ground, drop the ones that cannot be freed. */
+function respawnFinalize(){
+  var out = [], i, j, k;
+  var dirs = [[1,0],[0,1],[-1,0],[0,-1],[0.7,0.7],[-0.7,0.7],[0.7,-0.7],[-0.7,-0.7]];
+  for (i = 0; i < RESPAWN.length; i++){
+    var x = RESPAWN[i][0], z = RESPAWN[i][1], placed = null;
+    if (freeSpot(x, z)) placed = [x, z];
+    else for (k = 1; k <= 8 && !placed; k++)
+      for (j = 0; j < dirs.length && !placed; j++){
+        var nx = x + dirs[j][0] * k * 1.2, nz = z + dirs[j][1] * k * 1.2;
+        if (freeSpot(nx, nz)) placed = [nx, nz];
+      }
+    if (placed) out.push(placed);
+  }
+  RESPAWN.length = 0;
+  for (i = 0; i < out.length; i++) RESPAWN.push(out[i]);
+  if (!RESPAWN.length) RESPAWN.push([-251, 75]);
+}
+function freeSpot(x, z){
+  if (colPenetration(x, z, TUNE.PLAYER_R) > 0.001) return false;
+  groundAt(x, z, 2);
+  return gKind !== K_WATER && gY > TUNE.WATER_Y + 0.2 && isFinite(gY);
+}
+
+/* ==================================================================
+   [7]  packing: prop prototypes, the river surface, chunk ranges
+   ================================================================== */
+
+var PROTO = {}, PROTORANGE = {};
+function buildProtos(){
+  var names = ['lamp', 'bollard', 'container', 'post'], i;
+  for (i = 0; i < names.length; i++){
+    var m = meshNew(512);
+    meshUse(m); DET = 1; noXF();
+    if (names[i] === 'lamp'){
+      cyl(0, 0, 0, 0.13, 0.10, 7.4, 6, P.built[0], 0, MAT.SOLID, 0, 0, 0);
+      box(0, 7.5, 0.5, 0.08, 0.1, 0.62, P.built[0], 0, MAT.SOLID, 1);
+      box(0, 7.34, 1.05, 0.26, 0.12, 0.3, P.sodium, 0.95, MAT.EMIT, 0);
+    } else if (names[i] === 'bollard'){
+      cyl(0, 0, 0, 0.17, 0.15, 0.78, 6, P.built[0], 0, MAT.SOLID, 0, 0, 0);
+      cyl(0, 0.78, 0, 0.17, 0.06, 0.16, 6, P.built[0], 0, MAT.SOLID, 1, 0, 0);
+    } else if (names[i] === 'container'){
+      box(0, 1.3, 0, 3.05, 1.3, 1.22, P.built[2], 0, MAT.SOLID, 1);
+      box(0, 1.3, 1.24, 3.05, 1.25, 0.03, P.built[1], 0, MAT.SOLID, 1);
+    } else {
+      cyl(0, -2.2, 0, 0.14, 0.12, 3.0, 5, P.built[1], 0, MAT.SOLID, 1, 0, 0);
+    }
+    PROTO[names[i]] = m;
+  }
+  meshUse(MB_HI);
+}
+
+/* the Maas and the two basins: a coarse grid wherever the map is wet */
+var WATERV = [];
+function buildWater(){
+  WATERV.length = 0;
+  var S = 16, R = 420, x, z;
+  for (x = -R; x < R; x += S){
+    for (z = -R; z < R; z += S){
+      if (isLand(x + S * 0.5, z + S * 0.5) &&
+          isLand(x, z) && isLand(x + S, z) && isLand(x, z + S) && isLand(x + S, z + S)) continue;
+      var y = TUNE.WATER_Y;
+      WATERV.push(x, y, z,  x, y, z + S,  x + S, y, z + S,
+                  x, y, z,  x + S, y, z + S,  x + S, y, z);
+    }
+  }
+}
+
+var CHUNKS = [], WORLDBUF = null, GLOWBUF = null, PROPBUF = null;
+var STATS = { tris: 0, chunkTrisMax: 0, vboBytes: 0, draws: 0, drawn: 0, glowQuads: 0 };
+
+function chunkOf(x, z){
+  var ix = floor((x - TUNE.CHUNK_ORIGIN) / TUNE.CHUNK);
+  var iz = floor((z - TUNE.CHUNK_ORIGIN) / TUNE.CHUNK);
+  if (ix < 0 || iz < 0 || ix >= TUNE.CHUNK_N || iz >= TUNE.CHUNK_N) return -1;
+  return iz * TUNE.CHUNK_N + ix;
+}
+
+/* Builders never tagged their output with a chunk, so the world is
+   partitioned after the fact: bucket triangles by centroid, then
+   rewrite them into one buffer in chunk order. No builder had to
+   change, and culling gets its {first,count} ranges all the same. */
+function bucketTriangles(m, nChunks){
+  var tris = (m.n / 3) | 0, i;
+  var owner = new Int32Array(tris), counts = new Int32Array(nChunks + 1);
+  for (i = 0; i < tris; i++){
+    var b = i * 3 * STRIDE >> 2;
+    var cx = (m.f32[b] + m.f32[b + 5] + m.f32[b + 10]) / 3;
+    var cz = (m.f32[b + 2] + m.f32[b + 7] + m.f32[b + 12]) / 3;
+    var c = chunkOf(cx, cz);
+    owner[i] = (c < 0) ? nChunks : c;
+    counts[owner[i]]++;
+  }
+  return { owner: owner, counts: counts, tris: tris };
+}
+
+function packWorld(){
+  buildProtos();
+  buildWater();
+
+  var N = TUNE.CHUNK_N * TUNE.CHUNK_N;
+  var hi = bucketTriangles(MB_HI, N), lo = bucketTriangles(MB_LO, N);
+
+  var propVerts = 0, nm;
+  for (nm in PROTO) propVerts += PROTO[nm].n;
+  var totalVerts = MB_HI.n + MB_LO.n + propVerts;
+  WORLDBUF = new ArrayBuffer(totalVerts * STRIDE);
+  var dst = new Uint8Array(WORLDBUF);
+
+  /* running write cursor, in vertices */
+  var cur = 0;
+  function emitBucket(m, bk, chunkId){
+    var first = cur, n = 0, i;
+    for (i = 0; i < bk.tris; i++){
+      if (bk.owner[i] !== chunkId) continue;
+      dst.set(new Uint8Array(m.ab, i * 3 * STRIDE, 3 * STRIDE), cur * STRIDE);
+      cur += 3; n += 3;
+    }
+    return { first: first, count: n };
+  }
+
+  CHUNKS.length = 0;
+  var c;
+  for (c = 0; c < N; c++){
+    var h = emitBucket(MB_HI, hi, c);
+    var l = emitBucket(MB_LO, lo, c);
+    var ix = c % TUNE.CHUNK_N, iz = (c / TUNE.CHUNK_N) | 0;
+    var x0 = TUNE.CHUNK_ORIGIN + ix * TUNE.CHUNK, z0 = TUNE.CHUNK_ORIGIN + iz * TUNE.CHUNK;
+    var e = { hiF: h.first, hiN: h.count, loF: l.first, loN: l.count,
+              empty: (h.count + l.count) === 0,
+              cx: x0 + TUNE.CHUNK * 0.5, cy: 0, cz: z0 + TUNE.CHUNK * 0.5, r: 0 };
+    if (!e.empty){
+      /* real vertical extent, so towers are not culled by a flat box */
+      var ymin = 1e9, ymax = -1e9, k;
+      for (k = h.first; k < h.first + h.count; k++){
+        var y = new Float32Array(WORLDBUF, k * STRIDE, 3)[1];
+        if (y < ymin) ymin = y; if (y > ymax) ymax = y;
+      }
+      if (ymin > ymax){ ymin = 0; ymax = 0; }
+      e.cy = (ymin + ymax) * 0.5;
+      var hy = (ymax - ymin) * 0.5, hxz = TUNE.CHUNK * 0.7071;
+      e.r = Math.sqrt(hxz * hxz + hy * hy);
+      if (h.count / 3 > STATS.chunkTrisMax) STATS.chunkTrisMax = h.count / 3;
+    }
+    CHUNKS.push(e);
+  }
+  /* anything outside the chunk grid rides along with the rim */
+  var rimHi = emitBucket(MB_HI, hi, N), rimLo = emitBucket(MB_LO, lo, N);
+  RIM = { first: rimHi.first, count: rimHi.count + rimLo.count };
+
+  PROTORANGE = {};
+  for (nm in PROTO){
+    var m = PROTO[nm];
+    dst.set(new Uint8Array(m.ab, 0, m.n * STRIDE), cur * STRIDE);
+    PROTORANGE[nm] = { first: cur, count: m.n };
+    cur += m.n;
+  }
+
+  STATS.tris = cur / 3;
+  STATS.vboBytes = WORLDBUF.byteLength;
+  STATS.glowQuads = GLOW.length / 13 / 6;
+
+  GLOWBUF = new Float32Array(GLOW);
+  /* instance blocks: 9 floats per placement (pos3 yaw scale tint3 pad) */
+  var total = 0, t;
+  for (t in PROPS) total += PROPS[t].length;
+  PROPBUF = new Float32Array(total);
+  PROPRANGE = {};
+  var o = 0;
+  for (t in PROPS){
+    var a = PROPS[t];
+    PROPRANGE[t] = { first: o / 9, count: a.length / 9 };
+    for (var i = 0; i < a.length; i++) PROPBUF[o + i] = a[i];
+    o += a.length;
+  }
+  MB_HI = null; MB_LO = null;
+}
+var RIM = { first: 0, count: 0 }, PROPRANGE = {};
+
+/* ==================================================================
+   [8]  shaders
+        The light story in code: nothing here has a sun. Every bright
+        thing in Rotterdam is emissive, the sky supplies a thin cool
+        ambient, and the river repeats the city back as vertical
+        streaks. That is the whole night.
+   ================================================================== */
+
+var GLSL_COMMON = [
+  'uniform mat4 uVP;',
+  'uniform vec3 uEye;',
+  'uniform vec3 uAmbTop; uniform vec3 uAmbBot;',
+  'uniform vec3 uFog; uniform float uFogK; uniform float uFogStart;',
+  'float h21(vec2 p){ p = fract(p * vec2(127.31, 311.7)); p += dot(p, p + 34.23); return fract(p.x * p.y); }',
+  'float vn(vec2 p){',
+  '  vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);',
+  '  return mix(mix(h21(i), h21(i + vec2(1.0,0.0)), f.x), mix(h21(i + vec2(0.0,1.0)), h21(i + vec2(1.0,1.0)), f.x), f.y);',
+  '}',
+  'vec3 applyFog(vec3 col, float d){',
+  '  float t = max(d - uFogStart, 0.0) * uFogK;',
+  '  return mix(col, uFog, clamp(1.0 - exp(-t * t), 0.0, 1.0));',
+  '}'
+].join('\n');
+
+function vsWorld(instanced){
+  return [
+    '#version 300 es',
+    'precision highp float;',
+    'layout(location=0) in vec3 aPos;',
+    'layout(location=1) in vec3 aNrm;',
+    'layout(location=2) in float aMat;',
+    'layout(location=3) in vec4 aCol;',
+    instanced ? 'layout(location=4) in vec4 iPosYaw;' : '',
+    instanced ? 'layout(location=5) in vec4 iScaleTint;' : '',
+    'uniform mat4 uVP;',
+    'out vec3 vWP; out vec3 vN; out vec3 vC; out float vE; out float vM;',
+    'void main(){',
+    instanced
+      ? ['  float s = iScaleTint.x, c = cos(iPosYaw.w), sn = sin(iPosYaw.w);',
+         '  vec3 p = vec3(aPos.x * c + aPos.z * sn, aPos.y, -aPos.x * sn + aPos.z * c) * s + iPosYaw.xyz;',
+         '  vec3 n = vec3(aNrm.x * c + aNrm.z * sn, aNrm.y, -aNrm.x * sn + aNrm.z * c);',
+         '  vC = aCol.rgb * iScaleTint.yzw;'].join('\n')
+      : ['  vec3 p = aPos; vec3 n = aNrm;',
+         '  vC = aCol.rgb;'].join('\n'),
+    '  vWP = p; vN = n; vE = aCol.a; vM = aMat;',
+    '  gl_Position = uVP * vec4(p, 1.0);',
+    '}'
+  ].join('\n');
+}
+
+var FS_WORLD = [
+  '#version 300 es',
+  'precision highp float;',
+  'in vec3 vWP; in vec3 vN; in vec3 vC; in float vE; in float vM;',
+  GLSL_COMMON,
+  'uniform vec3 uSkyLow; uniform vec3 uAfterglow;',
+  'out vec4 oCol;',
+  'void main(){',
+  '  vec3 n = normalize(vN);',
+  '  vec3 d = vWP - uEye; float dist = length(d); vec3 dir = d / max(dist, 0.001);',
+  /* the only ambient there is: sky above, black water and asphalt below */
+  '  float up = n.y * 0.5 + 0.5;',
+  '  vec3 amb = mix(uAmbBot, uAmbTop, up);',
+  '  vec3 col = vC * amb;',
+  /* emissive: windows, lamp heads, the yellow deck of the Luchtsingel */
+  '  col += vC * vE * 1.45;',
+  '  if (vM > 2.5){',                       /* glass: the sky, and the afterglow near the horizon */
+  '    float fr = pow(1.0 - max(dot(n, -dir), 0.0), 4.0);',
+  '    vec3 r = reflect(dir, n);',
+  '    vec3 sky = mix(uAfterglow, uSkyLow, clamp(r.y * 2.0 + 0.35, 0.0, 1.0));',
+  '    col = mix(col, sky, 0.20 + 0.55 * fr);',
+  '  }',
+  '  oCol = vec4(applyFog(col, dist), 1.0);',
+  '}'
+].join('\n');
+
+/* the river: the city, upside down and smeared */
+var VS_WATER = [
+  '#version 300 es',
+  'precision highp float;',
+  'layout(location=0) in vec3 aPos;',
+  'uniform mat4 uVP;',
+  'out vec3 vWP;',
+  'void main(){ vWP = aPos; gl_Position = uVP * vec4(aPos, 1.0); }'
+].join('\n');
+
+var FS_WATER = [
+  '#version 300 es',
+  'precision highp float;',
+  'in vec3 vWP;',
+  GLSL_COMMON,
+  'uniform float uTime;',
+  'uniform vec3 uWater; uniform vec3 uSwell; uniform vec3 uSparkle;',
+  'uniform int uNRefl;',
+  'uniform vec4 uRefl[16];',          /* xz, height, strength */
+  'uniform vec3 uReflCol[16];',
+  'out vec4 oCol;',
+  'void main(){',
+  '  vec3 d = vWP - uEye; float dist = length(d); vec3 dir = d / max(dist, 0.001);',
+  '  float ripple = vn(vWP.xz * 0.22 + vec2(uTime * 0.05, uTime * 0.021)) * 0.6',
+  '              + vn(vWP.xz * 0.9 - vec2(uTime * 0.031, uTime * 0.04)) * 0.4;',
+  '  vec3 col = mix(uWater, uSwell, ripple);',
+  /* every emissive source paints a vertical streak, wobbling with the
+     ripple — this is the whole reason the river is not a black hole */
+  '  for (int i = 0; i < 16; i++){',
+  '    if (i >= uNRefl) break;',
+  '    vec4 R = uRefl[i];',
+  '    float dx = vWP.x - R.x, dz = vWP.z - R.y;',
+  '    float across = abs(dx) + abs(dz) * 0.12;',
+  '    float along = abs(dz);',
+  '    float wob = (ripple - 0.5) * 5.0 * min(along * 0.08, 1.0);',
+  '    float w = exp(-pow((across + wob) * (1.6 / max(R.w, 0.2)), 2.0));',
+  '    float fall = exp(-along * 0.020) * exp(-along * along * 0.00004);',
+  '    col += uReflCol[i] * w * fall * 0.85;',
+  '  }',
+  /* a scatter of hard sparkle where the ripple peaks */
+  '  float sp = step(0.80, vn(vWP.xz * 2.6 + vec2(uTime * 0.09, -uTime * 0.06)));',
+  '  col += uSparkle * sp * 0.05;',
+  '  oCol = vec4(applyFog(col, dist), 1.0);',
+  '}'
+].join('\n');
+
+/* additive light pass: ground pools, coronas, beacons, the sweep */
+var VS_GLOW = [
+  '#version 300 es',
+  'precision highp float;',
+  'layout(location=0) in vec3 aPos;',
+  'layout(location=1) in vec2 aCorner;',
+  'layout(location=2) in float aSize;',
+  'layout(location=3) in vec4 aColA;',
+  'layout(location=4) in vec3 aKPP;',      /* kind, phase, param */
+  'uniform mat4 uVP; uniform vec3 uEye; uniform float uTime;',
+  'uniform vec3 uRight; uniform vec3 uUp;',
+  'out vec2 vC; out vec4 vColA; out float vKind;',
+  'void main(){',
+  '  vec3 p = aPos; float a = aColA.a; float kind = aKPP.x;',
+  '  if (kind > 1.5 && kind < 2.5){',                  /* beacon: blink */
+  '    float t = fract(uTime * 0.45 + aKPP.y);',
+  '    a *= smoothstep(0.0, 0.06, t) * (1.0 - smoothstep(0.10, 0.22, t));',
+  '  } else if (kind > 2.5 && kind < 3.5){',           /* orbiting sweep */
+  '    float ang = uTime * 0.55 + aKPP.y;',
+  '    p += vec3(cos(ang), 0.0, sin(ang)) * aKPP.z;',
+  '    a *= 0.45 + 0.55 * max(0.0, cos(ang - 0.6));',
+  '  } else if (kind > 3.5){',                          /* slow breathing */
+  '    a *= 0.75 + 0.25 * sin(uTime * 0.6 + aKPP.y);',
+  '  }',
+  '  vec3 wp;',
+  '  if (kind < 0.5) wp = p + vec3(aCorner.x, 0.0, aCorner.y) * aSize;',
+  '  else wp = p + (uRight * aCorner.x + uUp * aCorner.y) * aSize;',
+  '  vC = aCorner; vColA = vec4(aColA.rgb, a); vKind = kind;',
+  '  gl_Position = uVP * vec4(wp, 1.0);',
+  '}'
+].join('\n');
+
+var FS_GLOW = [
+  '#version 300 es',
+  'precision highp float;',
+  'in vec2 vC; in vec4 vColA; in float vKind;',
+  'uniform vec3 uEye; uniform vec3 uFog; uniform float uFogK; uniform float uFogStart;',
+  'out vec4 oCol;',
+  'void main(){',
+  '  float r = length(vC);',
+  '  if (r > 1.0) discard;',
+  '  float f = pow(1.0 - r, vKind < 0.5 ? 2.2 : 3.0);',
+  '  oCol = vec4(vColA.rgb * f * vColA.a, 1.0);',
+  '}'
+].join('\n');
+
+var VS_SKY = [
+  '#version 300 es',
+  'precision highp float;',
+  'const vec2 T[3] = vec2[3](vec2(-1.0,-1.0), vec2(3.0,-1.0), vec2(-1.0,3.0));',
+  'uniform mat4 uInvVP; uniform vec3 uEye;',
+  'out vec3 vDir;',
+  'void main(){',
+  '  vec2 p = T[gl_VertexID];',
+  '  vec4 f = uInvVP * vec4(p, 1.0, 1.0); f /= f.w;',
+  '  vDir = normalize(f.xyz - uEye);',
+  '  gl_Position = vec4(p, 1.0, 1.0);',
+  '}'
+].join('\n');
+
+var FS_SKY = [
+  '#version 300 es',
+  'precision highp float;',
+  'in vec3 vDir;',
+  'uniform vec3 uZenith; uniform vec3 uHigh; uniform vec3 uSkyLow; uniform vec3 uAfterglow;',
+  'out vec4 oCol;',
+  'void main(){',
+  '  vec3 d = normalize(vDir);',
+  '  float h = clamp(d.y, -0.25, 1.0);',
+  '  vec3 col = h > 0.16',
+  '    ? mix(uHigh, uZenith, clamp((h - 0.16) / 0.84, 0.0, 1.0))',
+  '    : mix(uSkyLow, uHigh, clamp(h / 0.16, 0.0, 1.0));',
+  /* the dying band: narrow, low, and the only warm thing in the sky */
+  '  float band = exp(-pow((h - 0.012) * 26.0, 2.0));',
+  '  col = mix(col, uAfterglow, band * 0.72 * smoothstep(-0.06, 0.02, h));',
+  '  oCol = vec4(col, 1.0);',
+  '}'
+].join('\n');
+
+/* ==================================================================
+   [9]  GL init
+   ================================================================== */
+
+var gl = null, CV = null, PROG = {}, VAO = {}, BUF = {}, GLOK = false;
+var CAM = { x: 0, y: 1.65, z: 0, yaw: 0, pitch: 0, roll: 0, fov: TUNE.FOV };
+var RES = { w: 1, h: 1, scale: 1, step: 0, ema: 16, down: 0, up: 0, last: 0 };
+
+function shader(type, src){
+  var s = gl.createShader(type);
+  gl.shaderSource(s, src); gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS))
+    throw new Error('shader: ' + (gl.getShaderInfoLog(s) || '').slice(0, 300));
+  return s;
+}
+function program(name, vs, fs){
+  var p = gl.createProgram();
+  gl.attachShader(p, shader(gl.VERTEX_SHADER, vs));
+  gl.attachShader(p, shader(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS))
+    throw new Error('link ' + name + ': ' + (gl.getProgramInfoLog(p) || '').slice(0, 300));
+  var u = {}, i, n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS) || 0;
+  for (i = 0; i < n; i++){
+    var info = gl.getActiveUniform(p, i);
+    if (info && info.name){
+      var nm = info.name.replace(/\[0\]$/, '');
+      u[nm] = gl.getUniformLocation(p, nm);
+    }
+  }
+  PROG[name] = { p: p, u: u };
+  return PROG[name];
+}
+
+function worldAttribs(instRange){
+  gl.bindBuffer(gl.ARRAY_BUFFER, BUF.world);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, STRIDE, 0);
+  gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.BYTE, true, STRIDE, 12);
+  gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 1, gl.UNSIGNED_BYTE, false, STRIDE, 15);
+  gl.enableVertexAttribArray(3); gl.vertexAttribPointer(3, 4, gl.UNSIGNED_BYTE, true, STRIDE, 16);
+  if (instRange){
+    gl.bindBuffer(gl.ARRAY_BUFFER, BUF.prop);
+    gl.enableVertexAttribArray(4);
+    gl.vertexAttribPointer(4, 4, gl.FLOAT, false, 36, instRange.first * 36);
+    gl.vertexAttribDivisor(4, 1);
+    gl.enableVertexAttribArray(5);
+    gl.vertexAttribPointer(5, 4, gl.FLOAT, false, 36, instRange.first * 36 + 16);
+    gl.vertexAttribDivisor(5, 1);
+  }
+}
+
+function glInit(){
+  CV = document.getElementById('scene');
+  gl = CV.getContext('webgl2', { antialias: true, alpha: false, depth: true,
+                                 powerPreference: 'high-performance' });
+  if (!gl) return false;
+
+  program('world', vsWorld(false), FS_WORLD);
+  program('prop', vsWorld(true), FS_WORLD);
+  program('water', VS_WATER, FS_WATER);
+  program('glow', VS_GLOW, FS_GLOW);
+  program('sky', VS_SKY, FS_SKY);
+
+  BUF.world = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, BUF.world);
+  gl.bufferData(gl.ARRAY_BUFFER, WORLDBUF, gl.STATIC_DRAW);
+
+  BUF.prop = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, BUF.prop);
+  gl.bufferData(gl.ARRAY_BUFFER, PROPBUF, gl.STATIC_DRAW);
+
+  VAO.world = gl.createVertexArray();
+  gl.bindVertexArray(VAO.world); worldAttribs(null);
+
+  VAO.prop = {};
+  for (var t in PROPRANGE){
+    if (!PROTORANGE[t] || !PROPRANGE[t].count) continue;
+    var v = gl.createVertexArray();
+    gl.bindVertexArray(v); worldAttribs(PROPRANGE[t]);
+    VAO.prop[t] = v;
+  }
+
+  BUF.water = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, BUF.water);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(WATERV), gl.STATIC_DRAW);
+  VAO.water = gl.createVertexArray();
+  gl.bindVertexArray(VAO.water);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 12, 0);
+  BUF.waterN = (WATERV.length / 3) | 0;
+
+  BUF.glow = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, BUF.glow);
+  gl.bufferData(gl.ARRAY_BUFFER, GLOWBUF, gl.STATIC_DRAW);
+  VAO.glow = gl.createVertexArray();
+  gl.bindVertexArray(VAO.glow);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 52, 0);
+  gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 52, 12);
+  gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 1, gl.FLOAT, false, 52, 20);
+  gl.enableVertexAttribArray(3); gl.vertexAttribPointer(3, 4, gl.FLOAT, false, 52, 24);
+  gl.enableVertexAttribArray(4); gl.vertexAttribPointer(4, 3, gl.FLOAT, false, 52, 40);
+  BUF.glowN = (GLOWBUF.length / 13) | 0;
+
+  VAO.sky = gl.createVertexArray();
+  gl.bindVertexArray(null);
+
+  gl.enable(gl.DEPTH_TEST);
+  gl.enable(gl.CULL_FACE);
+  gl.cullFace(gl.BACK);
+  gl.frontFace(gl.CCW);
+  gl.clearColor(P.fog[0], P.fog[1], P.fog[2], 1);
+  GLOK = true;
+  return true;
+}
+
+/* ==================================================================
+   [10] renderer
+   ================================================================== */
+
+var MVP = m4(), MV = m4(), MP = m4(), MINV = m4();
+var FRUS = new Float32Array(24);
+var VIS = [], LODHI = {};
+var REFL_XY = new Float32Array(64), REFL_RGB = new Float32Array(48), REFL_N = 0;
+
+function invert4(o, m){
+  var a00=m[0],a01=m[1],a02=m[2],a03=m[3], a10=m[4],a11=m[5],a12=m[6],a13=m[7],
+      a20=m[8],a21=m[9],a22=m[10],a23=m[11], a30=m[12],a31=m[13],a32=m[14],a33=m[15];
+  var b00=a00*a11-a01*a10, b01=a00*a12-a02*a10, b02=a00*a13-a03*a10,
+      b03=a01*a12-a02*a11, b04=a01*a13-a03*a11, b05=a02*a13-a03*a12,
+      b06=a20*a31-a21*a30, b07=a20*a32-a22*a30, b08=a20*a33-a23*a30,
+      b09=a21*a32-a22*a31, b10=a21*a33-a23*a31, b11=a22*a33-a23*a32;
+  var det = b00*b11-b01*b10+b02*b09+b03*b08-b04*b07+b05*b06;
+  if (!det){ for (var i = 0; i < 16; i++) o[i] = (i % 5) ? 0 : 1; return o; }
+  det = 1.0/det;
+  o[0]=(a11*b11-a12*b10+a13*b09)*det;  o[1]=(a02*b10-a01*b11-a03*b09)*det;
+  o[2]=(a31*b05-a32*b04+a33*b03)*det;  o[3]=(a22*b04-a21*b05-a23*b03)*det;
+  o[4]=(a12*b08-a10*b11-a13*b07)*det;  o[5]=(a00*b11-a02*b08+a03*b07)*det;
+  o[6]=(a32*b02-a30*b05-a33*b01)*det;  o[7]=(a20*b05-a22*b02+a23*b01)*det;
+  o[8]=(a10*b10-a11*b08+a13*b06)*det;  o[9]=(a01*b08-a00*b10-a03*b06)*det;
+  o[10]=(a30*b04-a31*b02+a33*b00)*det; o[11]=(a21*b02-a20*b04-a23*b00)*det;
+  o[12]=(a11*b07-a10*b09-a12*b06)*det; o[13]=(a00*b09-a01*b07+a02*b06)*det;
+  o[14]=(a31*b01-a30*b03-a32*b00)*det; o[15]=(a20*b03-a21*b01+a22*b00)*det;
+  return o;
+}
+
+function resize(){
+  if (!CV) return;
+  var cap = TOUCH ? TUNE.DPR_TOUCH : TUNE.DPR_DESKTOP;
+  var dpr = min(window.devicePixelRatio || 1, cap);
+  var s = TUNE.RES_STEPS[RES.step];
+  var w = max(1, Math.round((CV.clientWidth || window.innerWidth || 1) * dpr * s));
+  var h = max(1, Math.round((CV.clientHeight || window.innerHeight || 1) * dpr * s));
+  if (w !== RES.w || h !== RES.h){ RES.w = w; RES.h = h; CV.width = w; CV.height = h; }
+}
+
+function dynRes(dt, now){
+  RES.ema = RES.ema * 0.95 + dt * 1000 * 0.05;
+  if (RES.ema > TUNE.RES_DOWN_MS){ RES.down++; RES.up = 0; }
+  else if (RES.ema < TUNE.RES_UP_MS){ RES.up++; RES.down = 0; }
+  else { RES.down = 0; RES.up = 0; }
+  if (now - RES.last < TUNE.RES_COOLDOWN * 1000) return;
+  if (RES.down >= TUNE.RES_DOWN_FRAMES && RES.step < TUNE.RES_STEPS.length - 1){
+    RES.step++; RES.down = 0; RES.last = now; resize();
+  } else if (RES.up >= TUNE.RES_UP_FRAMES && RES.step > 0){
+    RES.step--; RES.up = 0; RES.last = now; resize();
+  }
+}
+
+function frustum(m){
+  for (var i = 0; i < 6; i++){
+    var s = (i & 1) ? -1 : 1, r = i >> 1;
+    var a = m[3] + s * m[r], b = m[7] + s * m[4 + r], c = m[11] + s * m[8 + r], d = m[15] + s * m[12 + r];
+    var L = sqrt(a * a + b * b + c * c);
+    if (L > 1e-9){ a /= L; b /= L; c /= L; d /= L; }
+    FRUS[i * 4] = a; FRUS[i * 4 + 1] = b; FRUS[i * 4 + 2] = c; FRUS[i * 4 + 3] = d;
+  }
+}
+function sphereIn(cx, cy, cz, r){
+  for (var i = 0; i < 6; i++)
+    if (FRUS[i * 4] * cx + FRUS[i * 4 + 1] * cy + FRUS[i * 4 + 2] * cz + FRUS[i * 4 + 3] < -r) return false;
+  return true;
+}
+
+var _pairs = [];
+function cullChunks(){
+  VIS.length = 0; _pairs.length = 0;
+  for (var i = 0; i < CHUNKS.length; i++){
+    var c = CHUNKS[i];
+    if (c.empty) continue;
+    var dx = c.cx - CAM.x, dy = c.cy - CAM.y, dz = c.cz - CAM.z;
+    var d = sqrt(dx * dx + dy * dy + dz * dz);
+    if (d - c.r > TUNE.FOG_OPAQUE + 100) continue;
+    if (!sphereIn(c.cx, c.cy, c.cz, c.r)) continue;
+    _pairs.push([i, d]);
+  }
+  _pairs.sort(function(a, b){ return a[1] - b[1]; });
+  for (i = 0; i < _pairs.length; i++){ VIS.push(_pairs[i][0], _pairs[i][1]); }
+}
+
+/* the sixteen brightest reflections near the camera get to paint the
+   river; everything else is below the noise floor anyway */
+function pickReflectors(){
+  var best = [], i;
+  for (i = 0; i < REFL.length; i++){
+    var R = REFL[i];
+    var dx = R.x - CAM.x, dz = R.z - CAM.z;
+    var d = sqrt(dx * dx + dz * dz);
+    if (d > 420) continue;
+    best.push([R, R.s / (1 + d * 0.010)]);
+  }
+  best.sort(function(a, b){ return b[1] - a[1]; });
+  REFL_N = min(16, best.length);
+  for (i = 0; i < REFL_N; i++){
+    var R2 = best[i][0];
+    REFL_XY[i * 4] = R2.x; REFL_XY[i * 4 + 1] = R2.z;
+    REFL_XY[i * 4 + 2] = R2.y; REFL_XY[i * 4 + 3] = max(R2.s, 0.25);
+    var k = min(1, R2.s * 0.7);
+    REFL_RGB[i * 3] = R2.r * k; REFL_RGB[i * 3 + 1] = R2.g * k; REFL_RGB[i * 3 + 2] = R2.b * k;
+  }
+}
+
+function setCommon(u){
+  gl.uniformMatrix4fv(u.uVP, false, MVP);
+  if (u.uEye) gl.uniform3f(u.uEye, CAM.x, CAM.y, CAM.z);
+  if (u.uAmbTop) gl.uniform3f(u.uAmbTop, 0.16, 0.21, 0.30);
+  if (u.uAmbBot) gl.uniform3f(u.uAmbBot, 0.075, 0.095, 0.125);
+  if (u.uFog) gl.uniform3f(u.uFog, P.fog[0], P.fog[1], P.fog[2]);
+  if (u.uFogK) gl.uniform1f(u.uFogK, 2.0 / TUNE.FOG_OPAQUE);
+  if (u.uFogStart) gl.uniform1f(u.uFogStart, TUNE.FOG_START);
+  if (u.uSkyLow) gl.uniform3f(u.uSkyLow, P.skyLow[0], P.skyLow[1], P.skyLow[2]);
+  if (u.uAfterglow) gl.uniform3f(u.uAfterglow, P.afterglow[0], P.afterglow[1], P.afterglow[2]);
+}
+
+function draw(time){
+  if (!GLOK) return;
+  gl.viewport(0, 0, RES.w, RES.h);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  var aspect = RES.w / max(1, RES.h);
+  var fov = CAM.fov;
+  var minH = 78 * PI / 180;
+  if (2 * Math.atan(Math.tan(fov * 0.5) * aspect) < minH)
+    fov = 2 * Math.atan(Math.tan(minH * 0.5) / aspect);
+  perspective(MP, fov, aspect, TUNE.NEAR, TUNE.FOG_OPAQUE + 100);
+  viewFromEuler(MV, CAM.x, CAM.y, CAM.z, CAM.yaw, CAM.pitch, CAM.roll);
+  mul4(MVP, MP, MV);
+  frustum(MVP);
+  cullChunks();
+  STATS.draws = 0;
+
+  /* 1 — static world, near to far, LOD per chunk */
+  var pr = PROG.world;
+  gl.useProgram(pr.p); setCommon(pr.u);
+  gl.bindVertexArray(VAO.world);
+  for (var i = 0; i < VIS.length; i += 2){
+    var ci = VIS[i], d = VIS[i + 1], c = CHUNKS[ci];
+    var hi = LODHI[ci] ? (d < TUNE.LOD_DIST + TUNE.LOD_HYST) : (d < TUNE.LOD_DIST - TUNE.LOD_HYST);
+    LODHI[ci] = hi;
+    var f = hi ? c.hiF : c.loF, n = hi ? c.hiN : c.loN;
+    if (!n){ f = hi ? c.loF : c.hiF; n = hi ? c.loN : c.hiN; }
+    if (n){ gl.drawArrays(gl.TRIANGLES, f, n); STATS.draws++; }
+  }
+  if (RIM.count){ gl.drawArrays(gl.TRIANGLES, RIM.first, RIM.count); STATS.draws++; }
+  STATS.drawn = VIS.length / 2;
+
+  /* 2 — instanced props */
+  pr = PROG.prop;
+  gl.useProgram(pr.p); setCommon(pr.u);
+  for (var t in VAO.prop){
+    var rg = PROTORANGE[t];
+    if (!rg || !rg.count) continue;
+    gl.bindVertexArray(VAO.prop[t]);
+    gl.drawArraysInstanced(gl.TRIANGLES, rg.first, rg.count, PROPRANGE[t].count);
+    STATS.draws++;
+  }
+
+  /* 3 — the river, repeating the city back at it */
+  if (BUF.waterN){
+    pickReflectors();
+    pr = PROG.water;
+    gl.useProgram(pr.p); setCommon(pr.u);
+    gl.uniform1f(pr.u.uTime, time);
+    gl.uniform3f(pr.u.uWater, P.water[0], P.water[1], P.water[2]);
+    gl.uniform3f(pr.u.uSwell, P.swell[0], P.swell[1], P.swell[2]);
+    gl.uniform3f(pr.u.uSparkle, P.sparkle[0], P.sparkle[1], P.sparkle[2]);
+    gl.uniform1i(pr.u.uNRefl, REFL_N);
+    if (REFL_N){
+      gl.uniform4fv(pr.u.uRefl, REFL_XY.subarray(0, REFL_N * 4));
+      gl.uniform3fv(pr.u.uReflCol, REFL_RGB.subarray(0, REFL_N * 3));
+    }
+    gl.bindVertexArray(VAO.water);
+    gl.drawArrays(gl.TRIANGLES, 0, BUF.waterN);
+    STATS.draws++;
+  }
+
+  /* 4 — sky, after the opaque world so street canyons cost nothing */
+  pr = PROG.sky;
+  gl.useProgram(pr.p);
+  invert4(MINV, MVP);
+  gl.uniformMatrix4fv(pr.u.uInvVP, false, MINV);
+  gl.uniform3f(pr.u.uEye, CAM.x, CAM.y, CAM.z);
+  gl.uniform3f(pr.u.uZenith, P.skyZenith[0], P.skyZenith[1], P.skyZenith[2]);
+  gl.uniform3f(pr.u.uHigh, P.skyHigh[0], P.skyHigh[1], P.skyHigh[2]);
+  gl.uniform3f(pr.u.uSkyLow, P.skyLow[0], P.skyLow[1], P.skyLow[2]);
+  gl.uniform3f(pr.u.uAfterglow, P.afterglow[0], P.afterglow[1], P.afterglow[2]);
+  gl.depthFunc(gl.LEQUAL); gl.depthMask(false);
+  gl.bindVertexArray(VAO.sky);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  gl.depthMask(true); gl.depthFunc(gl.LESS);
+  STATS.draws++;
+
+  /* 5 — additive light, last, over everything */
+  if (BUF.glowN){
+    pr = PROG.glow;
+    gl.useProgram(pr.p); setCommon(pr.u);
+    gl.uniform1f(pr.u.uTime, time);
+    var cy = cos(CAM.yaw), sy = sin(CAM.yaw), cp = cos(CAM.pitch), sp2 = sin(CAM.pitch);
+    gl.uniform3f(pr.u.uRight, cy, 0, sy);
+    gl.uniform3f(pr.u.uUp, -sy * sp2, cp, cy * sp2);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+    gl.depthMask(false);
+    /* the ground decals are horizontal quads whose winding depends on
+       which side you view them from — culling would eat the pools */
+    gl.disable(gl.CULL_FACE);
+    gl.bindVertexArray(VAO.glow);
+    gl.drawArrays(gl.TRIANGLES, 0, BUF.glowN);
+    gl.enable(gl.CULL_FACE);
+    gl.depthMask(true);
+    gl.disable(gl.BLEND);
+    STATS.draws++;
+  }
+  gl.bindVertexArray(null);
+}
+
+/* ==================================================================
+   [11] input
+   ================================================================== */
+
+var TOUCH = false, KEY = {};
+var IN = { fwd: 0, side: 0, up: 0, sprint: false, locked: false, dragLook: false, dragging: false,
+           lookDX: 0, lookDY: 0, firstSkip: false, pad: -1, padA: false,
+           touchMove: null, touchLook: null, stickX: 0, stickZ: 0, stickMag: 0, stickHold: 0 };
+
+function bindInput(){
+  TOUCH = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || false;
+
+  window.addEventListener('keydown', function(e){
+    var k = e.key ? e.key.toLowerCase() : '';
+    if (!KEY[k]){ KEY[k] = true; onKey(k, e); }
+  });
+  window.addEventListener('keyup', function(e){ KEY[e.key ? e.key.toLowerCase() : ''] = false; });
+  window.addEventListener('blur', function(){ KEY = {}; });
+
+  if (CV) CV.addEventListener('click', requestLock);
+  var pz = document.getElementById('pause');
+  if (pz) pz.addEventListener('click', requestLock);
+
+  document.addEventListener('pointerlockchange', function(){
+    IN.locked = (document.pointerLockElement === CV);
+    IN.firstSkip = false;
+    uiPause(!IN.locked);
+  });
+  document.addEventListener('pointerlockerror', function(){ IN.dragLook = true; uiPause(false); });
+
+  window.addEventListener('mousemove', function(e){
+    var mx = e.movementX || 0, my = e.movementY || 0;
+    if (IN.locked){
+      if (!IN.firstSkip){ IN.firstSkip = true; return; }
+      if (abs(mx) > 200 || abs(my) > 200) return;
+      IN.lookDX += mx; IN.lookDY += my;
+    } else if (IN.dragLook && IN.dragging){
+      IN.lookDX += mx * TUNE.DRAG_MULT; IN.lookDY += my * TUNE.DRAG_MULT;
+    }
+  });
+  window.addEventListener('mousedown', function(){ IN.dragging = true; });
+  window.addEventListener('mouseup', function(){ IN.dragging = false; });
+
+  if (CV){
+    CV.addEventListener('touchstart', onTouchStart, { passive: false });
+    CV.addEventListener('touchmove', onTouchMove, { passive: false });
+    CV.addEventListener('touchend', onTouchEnd, { passive: false });
+    CV.addEventListener('touchcancel', onTouchEnd, { passive: false });
+  }
+  var ab = document.getElementById('actBtn');
+  if (ab) ab.addEventListener('click', function(){ interact(); });
+
+  window.addEventListener('gamepadconnected', function(e){ IN.pad = e.gamepad.index; });
+  window.addEventListener('gamepaddisconnected', function(){ IN.pad = -1; });
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) audioSuspend(); else audioResume();
+  });
+}
+
+function requestLock(){
+  started();
+  if (!CV || TOUCH) return;
+  if (document.pointerLockElement === CV) return;
+  var p;
+  try { p = CV.requestPointerLock({ unadjustedMovement: true }); }
+  catch (e){ p = CV.requestPointerLock(); }
+  if (p && p.catch) p.catch(function(){ try { CV.requestPointerLock(); } catch (e2){} });
+}
+
+function onTouchStart(e){
+  e.preventDefault(); started();
+  var w = window.innerWidth || 1;
+  for (var i = 0; i < e.changedTouches.length; i++){
+    var t = e.changedTouches[i];
+    if (t.clientX < w * 0.5 && IN.touchMove === null){
+      IN.touchMove = { id: t.identifier, ox: t.clientX, oy: t.clientY };
+      uiStick(true, t.clientX, t.clientY, 0, 0);
+    } else if (t.clientX >= w * 0.5 && IN.touchLook === null){
+      IN.touchLook = { id: t.identifier, x: t.clientX, y: t.clientY };
+    }
+  }
+}
+function onTouchMove(e){
+  e.preventDefault();
+  for (var i = 0; i < e.changedTouches.length; i++){
+    var t = e.changedTouches[i];
+    if (IN.touchMove && t.identifier === IN.touchMove.id){
+      var dx = t.clientX - IN.touchMove.ox, dy = t.clientY - IN.touchMove.oy;
+      var L = sqrt(dx * dx + dy * dy), R = 48;
+      if (L > R){ dx *= R / L; dy *= R / L; L = R; }
+      IN.stickX = dx / R; IN.stickZ = dy / R; IN.stickMag = L / R;
+      uiStick(true, IN.touchMove.ox, IN.touchMove.oy, dx, dy);
+    } else if (IN.touchLook && t.identifier === IN.touchLook.id){
+      IN.lookDX += (t.clientX - IN.touchLook.x) * (TUNE.TOUCH_LOOK / TUNE.SENS);
+      IN.lookDY += (t.clientY - IN.touchLook.y) * (TUNE.TOUCH_LOOK / TUNE.SENS);
+      IN.touchLook.x = t.clientX; IN.touchLook.y = t.clientY;
+    }
+  }
+}
+function onTouchEnd(e){
+  for (var i = 0; i < e.changedTouches.length; i++){
+    var t = e.changedTouches[i];
+    if (IN.touchMove && t.identifier === IN.touchMove.id){
+      IN.touchMove = null; IN.stickX = 0; IN.stickZ = 0; IN.stickMag = 0; IN.stickHold = 0;
+      uiStick(false);
+    }
+    if (IN.touchLook && t.identifier === IN.touchLook.id) IN.touchLook = null;
+  }
+}
+
+function pollPad(dt){
+  if (IN.pad < 0 || !navigator.getGamepads) return;
+  var g = navigator.getGamepads()[IN.pad];
+  if (!g || !g.axes) return;
+  var dz = function(v){ return abs(v) < 0.15 ? 0 : (v - sgn(v) * 0.15) / 0.85; };
+  IN.side += dz(g.axes[0] || 0); IN.fwd += -dz(g.axes[1] || 0);
+  var lx = dz(g.axes[2] || 0), ly = dz(g.axes[3] || 0);
+  IN.lookDX += lx * abs(lx) * 2.6 * dt / TUNE.SENS;
+  IN.lookDY += ly * abs(ly) * 1.7 * dt / TUNE.SENS;
+  if (g.buttons){
+    if (g.buttons[4] && g.buttons[4].pressed) IN.sprint = true;
+    if (g.buttons[0] && g.buttons[0].pressed && !IN.padA) interact();
+    IN.padA = !!(g.buttons[0] && g.buttons[0].pressed);
+  }
+}
+
+function readKeys(){
+  IN.fwd = 0; IN.side = 0; IN.up = 0;
+  if (KEY.w || KEY.arrowup) IN.fwd += 1;
+  if (KEY.s || KEY.arrowdown) IN.fwd -= 1;
+  if (KEY.a || KEY.arrowleft) IN.side -= 1;
+  if (KEY.d || KEY.arrowright) IN.side += 1;
+  if (KEY[' ']) IN.up += 1;
+  if (KEY.control) IN.up -= 1;
+  IN.sprint = !!KEY.shift;
+  if (IN.stickMag > 0.25){
+    IN.fwd += -IN.stickZ; IN.side += IN.stickX;
+    if (IN.stickMag > 0.95){ IN.stickHold += TUNE.STEP; if (IN.stickHold > 1) IN.sprint = true; }
+    else IN.stickHold = 0;
+  }
+}
+
+/* ==================================================================
+   [12] player
+   ================================================================== */
+
+var GS = {
+  px: 0, py: 0, pz: 0, vx: 0, vz: 0, vy: 0,
+  yaw: 0, pitch: 0, roll: 0, camY: TUNE.EYE, dip: 0,
+  onGround: true, mode: 'walk', bikeYaw: 0,
+  time: 0, started: false, swimming: false, respawnT: 0,
+  photo: false, muted: false, devFly: false
+};
+
+function spawn(x, z, yaw){
+  var o = colResolve(x, z, TUNE.PLAYER_R);
+  GS.px = o[0]; GS.pz = o[1];
+  GS.swimming = false; GS.respawnT = 0;
+  groundAt(GS.px, GS.pz, 2);
+  GS.py = gY; GS.vx = GS.vz = GS.vy = 0;
+  if (yaw !== undefined) GS.yaw = yaw;
+  GS.pitch = 0; GS.camY = GS.py + TUNE.EYE; GS.onGround = true;
+}
+
+function respawn(){
+  var best = -1, bd = 1e9, i;
+  for (i = 0; i < RESPAWN.length; i++){
+    var dx = RESPAWN[i][0] - GS.px, dz = RESPAWN[i][1] - GS.pz;
+    var d = dx * dx + dz * dz;
+    if (d < bd){ bd = d; best = i; }
+  }
+  var p = best >= 0 ? RESPAWN[best] : [-251, 75];
+  spawn(p[0], p[1], GS.yaw);
+  GS.mode = 'walk';
+  uiToast('De Nieuwe Maas is kouder dan hij eruitziet.');
+  uiFade();
+}
+
+function playerStep(dt){
+  readKeys(); pollPad(dt);
+
+  GS.yaw += IN.lookDX * TUNE.SENS;
+  GS.pitch -= IN.lookDY * TUNE.SENS;
+  IN.lookDX = 0; IN.lookDY = 0;
+  GS.pitch = clamp(GS.pitch, -TUNE.PITCH_MAX, TUNE.PITCH_MAX);
+  if (GS.yaw > PI) GS.yaw -= TAU;
+  if (GS.yaw < -PI) GS.yaw += TAU;
+  if (GS.photo) return;
+
+  var cy = cos(GS.yaw), sy = sin(GS.yaw);
+  var wx = IN.side * cy + IN.fwd * sy;
+  var wz = IN.side * sy - IN.fwd * cy;
+  var wl = sqrt(wx * wx + wz * wz);
+  if (wl > 1){ wx /= wl; wz /= wl; wl = 1; }
+
+  if (GS.mode === 'fly'){ flyStep(dt, wx, wz); return; }
+  if (GS.mode === 'bike'){ bikeStep(dt); return; }
+  walkStep(dt, wx, wz, wl);
+}
+
+function walkStep(dt, wx, wz, wl){
+  var sp = IN.sprint ? TUNE.SPRINT : TUNE.WALK;
+  var k = (wl > 0) ? TUNE.ACCEL_K : TUNE.DECEL_K;
+  var a = 1 - Math.exp(-k * dt);
+  GS.vx += (wx * sp - GS.vx) * a;
+  GS.vz += (wz * sp - GS.vz) * a;
+  GS.px += GS.vx * dt; GS.pz += GS.vz * dt;
+  resolveAndGround(dt);
+  var want = TUNE.FOV + (IN.sprint && wl > 0 ? TUNE.FOV_SPRINT : 0);
+  CAM.fov += (want - CAM.fov) * (1 - Math.exp(-TUNE.FOV_K * dt));
+}
+
+function flyStep(dt, wx, wz){
+  var sp = IN.sprint ? TUNE.FLY_FAST : TUNE.FLY;
+  var cp = cos(GS.pitch);
+  var a = 1 - Math.exp(-8 * dt);
+  GS.vx += (wx * sp * cp - GS.vx) * a;
+  GS.vz += (wz * sp * cp - GS.vz) * a;
+  GS.vy += ((sin(GS.pitch) * IN.fwd + IN.up) * sp - GS.vy) * a;
+  GS.px += GS.vx * dt; GS.py += GS.vy * dt; GS.pz += GS.vz * dt;
+  GS.py = clamp(GS.py, -14, 460);
+  GS.camY = GS.py; GS.onGround = false;
+  CAM.fov += (TUNE.FOV - CAM.fov) * (1 - Math.exp(-TUNE.FOV_K * dt));
+}
+
+function bikeStep(dt){
+  var cur = sqrt(GS.vx * GS.vx + GS.vz * GS.vz);
+  var target = IN.fwd > 0 ? TUNE.BIKE : (IN.fwd < 0 ? 0 : cur);
+  var k = IN.fwd > 0 ? TUNE.BIKE_ACCEL_K : (IN.fwd < 0 ? TUNE.BIKE_BRAKE_K : TUNE.BIKE_COAST_K);
+  var nsp = cur + (target - cur) * (1 - Math.exp(-k * dt));
+  var rate = 1.8 / (1 + nsp * 0.12);
+  var steer = -IN.side * rate * dt;
+  GS.bikeYaw += steer; GS.yaw += steer;
+  GS.vx = sin(GS.bikeYaw) * nsp; GS.vz = -cos(GS.bikeYaw) * nsp;
+  GS.px += GS.vx * dt; GS.pz += GS.vz * dt;
+  var lean = clamp(-steer / max(dt, 1e-4) * nsp * 0.02, -0.12, 0.12);
+  GS.roll += (lean - GS.roll) * (1 - Math.exp(-6 * dt));
+  resolveAndGround(dt);
+  CAM.fov += ((TUNE.FOV + nsp / TUNE.BIKE * TUNE.FOV_SPRINT) - CAM.fov) * (1 - Math.exp(-TUNE.FOV_K * dt));
+}
+
+function resolveAndGround(dt){
+  var o = colResolve(GS.px, GS.pz, TUNE.PLAYER_R);
+  GS.px = o[0]; GS.pz = o[1];
+  if (colHits > 0){
+    var vn = GS.vx * colNX + GS.vz * colNZ;
+    if (vn < 0){ GS.vx -= colNX * vn; GS.vz -= colNZ * vn; }
+  }
+
+  var feet = GS.py;
+  groundAt(GS.px, GS.pz, feet);
+  var gy = gY, kind = gKind;
+
+  if (gy > feet + TUNE.STEP_UP){
+    GS.vy -= TUNE.GRAVITY * dt; GS.py += GS.vy * dt; GS.onGround = false;
+  } else if (GS.onGround || gy >= feet - 0.02){
+    var fall = GS.onGround ? 0 : (feet - gy);
+    GS.py += (gy - GS.py) * (1 - Math.exp(-TUNE.GROUND_SNAP_K * dt));
+    if (abs(GS.py - gy) < 0.02) GS.py = gy;
+    if (!GS.onGround && fall > 1) GS.dip = TUNE.LAND_DIP;
+    GS.onGround = true; GS.vy = 0;
+  } else {
+    GS.vy -= TUNE.GRAVITY * dt; GS.py += GS.vy * dt;
+    if (GS.py <= gy){ GS.py = gy; GS.vy = 0; GS.onGround = true; }
+  }
+
+  if (kind === K_WATER && GS.py < TUNE.WATER_Y + 0.4) GS.swimming = true;
+  if (GS.swimming){
+    GS.respawnT += dt;
+    if (GS.respawnT > TUNE.RESPAWN_FADE) respawn();
+  }
+  if (GS.py < -20 || !isFinite(GS.px + GS.py + GS.pz)){
+    if (!isFinite(GS.px + GS.py + GS.pz)){ GS.px = -251; GS.py = 0; GS.pz = 75; }
+    respawn();
+  }
+
+  GS.dip += (0 - GS.dip) * (1 - Math.exp(-6 * dt));
+  var eye = GS.py + TUNE.EYE - GS.dip;
+  GS.camY += (eye - GS.camY) * (1 - Math.exp(-TUNE.CAM_Y_K * dt));
+}
+
+/* ==================================================================
+   [13] systems: discovery, places, ships, audio, photo
+   ================================================================== */
+
+var STORE = 'rotterdam.nachtstad.v1';
+var SAVE = { found: {}, ships: {}, done: false };
+var DISC = { hold: {}, cardOn: false };
+var PLC = { cur: -1, last: {} };
+
+function saveLoad(){
+  try {
+    var raw = window.localStorage ? window.localStorage.getItem(STORE) : null;
+    if (raw){ var o = JSON.parse(raw); SAVE.found = o.found || {}; SAVE.ships = o.ships || {}; SAVE.done = !!o.done; }
+  } catch (e){}
+}
+function saveStore(){
+  try { if (window.localStorage) window.localStorage.setItem(STORE, JSON.stringify(SAVE)); } catch (e){}
+}
+function foundCount(){ var n = 0; for (var i = 0; i < LM.length; i++) if (SAVE.found[LM[i].id]) n++; return n; }
+function shipCount(){ var n = 0; for (var i = 0; i < SHIPS.length; i++) if (SAVE.ships[i]) n++; return n; }
+
+var _fw = [0, 0, 0];
+function camForward(o){
+  var cp = cos(GS.pitch);
+  o[0] = sin(GS.yaw) * cp; o[1] = sin(GS.pitch); o[2] = -cos(GS.yaw) * cp;
+  return o;
+}
+
+function discoveryStep(dt){
+  camForward(_fw);
+  var i;
+  for (i = 0; i < LM.length; i++){
+    var L = LM[i];
+    if (SAVE.found[L.id]){ continue; }
+    var dx = L.x - GS.px, dz = L.z - GS.pz;
+    var d = sqrt(dx * dx + dz * dz);
+    if (d > L.r){ DISC.hold[L.id] = 0; continue; }
+    var il = 1 / max(d, 0.001);
+    if ((dx * il) * _fw[0] + (dz * il) * _fw[2] < TUNE.TRIGGER_DOT){ DISC.hold[L.id] = 0; continue; }
+    DISC.hold[L.id] = (DISC.hold[L.id] || 0) + dt;
+    if (DISC.hold[L.id] >= TUNE.TRIGGER_HOLD) discover(L);
+  }
+  for (i = 0; i < SHIPS.length; i++){
+    if (SAVE.ships[i]) continue;
+    var s = SHIPS[i];
+    var ax = s.x - GS.px, ay = s.y - (GS.py + 1.0), az = s.z - GS.pz;
+    if (ax * ax + ay * ay + az * az < TUNE.PICKUP_R * TUNE.PICKUP_R){
+      SAVE.ships[i] = 1; saveStore(); sfxBlip();
+      var n = shipCount();
+      uiToast(n === SHIPS.length ? 'Alle vijftien scheepjes gevonden.'
+                                 : ('Scheepje — ' + n + ' van de ' + SHIPS.length));
+    }
+  }
+}
+
+function discover(L){
+  SAVE.found[L.id] = 1; DISC.hold[L.id] = 0; saveStore();
+  sfxBell(720, 0.15, 2.2);
+  uiCard(L.nm, L.txt);
+  uiPlace(L.nm, true);
+  uiPanelFill();
+  if (foundCount() === LM.length && !SAVE.done){
+    SAVE.done = true; saveStore();
+    later(function(){ uiToast('Je kent de stad. — druk F om te vliegen'); }, 9500);
+  }
+}
+
+function placeStep(){
+  var best = -1, bd = 1e9, i;
+  for (i = 0; i < PLACES.length; i++){
+    var p = PLACES[i];
+    var dx = p.x - GS.px, dz = p.z - GS.pz;
+    var d = dx * dx + dz * dz;
+    if (d < p.r * p.r && d < bd){ bd = d; best = i; }
+  }
+  if (best !== PLC.cur){
+    PLC.cur = best;
+    if (best >= 0){
+      var nm = PLACES[best].nm;
+      if (!PLC.last[nm] || GS.time - PLC.last[nm] > TUNE.PLACE_COOLDOWN){
+        PLC.last[nm] = GS.time;
+        uiPlace(nm, false);
+      }
+    }
+  }
+}
+
+/* --- distant callouts: the whole wayfinding UI --------------------- */
+var LBL = [];
+function labelsInit(){
+  var host = document.getElementById('labels');
+  if (!host) return;
+  for (var i = 0; i < 2; i++){
+    var d = document.createElement('div');
+    d.className = 'lbl';
+    d.innerHTML = '<span class="dot"></span><span class="stem"></span>' +
+                  '<span class="bar"></span><span class="nm"></span>';
+    host.appendChild(d);
+    LBL.push({ el: d, nm: d.querySelector('.nm'), on: false, id: '' });
+  }
+}
+var _pj = [0, 0, 0, 0];
+function project(x, y, z, o){
+  o[0] = MVP[0]*x + MVP[4]*y + MVP[8]*z + MVP[12];
+  o[1] = MVP[1]*x + MVP[5]*y + MVP[9]*z + MVP[13];
+  o[3] = MVP[3]*x + MVP[7]*y + MVP[11]*z + MVP[15];
+  return o[3] > 0.001;
+}
+function labelsStep(){
+  if (!LBL.length) return;
+  var cand = [], i;
+  for (i = 0; i < LM.length; i++){
+    var L = LM[i];
+    var dx = L.lx - CAM.x, dz = L.lz - CAM.z;
+    var d = sqrt(dx * dx + dz * dz);
+    if (d < TUNE.LABEL_MIN || d > TUNE.FOG_OPAQUE * 0.82) continue;
+    if (!project(L.lx, L.ly, L.lz, _pj)) continue;
+    var sx = (_pj[0] / _pj[3]) * 0.5 + 0.5, sy = 1 - ((_pj[1] / _pj[3]) * 0.5 + 0.5);
+    if (sx < 0.07 || sx > 0.93 || sy < 0.06 || sy > 0.70) continue;
+    cand.push({ id: L.id, nm: L.nm, sx: sx, sy: sy, d: d, seen: !!SAVE.found[L.id] });
+  }
+  cand.sort(function(a, b){ return a.d - b.d; });
+  for (i = 0; i < LBL.length; i++){
+    var slot = LBL[i], c = cand[i];
+    if (c){
+      if (slot.id !== c.id){ slot.nm.textContent = c.nm; slot.id = c.id; }
+      slot.el.style.transform = 'translate3d(' + (c.sx * 100).toFixed(2) + 'vw,' + (c.sy * 100).toFixed(2) + 'vh,0)';
+      slot.el.classList.toggle('seen', c.seen);
+      if (!slot.on){ slot.el.classList.add('on'); slot.on = true; }
+    } else if (slot.on){ slot.el.classList.remove('on'); slot.on = false; slot.id = ''; }
+  }
+}
+
+/* --- audio --------------------------------------------------------- */
+var AC = null, AU = {};
+function audioInit(){
+  if (AC) return;
+  var C = window.AudioContext || window.webkitAudioContext;
+  if (!C) return;
+  try { AC = new C(); } catch (e){ return; }
+  AU.master = AC.createGain();
+  AU.master.gain.value = GS.muted ? 0 : TUNE.MASTER;
+  AU.master.connect(AC.destination);
+  var n = AC.sampleRate | 0, buf = AC.createBuffer(1, n, AC.sampleRate), ch = buf.getChannelData(0);
+  for (var i = 0; i < n; i++) ch[i] = Math.random() * 2 - 1;
+
+  AU.wind = AC.createBufferSource(); AU.wind.buffer = buf; AU.wind.loop = true;
+  AU.windF = AC.createBiquadFilter(); AU.windF.type = 'lowpass'; AU.windF.frequency.value = TUNE.WIND_LP;
+  AU.windG = AC.createGain(); AU.windG.gain.value = TUNE.WIND_GAIN;
+  AU.wind.connect(AU.windF); AU.windF.connect(AU.windG); AU.windG.connect(AU.master);
+  AU.wind.start(0);
+
+  AU.water = AC.createBufferSource(); AU.water.buffer = buf; AU.water.loop = true;
+  AU.waterF = AC.createBiquadFilter(); AU.waterF.type = 'bandpass';
+  AU.waterF.frequency.value = TUNE.WATER_BP; AU.waterF.Q.value = 0.9;
+  AU.waterG = AC.createGain(); AU.waterG.gain.value = 0;
+  AU.water.connect(AU.waterF); AU.waterF.connect(AU.waterG); AU.waterG.connect(AU.master);
+  AU.water.start(0);
+}
+function audioSuspend(){ if (AC && AC.suspend) try { AC.suspend(); } catch (e){} }
+function audioResume(){ if (AC && AC.resume) try { AC.resume(); } catch (e){} }
+
+function audioStep(){
+  if (!AC) return;
+  var sp = sqrt(GS.vx * GS.vx + GS.vz * GS.vz);
+  AU.windF.frequency.value = TUNE.WIND_LP - 60 + sp * 26 + sin(GS.time * 0.19) * 55;
+  AU.windG.gain.value = TUNE.WIND_GAIN * (0.72 + sp / TUNE.SPRINT * 0.5);
+  /* the river is everywhere here: distance to the nearest water */
+  var d = isLand(GS.px, GS.pz) ? max(0, abs(riverS(GS.px, GS.pz)) - TUNE.RIVER_HW) : 0;
+  AU.waterG.gain.value = TUNE.WATER_GAIN * (1 / (1 + d * 0.06)) * (0.6 + 0.4 * sin(GS.time * 2.6));
+}
+
+function sfxBell(f, gain, decay){
+  if (!AC) return;
+  var parts = [1, 2.0, 2.4, 3.0, 4.1], t0 = AC.currentTime;
+  for (var i = 0; i < parts.length; i++){
+    var o = AC.createOscillator(), g = AC.createGain();
+    o.type = i > 2 ? 'sine' : 'triangle';
+    o.frequency.value = f * parts[i];
+    var a = gain * (i === 0 ? 1 : 0.45 / i);
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(a, t0 + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + decay * (1 - i * 0.12));
+    o.connect(g); g.connect(AU.master);
+    o.start(t0); o.stop(t0 + decay + 0.1);
+  }
+}
+function sfxBlip(){
+  if (!AC) return;
+  var t0 = AC.currentTime, o = AC.createOscillator(), g = AC.createGain();
+  o.type = 'triangle';
+  o.frequency.setValueAtTime(760, t0);
+  o.frequency.exponentialRampToValueAtTime(1180, t0 + 0.09);
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(0.16, t0 + 0.008);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.3);
+  o.connect(g); g.connect(AU.master); o.start(t0); o.stop(t0 + 0.34);
+}
+
+/* the Laurenskerk keeps the hour over a city that stopped listening */
+var lastHour = -1;
+function bellsStep(){
+  var h = (new Date()).getHours() % 12 || 12;
+  if (lastHour < 0){ lastHour = h; return; }
+  if (h !== lastHour){
+    lastHour = h;
+    for (var i = 0; i < h; i++)
+      (function(k){ later(function(){ sfxBell(233, 0.2, 5.2); }, k * 1500); })(i);
+  }
+}
+
+function photoToggle(){
+  GS.photo = !GS.photo;
+  var e = document.getElementById('photoUI');
+  if (e) e.style.opacity = GS.photo ? '1' : '0';
+  uiTag('tagFly', GS.photo ? 'FOTO — wiel: zoom · klik: opslaan' : (GS.mode === 'fly' ? 'VLIEGEN' : ''));
+}
+function photoCapture(){
+  if (!CV || !CV.toBlob) return;
+  draw(GS.time);
+  CV.toBlob(function(b){
+    if (!b || !window.URL) return;
+    var a = document.createElement('a');
+    a.href = window.URL.createObjectURL(b);
+    var d = new Date();
+    a.download = 'rotterdam-' + d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2) + '.png';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    later(function(){ window.URL.revokeObjectURL(a.href); }, 4000);
+  });
+  var f = document.getElementById('flash');
+  if (f){ f.style.opacity = '1'; later(function(){ f.style.opacity = '0'; }, 90); }
+}
+
+function interact(){ if (DISC.cardOn) uiCardHide(); }
+
+function onKey(k, e){
+  if (k === 'tab'){ if (e) e.preventDefault(); uiPanel(); return; }
+  if (!GS.started) return;
+  if (k === 'e') interact();
+  else if (k === 'f'){
+    if (SAVE.done || GS.devFly){
+      GS.mode = (GS.mode === 'fly') ? 'walk' : 'fly';
+      uiTag('tagFly', GS.mode === 'fly' ? 'VLIEGEN — F: terug' : '');
+    }
+  }
+  else if (k === 'p') photoToggle();
+  else if (k === 'm'){
+    GS.muted = !GS.muted;
+    if (AU.master) AU.master.gain.value = GS.muted ? 0 : TUNE.MASTER;
+    uiToast(GS.muted ? 'Geluid uit.' : 'Geluid aan.');
+  }
+}
+
+/* ==================================================================
+   [14] UI plumbing
+   ================================================================== */
+
+var UIT = {};
+function el(id){ return document.getElementById(id); }
+function cls(id, name, on){ var e = el(id); if (e) e.classList.toggle(name, !!on); }
+
+function uiPause(on){ cls('pause', 'on', on && GS.started && !TOUCH); }
+function uiToast(msg){
+  var t = el('toast'); if (!t) return;
+  t.textContent = msg; t.classList.add('on');
+  unlater(UIT.toast);
+  UIT.toast = later(function(){ t.classList.remove('on'); }, 3800);
+}
+function uiTag(id, msg){
+  var t = el(id); if (!t) return;
+  if (!msg){ t.classList.remove('on'); return; }
+  t.textContent = msg; t.classList.add('on');
+}
+function uiFade(){
+  var f = el('fade'); if (!f) return;
+  f.style.opacity = '1';
+  unlater(UIT.fade);
+  UIT.fade = later(function(){ f.style.opacity = '0'; }, 260);
+}
+function uiPlace(nm, isNew){
+  var p = el('place'), n = el('placeNm') || (p && p.querySelector('.nm'));
+  if (!p) return;
+  if (n) n.textContent = nm;
+  p.classList.toggle('new', !!isNew);
+  p.classList.add('on');
+  unlater(UIT.place);
+  UIT.place = later(function(){ p.classList.remove('on'); }, TUNE.PLACE_HOLD * 1000);
+}
+function uiCard(nm, tx){
+  var c = el('card'); if (!c) return;
+  var k = el('cardKicker'), a = el('cardName'), b = el('cardText');
+  if (k) k.textContent = 'Gevonden';
+  if (a) a.textContent = nm;
+  if (b) b.textContent = tx;
+  c.classList.add('on'); DISC.cardOn = true;
+  unlater(UIT.card);
+  UIT.card = later(uiCardHide, TUNE.CARD_MS);
+}
+function uiCardHide(){ cls('card', 'on', false); DISC.cardOn = false; unlater(UIT.card); }
+function uiPanel(){
+  var p = el('panel'); if (!p) return;
+  uiPanelFill();
+  p.classList.toggle('on', !p.classList.contains('on'));
+}
+function uiPanelFill(){
+  var ul = el('panelList'); if (!ul) return;
+  var html = '', i;
+  for (i = 0; i < LM.length; i++){
+    var L = LM[i], f = !!SAVE.found[L.id];
+    html += '<li class="' + (f ? 'found' : '') + '">' + (f ? '<i></i>' + L.nm : '<span>— — —</span>') + '</li>';
+  }
+  ul.innerHTML = html;
+  var foot = el('panelFoot');
+  if (foot){
+    var n = foundCount(), s = shipCount();
+    foot.textContent = (n === LM.length ? 'Je kent de stad.' : n + ' van de ' + LM.length + ' gevonden')
+                     + (s ? ' · ' + s + '/' + SHIPS.length + ' scheepjes' : '');
+  }
+}
+function uiStick(on, ox, oy, dx, dy){
+  var s = el('stick'); if (!s) return;
+  s.classList.toggle('on', !!on);
+  if (on){
+    s.style.transform = 'translate(' + (ox - 48) + 'px,' + (oy - 48) + 'px)';
+    var nub = el('nub') || s.querySelector('i');
+    if (nub) nub.style.transform = 'translate(' + (dx || 0) + 'px,' + (dy || 0) + 'px)';
+  }
+}
+function started(){
+  if (GS.started){ uiPause(false); return; }
+  GS.started = true;
+  audioInit(); audioResume();
+  cls('title', 'off', true);
+  uiPause(false);
+  var h = el('hint');
+  if (h){
+    h.textContent = TOUCH ? 'links — lopen · rechts — kijken'
+                          : 'WASD — lopen · muis — kijken · shift — sneller · tab — plaatsen';
+    h.classList.add('on');
+    later(function(){ h.classList.remove('on'); }, 6500);
+  }
+}
+
+/* ==================================================================
+   [15] loop + boot
+   ================================================================== */
+
+var ACC = 0, LAST = 0;
+
+function step(dt){
+  GS.time += dt;
+  playerStep(dt);
+  if (!GS.photo){ discoveryStep(dt); placeStep(); }
+  bellsStep();
+  audioStep();
+  CAM.x = GS.px; CAM.y = GS.camY; CAM.z = GS.pz;
+  CAM.yaw = GS.yaw; CAM.pitch = GS.pitch; CAM.roll = GS.roll;
+}
+
+function frame(now){
+  window.requestAnimationFrame(frame);
+  var t = now * 0.001;
+  var dt = LAST ? min(t - LAST, TUNE.DT_CLAMP) : TUNE.STEP;
+  LAST = t; ACC += dt;
+  var guard = 0;
+  while (ACC >= TUNE.STEP && guard++ < 240){ step(TUNE.STEP); ACC -= TUNE.STEP; }
+  dynRes(dt, now);
+  draw(GS.time);
+  labelsStep();
+}
+
+function fallback(msg){
+  var s = el('startLine');
+  if (s) s.textContent = 'Deze stad heeft WebGL2 nodig — ' + msg;
+  cls('title', 'off', false);
+}
+
+function boot(){
+  saveLoad();
+  buildWorld();
+  packWorld();
+  labelsInit();
+  bindInput();
+  /* the Wilhelminapier waterline: the poster, and the first thing you see */
+  spawn(-251, 75, Math.atan2(-40 - (-251), -(50 - 75)));
+  CAM.x = GS.px; CAM.y = GS.camY; CAM.z = GS.pz; CAM.yaw = GS.yaw;
+  uiPanelFill();
+  var ok = false;
+  try { ok = glInit(); } catch (e){ fallback(e && e.message ? e.message : 'shader'); return; }
+  if (!ok){ fallback('je browser of GPU biedt het niet aan.'); return; }
+  resize();
+  if (TOUCH) started();
+  window.requestAnimationFrame(frame);
+}
+
+window.__game = {
+  TUNE: TUNE, GS: GS, CAM: CAM, IN: IN, KEY: KEY, STATS: STATS,
+  CHUNKS: CHUNKS, COL: COL, LM: LM, PLACES: PLACES, SHIPS: SHIPS, RESPAWN: RESPAWN, SAVE: SAVE,
+  step: step, draw: function(){ draw(GS.time); }, spawn: spawn, respawn: respawn,
+  groundAt: function(x, z, f){ return groundAt(x, z, f); },
+  gInfo: function(){ return { y: gY, kind: gKind, top: gTop, found: gFound }; },
+  colResolve: colResolve, colPenetration: colPenetration,
+  isLand: isLand, BRIDGE: BRIDGE, bridgeY: bridgeY,
+  buildWorld: buildWorld, packWorld: packWorld,
+  worldBuf: function(){ return WORLDBUF; },
+  glowBuf: function(){ return GLOWBUF; },
+  propBuf: function(){ return PROPBUF; },
+  waterV: function(){ return WATERV; },
+  protoRange: function(){ return PROTORANGE; },
+  shaders: function(){ return { vsWorld: vsWorld(false), vsProp: vsWorld(true), fsWorld: FS_WORLD,
+                                vsWater: VS_WATER, fsWater: FS_WATER, vsGlow: VS_GLOW, fsGlow: FS_GLOW,
+                                vsSky: VS_SKY, fsSky: FS_SKY }; },
+  cull: function(){ cullChunks(); return VIS.length / 2; },
+  discover: discover, foundCount: foundCount, shipCount: shipCount, boot: boot
+};
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+
+})();
 </script>
 </body>
 </html>

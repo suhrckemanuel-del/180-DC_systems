@@ -3,6 +3,7 @@
 Human-readable history of versions. Newest on top. See [docs/workflow.md](docs/workflow.md) for how versions and branches work.
 
 ## v0.1 (unreleased)
+- Rotterdam city game in demos/city-games/rotterdam: walkable WebGL2 harbour city at blue hour, emissive-only lighting with river reflections, landmark discovery and a headless verification harness.
 - Delft city game in demos/city-games/delft: walkable WebGL2 town at Vermeer morning light, with landmark discovery, collision, and a headless verification harness.
 - Research and build specs for two explorable city games in demos/city-games.
 - 3D city hero demo in demos/3d-city-hero: game-like WebGL night world of Rotterdam and Delft with a cinematic camera tour and orbit controls, single self-contained file.
