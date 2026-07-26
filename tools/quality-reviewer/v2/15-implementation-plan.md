@@ -238,7 +238,7 @@ acceptable.
 
 | # | Item | Weeks | Role | Depends on | Effort |
 |---|---|---|---|---|---|
-| 3a | Write the one-page sanitization checklist a lead can apply in 10 minutes | 8 to 9 | project owner | 07 section E | 3 to 4 h |
+| 3a | ~~Write the one-page sanitization checklist a lead can apply in 10 minutes~~ **Done 2026-07-26.** SANITIZATION.md plus check-sanitized.js, the machine backstop that flags identifiers before a run and is the proxy's pre-API step. 3b (owner sign-off) still open. | 8 to 9 | project owner | 07 section E | 3 to 4 h |
 | 3b | Get the checklist and the sign-off gate agreed by the confidentiality owner | 9 | project owner, VP or board | 3a | 1 to 2 h owner, plus their time |
 | 3c | Recruit 2 to 3 pilot project leads and brief them for 30 minutes each | 9 to 10 | project owner, pilot project leads | 3b | 3 h |
 | 3d | Lead-mode only pilot: the lead runs it, the students never see raw output | cycle weeks | pilot project leads | 3c | 15 min per deliverable per lead |

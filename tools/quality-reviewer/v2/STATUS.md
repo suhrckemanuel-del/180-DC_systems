@@ -27,6 +27,10 @@ view for project leads.
   readiness match 9 of 9 on the synthetic five, every run valid under the new contract. The
   scoring machinery is complete, the gold consistency checker (check-gold.js) is built and the
   full loop to build the answer key exists end to end.
+- The confidentiality gate exists (plan item 3a, 2026-07-26): [SANITIZATION.md](SANITIZATION.md)
+  is the ten-minute checklist and [check-sanitized.js](check-sanitized.js) is its machine
+  backstop, the local scanner that blocks any deck carrying a high-confidence client
+  identifier and is the proxy's pre-API step. Owner sign-off (3b) is the remaining people task.
 
 ## What still needs to happen, in order
 
@@ -43,9 +47,14 @@ view for project leads.
 3. ~~Freeze the tool.~~ **Done 2026-07-26** (freeze tag frozen-2026-07-26). Next, once the
    gold exists, run it on the 14 real cases for the first honest number on real work. HARD
    RULE: no reviewer run on any real case before its gold exists.
-4. Get an ex-consultant to sanity-check its judgment. Start recruitment now, it is the longest
-   lead time.
-5. Small pilot next cycle, lead-mode only, on real projects.
+4. ~~Recruit an ex-consultant to sanity-check its judgment.~~ **Done.** An ex-consultant is
+   secured and is helping review the golden set alongside the team.
+5. Build it for everyone from the start, both the student coaching view and the lead view, not
+   a lead-only pilot (decided 2026-07-26, reversing the earlier lead-mode-first staging). The
+   student view is wanted out of the gate. Path B (the `?role=student` readiness gate, already
+   shipped) is what makes this safe: a false not-ready never reaches a student, so the over-
+   flagging residual is contained on the student side by construction. Building is to be
+   completed before the next cycle starts.
 
 ## One-line status
 

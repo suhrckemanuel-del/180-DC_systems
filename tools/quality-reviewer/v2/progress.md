@@ -451,6 +451,29 @@ case 04 marked its Not-ready rule 1 primary among three blockers. Sheet at
 The prompt is now frozen (freeze tag frozen-2026-07-26, banner in 04 section A, decision-log
 entry), no edits until plan item 1.5o.
 
+## Session 10 (2026-07-26): confidentiality and sanitization gate built
+
+Build-track item 3 landed, off the critical path of the gold. The hard rule is that no real
+client material touches the tool until a sanitization gate exists, and it did not. Now it does.
+
+- [SANITIZATION.md](SANITIZATION.md) is the one-page ten-minute checklist a lead applies
+  before any real deck: client name to a label, people to roles, contact details out, logos
+  and client confidentiality markings out, figures banded, places generalised, un-sanitizable
+  slides described not pasted. Drawn from 07-workflow.md section E and 12-real-deck-intake Q3.
+- [check-sanitized.js](check-sanitized.js) is the machine backstop, a local no-dependency
+  scanner in the check-review-v2.js idiom. It blocks (exit 1) on seven high-confidence
+  identifier classes (email, URL, domain, handle, named org by legal suffix, named person by
+  honorific, phone) and surfaces without blocking three review-tier classes (confidentiality
+  markings, logo references, precise currency figures). It ignores sanitized placeholders,
+  redaction tokens, banded figures, plain data numbers and safe domains, so a scrubbed deck
+  passes clean. It never edits the file and never certifies a deck safe.
+- Verified: fixtures-sanitize/check-sanitized.test.sh, 19 per-category assertions all pass,
+  plus a clean and a dirty committed fixture. Banded ranges are correctly not flagged, precise
+  amounts are. No real case touched.
+- This is also the proxy's pre-API sanitization step: when build-track item 2 is built, the
+  proxy runs this logic first and rejects an exit-1 deck before any API call.
+- Remaining: 3b, the confidentiality-owner sign-off, is a people task and stays open.
+
 ## Next actions (Session 9)
 
 1. **The gold, the long pole.** The team labels the 14 real cases single-pass, blind, per
