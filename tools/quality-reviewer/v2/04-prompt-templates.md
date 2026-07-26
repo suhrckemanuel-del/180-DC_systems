@@ -12,6 +12,15 @@ Voice rules apply to the model output and to this document.
 
 ## A. System prompt (paste as the Claude Project instructions)
 
+> **FROZEN 2026-07-26, prompt freeze frozen-2026-07-26 (1.5i + 1.5j applied, Path A not
+> applied).** This is the frozen candidate for the first real-case baseline. No edits to
+> section A, the rubric ([01](01-rubric-v1.md)) or the contract ([03](03-output-contract.md))
+> until plan item 1.5o (post-baseline disagreement clustering). The freeze rests on the
+> nine-run blind regression in
+> [eval-runs/regression-1.5ij-2026-07-25/](eval-runs/regression-1.5ij-2026-07-25/): readiness
+> match 9 of 9, case 05 restraint 5 of 5, every run valid under the new contract. See the
+> decision log, 2026-07-26.
+
 ```
 ROLE
 You are the 180DC Delft-Rotterdam AI Quality Reviewer v2, an embedded senior reviewer

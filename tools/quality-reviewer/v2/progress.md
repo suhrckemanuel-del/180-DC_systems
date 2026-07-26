@@ -408,3 +408,57 @@ match the redesigned rubric (it had still said empty blockingIssues plus any maj
 
 See [eval-runs/NEXT-SESSION-PROMPT.md](eval-runs/NEXT-SESSION-PROMPT.md) for the earlier
 paste-ready continuation prompt (now largely superseded by this session).
+
+## Session 9 (2026-07-25 to 26): gold checker built, over-flagging decided, 1.5i + 1.5j done, prompt frozen
+
+Four things landed, all verified, no new design document.
+
+**1. The AI gold consistency checker exists.** [check-gold.js](check-gold.js) is the
+compensating control single-pass labeling was missing (PROTOCOL step 4). It parses the
+labeling-workstation gold shape and reports only internal contradictions for a human to
+resolve, never a label: one must-catch or a restraint case, valid readiness, readiness at or
+below any cited ceiling, a blocking rule for R0 or R1, no critical issue under an R3, valid
+severities, dimensions and issue types, every section filled. It mirrors check-review-v2.js
+8a to 8d. Verified against two fabricated real-00 fixtures and a 17-assertion per-rule harness
+(all pass), covering both the blocking-present and blocking-absent branches. PROTOCOL step 4
+now points to the real command. No real case was touched.
+
+**2. The over-flagging decision closed.** The owner accepted the 1-in-5 case 05
+over-escalation and declined Path A (the drafted severity-consistency clause). Path B already
+gates readiness out of the student view, and the real-case baseline is the true calibration
+test. The pre-freeze prompt pass therefore carried only 1.5i and 1.5j.
+
+**3. 1.5i and 1.5j implemented and verified.** 1.5i, the scorecard denominator fix: every
+dimension carries a scope (full, light, na) from the artifact-type matrix; checksTotal is
+pinned to the four enumerated sub-checks and shrinks only as sub-checks resolve to na;
+diagnosticMean averages full-scope dimensions only, so a light dimension's non-comparable
+denominator can no longer corrupt the one objective number (the 2026-07-03 effectiveness
+review's bug a and b). 1.5j, the blocking fix: with multiple blockers, exactly one is primary,
+the binding lowest-ceiling one, the rest secondary and mainReason names it. Enforced in
+check-review-v2.js and the renderer, both presence-gated so pre-1.5i reviews still validate
+and the board demo's embedded legacy review is untouched. Contract, prompt, rubric and the
+three canonical fixtures updated. Verified: validator 9 of 9 new-format plus 3 of 3 legacy,
+renderer 10 of 10 headless Playwright.
+
+**4. Nine-run blind regression, then freeze.** The frozen candidate was run blind on the five
+synthetic cases (Opus 4.8, byte-identical stability packs, fresh-context runners each reading
+one self-contained pack, case 05 five times). Result: readiness match 9 of 9 (01 R1, 02 R1,
+03 R1, 04 R0, 05 R3 in all five), every run valid under the new contract with verbatim quotes,
+case 05 over-escalation did not reproduce (5 of 5 R3, mean stable 4.5 to 4.8). The live runs
+exercised both mechanics: case 01 marked exactly Feasibility light per the draft-deck matrix,
+case 04 marked its Not-ready rule 1 primary among three blockers. Sheet at
+[eval-runs/regression-1.5ij-2026-07-25/README.md](eval-runs/regression-1.5ij-2026-07-25/README.md).
+The prompt is now frozen (freeze tag frozen-2026-07-26, banner in 04 section A, decision-log
+entry), no edits until plan item 1.5o.
+
+## Next actions (Session 9)
+
+1. **The gold, the long pole.** The team labels the 14 real cases single-pass, blind, per
+   PROTOCOL. Calibration round on four first. Run check-gold.js on each finished gold. The AI
+   supports mechanics only and never writes or suggests a label.
+2. **Baseline, gated on the gold.** Once a case has its gold AND the prompt is frozen (it is),
+   run the frozen reviewer blind on that case and score against the human gold: readiness
+   match, must-catch recall, precision, restraint. No reviewer run on any real case before its
+   gold exists.
+3. **Expert recruitment.** The source backlog is clear (plan item 2a done), so start the
+   ex-consultant recruitment, the longest lead time.

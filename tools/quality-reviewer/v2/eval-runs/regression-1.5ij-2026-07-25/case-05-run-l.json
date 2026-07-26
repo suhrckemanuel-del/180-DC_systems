@@ -1,0 +1,264 @@
+{
+  "meta": {
+    "title": "Client E paid membership scheme",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Nearly ready with minor edits",
+    "mainReason": "No blocking rule fired: the deck names the decision, answers it, sources its core claims and marks its load-bearing assumption as the thing to test, so the core is sound and only refinements remain.",
+    "highestRiskIssue": "Slide 8 projects about 5,000 pounds in year one but never sizes that against grants being 80% of income on slide 3, so the deck does not show how much of the gap membership actually closes.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "Actual conversion rates for the three comparable groups, or a pounds figure for the grant shortfall, would sharpen the case, but neither changes the deliberately small-start recommendation."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.6,
+    "confidence": "Medium",
+    "effort": "4-6 hrs",
+    "dimensions": [
+      {
+        "name": "Client decision usefulness",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The decision, the answer and the first action are stated plainly and early."
+      },
+      {
+        "name": "Problem framing",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4,
+        "note": "The problem is specific and held consistently, but success for the diversification goal is defined only at the pilot level, not against the income gap."
+      },
+      {
+        "name": "Storyline and pyramid logic",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The governing insight is on slide 1 and every section feeds it, problem to evidence to recommendation to first steps."
+      },
+      {
+        "name": "Evidence quality",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Core claims trace to named sources and the one projection is labelled an assumption to test."
+      },
+      {
+        "name": "Analysis and insight",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4,
+        "note": "Findings feed the recommendation, but the projected income is not compared to the size of the grant shortfall it is meant to address."
+      },
+      {
+        "name": "Recommendation specificity",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The action, the owner, the timing and the success trigger are all named on slide 10."
+      },
+      {
+        "name": "Feasibility and implementation",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The plan fits existing capacity, sequences the steps and starts with a soft launch to 200 contacts."
+      },
+      {
+        "name": "Risks, assumptions and uncertainty",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The load-bearing conversion assumption and the main risk are named and the soft launch tests them."
+      },
+      {
+        "name": "Slide-level communication",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 2,
+        "checksTotal": 4,
+        "note": "Each slide carries one message that its content supports, but several titles such as The numbers and First steps are topic labels not assertions."
+      },
+      {
+        "name": "Professionalism, tone and confidentiality",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Professional throughout, the coordinator is named by role not judged, and certainty is calibrated."
+      }
+    ]
+  },
+  "strengths": [
+    {
+      "point": "The deck answers the client question first, in the title, so a busy reader knows the recommendation before slide 2.",
+      "quote": "Client E should launch a paid membership scheme, starting with a single tier in the autumn.",
+      "slide": 1
+    },
+    {
+      "point": "The key projection is handled honestly, flagged as an assumption and named as the thing to test rather than presented as fact.",
+      "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.",
+      "slide": 8
+    },
+    {
+      "point": "The first steps are specific with an owner, a sequence and a measurable go or no-go trigger.",
+      "quote": "Month three: full launch if the soft launch clears 5%.",
+      "slide": 10
+    },
+    {
+      "point": "The core claims driving the case are sourced to named internal records.",
+      "quote": "Project grants are 80% of Client E's income (2024 accounts) and each is single-year.",
+      "slide": 3
+    }
+  ],
+  "findings": [
+    {
+      "short": "Income not sized to gap",
+      "title": "The projected membership income is never compared to the size of the grant shortfall it is meant to close.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Analysis and insight: connect the result to the size of the problem it solves.",
+      "diagnosis": "Slide 3 sets the problem as grants being 80% of income with two of five not expected to renew. Slide 8 projects about 5,000 pounds in year one. The deck never states what fraction of the lost grant income that recovers, so the reader cannot see whether membership is a meaningful hedge or a first small experiment.",
+      "evidence": [
+        {
+          "slide": 8,
+          "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one."
+        },
+        {
+          "slide": 3,
+          "quote": "Project grants are 80% of Client E's income (2024 accounts) and each is single-year."
+        }
+      ],
+      "why": "The client asked how to diversify income. Without sizing the gap the deck cannot say whether membership alone is enough or whether other streams are needed alongside it.",
+      "reflect": "In pounds, how large is the shortfall from the two grants that may not renew, and what share of it does 5,000 pounds cover.",
+      "fix": "Add the shortfall in pounds and state what share year-one membership recovers, then frame membership as the first of possibly several streams if the share is small. This strengthens an already-sound small-start recommendation, it does not change it.",
+      "tags": [
+        "Analysis and insight",
+        "So-what"
+      ]
+    },
+    {
+      "short": "Conversion not benchmarked",
+      "title": "The 8% conversion assumption is checked against attendance but not against what comparable groups actually convert.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Evidence quality: benchmark a load-bearing assumption against the closest available comparator.",
+      "diagnosis": "Slide 5 cites the comparable groups only for pricing. Slide 8 justifies the 8% conversion against Client E's own 32% attendance rate. The nearest external anchor, what those comparable groups convert from their own audiences, is not used, so the assumption rests on a single internal proxy.",
+      "evidence": [
+        {
+          "slide": 8,
+          "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test."
+        },
+        {
+          "slide": 5,
+          "quote": "Three comparable local arts non-profits run membership at 40 to 60 pounds a year (their public websites, 2025)."
+        }
+      ],
+      "why": "A conversion figure grounded in one internal proxy is easier for a funder to question than one triangulated against real peers, and the soft launch is cheaper to plan if the target is anchored.",
+      "reflect": "What conversion rate do the three comparable groups achieve, and does that raise or lower confidence in 8%.",
+      "fix": "Where the comparators publish membership numbers, add their approximate conversion as a second anchor for the 8% target. Keep the soft launch as the real test either way.",
+      "tags": [
+        "Evidence quality",
+        "Benchmarking"
+      ]
+    },
+    {
+      "short": "Topic-label titles",
+      "title": "Several slide titles are topic labels rather than the assertion the slide makes.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "Minto action titles: the title carries the message so the titles alone tell the story.",
+      "diagnosis": "The opening and closing titles assert (slide 1, slide 6), but middle titles such as The numbers and First steps name a topic rather than the point the slide proves. A reader skimming only the titles gets the recommendation but not the supporting logic.",
+      "evidence": [
+        {
+          "slide": 8,
+          "quote": "The numbers"
+        },
+        {
+          "slide": 10,
+          "quote": "First steps"
+        }
+      ],
+      "why": "A partner or board member who reads only the titles should be able to reconstruct the argument. Topic labels force them back into the body to find the point.",
+      "reflect": "If a reader saw only your titles, could they state the point of slide 8 and slide 10.",
+      "fix": "Rewrite the topic-label titles as complete-sentence assertions that state the takeaway, for example what the numbers show and what the first step commits to. This is polish on a deck whose argument already holds.",
+      "tags": [
+        "Minto",
+        "Action titles"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "location": "Slide 7",
+      "problem": "The member benefits are asserted to use existing capacity but two members-only events a year are not sized against staff time.",
+      "why": "Slide 9 names staff strain as an assumption, so the benefit slide and the risk slide should agree on the load.",
+      "fix": "Note the rough staff hours the two events need so the no-strain assumption is visible where the benefits are promised."
+    }
+  ],
+  "questionsForLead": [
+    "Do we know the actual conversion rate of the three comparable groups, or only their pricing.",
+    "How large is the grant shortfall in pounds, and does about 5,000 pounds in year one meaningfully diversify against it.",
+    "Was any income stream beyond membership considered, or was membership the only option in scope for this project."
+  ],
+  "learningNote": {
+    "lesson": "A recommendation should size its result against the problem it is solving. A clean projection means little until the reader knows what share of the gap it closes.",
+    "weakHabit": "Presenting a well-built number in isolation without tying it back to the magnitude of the original problem.",
+    "exercise": "For the headline result, write one sentence: this recovers X of the Y we are trying to replace. If you cannot fill in Y, that is the next number to find.",
+    "principle": "Analysis and insight"
+  },
+  "notAssessed": [
+    "Whether the 8% conversion assumption is realistic. No comparable conversion data was provided, only pricing.",
+    "The size of the grant shortfall in pounds. The deck gives a percentage of income, not an amount.",
+    "Visual design, layout and charts. Only slide text was provided.",
+    "Whether the coordinator has capacity to own the launch alongside current duties. The deck does not say."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Decision and case", "span": 5 },
+      { "label": "Design and numbers", "span": 3 },
+      { "label": "Risks and steps", "span": 2 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "partial" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "pass" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "pass" }
+    ],
+    "callouts": [
+      { "at": 8, "state": "partial", "label": "Income not sized to the grant gap" },
+      { "at": 5, "state": "partial", "label": "Comparators used for price only" }
+    ],
+    "connectors": [
+      { "from": 3, "to": 8, "label": "Gap should meet the projection" }
+    ]
+  }
+}

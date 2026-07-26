@@ -1,0 +1,238 @@
+{
+  "meta": {
+    "title": "Client E paid membership scheme",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Nearly ready with minor edits",
+    "mainReason": "No blocking rule fired. The decision is clear, the core recommendation rests on sourced and honestly caveated evidence and the sequenced pilot leaves only refinement, not a change to what the client should do.",
+    "highestRiskIssue": "The month-three full-launch trigger of 5% on slide 10 sits below the 8% year-one target on slide 8.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "The client's total income (to size the 5,000 pounds against the grant shortfall) or evidence that the 5% trigger is deliberately calibrated would confirm the level. Neither is a blocker on the text as written."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.8,
+    "confidence": "Medium",
+    "effort": "4-6 hrs",
+    "dimensions": [
+      {
+        "name": "Client decision usefulness",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The decision is named on slide 2 and answered first on slide 1, with a next step on slide 10."
+      },
+      {
+        "name": "Problem framing",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Diversify income away from project grants is specific, scoped to a single tier and held throughout."
+      },
+      {
+        "name": "Storyline and pyramid logic",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Answer-first title and assertion titles reconstruct the argument from problem to evidence to recommendation."
+      },
+      {
+        "name": "Evidence quality",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Accounts, box-office data, funder letters and comparator prices are cited and the 8% is flagged as the thing to test."
+      },
+      {
+        "name": "Analysis and insight",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4,
+        "note": "Findings feed the recommendation, but the 5,000 pounds is not sized against the grant gap and 8% is benchmarked on attendance."
+      },
+      {
+        "name": "Recommendation specificity",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Action, owner, timing and measure are all named on slides 6 and 10."
+      },
+      {
+        "name": "Feasibility and implementation",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The single-tier soft launch fits a small team and sequences a pilot before full launch."
+      },
+      {
+        "name": "Risks, assumptions and uncertainty",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Load-bearing assumptions and the main risk are stated with a soft launch to test them."
+      },
+      {
+        "name": "Slide-level communication",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4,
+        "note": "Most titles are assertions, a few (The decision, The numbers, First steps) are bare labels."
+      },
+      {
+        "name": "Professionalism, tone and confidentiality",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Tone is fit for a client, no named individual is judged and certainty is appropriate."
+      }
+    ]
+  },
+  "strengths": [
+    {
+      "point": "The deck answers the client question first and states the decision plainly.",
+      "quote": "Client E should launch a paid membership scheme, starting with a single tier in the autumn.",
+      "slide": 1
+    },
+    {
+      "point": "Key claims are tied to named sources.",
+      "quote": "Project grants are 80% of Client E's income (2024 accounts) and each is single-year.",
+      "slide": 3
+    },
+    {
+      "point": "Assumptions and risks are stated honestly with a test built in.",
+      "quote": "We assume the mailing list is accurate and that members-only events do not strain staff.",
+      "slide": 9
+    },
+    {
+      "point": "The first steps name an owner, a sequence and a measure.",
+      "quote": "The Client E coordinator owns the launch.",
+      "slide": 10
+    }
+  ],
+  "findings": [
+    {
+      "short": "Trigger below target",
+      "title": "The month-three go trigger of 5% sits below the 8% year-one target and is measured on the most engaged contacts.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Decision Consistency: a go/no-go threshold must match the success target and the population it is measured on.",
+      "diagnosis": "Slide 8 sets the year-one target at 8% of the full mailing list. Slide 10 triggers the full launch when the soft launch to the most engaged 200 contacts clears 5%. The most engaged contacts should convert above the full-list average, so clearing only 5% among them is a weaker signal than 8%, yet it green-lights the full launch.",
+      "evidence": [
+        {
+          "slide": 8,
+          "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one."
+        },
+        {
+          "slide": 10,
+          "quote": "Month three: full launch if the soft launch clears 5%."
+        }
+      ],
+      "why": "A full launch triggered on a soft-launch result that predicts missing the year-one target could commit staff time to a scheme that underperforms, and the client cannot see that risk from the current gate.",
+      "reflect": "If your best 200 contacts convert at only 5%, what does that imply for the full list at 8%, and should that still trigger a full launch.",
+      "fix": "Reconcile the go trigger with the year-one target. Set the soft-launch bar at a level that predicts the 8% full-list target given these are the most engaged contacts, or state why a lower bar is acceptable.",
+      "tags": [
+        "Decision Consistency",
+        "Actionability"
+      ]
+    },
+    {
+      "short": "8% benchmark mismatch",
+      "title": "The 8% conversion assumption is reassured against an event-attendance rate, which measures a different behavior than paying for membership.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Evidence Grounding: benchmark an assumption against the behavior it actually predicts.",
+      "diagnosis": "Slide 8 calls 8% conservative against the 32% attendance rate. Attending an event is not the same commitment as paying 45 pounds a year, so the attendance figure does not on its own make 8% conservative.",
+      "evidence": [
+        {
+          "slide": 8,
+          "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test."
+        }
+      ],
+      "why": "If the client reads 8% as safely conservative it may under-plan for a shortfall, because attendance does not directly predict willingness to pay.",
+      "reflect": "What behavior in your data most closely resembles paying for membership, and does it support 8%.",
+      "fix": "Ground the 8% in a proxy closer to paid commitment (past paid tickets or donors) or keep it as an untested assumption without the attendance comparison.",
+      "tags": [
+        "Evidence Grounding"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "location": "Slide 8",
+      "problem": "The year-one figure of about 5,000 pounds is not sized against the income gap it is meant to close.",
+      "why": "Grants are 80% of income and two of five are not expected to renew, so the client cannot tell whether 5,000 pounds materially diversifies income.",
+      "fix": "State total income and the size of the expected grant shortfall so the membership target can be judged against it."
+    },
+    {
+      "location": "Slide 7",
+      "problem": "The members-only discount with local partners is listed as existing capacity.",
+      "why": "The discount depends on partner agreement, not only on Client E capacity, so it may not be deliverable at launch.",
+      "fix": "Confirm the partner discounts are agreed or mark them as pending."
+    }
+  ],
+  "questionsForLead": [
+    "What is Client E's total annual income, so the year-one 5,000 pounds can be judged against the gap from the two grants not expected to renew.",
+    "Is the 5% soft-launch trigger deliberately set below the 8% year-one target, given the soft launch goes to the most engaged 200 contacts.",
+    "Have the local-partner discounts been agreed, or are they still to be arranged."
+  ],
+  "learningNote": {
+    "lesson": "A go/no-go gate is only useful when its threshold maps to your success target and the population it measures.",
+    "weakHabit": "Setting a checkpoint number without checking it against the target it is supposed to protect.",
+    "exercise": "For each gate in a plan, write the target it maps to and the group it is measured on, then confirm that passing the gate predicts hitting the target.",
+    "principle": "Decision Consistency"
+  },
+  "notAssessed": [
+    "Client E's total annual income, so the materiality of 5,000 pounds could not be judged.",
+    "Whether the comparable non-profits are truly comparable in size and audience. Only their public prices were provided.",
+    "Visual design, layout and charts. Only slide text was provided.",
+    "Whether the two grants will in fact not renew. The deck cites funder letters not provided here."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Decision and rationale", "span": 3 },
+      { "label": "Evidence base", "span": 2 },
+      { "label": "Design and numbers", "span": 3 },
+      { "label": "Risks and steps", "span": 2 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "pass" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "pass" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 8, "state": "partial", "label": "8% benchmarked on attendance" },
+      { "at": 10, "state": "partial", "label": "Go trigger below target" }
+    ],
+    "connectors": [
+      { "from": 8, "to": 10, "label": "8% target vs 5% trigger" }
+    ]
+  }
+}

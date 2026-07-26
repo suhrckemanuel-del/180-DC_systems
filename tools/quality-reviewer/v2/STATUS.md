@@ -16,37 +16,42 @@ view for project leads.
   human can read.
 - It passed a narrow first test: five short synthetic decks, each built around one flaw. Green,
   but this is a smoke test not a validation.
-- Known, measured weak spot: on strong work it over-flags. The restraint case gets called not
-  ready in 3 of 5 runs. It cries wolf on good decks more often than not.
+- Known weak spot, much reduced: on strong work it over-flags. Under the frozen package
+  (1.5i + 1.5j, 2026-07-26) the restraint case landed Nearly ready in all five re-runs, down
+  from 3 of 5 on the old package. The owner accepted the residual risk (up to about 1 in 5)
+  rather than chase it with a source-side severity change, since the student view already
+  gates readiness out. The real-case baseline is the true calibration test.
 - It has never run on a real client deliverable. Not once. That is the whole point and it has
   not happened yet.
-- The scoring machinery is complete. 14 real anonymised cases are ready, the blind labeling
-  site exists, and the adjudication tool was built 2026-07-24 and its parser tested. The full
-  loop to build the answer key now exists end to end.
+- The prompt is frozen (freeze tag frozen-2026-07-26) on a nine-run blind regression:
+  readiness match 9 of 9 on the synthetic five, every run valid under the new contract. The
+  scoring machinery is complete, the gold consistency checker (check-gold.js) is built and the
+  full loop to build the answer key exists end to end.
 
 ## What still needs to happen, in order
 
-1. Decide the over-flagging problem (owner call). Path B is built and verified 2026-07-24: the
-   renderer now genuinely gates readiness out of a student build (`?role=student`), so a false
-   not-ready cannot reach a student, and the default demo path is unchanged. The remaining call
-   is whether to also run Path A, a source-side severity fix, in the pre-freeze prompt pass. It
-   is drafted and reversible, not yet applied. See progress.md Session 8.
+1. ~~Decide the over-flagging problem.~~ **Done 2026-07-25.** Path B (the student readiness
+   gate) shipped, and the owner accepted the residual 1-in-5 over-escalation rather than apply
+   Path A. The pre-freeze pass ran 1.5i and 1.5j only. Both are in and the prompt is frozen.
 2. Build the answer key, the golden set. Single human pass (team constraint, decided
    2026-07-25): the team labels each of the 14 real cases once, blind, starting with a
-   calibration round on four cases done together, then an AI mechanical consistency check on
-   each finished gold. People-gated, the AI never writes a label. This is the long pole. Start
-   with [eval-cases-real/labeling/calibration-batch.md](eval-cases-real/labeling/calibration-batch.md)
+   calibration round on four cases done together, then the AI mechanical consistency check
+   ([check-gold.js](check-gold.js), built 2026-07-25) on each finished gold. People-gated, the
+   AI never writes a label. This is the long pole. Start with
+   [eval-cases-real/labeling/calibration-batch.md](eval-cases-real/labeling/calibration-batch.md)
    and [eval-cases-real/labeling/PROTOCOL.md](eval-cases-real/labeling/PROTOCOL.md).
-3. Freeze the tool, then run it on the 14 real cases for the first honest number on real work.
+3. ~~Freeze the tool.~~ **Done 2026-07-26** (freeze tag frozen-2026-07-26). Next, once the
+   gold exists, run it on the 14 real cases for the first honest number on real work. HARD
+   RULE: no reviewer run on any real case before its gold exists.
 4. Get an ex-consultant to sanity-check its judgment. Start recruitment now, it is the longest
    lead time.
 5. Small pilot next cycle, lead-mode only, on real projects.
 
 ## One-line status
 
-The tool is built and the review machinery is complete. It has not been tested on real work
-and it over-flags strong decks. The next real milestone is the human answer key, which unlocks
-the first honest measurement.
+The tool is built, the review machinery is complete, and the prompt is frozen on a clean
+nine-run synthetic regression. It has not been tested on real work. The next real milestone is
+the human answer key, which unlocks the first honest measurement.
 
 ## The golden-set loop (single pass, 2026-07-25)
 

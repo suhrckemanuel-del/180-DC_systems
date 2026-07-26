@@ -1,0 +1,261 @@
+{
+  "meta": {
+    "title": "Client E paid membership recommendation",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Nearly ready with minor edits",
+    "mainReason": "No blocking rule fired: the decision is clear, the core recommendation is supported and its main assumption is honestly flagged and tested by a soft launch, so only refinements remain.",
+    "highestRiskIssue": "The full-launch gate on slide 10 is set at 5% with no link to what makes the scheme worth running.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "A stated running cost that made the net payoff clearly negative, or evidence the mailing list cannot be used for this outreach, could pull the level down."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.5,
+    "confidence": "Medium",
+    "effort": "3-5 hrs",
+    "dimensions": [
+      {
+        "name": "Client decision usefulness",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The decision is named, answered yes and given a first action, framed for the client who acts."
+      },
+      {
+        "name": "Problem framing",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4,
+        "note": "The problem and one consistent question are clear, what is out of scope is not explicitly bounded."
+      },
+      {
+        "name": "Storyline and pyramid logic",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4,
+        "note": "Answer-first on slide 1 and a clean flow, but a few topic-label titles blunt the titles-only read."
+      },
+      {
+        "name": "Evidence quality",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Claims trace to named sources and the one assumption is marked as an assumption to test."
+      },
+      {
+        "name": "Analysis and insight",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4,
+        "note": "Findings are interpreted and feed the recommendation, tier structure is the only alternative compared."
+      },
+      {
+        "name": "Recommendation specificity",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Action, owner, timeframe and a measurable target are all present."
+      },
+      {
+        "name": "Feasibility and implementation",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Sized to a small team, sequenced across three months with a soft launch as the first step."
+      },
+      {
+        "name": "Risks, assumptions and uncertainty",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The load-bearing assumptions and the main risk are named and the uncertainty is stated honestly."
+      },
+      {
+        "name": "Slide-level communication",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 2,
+        "checksTotal": 4,
+        "note": "Each slide makes one supported point, but several titles are bare labels such as The numbers and First steps."
+      },
+      {
+        "name": "Professionalism, tone and confidentiality",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Professional throughout, the coordinator is referenced by role and certainty is appropriate."
+      }
+    ]
+  },
+  "strengths": [
+    {
+      "point": "The deck answers the client's question in the first slide and states the decision plainly.",
+      "quote": "Client E should launch a paid membership scheme, starting with a single tier in the autumn.",
+      "slide": 1
+    },
+    {
+      "point": "The one load-bearing number is marked as an assumption and named as the thing to test, not sold as fact.",
+      "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.",
+      "slide": 8
+    },
+    {
+      "point": "The plan de-risks itself with a soft launch before any full commitment.",
+      "quote": "A soft launch to the most engaged 200 contacts tests both before the full launch.",
+      "slide": 9
+    }
+  ],
+  "findings": [
+    {
+      "short": "5% gate unjustified",
+      "title": "The full-launch gate of 5% is set below the 8% revenue target with no stated rationale.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "A go/no-go trigger should tie to the number that makes the venture worth doing.",
+      "diagnosis": "Slide 8 builds the year-one case on 8% conversion for about 5,000 pounds. Slide 10 then sets the full-launch trigger at 5%, below that target, without saying why 5% is enough to proceed or what revenue it implies.",
+      "evidence": [
+        {
+          "slide": 8,
+          "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one."
+        },
+        {
+          "slide": 10,
+          "quote": "Month three: full launch if the soft launch clears 5%."
+        }
+      ],
+      "why": "The coordinator running the gate cannot tell whether clearing 5% still makes membership worth the staff time or just clears an arbitrary bar.",
+      "reflect": "At what conversion does the scheme cover its own costs and justify the staff time, and is that number above or below 5%.",
+      "fix": "Tie the go threshold to a break-even or worth-it conversion rate and state the revenue 5% implies, so the gate reflects viability not a round number.",
+      "tags": [
+        "Decision Logic",
+        "Actionability"
+      ]
+    },
+    {
+      "short": "Revenue shown gross",
+      "title": "The 5,000 pounds is gross revenue and the cost of running membership is asserted low but never netted out.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "A revenue figure that drives a decision should be shown net of the cost to earn it.",
+      "diagnosis": "Slide 8 presents about 5,000 pounds as the year-one payoff. Slides 6 and 7 assert admin stays low and the benefits use existing capacity, but the two members-only events and the partner discount carry some cost that is never subtracted, so the net gain is unknown.",
+      "evidence": [
+        {
+          "slide": 7,
+          "quote": "These use capacity Client E already has."
+        },
+        {
+          "slide": 6,
+          "quote": "keeps admin low"
+        }
+      ],
+      "why": "A funder or board member will ask what membership nets after its running cost, and the deck cannot answer.",
+      "reflect": "What does one year of running the scheme cost in staff time and partner discounts, and what is left of the 5,000.",
+      "fix": "Add a net line that subtracts the running cost from the gross membership revenue, even as a rough estimate, so the payoff is honest.",
+      "tags": [
+        "Evidence Grounding",
+        "Net not gross"
+      ]
+    },
+    {
+      "short": "Label titles",
+      "title": "Several content titles are bare topic labels, so the titles alone do not carry the full argument.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "Minto action titles: the title states the point the slide makes.",
+      "diagnosis": "Slide 1 sets an answer-first assertion, but slides 8 and 10 fall back to labels (The numbers, First steps), so a reader skimming only the titles loses part of the argument.",
+      "evidence": [
+        {
+          "slide": 8,
+          "quote": "The numbers"
+        },
+        {
+          "slide": 10,
+          "quote": "First steps"
+        }
+      ],
+      "why": "A busy board member reading only titles cannot reconstruct the case the strong slide 1 promises.",
+      "reflect": "If a reader saw only your titles, could they state what the numbers show and what the first step is.",
+      "fix": "Rewrite the label titles as the assertion the slide makes, so the titles alone carry the argument.",
+      "tags": [
+        "Minto",
+        "Pyramid Principle"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "location": "Slide 5",
+      "problem": "The comparables set the 45 pound price but the deck does not say what those groups give members for 40 to 60 pounds.",
+      "why": "Price parity without benefit parity could leave Client E's offer looking thin.",
+      "fix": "Note briefly how the comparable benefits compare to priority booking and two events, or flag it as a thing to check."
+    }
+  ],
+  "questionsForLead": [
+    "Is there a conversion rate below which membership is not worth the coordinator's time, and does 5% sit above it.",
+    "What does running the scheme cost in a year once the two members-only events and the partner discount are counted.",
+    "Is the 1,400 mailing list current and consented for this kind of outreach."
+  ],
+  "learningNote": {
+    "lesson": "A staged launch is only as good as the number on its go/no-go gate. Tie the trigger to what makes the venture worthwhile, not to a round figure.",
+    "weakHabit": "Setting a decision threshold without connecting it to break-even or the target it is meant to protect.",
+    "exercise": "For every go/no-go number in a deck, write the one sentence that says what happens just below it and just above it. If the two outcomes are not clearly different, the threshold is not yet doing its job.",
+    "principle": "Decision Logic"
+  },
+  "notAssessed": [
+    "Visual design, layout and charts. Only slide text was provided.",
+    "Whether the comparable membership prices on slide 5 are current or accurately transcribed. The external sources were not provided.",
+    "Whether the 1,400 mailing list is accurate and consented for this outreach. The deck assumes it is.",
+    "The actual cost of running the scheme. The deck does not quantify it."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Decision", "span": 2 },
+      { "label": "Case for change", "span": 3 },
+      { "label": "Design", "span": 2 },
+      { "label": "Numbers and risk", "span": 2 },
+      { "label": "Action", "span": 1 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "pass" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "pass" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 8, "state": "partial", "label": "8% is an assumption and the 5,000 is gross" },
+      { "at": 10, "state": "partial", "label": "5% gate not tied to viability" }
+    ],
+    "connectors": [
+      { "from": 8, "to": 10, "label": "conversion target to go/no-go" }
+    ]
+  }
+}

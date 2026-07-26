@@ -1,0 +1,273 @@
+{
+  "meta": {
+    "title": "Client E paid membership scheme",
+    "client": "Client E (anonymized)",
+    "artifactType": "final recommendation deck",
+    "mode": "deep",
+    "slideCount": 10,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Nearly ready with minor edits",
+    "mainReason": "No blocking rule fired: the decision is clear, the core recommendation is supported and sourced, the framing holds and the load-bearing assumptions and risks are stated, so the residual findings refine the plan without changing the launch decision.",
+    "highestRiskIssue": "The full-launch gate on slide 10 clears at 5% while the year-one target on slide 8 is 8%, so the go decision does not confirm the number the case rests on.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "Conversion data from the soft launch, the pounds size of the grant income at risk or confirmation that the 5% gate and the 8% target measure the same population would firm up the level. None of these lowers it below Nearly ready on the text as written."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.6,
+    "confidence": "Medium",
+    "effort": "3-5 hrs",
+    "dimensions": [
+      {
+        "name": "Client decision usefulness",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The decision, the answer and the first action are stated plainly and early on slides 1, 2 and 10."
+      },
+      {
+        "name": "Problem framing",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The membership question is specific, bounded to a single-tier start and held consistently, with a conversion and revenue success measure."
+      },
+      {
+        "name": "Storyline and pyramid logic",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4,
+        "note": "Governing insight is up front and every section supports it, but several titles are labels so the titles-only read is weaker than the slide 1 assertion."
+      },
+      {
+        "name": "Evidence quality",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Grant share, mailing list, attendance and comparator pricing all carry named sources and the key assumption is flagged as the thing to test."
+      },
+      {
+        "name": "Analysis and insight",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Evidence is interpreted into implications, the single-tier alternative is compared and findings feed the recommendation."
+      },
+      {
+        "name": "Recommendation specificity",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "The action, the owner, the timing and a measurable target are all named on slides 6, 8 and 10."
+      },
+      {
+        "name": "Feasibility and implementation",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 3,
+        "checksTotal": 4,
+        "note": "The plan is sized to the client and sequenced with a pilot, but the partner-discount dependency on slide 7 is not acknowledged as an external agreement."
+      },
+      {
+        "name": "Risks, assumptions and uncertainty",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Load-bearing assumptions and the main risk are named, the tier tradeoff is acknowledged and uncertainty is stated honestly."
+      },
+      {
+        "name": "Slide-level communication",
+        "scope": "full",
+        "result": "partial",
+        "checksPassed": 2,
+        "checksTotal": 4,
+        "note": "Each slide carries one message and content matches the title, but several content titles are topic labels rather than assertions."
+      },
+      {
+        "name": "Professionalism, tone and confidentiality",
+        "scope": "full",
+        "result": "pass",
+        "checksPassed": 4,
+        "checksTotal": 4,
+        "note": "Tone is fit for a client, no named individual is judged (the coordinator is a role) and certainty is appropriate."
+      }
+    ]
+  },
+  "strengths": [
+    {
+      "point": "The deck answers first: the title and slide 2 state the decision and the answer before the evidence.",
+      "quote": "Our answer is yes, with a deliberately small start.",
+      "slide": 2
+    },
+    {
+      "point": "The load-bearing assumption is named as the thing to test rather than hidden.",
+      "quote": "The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.",
+      "slide": 8
+    },
+    {
+      "point": "The first steps are concrete, owned and sequenced.",
+      "quote": "The Client E coordinator owns the launch.",
+      "slide": 10
+    },
+    {
+      "point": "Key claims carry named sources.",
+      "quote": "Project grants are 80% of Client E's income (2024 accounts) and each is single-year.",
+      "slide": 3
+    }
+  ],
+  "findings": [
+    {
+      "short": "5% gate below 8% target",
+      "title": "The full-launch gate is set at 5% while the stated year-one target is 8%, so the go decision does not test the number the plan rests on.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Internal consistency: the go/no-go gate must match the target the plan is built on.",
+      "diagnosis": "Slide 8 builds the year-one revenue of about 5,000 pounds on an 8% conversion and calls 8% the main thing to test. Slide 10 reviews against that 8% target in month two but full launches in month three if the soft launch clears only 5%. The soft launch goes to the most engaged 200 contacts, who should convert above the full-list rate, so a 5% bar on that group does not confirm the 8% full-list assumption and lets a full launch proceed at a conversion that misses the 5,000 pounds the case cites.",
+      "evidence": [
+        {
+          "slide": 8,
+          "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one."
+        },
+        {
+          "slide": 10,
+          "quote": "Month two: review conversion against the 8% target. Month three: full launch if the soft launch clears 5%."
+        }
+      ],
+      "why": "If conversion lands between 5% and 8% the plan still triggers a full launch, but year-one income comes in below the 5,000 pounds the deck used to justify the scheme, so the client acts on a number the gate never validated.",
+      "reflect": "What conversion rate on the most engaged 200 would actually confirm an 8% rate across the full list, and is that the number the gate should use.",
+      "fix": "Align the go gate with the target: derive the soft-launch pass mark from what an 8% full-list rate implies for the most engaged 200 or restate the year-one revenue at the 5% the gate accepts. Make the two thresholds tell one story.",
+      "tags": [
+        "Internal consistency",
+        "Actionability"
+      ]
+    },
+    {
+      "short": "Grant shortfall not sized",
+      "title": "The deck shows grants at risk but never sizes the shortfall, so the reader cannot judge whether the membership target meaningfully diversifies income.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Analysis: a diversification case has to size the gap it is filling.",
+      "diagnosis": "Slide 3 says project grants are 80% of income and two of five are not expected to renew. Slide 8 sets a year-one target of about 5,000 pounds. The deck never states the pounds of grant income at risk, so a reader cannot tell whether 5,000 pounds is a meaningful start against the gap or a rounding error, even granting that the start is deliberately small.",
+      "evidence": [
+        {
+          "slide": 3,
+          "quote": "Two of five grants are not expected to renew, per the funder letters on file."
+        },
+        {
+          "slide": 8,
+          "quote": "If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one."
+        }
+      ],
+      "why": "A funder or board member weighing the scheme will ask how far 5,000 pounds goes against the income it is meant to replace, and the deck gives no way to answer.",
+      "reflect": "How many pounds of grant income are at risk over the next two years, and what share does the year-one and scaled membership target cover.",
+      "fix": "Add the pounds at risk from the non-renewing grants and set the membership target against it, so the small start reads as a first step toward a sized gap rather than an unbenchmarked figure.",
+      "tags": [
+        "Analysis",
+        "Client usefulness"
+      ]
+    },
+    {
+      "short": "Partner discount unevidenced",
+      "title": "The member discount with local partners is presented as existing capacity, but it depends on partner agreements the deck does not evidence.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "implementation",
+      "owner": "team",
+      "principle": "Feasibility: a promised benefit that needs a third party is a dependency, not existing capacity.",
+      "diagnosis": "Slide 7 lists a discount with local partners among the member benefits and then says these use capacity Client E already has. Priority booking and members-only events are within Client E's control, but a partner discount needs those partners to agree, which the deck does not evidence.",
+      "evidence": [
+        {
+          "slide": 7,
+          "quote": "Priority booking, two members-only events a year and a discount with local partners."
+        },
+        {
+          "slide": 7,
+          "quote": "These use capacity Client E already has."
+        }
+      ],
+      "why": "If the partner discounts are not secured before launch, the membership offer is thinner than advertised and early members may feel short-changed.",
+      "reflect": "Which local partners have agreed to a member discount, and what is the fallback offer if none have by launch.",
+      "fix": "Separate the benefits Client E controls from the partner discount, and either confirm the partner agreements before launch or drop the discount from the launch offer until it is secured.",
+      "tags": [
+        "Feasibility",
+        "Implementation"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "location": "Slides 2, 8 and 10",
+      "problem": "Several content titles are topic labels (\"The decision\", \"The numbers\", \"First steps\") while slide 1 shows the assertive style.",
+      "why": "A board member skimming only the titles gets the answer from slide 1 but not the reasoning, so the titles-only read is weaker than it could be.",
+      "fix": "Rewrite the label titles as full-sentence takeaways in the slide 1 style."
+    },
+    {
+      "location": "Slide 5",
+      "problem": "Client E prices at 45 pounds, the low end of the 40 to 60 pounds comparators, with no reason given.",
+      "why": "A reader may wonder whether 45 pounds leaves money on the table or reflects a deliberate conversion play.",
+      "fix": "Add one line on why 45 pounds: single tier, conversion-first or a deliberate entry price."
+    }
+  ],
+  "questionsForLead": [
+    "Why is the full-launch gate 5% when the year-one target is 8%, and is the 5% measured on the most engaged 200 or on the full list.",
+    "How much grant income in pounds is at risk over the next two years, so the 5,000 pound target can be judged against it.",
+    "Have any local partners agreed to offer the member discount, or is that still to be secured.",
+    "Is the 1,400 person mailing list consented for membership marketing under GDPR."
+  ],
+  "learningNote": {
+    "lesson": "A success target and the gate you use to act on it must be the same number. When the review threshold and the go threshold differ, the plan can proceed on a result it told itself was not good enough.",
+    "weakHabit": "Setting a headline target then quietly gating the decision at a lower, easier bar.",
+    "exercise": "For the next plan, write the go/no-go rule first, then check that every target quoted elsewhere in the deck is the number that rule actually uses. Reconcile any that differ.",
+    "principle": "Internal consistency"
+  },
+  "notAssessed": [
+    "Whether the 8% conversion assumption holds. No conversion data was provided and the team names it as the main thing to test.",
+    "The pounds of grant income at risk. The deck gives the 80% share but not the amount.",
+    "Whether local partners have agreed to the member discount. Not evidenced in the deck.",
+    "Whether the 1,400 person mailing list is accurate and consented for marketing. Stated as an assumption, not verified.",
+    "Visual design, layout and charts. Only slide text was provided."
+  ],
+  "timeline": {
+    "sections": [
+      { "label": "Case for change", "span": 2 },
+      { "label": "Evidence", "span": 3 },
+      { "label": "Recommendation", "span": 2 },
+      { "label": "Numbers and risks", "span": 2 },
+      { "label": "Steps", "span": 1 }
+    ],
+    "tiles": [
+      { "slide": 1, "state": "pass" },
+      { "slide": 2, "state": "pass" },
+      { "slide": 3, "state": "pass" },
+      { "slide": 4, "state": "pass" },
+      { "slide": 5, "state": "pass" },
+      { "slide": 6, "state": "pass" },
+      { "slide": 7, "state": "partial" },
+      { "slide": 8, "state": "partial" },
+      { "slide": 9, "state": "pass" },
+      { "slide": 10, "state": "partial" }
+    ],
+    "callouts": [
+      { "at": 10, "state": "partial", "label": "5% gate sits below the 8% target" }
+    ],
+    "connectors": [
+      { "from": 8, "to": 10, "label": "8% target vs 5% gate" }
+    ]
+  }
+}
