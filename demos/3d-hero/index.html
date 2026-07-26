@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>180DC AI — Every deliverable gets the senior-reviewer treatment</title>
+<meta name="description" content="The AI layer that gives every student deliverable an MBB senior-reviewer read before it reaches a client." />
+<meta name="color-scheme" content="dark" />
+<style>
+  /* ============================================================
+     180DC AI — hero
+     Concept: "The Review Pass". A lattice of nodes (raw student
+     work) suspended in space. A luminous plane sweeps upward
+     through it; nodes it touches ignite from slate to teal and
+     push pulses of light down their edges to their neighbours.
+     Raw work in, refined insight out.
+     Everything below is self-contained: no fonts, scripts or
+     images are fetched from anywhere.
+     ============================================================ */
+
+  :root{
+    --bg:        #070B11;
+    --bg-2:      #0B1219;
+    --ink:       #E8EEF2;
+    --ink-2:     #9FB0BC;
+    --ink-3:     #6B7C89;
+    --accent:    #5FE3D0;
+    --accent-2:  #2FB9AE;
+    --accent-dk: #06231F;
+    --hair:      rgba(159,176,188,.16);
+    --ease:      cubic-bezier(.22,.61,.36,1);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+    overflow:hidden;
+  }
+
+  .hero{
+    position:relative;
+    width:100%;
+    height:100vh;          /* fallback for engines without small-viewport units */
+    height:100svh;
+    min-height:560px;
+    overflow:hidden;
+    isolation:isolate;
+  }
+
+  /* ---------- layer 1: the 3D scene ---------- */
+  #scene{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+  }
+
+  /* ---------- layer 2: terminal grid ---------- */
+  .grid{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background-image:
+      repeating-linear-gradient(to right, rgba(159,176,188,.055) 0 1px, transparent 1px 88px),
+      repeating-linear-gradient(to bottom, rgba(159,176,188,.055) 0 1px, transparent 1px 88px);
+    -webkit-mask-image:radial-gradient(120% 100% at 62% 50%, #000 0%, rgba(0,0,0,.55) 45%, transparent 78%);
+            mask-image:radial-gradient(120% 100% at 62% 50%, #000 0%, rgba(0,0,0,.55) 45%, transparent 78%);
+    opacity:0;
+    animation:veil 2.4s var(--ease) .35s forwards;
+  }
+
+  /* ---------- layer 3: readability scrims (gradients, never a box) ---------- */
+  .scrim{ position:absolute; inset:0; pointer-events:none; }
+  .scrim--left{
+    background:linear-gradient(100deg,
+      rgba(7,11,17,.96) 0%,
+      rgba(7,11,17,.90) 26%,
+      rgba(7,11,17,.62) 46%,
+      rgba(7,11,17,.14) 64%,
+      rgba(7,11,17,0)   78%);
+  }
+  .scrim--vert{
+    background:linear-gradient(to bottom,
+      rgba(7,11,17,.72) 0%,
+      rgba(7,11,17,0) 24%,
+      rgba(7,11,17,0) 58%,
+      rgba(7,11,17,.82) 100%);
+  }
+  .scrim--vig{
+    background:radial-gradient(130% 105% at 60% 46%, transparent 42%, rgba(4,7,11,.72) 100%);
+  }
+
+  /* ---------- layer 4: content ---------- */
+  .wrap{
+    position:relative;
+    height:100%;
+    max-width:1440px;
+    margin:0 auto;
+    padding:clamp(24px,4vw,64px) clamp(24px,5vw,88px);
+    display:grid;
+    grid-template-rows:auto 1fr auto;
+    gap:24px;
+  }
+
+  /* top rule */
+  .topline{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--ink-3);
+  }
+  .topline .mark{
+    color:var(--ink);
+    font-weight:650;
+    letter-spacing:.16em;
+  }
+  .topline .rule{
+    flex:1;
+    height:1px;
+    background:linear-gradient(to right, var(--hair), rgba(159,176,188,0));
+  }
+
+  .copy{
+    align-self:center;
+    max-width:min(720px,58vw);
+  }
+
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    margin:0 0 clamp(20px,2.4vw,30px);
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.26em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+  .eyebrow::before{
+    content:"";
+    width:34px;
+    height:1px;
+    background:linear-gradient(to right, var(--accent), rgba(95,227,208,.15));
+  }
+
+  h1{
+    margin:0;
+    font-size:clamp(2.35rem,5.4vw,4.35rem);
+    line-height:1.03;
+    font-weight:620;
+    letter-spacing:-.035em;
+    color:var(--ink);
+    text-wrap:balance;
+  }
+  /* solid fallback first: if background-clip:text is unsupported the
+     phrase must still be visible, never transparent-on-dark */
+  h1 .lit{ color:#8FEEDD; }
+  @supports ((-webkit-background-clip:text) or (background-clip:text)){
+    h1 .lit{
+      color:transparent;
+      background:linear-gradient(96deg, var(--accent) 0%, #A7F3E6 46%, var(--accent-2) 100%);
+      -webkit-background-clip:text;
+              background-clip:text;
+    }
+  }
+
+  .sub{
+    margin:clamp(20px,2.2vw,28px) 0 0;
+    max-width:53ch;
+    font-size:clamp(1rem,1.15vw,1.125rem);
+    line-height:1.62;
+    color:var(--ink-2);
+    font-weight:400;
+  }
+
+  .cta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-top:clamp(28px,3.2vw,44px);
+  }
+  .btn{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:13px 24px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:.005em;
+    text-decoration:none;
+    border:1px solid transparent;
+    transition:transform .28s var(--ease), background .28s var(--ease),
+               border-color .28s var(--ease), color .28s var(--ease),
+               box-shadow .28s var(--ease);
+    will-change:transform;
+  }
+  .btn:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+  .btn--primary{
+    background:linear-gradient(180deg,#7FEEDD 0%, var(--accent) 42%, var(--accent-2) 100%);
+    color:#04120F;
+    box-shadow:0 0 0 1px rgba(95,227,208,.35), 0 12px 34px -14px rgba(95,227,208,.75);
+  }
+  .btn--primary:hover{
+    transform:translateY(-1px);
+    box-shadow:0 0 0 1px rgba(95,227,208,.55), 0 18px 44px -14px rgba(95,227,208,.95);
+  }
+  .btn--ghost{
+    color:var(--ink);
+    border-color:rgba(159,176,188,.26);
+    background:rgba(232,238,242,.02);
+  }
+  .btn--ghost:hover{
+    transform:translateY(-1px);
+    border-color:rgba(95,227,208,.6);
+    color:#BFF6EC;
+    background:rgba(95,227,208,.06);
+  }
+  .btn .arw{ opacity:.75; transition:transform .28s var(--ease); }
+  .btn:hover .arw{ transform:translateX(3px); }
+
+  /* bottom status strip */
+  .status{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    padding-top:16px;
+    border-top:1px solid var(--hair);
+    font-size:10.5px;
+    letter-spacing:.19em;
+    text-transform:uppercase;
+    color:var(--ink-3);
+  }
+  .status .tools{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .status .sep{ width:1px; height:10px; background:var(--hair); }
+  .status .live{
+    margin-left:auto;
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    color:var(--ink-2);
+  }
+  .status .dot{
+    width:6px; height:6px; border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 0 0 rgba(95,227,208,.55);
+    animation:blip 2.6s ease-out infinite;
+  }
+  @keyframes blip{
+    0%   { box-shadow:0 0 0 0 rgba(95,227,208,.5);  opacity:1;   }
+    70%  { box-shadow:0 0 0 7px rgba(95,227,208,0); opacity:.55; }
+    100% { box-shadow:0 0 0 0 rgba(95,227,208,0);   opacity:1;   }
+  }
+
+  /* ---------- entrance ---------- */
+  @keyframes rise{
+    from{ opacity:0; transform:translate3d(0,16px,0); }
+    to  { opacity:1; transform:translate3d(0,0,0); }
+  }
+  @keyframes veil{ to{ opacity:1; } }
+
+  .r{ opacity:0; animation:rise .95s var(--ease) forwards; }
+  .d1{ animation-delay:.12s } .d2{ animation-delay:.24s }
+  .d3{ animation-delay:.38s } .d4{ animation-delay:.52s }
+  .d5{ animation-delay:.66s } .d6{ animation-delay:.82s }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:1000px){
+    .copy{
+      max-width:100%;
+      align-self:end;
+      padding-bottom:clamp(8px,4vh,40px);
+    }
+    .scrim--left{
+      background:linear-gradient(to bottom,
+        rgba(7,11,17,.55) 0%,
+        rgba(7,11,17,.30) 22%,
+        rgba(7,11,17,.72) 48%,
+        rgba(7,11,17,.94) 72%);
+    }
+  }
+  @media (max-width:620px){
+    .status .tools .sep:last-of-type,
+    .status .tools span:nth-last-of-type(1){ display:none; }
+    .status .live{ margin-left:0; }
+    h1{ letter-spacing:-.028em; }
+  }
+  @media (max-height:620px) and (orientation:landscape){
+    .sub{ display:none; }
+  }
+
+  /* ---------- reduced motion ---------- */
+  @media (prefers-reduced-motion: reduce){
+    .r{ opacity:1; animation:none; }
+    .grid{ opacity:1; animation:none; }
+    .dot{ animation:none; }
+    .btn{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<main class="hero">
+  <canvas id="scene" aria-hidden="true"></canvas>
+
+  <div class="grid" aria-hidden="true"></div>
+  <div class="scrim scrim--vig" aria-hidden="true"></div>
+  <div class="scrim scrim--left" aria-hidden="true"></div>
+  <div class="scrim scrim--vert" aria-hidden="true"></div>
+
+  <div class="wrap">
+
+    <div class="topline r d1">
+      <span class="mark">180DC</span>
+      <span class="rule"></span>
+      <span>Branch AI Team</span>
+    </div>
+
+    <div class="copy">
+      <p class="eyebrow r d2">180DC &middot; AI Team</p>
+
+      <h1 class="r d3">
+        Every deliverable leaves with a
+        <span class="lit">senior reviewer&rsquo;s</span>
+        fingerprints on it.
+      </h1>
+
+      <p class="sub r d4">
+        An AI review layer reads every draft against the five criteria an MBB reviewer
+        would use, then teaches the consultant the principle behind each fix instead of
+        quietly handing back the answer.
+      </p>
+
+      <div class="cta r d5">
+        <a class="btn btn--primary" href="#">
+          Explore the toolkit
+          <span class="arw" aria-hidden="true">&rarr;</span>
+        </a>
+        <a class="btn btn--ghost" href="#">
+          Read the thinking
+          <span class="arw" aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="status r d6">
+      <div class="tools">
+        <span>Quality Reviewer</span>
+        <span class="sep"></span>
+        <span>HR Screener</span>
+        <span class="sep"></span>
+        <span>Deck Transform</span>
+      </div>
+      <span class="live"><span class="dot"></span>Review pass &middot; active</span>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var canvas = document.getElementById('scene');
+  if (!canvas || !canvas.getContext) { return; }
+  var ctx = canvas.getContext('2d', { alpha: false });
+  if (!ctx) { return; }
+
+  var TAU = Math.PI * 2;
+  var mqReduce = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  var REDUCED = !!(mqReduce && mqReduce.matches);
+
+  // ---------------------------------------------------------------
+  // world constants
+  // ---------------------------------------------------------------
+  var R = 420;            // lattice radius, world units
+  var CAM = 1520;         // camera distance along +z
+  var FLAT = 0.70;        // vertical flattening -> a lens, not a ball
+  var WAVE_SPAN = R * 2.2;
+  var WAVE_START = -R * 1.1;
+  var WAVE_PHASE = 0.155;
+  var WAVE_PERIOD = REDUCED ? 22 : 12.5;   // seconds for one full review pass
+  var BAND = R * 0.17;    // thickness of the ignition band
+
+  // ---------------------------------------------------------------
+  // viewport state
+  // ---------------------------------------------------------------
+  var W = 1, H = 1, DPR = 1;
+  var cx = 0, cy = 0, focal = 1150, pRef = 1;
+  var bgGrad = null, bloomGrad = null;
+
+  // ---------------------------------------------------------------
+  // geometry (built once per size class, rigid in model space)
+  // ---------------------------------------------------------------
+  var N = 0;
+  var mx, my, mz, ph, ig, armed;
+  var sx, sy, sp, sa;                      // projected per-frame scratch
+  var E = 0, ea, eb;
+  var adjStart, adjList;
+
+  function buildGeometry(count) {
+    N = count;
+    mx = new Float32Array(N); my = new Float32Array(N); mz = new Float32Array(N);
+    ph = new Float32Array(N); ig = new Float32Array(N); armed = new Uint8Array(N);
+    sx = new Float32Array(N); sy = new Float32Array(N);
+    sp = new Float32Array(N); sa = new Float32Array(N);
+
+    var GA = Math.PI * (3 - Math.sqrt(5));
+    var denom = N > 1 ? (N - 1) : 1;
+
+    for (var i = 0; i < N; i++) {
+      var yy = 1 - (i / denom) * 2;
+      var ring = Math.sqrt(Math.max(0, 1 - yy * yy));
+      var th = GA * i;
+      var ux = Math.cos(th) * ring;
+      var uy = yy;
+      var uz = Math.sin(th) * ring;
+
+      // jitter the direction so it reads as a constellation, not a grid
+      ux += (Math.random() - 0.5) * 0.13;
+      uy += (Math.random() - 0.5) * 0.13;
+      uz += (Math.random() - 0.5) * 0.13;
+      var L = Math.sqrt(ux * ux + uy * uy + uz * uz) || 1;
+      ux /= L; uy /= L; uz /= L;
+
+      // 68% form the outer shell, the rest are interior struts
+      var rad = (Math.random() < 0.68)
+        ? R * (0.87 + Math.random() * 0.13)
+        : R * (0.28 + Math.random() * 0.54);
+
+      mx[i] = ux * rad;
+      my[i] = uy * rad * FLAT;
+      mz[i] = uz * rad;
+      ph[i] = Math.random() * TAU;
+      ig[i] = 0;
+    }
+
+    buildEdges();
+    buildAdjacency();
+    buildBuckets();
+  }
+
+  // k-nearest-neighbour wiring, computed once. Because the lattice is a
+  // rigid body, this topology never has to be recomputed at runtime.
+  function buildEdges() {
+    var maxD = R * 0.40, maxD2 = maxD * maxD;
+    var K = 3;
+    var seen = Object.create(null);
+    var listA = [], listB = [];
+    var bi = new Int32Array(K), bd = new Float64Array(K);
+    var i, j, s;
+
+    for (i = 0; i < N; i++) {
+      for (s = 0; s < K; s++) { bi[s] = -1; bd[s] = Infinity; }
+      var ax = mx[i], ay = my[i], az = mz[i];
+
+      for (j = 0; j < N; j++) {
+        if (j === i) { continue; }
+        var dx = mx[j] - ax, dy = my[j] - ay, dz = mz[j] - az;
+        var d2 = dx * dx + dy * dy + dz * dz;
+        if (d2 > maxD2) { continue; }
+        if (d2 < bd[K - 1]) {
+          var s2 = K - 1;
+          while (s2 > 0 && d2 < bd[s2 - 1]) { bd[s2] = bd[s2 - 1]; bi[s2] = bi[s2 - 1]; s2--; }
+          bd[s2] = d2; bi[s2] = j;
+        }
+      }
+
+      for (s = 0; s < K; s++) {
+        var n = bi[s];
+        if (n < 0) { continue; }
+        var a = i < n ? i : n;
+        var b = i < n ? n : i;
+        var key = a * N + b;
+        if (seen[key]) { continue; }
+        seen[key] = 1;
+        listA.push(a); listB.push(b);
+      }
+    }
+
+    E = listA.length;
+    ea = new Int32Array(E); eb = new Int32Array(E);
+    for (i = 0; i < E; i++) { ea[i] = listA[i]; eb[i] = listB[i]; }
+  }
+
+  // node -> incident edge indices, flattened CSR-style
+  function buildAdjacency() {
+    adjStart = new Int32Array(N + 1);
+    var i;
+    for (i = 0; i < E; i++) { adjStart[ea[i] + 1]++; adjStart[eb[i] + 1]++; }
+    for (i = 0; i < N; i++) { adjStart[i + 1] += adjStart[i]; }
+    adjList = new Int32Array(E * 2);
+    var fill = new Int32Array(N);
+    for (i = 0; i < E; i++) {
+      var a = ea[i], b = eb[i];
+      adjList[adjStart[a] + fill[a]++] = i;
+      adjList[adjStart[b] + fill[b]++] = i;
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // batching buckets: every edge / node is sorted into one of NB
+  // brightness tiers, and each tier is drawn with ONE path + ONE
+  // stroke/fill. Colour strings are precomputed so the hot loop
+  // never builds a string or allocates an object.
+  // ---------------------------------------------------------------
+  var NB = 7;
+  var eBucket = [], eCount = new Int32Array(NB);
+  var nBucket = [], nCount = new Int32Array(NB);
+  var eColor = new Array(NB), eGlow = new Array(NB), eWidth = new Float64Array(NB);
+  var nColor = new Array(NB);
+
+  function buildBuckets() {
+    eBucket = []; nBucket = [];
+    for (var b = 0; b < NB; b++) {
+      eBucket.push(new Int32Array(E > 0 ? E : 1));
+      nBucket.push(new Int32Array(N > 0 ? N : 1));
+    }
+  }
+
+  (function precomputeColours() {
+    for (var b = 0; b < NB; b++) {
+      var t = b / (NB - 1);                       // 0 = raw + far, 1 = reviewed + near
+      // slate -> teal
+      var r = Math.round(104 + (95  - 104) * t);
+      var g = Math.round(133 + (227 - 133) * t);
+      var bl= Math.round(150 + (208 - 150) * t);
+      var ea_ = 0.055 + 0.34 * t * t;
+      eColor[b] = 'rgba(' + r + ',' + g + ',' + bl + ',' + ea_.toFixed(3) + ')';
+      eGlow[b]  = 'rgba(' + r + ',' + g + ',' + bl + ',' + (ea_ * 0.20).toFixed(3) + ')';
+      eWidth[b] = 0.55 + t * 0.65;
+
+      var nr = Math.round(150 + (170 - 150) * t);
+      var ng = Math.round(174 + (250 - 174) * t);
+      var nb = Math.round(190 + (236 - 190) * t);
+      var na = 0.20 + 0.72 * t;
+      nColor[b] = 'rgba(' + nr + ',' + ng + ',' + nb + ',' + na.toFixed(3) + ')';
+    }
+  }());
+
+  // ---------------------------------------------------------------
+  // sprites, rendered once into offscreen canvases so the hot loop
+  // never has to build a CanvasGradient
+  // ---------------------------------------------------------------
+  function makeCanvas(w, h) {
+    var c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    return c;
+  }
+
+  var glowSprite = (function () {
+    var S = 96, c = makeCanvas(S, S), g = c.getContext('2d');
+    var rg = g.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+    rg.addColorStop(0.00, 'rgba(215,255,248,0.95)');
+    rg.addColorStop(0.16, 'rgba(120,236,218,0.55)');
+    rg.addColorStop(0.42, 'rgba(70,200,190,0.16)');
+    rg.addColorStop(1.00, 'rgba(40,150,150,0)');
+    g.fillStyle = rg;
+    g.fillRect(0, 0, S, S);
+    return c;
+  }());
+
+  var pulseSprite = (function () {
+    var S = 48, c = makeCanvas(S, S), g = c.getContext('2d');
+    var rg = g.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+    rg.addColorStop(0.00, 'rgba(255,255,255,1)');
+    rg.addColorStop(0.22, 'rgba(170,250,238,0.7)');
+    rg.addColorStop(1.00, 'rgba(95,227,208,0)');
+    g.fillStyle = rg;
+    g.fillRect(0, 0, S, S);
+    return c;
+  }());
+
+  // soft horizontal band = the sweeping review plane
+  var bandSprite = (function () {
+    var Wd = 8, Ht = 128, c = makeCanvas(Wd, Ht), g = c.getContext('2d');
+    var lg = g.createLinearGradient(0, 0, 0, Ht);
+    lg.addColorStop(0.00, 'rgba(95,227,208,0)');
+    lg.addColorStop(0.42, 'rgba(95,227,208,0.30)');
+    lg.addColorStop(0.50, 'rgba(190,250,242,0.85)');
+    lg.addColorStop(0.58, 'rgba(95,227,208,0.30)');
+    lg.addColorStop(1.00, 'rgba(95,227,208,0)');
+    g.fillStyle = lg;
+    g.fillRect(0, 0, Wd, Ht);
+    return c;
+  }());
+
+  // hairline with ends that fade out
+  var lineSprite = (function () {
+    var Wd = 256, Ht = 4, c = makeCanvas(Wd, Ht), g = c.getContext('2d');
+    var lg = g.createLinearGradient(0, 0, Wd, 0);
+    lg.addColorStop(0.00, 'rgba(95,227,208,0)');
+    lg.addColorStop(0.22, 'rgba(150,244,231,0.55)');
+    lg.addColorStop(0.50, 'rgba(210,255,250,0.9)');
+    lg.addColorStop(0.78, 'rgba(150,244,231,0.55)');
+    lg.addColorStop(1.00, 'rgba(95,227,208,0)');
+    g.fillStyle = lg;
+    g.fillRect(0, 1, Wd, 2);
+    return c;
+  }());
+
+  // ---------------------------------------------------------------
+  // pulses: fixed pool, round-robin reuse, zero allocation at runtime
+  // ---------------------------------------------------------------
+  var PMAX = REDUCED ? 60 : 190;
+  var pEdge = new Int32Array(PMAX);
+  var pT = new Float32Array(PMAX);
+  var pSpd = new Float32Array(PMAX);
+  var pFwd = new Uint8Array(PMAX);
+  var pOn = new Uint8Array(PMAX);
+  var pCursor = 0;
+
+  function spawnPulse(edge, forward) {
+    var tries = 0, slot = -1;
+    while (tries < PMAX) {
+      var k = pCursor;
+      pCursor = (pCursor + 1) % PMAX;
+      tries++;
+      if (!pOn[k]) { slot = k; break; }
+    }
+    if (slot < 0) { slot = pCursor; pCursor = (pCursor + 1) % PMAX; }
+    pEdge[slot] = edge;
+    pT[slot] = 0;
+    pSpd[slot] = 0.55 + Math.random() * 0.65;
+    pFwd[slot] = forward ? 1 : 0;
+    pOn[slot] = 1;
+  }
+
+  // ---------------------------------------------------------------
+  // sizing
+  // ---------------------------------------------------------------
+  var lastCount = -1;
+
+  function resize() {
+    // measure the element itself so 100svh / min-height / mobile toolbars
+    // can never desync the backing store from what is painted
+    var rect = canvas.getBoundingClientRect();
+    var vw = Math.max(1, Math.round(rect.width) || window.innerWidth || 1);
+    var vh = Math.max(1, Math.round(rect.height) || window.innerHeight || 1);
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = vw; H = vh;
+
+    canvas.width = Math.max(1, Math.round(vw * DPR));
+    canvas.height = Math.max(1, Math.round(vh * DPR));
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+    // composition: lattice sits right of centre on wide screens so the
+    // headline occupies calm space; centres and lifts on narrow ones.
+    var wide = vw > 1000;
+    cx = wide ? vw * 0.665 : vw * 0.50;
+    cy = wide ? vh * 0.50  : vh * 0.355;
+
+    var fit = Math.min(Math.max(Math.min(vw, vh * 1.35) / 1100, 0.46), 1.32);
+    focal = 1180 * fit;
+    pRef = focal / CAM;
+
+    bgGrad = ctx.createLinearGradient(0, 0, vw * 0.65, vh);
+    bgGrad.addColorStop(0, '#060A0F');
+    bgGrad.addColorStop(0.55, '#080D14');
+    bgGrad.addColorStop(1, '#0A1119');
+
+    var br = Math.max(vw, vh) * 0.72;
+    bloomGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, br);
+    bloomGrad.addColorStop(0.00, 'rgba(24,70,74,0.36)');
+    bloomGrad.addColorStop(0.38, 'rgba(16,44,52,0.16)');
+    bloomGrad.addColorStop(1.00, 'rgba(10,20,28,0)');
+
+    // point budget scales with area, hard-capped well under 1000
+    var target = Math.round((vw * vh) / 3600);
+    target = Math.min(520, Math.max(220, target));
+    var bucketed = Math.round(target / 40) * 40;   // avoid rebuilding on tiny nudges
+    if (bucketed !== lastCount) {
+      lastCount = bucketed;
+      buildGeometry(bucketed);
+      for (var q = 0; q < PMAX; q++) { pOn[q] = 0; }
+    }
+  }
+
+  var resizePending = false;
+  function onResize() {
+    if (resizePending) { return; }
+    resizePending = true;
+    requestAnimationFrame(function () { resizePending = false; resize(); });
+  }
+
+  // ---------------------------------------------------------------
+  // pointer
+  // ---------------------------------------------------------------
+  var tmx = 0, tmy = 0, cmx = 0, cmy = 0, pointerSeen = false, lastPtr = -1e9;
+
+  function setPointer(px, py) {
+    pointerSeen = true;
+    lastPtr = t;
+    tmx = (px / W) * 2 - 1;
+    tmy = (py / H) * 2 - 1;
+    if (tmx < -1) { tmx = -1; } else if (tmx > 1) { tmx = 1; }
+    if (tmy < -1) { tmy = -1; } else if (tmy > 1) { tmy = 1; }
+  }
+
+  window.addEventListener('pointermove', function (e) { setPointer(e.clientX, e.clientY); }, { passive: true });
+  window.addEventListener('pointerdown', function (e) { setPointer(e.clientX, e.clientY); }, { passive: true });
+  window.addEventListener('pointerleave', function () { tmx = 0; tmy = 0; }, { passive: true });
+  window.addEventListener('blur', function () { tmx = 0; tmy = 0; });
+
+  // ---------------------------------------------------------------
+  // animation loop
+  // ---------------------------------------------------------------
+  var t = 0;                       // scene clock, seconds
+  var last = 0;
+  var intro = 0;                   // 0 -> 1 entrance easing
+  var running = true;
+  var rafId = 0;
+
+  var ROT_Y = REDUCED ? 0.018 : 0.072;
+  var MOUSE_Y = REDUCED ? 0.10 : 0.42;
+  var MOUSE_X = REDUCED ? 0.06 : 0.24;
+  var BREATHE = REDUCED ? 0.0 : 0.030;
+
+  function frame(now) {
+    rafId = requestAnimationFrame(frame);
+    if (!last) { last = now; }
+    var dt = (now - last) / 1000;
+    last = now;
+    if (dt > 0.05) { dt = 0.05; }
+    if (dt < 0) { dt = 0; }
+    t += dt;
+
+    if (intro < 1) {
+      intro += dt / 1.7;
+      if (intro > 1) { intro = 1; }
+    }
+    var e3 = 1 - intro;
+    var introE = 1 - e3 * e3 * e3;               // easeOutCubic
+    var IA = introE;
+
+    // Pointer easing. The scene never depends on a pointer: with none it
+    // drifts, and after the pointer goes idle (a touch tap, a mouse that
+    // left the window) the drift fades back in and the view recentres.
+    var idle = t - lastPtr;
+    var driftAmt = pointerSeen ? (idle - 2.5) / 3 : 1;
+    if (driftAmt < 0) { driftAmt = 0; } else if (driftAmt > 1) { driftAmt = 1; }
+    if (driftAmt > 0) {
+      tmx -= tmx * Math.min(1, dt * 0.9 * driftAmt);
+      tmy -= tmy * Math.min(1, dt * 0.9 * driftAmt);
+    }
+    cmx += (tmx - cmx) * Math.min(1, dt * 3.2);
+    cmy += (tmy - cmy) * Math.min(1, dt * 3.2);
+    var driftX = Math.sin(t * 0.17) * 0.30 * driftAmt;
+    var driftY = Math.sin(t * 0.11 + 1.1) * 0.18 * driftAmt;
+
+    var yaw = t * ROT_Y + (cmx + driftX) * MOUSE_Y;
+    var pitch = (cmy + driftY) * MOUSE_X + Math.sin(t * 0.13) * 0.055;
+    var cyw = Math.cos(yaw), syw = Math.sin(yaw);
+    var cpt = Math.cos(pitch), spt = Math.sin(pitch);
+
+    var focalE = focal * (0.885 + 0.115 * introE);
+
+    // The review plane, sweeping upward through world space. The phase
+    // offset lands the first ignition just as the entrance settles, so
+    // the signature moment is visible immediately rather than 2s in.
+    var waveY = WAVE_START + (((t / WAVE_PERIOD) + WAVE_PHASE) % 1) * WAVE_SPAN;
+    var invBand = 1 / BAND;
+    var decay = Math.pow(0.30, dt);              // ~ -70% per second
+
+    var nearD = CAM - R, farD = CAM + R, spanD = farD - nearD;
+    var i, b;
+
+    // ---- transform, project, update ignition -------------------
+    for (i = 0; i < N; i++) {
+      var br2 = 1 + BREATHE * Math.sin(t * 0.7 + ph[i]);
+      var x = mx[i] * br2, y = my[i] * br2, z = mz[i] * br2;
+
+      var x1 = x * cyw + z * syw;
+      var z1 = -x * syw + z * cyw;
+      var y2 = y * cpt - z1 * spt;
+      var z2 = y * spt + z1 * cpt;
+
+      var d = z2 + CAM;
+      if (d < 120) { d = 120; }
+
+      var p = focalE / d;
+      sx[i] = cx + x1 * p;
+      sy[i] = cy - y2 * p;
+      sp[i] = p;
+
+      var dn = (d - nearD) / spanD;
+      if (dn < 0) { dn = 0; } else if (dn > 1) { dn = 1; }
+      sa[i] = 1 - 0.80 * dn;
+
+      // ignition from the sweeping plane
+      var dy = (y2 - waveY) * invBand;
+      var hit = dy > -3.2 && dy < 3.2 ? Math.exp(-dy * dy) : 0;
+      var v = ig[i] * decay;
+      if (hit > v) { v = hit; }
+      if (v < 0.0008) { v = 0; }
+      ig[i] = v;
+
+      // newly reviewed -> push the finding out along its edges
+      if (v > 0.62 && !armed[i]) {
+        armed[i] = 1;
+        var s0 = adjStart[i], s1 = adjStart[i + 1];
+        var deg = s1 - s0;
+        if (deg > 0 && !REDUCED) {
+          var shots = deg > 2 ? 2 : deg;
+          for (var q2 = 0; q2 < shots; q2++) {
+            var ei = adjList[s0 + ((Math.random() * deg) | 0)];
+            spawnPulse(ei, ea[ei] === i ? 1 : 0);
+          }
+        } else if (deg > 0) {
+          var ei2 = adjList[s0];
+          spawnPulse(ei2, ea[ei2] === i ? 1 : 0);
+        }
+      } else if (v < 0.14 && armed[i]) {
+        armed[i] = 0;
+      }
+    }
+
+    // ---- background --------------------------------------------
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = bloomGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineCap = 'round';
+
+    // ---- the sweeping plane ------------------------------------
+    var bandScreenY = cy - waveY * pRef * (0.885 + 0.115 * introE);
+    var bandW = R * 2.5 * pRef * (0.885 + 0.115 * introE);
+    var bandH = BAND * 6.4 * pRef;
+    ctx.globalAlpha = 0.30 * IA;
+    ctx.drawImage(bandSprite, cx - bandW, bandScreenY - bandH / 2, bandW * 2, bandH);
+    ctx.globalAlpha = 0.42 * IA;
+    ctx.drawImage(lineSprite, cx - bandW, bandScreenY - 1.5, bandW * 2, 3);
+
+    // ---- edges: bucket, then one stroke per bucket --------------
+    for (b = 0; b < NB; b++) { eCount[b] = 0; }
+    for (i = 0; i < E; i++) {
+      var a0 = ea[i], b0 = eb[i];
+      var dep = sa[a0] < sa[b0] ? sa[a0] : sa[b0];
+      var lit = ig[a0] > ig[b0] ? ig[a0] : ig[b0];
+      var q = dep * (0.16 + 0.84 * lit * lit);
+      if (q < 0.012) { continue; }
+      var bi2 = (q * NB) | 0;
+      if (bi2 > NB - 1) { bi2 = NB - 1; }
+      eBucket[bi2][eCount[bi2]++] = i;
+    }
+
+    // wide, faint pass first = the glow under the brightest wires
+    for (b = NB - 1; b >= NB - 3; b--) {
+      var cnt = eCount[b];
+      if (!cnt) { continue; }
+      ctx.globalAlpha = IA;
+      ctx.strokeStyle = eGlow[b];
+      ctx.lineWidth = eWidth[b] * 5.5;
+      ctx.beginPath();
+      for (i = 0; i < cnt; i++) {
+        var ee = eBucket[b][i];
+        var na = ea[ee], nb2 = eb[ee];
+        ctx.moveTo(sx[na], sy[na]);
+        ctx.lineTo(sx[nb2], sy[nb2]);
+      }
+      ctx.stroke();
+    }
+
+    for (b = 0; b < NB; b++) {
+      var cnt2 = eCount[b];
+      if (!cnt2) { continue; }
+      ctx.globalAlpha = IA;
+      ctx.strokeStyle = eColor[b];
+      ctx.lineWidth = eWidth[b];
+      ctx.beginPath();
+      for (i = 0; i < cnt2; i++) {
+        var ee2 = eBucket[b][i];
+        var na2 = ea[ee2], nb3 = eb[ee2];
+        ctx.moveTo(sx[na2], sy[na2]);
+        ctx.lineTo(sx[nb3], sy[nb3]);
+      }
+      ctx.stroke();
+    }
+
+    // ---- node halos (only the reviewed ones) -------------------
+    for (i = 0; i < N; i++) {
+      var g0 = ig[i];
+      if (g0 < 0.13) { continue; }
+      var gs = (16 + 46 * g0) * (sp[i] / pRef) * (0.6 + 0.4 * introE);
+      ctx.globalAlpha = Math.min(0.78, g0 * g0 * sa[i] * 0.95) * IA;
+      ctx.drawImage(glowSprite, sx[i] - gs * 0.5, sy[i] - gs * 0.5, gs, gs);
+    }
+
+    // ---- node cores: bucket, then one fill per bucket -----------
+    for (b = 0; b < NB; b++) { nCount[b] = 0; }
+    for (i = 0; i < N; i++) {
+      var qn = sa[i] * (0.22 + 0.78 * ig[i]);
+      var bn = (qn * NB) | 0;
+      if (bn > NB - 1) { bn = NB - 1; }
+      if (bn < 0) { bn = 0; }
+      nBucket[bn][nCount[bn]++] = i;
+    }
+    for (b = 0; b < NB; b++) {
+      var cn = nCount[b];
+      if (!cn) { continue; }
+      ctx.globalAlpha = IA;
+      ctx.fillStyle = nColor[b];
+      ctx.beginPath();
+      for (i = 0; i < cn; i++) {
+        var ni = nBucket[b][i];
+        var rr = (0.85 + 1.75 * ig[ni]) * (sp[ni] / pRef);
+        if (rr < 0.35) { rr = 0.35; }
+        ctx.moveTo(sx[ni] + rr, sy[ni]);
+        ctx.arc(sx[ni], sy[ni], rr, 0, TAU);
+      }
+      ctx.fill();
+    }
+
+    // ---- pulses travelling along the wires ---------------------
+    ctx.globalAlpha = 0.55 * IA;
+    ctx.strokeStyle = 'rgba(180,250,240,0.5)';
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    var anyPulse = false;
+    for (i = 0; i < PMAX; i++) {
+      if (!pOn[i]) { continue; }
+      pT[i] += pSpd[i] * dt;
+      if (pT[i] >= 1) {
+        pOn[i] = 0;
+        // arriving finding lifts its target a little
+        var edx = pEdge[i];
+        var dst = pFwd[i] ? eb[edx] : ea[edx];
+        if (ig[dst] < 0.45) { ig[dst] = 0.45; }
+        continue;
+      }
+      var edi = pEdge[i];
+      var A = pFwd[i] ? ea[edi] : eb[edi];
+      var B = pFwd[i] ? eb[edi] : ea[edi];
+      var tt = pT[i];
+      var tb = tt - 0.30; if (tb < 0) { tb = 0; }
+      ctx.moveTo(sx[A] + (sx[B] - sx[A]) * tb, sy[A] + (sy[B] - sy[A]) * tb);
+      ctx.lineTo(sx[A] + (sx[B] - sx[A]) * tt, sy[A] + (sy[B] - sy[A]) * tt);
+      anyPulse = true;
+    }
+    if (anyPulse) { ctx.stroke(); }
+
+    for (i = 0; i < PMAX; i++) {
+      if (!pOn[i]) { continue; }
+      var edj = pEdge[i];
+      var A2 = pFwd[i] ? ea[edj] : eb[edj];
+      var B2 = pFwd[i] ? eb[edj] : ea[edj];
+      var tc = pT[i];
+      var hx = sx[A2] + (sx[B2] - sx[A2]) * tc;
+      var hy = sy[A2] + (sy[B2] - sy[A2]) * tc;
+      var hs = 13 * ((sp[A2] + sp[B2]) * 0.5 / pRef);
+      var fade = tc < 0.12 ? tc / 0.12 : (tc > 0.86 ? (1 - tc) / 0.14 : 1);
+      ctx.globalAlpha = 0.70 * fade * IA;
+      ctx.drawImage(pulseSprite, hx - hs * 0.5, hy - hs * 0.5, hs, hs);
+    }
+
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+  }
+
+  // ---------------------------------------------------------------
+  // lifecycle
+  // ---------------------------------------------------------------
+  function start() {
+    if (running) { return; }
+    running = true;
+    last = 0;
+    rafId = requestAnimationFrame(frame);
+  }
+  function stop() {
+    running = false;
+    if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+  }
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { stop(); } else { start(); }
+  });
+
+  window.addEventListener('resize', onResize, { passive: true });
+  window.addEventListener('orientationchange', onResize, { passive: true });
+
+  if (mqReduce) {
+    var onPref = function () {
+      REDUCED = mqReduce.matches;
+      ROT_Y = REDUCED ? 0.018 : 0.072;
+      MOUSE_Y = REDUCED ? 0.10 : 0.42;
+      MOUSE_X = REDUCED ? 0.06 : 0.24;
+      BREATHE = REDUCED ? 0.0 : 0.030;
+      WAVE_PERIOD = REDUCED ? 22 : 12.5;
+    };
+    if (mqReduce.addEventListener) { mqReduce.addEventListener('change', onPref); }
+    else if (mqReduce.addListener) { mqReduce.addListener(onPref); }
+  }
+
+  resize();
+  running = false;
+  start();
+}());
+</script>
+
+</body>
+</html>
