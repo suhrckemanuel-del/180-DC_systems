@@ -554,8 +554,6 @@ var TUNE = {
   DYN_STEPS: [1.0, 0.85, 0.7, 0.55],
   DYN_DOWN_MS: 19, DYN_UP_MS: 12,
   DYN_DOWN_FRAMES: 40, DYN_UP_FRAMES: 300,
-  SHADOW_SIZE: 2048,
-  SHADOW_BIAS: 0.9,       /* metres, along the normal                */
 
   /* light story: sun azimuth 110 deg (SE), elevation 15 deg          */
   SUN_AZ: 110 * Math.PI / 180,
@@ -644,6 +642,9 @@ var M_FLAT  = 4;    /* unlit flat colour (far rim, mist boards)      */
 /* ==================================================================
    [3] math, RNG, helpers
    ================================================================== */
+
+function later(fn, ms){ if (window.setTimeout) { return window.setTimeout(fn, ms); } return 0; }
+function unlater(id){ if (id && window.clearTimeout) { window.clearTimeout(id); } }
 
 function clamp(v,a,b){ return v < a ? a : (v > b ? b : v); }
 function mix(a,b,t){ return a + (b - a) * t; }
@@ -1580,6 +1581,14 @@ function buildBridge(b, wooden){
       box(q1[0], yy + 0.82, q1[2], lx, 0.07, lz + 0.04, capc, M_SOLID);
     }
   }
+  /* Keep the landings clear. Without this the city builder drops a
+     house on the far end and the bridge becomes a dead end — reserve
+     the deck plus an approach corridor at both ends so every crossing
+     actually lands in a street. */
+  var LAND = 13;
+  if (along === 'x'){ reserve(cx - span - LAND, cz - hw - 1.5, cx + span + LAND, cz + hw + 1.5); }
+  else { reserve(cx - hw - 1.5, cz - span - LAND, cx + hw + 1.5, cz + span + LAND); }
+
   /* colliders: the two parapets. The deck itself is two ramp patches. */
   var ax = (along === 'x');
   if (ax){
@@ -1791,7 +1800,20 @@ function houseRow(ax, az, bx, bz, yaw, opt){
     if (opt.feat && opt.featAt !== undefined && Math.abs(t + w * 0.5 - opt.featAt) < 6){ feat = opt.feat; }
     else if (chance(0.05)) { feat = 'cat'; }
     else if (chance(0.03)) { feat = 'mural'; }
-    canalHouse(ax + ux * (t + w * 0.5), az + uz * (t + w * 0.5), yaw, w, d, h, style, tint, roofc, feat);
+    var hx = ax + ux * (t + w * 0.5), hz = az + uz * (t + w * 0.5);
+    /* A house must never land on a bridge approach or a reserved plot,
+       or the crossing it blocks becomes a dead end. Depth runs from
+       the row line along (uz,-ux), away from the water. */
+    var e0x = hx - ux * w * 0.5, e0z = hz - uz * w * 0.5;
+    var e1x = hx + ux * w * 0.5, e1z = hz + uz * w * 0.5;
+    var dvx = uz * d, dvz = -ux * d;
+    var fx0 = Math.min(e0x, e1x, e0x + dvx, e1x + dvx);
+    var fx1 = Math.max(e0x, e1x, e0x + dvx, e1x + dvx);
+    var fz0 = Math.min(e0z, e1z, e0z + dvz, e1z + dvz);
+    var fz1 = Math.max(e0z, e1z, e0z + dvz, e1z + dvz);
+    if (!bridgeZone(fx0, fz0, fx1, fz1)){
+      canalHouse(hx, hz, yaw, w, d, h, style, tint, roofc, feat);
+    }
     t += w + rr(0.05, 0.4);
   }
 }
@@ -2049,6 +2071,21 @@ function buildMarkt(){
 /* --- reserved ground: landmarks claim their footprint first ------- */
 var RESERVED = [];
 function reserve(x0, z0, x1, z1){ RESERVED.push([x0, z0, x1, z1]); }
+
+/* Just the bridge approaches. Authored house rows use this rather
+   than blocked(): they are allowed to sit on reserved plots (the
+   inner streets behind the Markt are deliberately inside one), but
+   never on a crossing, which would strand the bridge in a wall. */
+function bridgeZone(x0, z0, x1, z1){
+  for (var i = 0; i < BRIDGES.length; i++){
+    var b = BRIDGES[i];
+    var ax = (b[2] === 'x');
+    var hx = ax ? b[3] + 8 : b[4] + 1.5;
+    var hz = ax ? b[4] + 1.5 : b[3] + 8;
+    if (x1 > b[0] - hx && x0 < b[0] + hx && z1 > b[1] - hz && z0 < b[1] + hz) { return true; }
+  }
+  return false;
+}
 
 function blocked(x0, z0, x1, z1){
   var i;
@@ -2521,7 +2558,1708 @@ function buildWorld(){
   /* authored respawn points: the two squares and the courtyard */
   RESPAWNS.push([0, -62], [56, 232], [-201, -48], [-262, 34], [232, 168], [-150, -95]);
   colFinalize();
+  respawnFinalize();
 }
+
+/* Respawn points are generated from bridge ends, so some land inside
+   an abutment or a railing. Nudge each one out to free ground and
+   drop the ones that cannot be freed — a respawn inside a wall is
+   worse than no respawn at all. */
+function respawnFinalize(){
+  var out = [], i, j, k;
+  var dirs = [[1,0],[0,1],[-1,0],[0,-1],[0.7,0.7],[-0.7,0.7],[0.7,-0.7],[-0.7,-0.7]];
+  for (i = 0; i < RESPAWNS.length; i++){
+    var x = RESPAWNS[i][0], z = RESPAWNS[i][1], placed = null;
+    if (freeSpot(x, z)) { placed = [x, z]; }
+    else {
+      for (k = 1; k <= 6 && !placed; k++){
+        for (j = 0; j < dirs.length && !placed; j++){
+          var nx = x + dirs[j][0] * k * 0.8, nz = z + dirs[j][1] * k * 0.8;
+          if (freeSpot(nx, nz)) { placed = [nx, nz]; }
+        }
+      }
+    }
+    if (placed) { out.push(placed); }
+  }
+  RESPAWNS.length = 0;
+  for (i = 0; i < out.length; i++){ RESPAWNS.push(out[i]); }
+  /* the Markt is the guaranteed fallback */
+  if (!RESPAWNS.length) { RESPAWNS.push([0, -62]); }
+}
+
+function freeSpot(x, z){
+  if (colPenetration(x, z, TUNE.PLAYER_R) > 0.001) { return false; }
+  groundAt(x, z, 2);
+  return gFound && gKind !== K_WATER && gY > TUNE.WATER_Y + 0.2 && isFinite(gY);
+}
+
+/* ==================================================================
+   [11] packing: chunks -> one interleaved buffer
+      Bucket floats (pos3 nrm3 col3 mat1) are packed to 20 bytes:
+        pos  3 x float32   offset 0
+        nrm  3 x int8 norm offset 12  (+1 pad)
+        col  4 x uint8     offset 16  (rgb + material id in alpha)
+      Non-indexed: the emitters produce raw triangles, and chunk
+      culling only needs a {first,count} range per chunk per LOD.
+   ================================================================== */
+
+var VSTRIDE = 20;
+var CHUNKS = [];        /* {hiF,hiN,loF,loN, x0,y0,z0,x1,y1,z1, cx,cz,r} */
+var FARRANGE = { first: 0, count: 0 };
+var WORLDBUF = null;    /* ArrayBuffer, uploaded once                 */
+var PROTOBUF = null;
+var PROTORANGE = {};    /* name -> {first,count}                      */
+var STATS = { tris: 0, chunkTrisMax: 0, vboBytes: 0, protoTris: 0, draws: 0, drawn: 0 };
+
+function packOne(src, dv, base){
+  /* src = flat floats, 10 per vertex; returns vertices written */
+  var n = (src.length / 10) | 0, i, o = base;
+  for (i = 0; i < n; i++){
+    var k = i * 10;
+    dv.setFloat32(o,      src[k],     true);
+    dv.setFloat32(o + 4,  src[k + 1], true);
+    dv.setFloat32(o + 8,  src[k + 2], true);
+    dv.setInt8(o + 12, Math.max(-127, Math.min(127, Math.round(src[k + 3] * 127))));
+    dv.setInt8(o + 13, Math.max(-127, Math.min(127, Math.round(src[k + 4] * 127))));
+    dv.setInt8(o + 14, Math.max(-127, Math.min(127, Math.round(src[k + 5] * 127))));
+    dv.setInt8(o + 15, 0);
+    dv.setUint8(o + 16, clamp(Math.round(src[k + 6] * 255), 0, 255));
+    dv.setUint8(o + 17, clamp(Math.round(src[k + 7] * 255), 0, 255));
+    dv.setUint8(o + 18, clamp(Math.round(src[k + 8] * 255), 0, 255));
+    dv.setUint8(o + 19, src[k + 9] | 0);
+    o += VSTRIDE;
+  }
+  return n;
+}
+
+function bounds(src, b){
+  var n = (src.length / 10) | 0, i;
+  for (i = 0; i < n; i++){
+    var k = i * 10, x = src[k], y = src[k + 1], z = src[k + 2];
+    if (x < b[0]) { b[0] = x; } if (y < b[1]) { b[1] = y; } if (z < b[2]) { b[2] = z; }
+    if (x > b[3]) { b[3] = x; } if (y > b[4]) { b[4] = y; } if (z > b[5]) { b[5] = z; }
+  }
+}
+
+function packWorld(){
+  var c, total = 0, names = [];
+  for (c = 0; c < CHN * CHN; c++){ total += BK[c * 2 + 1].length + BK[c * 2].length; }
+  total += FARB.length;
+  for (var nm in PROTO){ names.push(nm); total += PROTO[nm].length; }
+  total = (total / 10) | 0;
+
+  WORLDBUF = new ArrayBuffer(total * VSTRIDE);
+  var dv = new DataView(WORLDBUF), vert = 0;
+
+  CHUNKS.length = 0;
+  for (c = 0; c < CHN * CHN; c++){
+    var hi = BK[c * 2 + 1], lo = BK[c * 2];
+    var b = [1e9, 1e9, 1e9, -1e9, -1e9, -1e9];
+    bounds(hi, b); bounds(lo, b);
+    var e = {
+      hiF: vert, hiN: 0, loF: 0, loN: 0,
+      x0: b[0], y0: b[1], z0: b[2], x1: b[3], y1: b[4], z1: b[5],
+      cx: 0, cy: 0, cz: 0, r: 0, empty: (hi.length + lo.length) === 0
+    };
+    e.hiN = packOne(hi, dv, vert * VSTRIDE); vert += e.hiN;
+    e.loF = vert;
+    e.loN = packOne(lo, dv, vert * VSTRIDE); vert += e.loN;
+    if (e.empty){
+      e.x0 = e.y0 = e.z0 = e.x1 = e.y1 = e.z1 = 0;
+    } else {
+      e.cx = (e.x0 + e.x1) * 0.5; e.cy = (e.y0 + e.y1) * 0.5; e.cz = (e.z0 + e.z1) * 0.5;
+      var dx = e.x1 - e.cx, dy = e.y1 - e.cy, dz = e.z1 - e.cz;
+      e.r = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      if (e.hiN / 3 > STATS.chunkTrisMax) { STATS.chunkTrisMax = e.hiN / 3; }
+    }
+    CHUNKS.push(e);
+  }
+
+  FARRANGE.first = vert;
+  FARRANGE.count = packOne(FARB, dv, vert * VSTRIDE);
+  vert += FARRANGE.count;
+
+  PROTORANGE = {};
+  for (var i = 0; i < names.length; i++){
+    var p = PROTO[names[i]], f = vert;
+    var n = packOne(p, dv, vert * VSTRIDE); vert += n;
+    PROTORANGE[names[i]] = { first: f, count: n };
+    STATS.protoTris += n / 3;
+  }
+
+  STATS.tris = vert / 3;
+  STATS.vboBytes = WORLDBUF.byteLength;
+  /* buckets are large; release them once packed */
+  BK = null; FARB = null;
+}
+
+/* instance blocks: one interleaved buffer, {first,count} per type */
+var INSTBUF = null, INSTRANGE = {}, INSTCOUNT = 0;
+function packInstances(){
+  var t, n = 0;
+  for (t in INST){ n += INST[t].length / 8; }
+  INSTBUF = new Float32Array(n * 8);
+  INSTCOUNT = n;
+  var o = 0;
+  INSTRANGE = {};
+  for (t in INST){
+    var a = INST[t], c = a.length / 8;
+    INSTRANGE[t] = { first: o / 8, count: c };
+    for (var i = 0; i < a.length; i++){ INSTBUF[o + i] = a[i]; }
+    o += a.length;
+  }
+}
+
+/* ==================================================================
+   [12] GL: shaders
+      One light story, implemented once: a low south-east sun, a cool
+      sky-bounce ambient, and cloud shadows projected analytically
+      onto the world from a drifting cloud deck. Every surface in the
+      game is shaded by CLOUD() and SUNLIGHT() below, so the whole
+      city breathes with the same clouds the sky is drawing.
+   ================================================================== */
+
+var GLSL_NOISE = [
+  'float h21(vec2 p){ p = fract(p * vec2(127.31, 311.7)); p += dot(p, p + 34.23); return fract(p.x * p.y); }',
+  'float vn(vec2 p){',
+  '  vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);',
+  '  float a = h21(i), b = h21(i + vec2(1.0, 0.0)), c = h21(i + vec2(0.0, 1.0)), d = h21(i + vec2(1.0, 1.0));',
+  '  return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);',
+  '}',
+  'float cloudField(vec2 p){',
+  '  return vn(p) * 0.54 + vn(p * 2.17) * 0.28 + vn(p * 4.51) * 0.18;',
+  '}'
+].join('\n');
+
+/* shared fragment tail: cloud shadow, sun, ambient, fog */
+var GLSL_SHADE = [
+  /* cloud shadow at a world point: cast to the cloud deck along the sun */
+  'float cloudShadow(vec3 wp){',
+  '  float t = (uCloudH - wp.y) / max(uSun.y, 0.05);',
+  '  vec2 q = wp.xz + uSun.xz * t;',
+  '  float d = cloudField(q * 0.0038 + uCloudOff);',
+  '  return smoothstep(0.46, 0.60, d);',
+  '}',
+  'vec3 shadeSurface(vec3 wp, vec3 nrm, vec3 albedo, float mat){',
+  '  float lam = max(dot(nrm, uSun), 0.0);',
+  /* flat-shaded value bands: 4 steps, per the craft principles */
+  '  float band = floor(lam * 3.999) / 3.0;',
+  '  lam = mix(lam, band, 0.55);',
+  '  float sh = cloudShadow(wp);',
+  '  float sun = lam * (1.0 - sh * 0.82);',
+  /* hemisphere ambient: sky above, warm ground bounce below */
+  '  float up = nrm.y * 0.5 + 0.5;',
+  '  vec3 amb = mix(uGroundBounce, uSkyAmb, up);',
+  '  vec3 lit = albedo * (amb + uSunCol * sun);',
+  /* cloud-shadowed surfaces cool off toward the shadow tint */
+  '  lit = mix(lit, lit * uShadowTint * 1.25, sh * 0.45);',
+  '  if (mat > 0.5 && mat < 1.5){',        /* glass: sky reflection + fresnel */
+  '    vec3 v = normalize(wp - uEye);',
+  '    float fr = pow(1.0 - max(dot(nrm, -v), 0.0), 3.0);',
+  '    vec3 refl = mix(uSkyAmb * 1.1, uSkyHi, clamp(reflect(v, nrm).y * 0.5 + 0.5, 0.0, 1.0));',
+  '    lit = mix(lit * 0.55, refl, 0.35 + 0.5 * fr);',
+  '  } else if (mat > 1.5 && mat < 2.5){', /* leaf: translucency toward the sun */
+  '    float bk = max(dot(-nrm, uSun), 0.0);',
+  '    lit += albedo * uSunCol * bk * 0.22 * (1.0 - sh * 0.8);',
+  '  } else if (mat > 2.5 && mat < 3.5){', /* the one warm interior */
+  '    lit = mix(lit, albedo, 0.86);',
+  '  } else if (mat > 3.5){',              /* flat: unlit rim geometry */
+  '    lit = albedo * (uSkyAmb * 0.55 + uSunCol * 0.35);',
+  '  }',
+  '  return lit;',
+  '}',
+  'vec3 applyFog(vec3 col, float dist, vec3 dir){',
+  '  float f = 1.0 - exp(-pow(dist * uFogK, 2.0));',
+  /* fog leans toward the sun near the horizon: morning haze */
+  '  float glow = pow(max(dot(dir, uSun), 0.0), 4.0);',
+  '  vec3 fc = mix(uFog, uSunGlow, glow * 0.45);',
+  '  return mix(col, fc, clamp(f, 0.0, 1.0));',
+  '}'
+].join('\n');
+
+var GLSL_UNIFORMS = [
+  'uniform mat4 uVP;',
+  'uniform vec3 uEye;',
+  'uniform vec3 uSun;',
+  'uniform vec3 uSunCol;',
+  'uniform vec3 uSkyAmb;',
+  'uniform vec3 uSkyHi;',
+  'uniform vec3 uGroundBounce;',
+  'uniform vec3 uShadowTint;',
+  'uniform vec3 uFog;',
+  'uniform vec3 uSunGlow;',
+  'uniform float uFogK;',
+  'uniform float uCloudH;',
+  'uniform vec2 uCloudOff;'
+].join('\n');
+
+function vsSolid(instanced){
+  return [
+    '#version 300 es',
+    'precision highp float;',
+    'layout(location=0) in vec3 aPos;',
+    'layout(location=1) in vec3 aNrm;',
+    'layout(location=2) in vec4 aCol;',
+    instanced ? 'layout(location=3) in vec4 iPosYaw;' : '',
+    instanced ? 'layout(location=4) in vec4 iTintScale;' : '',
+    'uniform mat4 uVP;',
+    instanced ? '' : 'uniform mat4 uModel;',
+    'out vec3 vWP; out vec3 vN; out vec3 vC; out float vM;',
+    'void main(){',
+    instanced
+      ? [ '  float s = iTintScale.w, c = cos(iPosYaw.w), sn = sin(iPosYaw.w);',
+          '  vec3 p = vec3(aPos.x * c + aPos.z * sn, aPos.y, -aPos.x * sn + aPos.z * c) * s + iPosYaw.xyz;',
+          '  vec3 n = vec3(aNrm.x * c + aNrm.z * sn, aNrm.y, -aNrm.x * sn + aNrm.z * c);',
+          '  vC = aCol.rgb * iTintScale.rgb;' ].join('\n')
+      : [ '  vec3 p = (uModel * vec4(aPos, 1.0)).xyz;',
+          '  vec3 n = mat3(uModel) * aNrm;',
+          '  vC = aCol.rgb;' ].join('\n'),
+    '  vWP = p; vN = normalize(n); vM = aCol.a * 255.0;',
+    '  gl_Position = uVP * vec4(p, 1.0);',
+    '}'
+  ].join('\n');
+}
+
+var FS_SOLID = [
+  '#version 300 es',
+  'precision highp float;',
+  'in vec3 vWP; in vec3 vN; in vec3 vC; in float vM;',
+  GLSL_UNIFORMS,
+  'out vec4 oCol;',
+  GLSL_NOISE,
+  GLSL_SHADE,
+  'void main(){',
+  '  vec3 d = vWP - uEye; float dist = length(d);',
+  '  vec3 col = shadeSurface(vWP, normalize(vN), vC, vM);',
+  '  oCol = vec4(applyFog(col, dist, d / max(dist, 0.001)), 1.0);',
+  '}'
+].join('\n');
+
+/* water: opaque, sky-reflecting, with sun glitter only inside sunlight */
+var VS_WATER = [
+  '#version 300 es',
+  'precision highp float;',
+  'layout(location=0) in vec3 aPos;',
+  'uniform mat4 uVP;',
+  'out vec3 vWP;',
+  'void main(){ vWP = aPos; gl_Position = uVP * vec4(aPos, 1.0); }'
+].join('\n');
+
+var FS_WATER = [
+  '#version 300 es',
+  'precision highp float;',
+  'in vec3 vWP;',
+  GLSL_UNIFORMS,
+  'uniform float uTime;',
+  'uniform vec3 uWater; uniform vec3 uWaterSky; uniform vec3 uGlitter;',
+  'out vec4 oCol;',
+  GLSL_NOISE,
+  GLSL_SHADE,
+  'void main(){',
+  '  vec3 d = vWP - uEye; float dist = length(d); vec3 dir = d / max(dist, 0.001);',
+  /* ripple normal from two scrolling noise fields */
+  '  float n1 = vn(vWP.xz * 0.55 + vec2(uTime * 0.06, uTime * 0.031));',
+  '  float n2 = vn(vWP.xz * 1.31 - vec2(uTime * 0.042, uTime * 0.05));',
+  '  vec2 g = vec2(n1 - n2, n2 - n1) * 0.28;',
+  '  vec3 nrm = normalize(vec3(g.x, 1.0, g.y));',
+  '  float fr = pow(1.0 - max(dot(nrm, -dir), 0.0), 3.0);',
+  '  vec3 col = mix(uWater, uWaterSky, 0.30 + fr * 0.55);',
+  '  float sh = cloudShadow(vWP);',
+  /* pointille glitter: only where the sun actually reaches the water */
+  '  vec3 h = normalize(uSun - dir);',
+  '  float spec = pow(max(dot(nrm, h), 0.0), 220.0);',
+  '  float sparkle = step(0.62, vn(vWP.xz * 3.7 + vec2(uTime * 0.11, -uTime * 0.07)));',
+  '  col += uGlitter * spec * 26.0 * sparkle * (1.0 - sh);',
+  '  col = mix(col, col * uShadowTint * 1.3, sh * 0.40);',
+  '  oCol = vec4(applyFog(col, dist, dir), 1.0);',
+  '}'
+].join('\n');
+
+/* sky: fullscreen triangle drawn last, depth = 1 */
+var VS_SKY = [
+  '#version 300 es',
+  'precision highp float;',
+  'const vec2 T[3] = vec2[3](vec2(-1.0,-1.0), vec2(3.0,-1.0), vec2(-1.0,3.0));',
+  'uniform mat4 uInvVP; uniform vec3 uEye;',
+  'out vec3 vDir;',
+  'void main(){',
+  '  vec2 p = T[gl_VertexID];',
+  '  vec4 f = uInvVP * vec4(p, 1.0, 1.0); f /= f.w;',
+  '  vDir = normalize(f.xyz - uEye);',
+  '  gl_Position = vec4(p, 1.0, 1.0);',
+  '}'
+].join('\n');
+
+var FS_SKY = [
+  '#version 300 es',
+  'precision highp float;',
+  'in vec3 vDir;',
+  GLSL_UNIFORMS,
+  'uniform vec3 uSky0; uniform vec3 uSky1; uniform vec3 uSky2; uniform vec3 uSky3;',
+  'uniform vec3 uCloudLit; uniform vec3 uCloudDark;',
+  'out vec4 oCol;',
+  GLSL_NOISE,
+  GLSL_SHADE,
+  'void main(){',
+  '  vec3 d = normalize(vDir);',
+  '  float h = clamp(d.y, -0.2, 1.0);',
+  '  vec3 col = h < 0.10',
+  '    ? mix(uSky3, uSky2, clamp((h + 0.2) / 0.30, 0.0, 1.0))',
+  '    : mix(uSky2, mix(uSky1, uSky0, clamp((h - 0.35) / 0.65, 0.0, 1.0)), clamp((h - 0.10) / 0.25, 0.0, 1.0));',
+  /* the sun, low in the south-east */
+  '  float sd = max(dot(d, uSun), 0.0);',
+  '  col += uSunGlow * pow(sd, 90.0) * 1.4;',
+  '  col += uSunGlow * pow(sd, 7.0) * 0.22;',
+  /* the same cloud field that shadows the city, seen on its deck */
+  '  if (d.y > 0.012){',
+  '    float t = uCloudH / d.y;',
+  '    vec2 q = (uEye + d * t).xz;',
+  '    float c = cloudField(q * 0.0038 + uCloudOff);',
+  '    float a = smoothstep(0.44, 0.62, c) * smoothstep(0.012, 0.10, d.y);',
+  '    float lit = smoothstep(0.44, 0.75, c);',
+  '    col = mix(col, mix(uCloudDark, uCloudLit, lit), a * 0.92);',
+  '  }',
+  '  oCol = vec4(col, 1.0);',
+  '}'
+].join('\n');
+
+/* ==================================================================
+   [13] GL: init and resources
+   ================================================================== */
+
+var gl = null, CV = null;
+var PROG = {};
+var VAO = { world: null, water: null, inst: {} };
+var BUF = {};
+var CAM = { x: 0, y: 1.65, z: 0, yaw: 0, pitch: 0, fov: TUNE.FOV, roll: 0 };
+var RES = { w: 1, h: 1, dpr: 1, scale: 1, step: 0, ema: 16, down: 0, up: 0 };
+var GLOK = false;
+
+function shader(type, src){
+  var s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)){
+    var log = gl.getShaderInfoLog(s) || '';
+    throw new Error('shader: ' + log.slice(0, 400));
+  }
+  return s;
+}
+
+function program(name, vsrc, fsrc){
+  var p = gl.createProgram();
+  gl.attachShader(p, shader(gl.VERTEX_SHADER, vsrc));
+  gl.attachShader(p, shader(gl.FRAGMENT_SHADER, fsrc));
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)){
+    throw new Error('link ' + name + ': ' + (gl.getProgramInfoLog(p) || '').slice(0, 400));
+  }
+  /* cache every uniform location once — none of this in the frame loop */
+  var u = {}, i, n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS) || 0;
+  for (i = 0; i < n; i++){
+    var info = gl.getActiveUniform(p, i);
+    if (info && info.name){
+      var nm = info.name.replace(/\[0\]$/, '');
+      u[nm] = gl.getUniformLocation(p, nm);
+    }
+  }
+  PROG[name] = { p: p, u: u };
+  return PROG[name];
+}
+
+function attribsSolid(instanced){
+  gl.bindBuffer(gl.ARRAY_BUFFER, BUF.world);
+  gl.enableVertexAttribArray(0);
+  gl.vertexAttribPointer(0, 3, gl.FLOAT, false, VSTRIDE, 0);
+  gl.enableVertexAttribArray(1);
+  gl.vertexAttribPointer(1, 3, gl.BYTE, true, VSTRIDE, 12);
+  gl.enableVertexAttribArray(2);
+  gl.vertexAttribPointer(2, 4, gl.UNSIGNED_BYTE, true, VSTRIDE, 16);
+  if (instanced){
+    gl.bindBuffer(gl.ARRAY_BUFFER, BUF.inst);
+    gl.enableVertexAttribArray(3);
+    gl.vertexAttribPointer(3, 4, gl.FLOAT, false, 32, instanced.first * 32);
+    gl.vertexAttribDivisor(3, 1);
+    gl.enableVertexAttribArray(4);
+    gl.vertexAttribPointer(4, 4, gl.FLOAT, false, 32, instanced.first * 32 + 16);
+    gl.vertexAttribDivisor(4, 1);
+  }
+}
+
+function glInit(){
+  CV = document.getElementById('scene');
+  var opts = { antialias: true, alpha: false, depth: true, stencil: false,
+               powerPreference: 'high-performance', preserveDrawingBuffer: false };
+  gl = CV.getContext('webgl2', opts);
+  if (!gl) { return false; }
+
+  program('solid', vsSolid(false), FS_SOLID);
+  program('inst', vsSolid(true), FS_SOLID);
+  program('water', VS_WATER, FS_WATER);
+  program('sky', VS_SKY, FS_SKY);
+
+  BUF.world = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, BUF.world);
+  gl.bufferData(gl.ARRAY_BUFFER, WORLDBUF, gl.STATIC_DRAW);
+
+  BUF.inst = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, BUF.inst);
+  gl.bufferData(gl.ARRAY_BUFFER, INSTBUF, gl.STATIC_DRAW);
+
+  VAO.world = gl.createVertexArray();
+  gl.bindVertexArray(VAO.world);
+  attribsSolid(null);
+
+  /* one VAO per instanced prop type: the instance pointer offset is
+     baked in, so the frame loop only binds and draws */
+  var t;
+  for (t in INSTRANGE){
+    var v = gl.createVertexArray();
+    gl.bindVertexArray(v);
+    attribsSolid(INSTRANGE[t]);
+    VAO.inst[t] = v;
+  }
+
+  BUF.water = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, BUF.water);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(WATERV), gl.STATIC_DRAW);
+  VAO.water = gl.createVertexArray();
+  gl.bindVertexArray(VAO.water);
+  gl.enableVertexAttribArray(0);
+  gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 12, 0);
+  BUF.waterN = (WATERV.length / 3) | 0;
+
+  VAO.sky = gl.createVertexArray();
+  gl.bindVertexArray(null);
+
+  gl.enable(gl.DEPTH_TEST);
+  gl.enable(gl.CULL_FACE);
+  gl.cullFace(gl.BACK);
+  gl.frontFace(gl.CCW);
+  gl.clearColor(P.fog[0], P.fog[1], P.fog[2], 1);
+  GLOK = true;
+  return true;
+}
+
+/* ==================================================================
+   [14] renderer: sizing, culling, passes
+   ================================================================== */
+
+var MVP = m4(), MV = m4(), MP = m4(), MINV = m4(), MMODEL = m4();
+var FRUS = new Float32Array(24);
+var SUN = new Float32Array(3);
+var CLOUD_OFF = new Float32Array(2);
+
+(function initSun(){
+  var ch = Math.cos(TUNE.SUN_EL);
+  SUN[0] = ch * Math.sin(TUNE.SUN_AZ);
+  SUN[1] = Math.sin(TUNE.SUN_EL);
+  SUN[2] = -ch * Math.cos(TUNE.SUN_AZ);
+})();
+
+function resize(){
+  if (!CV) { return; }
+  var coarse = TOUCH;
+  var cap = coarse ? TUNE.DPR_TOUCH : TUNE.DPR_DESKTOP;
+  var dpr = Math.min(window.devicePixelRatio || 1, cap);
+  var cw = CV.clientWidth || window.innerWidth || 1;
+  var chh = CV.clientHeight || window.innerHeight || 1;
+  var s = TUNE.DYN_STEPS[RES.step];
+  var w = Math.max(1, Math.round(cw * dpr * s));
+  var h = Math.max(1, Math.round(chh * dpr * s));
+  if (w !== RES.w || h !== RES.h){
+    RES.w = w; RES.h = h; RES.dpr = dpr; RES.scale = s;
+    CV.width = w; CV.height = h;
+  }
+}
+
+/* dynamic resolution: the reason this runs on weak hardware */
+var lastResize = 0;
+function dynRes(dt, now){
+  RES.ema = RES.ema * 0.95 + (dt * 1000) * 0.05;
+  if (RES.ema > TUNE.DYN_DOWN_MS){ RES.down++; RES.up = 0; } else
+  if (RES.ema < TUNE.DYN_UP_MS){ RES.up++; RES.down = 0; } else { RES.down = 0; RES.up = 0; }
+  if (now - lastResize < 2000) { return; }
+  if (RES.down >= TUNE.DYN_DOWN_FRAMES && RES.step < TUNE.DYN_STEPS.length - 1){
+    RES.step++; RES.down = 0; lastResize = now; resize();
+  } else if (RES.up >= TUNE.DYN_UP_FRAMES && RES.step > 0){
+    RES.step--; RES.up = 0; lastResize = now; resize();
+  }
+}
+
+function frustum(m){
+  var i;
+  for (i = 0; i < 6; i++){
+    var s = (i & 1) ? -1 : 1, r = i >> 1;
+    FRUS[i * 4 + 0] = m[3] + s * m[r];
+    FRUS[i * 4 + 1] = m[7] + s * m[4 + r];
+    FRUS[i * 4 + 2] = m[11] + s * m[8 + r];
+    FRUS[i * 4 + 3] = m[15] + s * m[12 + r];
+    var L = Math.sqrt(FRUS[i * 4] * FRUS[i * 4] + FRUS[i * 4 + 1] * FRUS[i * 4 + 1] + FRUS[i * 4 + 2] * FRUS[i * 4 + 2]);
+    if (L > 1e-9){ FRUS[i * 4] /= L; FRUS[i * 4 + 1] /= L; FRUS[i * 4 + 2] /= L; FRUS[i * 4 + 3] /= L; }
+  }
+}
+
+function sphereIn(cx, cy, cz, r){
+  for (var i = 0; i < 6; i++){
+    if (FRUS[i * 4] * cx + FRUS[i * 4 + 1] * cy + FRUS[i * 4 + 2] * cz + FRUS[i * 4 + 3] < -r) { return false; }
+  }
+  return true;
+}
+
+var VIS = [];       /* {chunk, dist} of visible chunks, sorted near->far */
+var LODHI = {};     /* chunk -> currently HI (hysteresis)                */
+
+function cullChunks(){
+  VIS.length = 0;
+  var far = TUNE.FAR;
+  for (var i = 0; i < CHUNKS.length; i++){
+    var c = CHUNKS[i];
+    if (c.empty) { continue; }
+    var dx = c.cx - CAM.x, dy = c.cy - CAM.y, dz = c.cz - CAM.z;
+    var d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    if (d - c.r > far) { continue; }
+    if (!sphereIn(c.cx, c.cy, c.cz, c.r)) { continue; }
+    VIS.push(i, d);
+  }
+  /* front-to-back: early-Z does the occlusion work for us */
+  var pairs = [];
+  for (i = 0; i < VIS.length; i += 2){ pairs.push([VIS[i], VIS[i + 1]]); }
+  pairs.sort(function(a, b){ return a[1] - b[1]; });
+  VIS.length = 0;
+  for (i = 0; i < pairs.length; i++){ VIS.push(pairs[i][0], pairs[i][1]); }
+}
+
+function setCommon(u, time){
+  gl.uniformMatrix4fv(u.uVP, false, MVP);
+  if (u.uEye) { gl.uniform3f(u.uEye, CAM.x, CAM.y, CAM.z); }
+  if (u.uSun) { gl.uniform3f(u.uSun, SUN[0], SUN[1], SUN[2]); }
+  if (u.uSunCol) { gl.uniform3f(u.uSunCol, 1.18, 1.06, 0.86); }
+  if (u.uSkyAmb) { gl.uniform3f(u.uSkyAmb, 0.46, 0.53, 0.62); }
+  if (u.uSkyHi) { gl.uniform3f(u.uSkyHi, P.sky1[0], P.sky1[1], P.sky1[2]); }
+  if (u.uGroundBounce) { gl.uniform3f(u.uGroundBounce, 0.26, 0.24, 0.21); }
+  if (u.uShadowTint) { gl.uniform3f(u.uShadowTint, P.shadowTint[0], P.shadowTint[1], P.shadowTint[2]); }
+  if (u.uFog) { gl.uniform3f(u.uFog, P.fog[0], P.fog[1], P.fog[2]); }
+  if (u.uSunGlow) { gl.uniform3f(u.uSunGlow, P.sunGlow[0], P.sunGlow[1], P.sunGlow[2]); }
+  if (u.uFogK) { gl.uniform1f(u.uFogK, 2.1 / TUNE.FOG_OPAQUE); }
+  if (u.uCloudH) { gl.uniform1f(u.uCloudH, TUNE.CLOUD_H); }
+  if (u.uCloudOff) { gl.uniform2f(u.uCloudOff, CLOUD_OFF[0], CLOUD_OFF[1]); }
+}
+
+function draw(time){
+  if (!GLOK) { return; }
+  gl.viewport(0, 0, RES.w, RES.h);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  var aspect = RES.w / Math.max(1, RES.h);
+  var fov = CAM.fov;
+  /* portrait: widen so the horizontal field stays readable */
+  var minH = 78 * Math.PI / 180;
+  var fovH = 2 * Math.atan(Math.tan(fov * 0.5) * aspect);
+  if (fovH < minH) { fov = 2 * Math.atan(Math.tan(minH * 0.5) / aspect); }
+  perspective(MP, fov, aspect, TUNE.NEAR, TUNE.FAR);
+  viewFromEuler(MV, CAM.x, CAM.y, CAM.z, CAM.yaw, CAM.pitch, CAM.roll);
+  mul4(MVP, MP, MV);
+  frustum(MVP);
+
+  CLOUD_OFF[0] = -time * TUNE.CLOUD_DRIFT * 0.0038 * 0.75;
+  CLOUD_OFF[1] = -time * TUNE.CLOUD_DRIFT * 0.0038 * 0.42;
+
+  STATS.draws = 0;
+  cullChunks();
+
+  /* --- pass 1: static world, near to far, per-chunk LOD ------------ */
+  var pr = PROG.solid;
+  gl.useProgram(pr.p);
+  setCommon(pr.u, time);
+  m4id2(MMODEL);
+  gl.uniformMatrix4fv(pr.u.uModel, false, MMODEL);
+  gl.bindVertexArray(VAO.world);
+  var i;
+  for (i = 0; i < VIS.length; i += 2){
+    var ci = VIS[i], d = VIS[i + 1], c = CHUNKS[ci];
+    var wantHi = LODHI[ci] ? (d < TUNE.LOD_DIST + TUNE.LOD_HYST) : (d < TUNE.LOD_DIST - TUNE.LOD_HYST);
+    if (FORCE_HI[ci]) { wantHi = true; }
+    LODHI[ci] = wantHi;
+    var f = wantHi ? c.hiF : c.loF, n = wantHi ? c.hiN : c.loN;
+    if (!n && wantHi) { f = c.loF; n = c.loN; }
+    if (!n && !wantHi) { f = c.hiF; n = c.hiN; }
+    if (n){ gl.drawArrays(gl.TRIANGLES, f, n); STATS.draws++; }
+  }
+  if (FARRANGE.count){ gl.drawArrays(gl.TRIANGLES, FARRANGE.first, FARRANGE.count); STATS.draws++; }
+  STATS.drawn = VIS.length / 2;
+
+  /* --- pass 2: instanced props ------------------------------------ */
+  pr = PROG.inst;
+  gl.useProgram(pr.p);
+  setCommon(pr.u, time);
+  var t;
+  for (t in INSTRANGE){
+    var rg = PROTORANGE[t];
+    if (!rg || !rg.count || !VAO.inst[t]) { continue; }
+    gl.bindVertexArray(VAO.inst[t]);
+    gl.drawArraysInstanced(gl.TRIANGLES, rg.first, rg.count, INSTRANGE[t].count);
+    STATS.draws++;
+  }
+
+  /* --- pass 3: the animated life, one small draw each -------------- */
+  pr = PROG.solid;
+  gl.useProgram(pr.p);
+  setCommon(pr.u, time);
+  gl.bindVertexArray(VAO.world);
+  drawLife(pr, time);
+
+  /* --- pass 4: water (opaque, after the quays occlude it) ---------- */
+  if (BUF.waterN){
+    pr = PROG.water;
+    gl.useProgram(pr.p);
+    setCommon(pr.u, time);
+    gl.uniform1f(pr.u.uTime, time);
+    gl.uniform3f(pr.u.uWater, P.water[0], P.water[1], P.water[2]);
+    gl.uniform3f(pr.u.uWaterSky, P.waterSky[0], P.waterSky[1], P.waterSky[2]);
+    gl.uniform3f(pr.u.uGlitter, P.glitter[0], P.glitter[1], P.glitter[2]);
+    gl.bindVertexArray(VAO.water);
+    gl.drawArrays(gl.TRIANGLES, 0, BUF.waterN);
+    STATS.draws++;
+  }
+
+  /* --- pass 5: sky last, so street canyons cost nothing ------------ */
+  pr = PROG.sky;
+  gl.useProgram(pr.p);
+  setCommon(pr.u, time);
+  invert4(MINV, MVP);
+  gl.uniformMatrix4fv(pr.u.uInvVP, false, MINV);
+  gl.uniform3f(pr.u.uSky0, P.sky0[0], P.sky0[1], P.sky0[2]);
+  gl.uniform3f(pr.u.uSky1, P.sky1[0], P.sky1[1], P.sky1[2]);
+  gl.uniform3f(pr.u.uSky2, P.sky2[0], P.sky2[1], P.sky2[2]);
+  gl.uniform3f(pr.u.uSky3, P.sky3[0], P.sky3[1], P.sky3[2]);
+  gl.uniform3f(pr.u.uCloudLit, P.cloudLit[0], P.cloudLit[1], P.cloudLit[2]);
+  gl.uniform3f(pr.u.uCloudDark, P.cloudDark[0], P.cloudDark[1], P.cloudDark[2]);
+  gl.depthFunc(gl.LEQUAL);
+  gl.depthMask(false);
+  gl.bindVertexArray(VAO.sky);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  gl.depthMask(true);
+  gl.depthFunc(gl.LESS);
+  STATS.draws++;
+  gl.bindVertexArray(null);
+}
+
+function m4id2(m){
+  m[0]=1;m[1]=0;m[2]=0;m[3]=0; m[4]=0;m[5]=1;m[6]=0;m[7]=0;
+  m[8]=0;m[9]=0;m[10]=1;m[11]=0; m[12]=0;m[13]=0;m[14]=0;m[15]=1;
+  return m;
+}
+
+function invert4(o, m){
+  var a00=m[0],a01=m[1],a02=m[2],a03=m[3], a10=m[4],a11=m[5],a12=m[6],a13=m[7],
+      a20=m[8],a21=m[9],a22=m[10],a23=m[11], a30=m[12],a31=m[13],a32=m[14],a33=m[15];
+  var b00=a00*a11-a01*a10, b01=a00*a12-a02*a10, b02=a00*a13-a03*a10,
+      b03=a01*a12-a02*a11, b04=a01*a13-a03*a11, b05=a02*a13-a03*a12,
+      b06=a20*a31-a21*a30, b07=a20*a32-a22*a30, b08=a20*a33-a23*a30,
+      b09=a21*a32-a22*a31, b10=a21*a33-a23*a31, b11=a22*a33-a23*a32;
+  var det = b00*b11-b01*b10+b02*b09+b03*b08-b04*b07+b05*b06;
+  if (!det) { return m4id2(o); }
+  det = 1.0/det;
+  o[0]=(a11*b11-a12*b10+a13*b09)*det;  o[1]=(a02*b10-a01*b11-a03*b09)*det;
+  o[2]=(a31*b05-a32*b04+a33*b03)*det;  o[3]=(a22*b04-a21*b05-a23*b03)*det;
+  o[4]=(a12*b08-a10*b11-a13*b07)*det;  o[5]=(a00*b11-a02*b08+a03*b07)*det;
+  o[6]=(a32*b02-a30*b05-a33*b01)*det;  o[7]=(a20*b05-a22*b02+a23*b01)*det;
+  o[8]=(a10*b10-a11*b08+a13*b06)*det;  o[9]=(a01*b08-a00*b10-a03*b06)*det;
+  o[10]=(a30*b04-a31*b02+a33*b00)*det; o[11]=(a21*b02-a20*b04-a23*b00)*det;
+  o[12]=(a11*b07-a10*b09-a12*b06)*det; o[13]=(a00*b09-a01*b07+a02*b06)*det;
+  o[14]=(a31*b01-a30*b03-a32*b00)*det; o[15]=(a20*b03-a21*b01+a22*b00)*det;
+  return o;
+}
+
+/* view matrix from yaw/pitch/roll — yaw 0 looks north (-Z) */
+function viewFromEuler(o, ex, ey, ez, yaw, pitch, roll){
+  var cp = Math.cos(pitch), sp = Math.sin(pitch);
+  var cy = Math.cos(yaw), sy = Math.sin(yaw);
+  var fx = sy * cp, fy = sp, fz = -cy * cp;
+  var rx = cy, ry = 0, rz = sy;
+  var ux = ry * fz - rz * fy, uy = rz * fx - rx * fz, uz = rx * fy - ry * fx;
+  if (roll){
+    var cr = Math.cos(roll), sr = Math.sin(roll);
+    var nrx = rx * cr + ux * sr, nry = ry * cr + uy * sr, nrz = rz * cr + uz * sr;
+    ux = ux * cr - rx * sr; uy = uy * cr - ry * sr; uz = uz * cr - rz * sr;
+    rx = nrx; ry = nry; rz = nrz;
+  }
+  o[0]=rx; o[1]=ux; o[2]=-fx; o[3]=0;
+  o[4]=ry; o[5]=uy; o[6]=-fy; o[7]=0;
+  o[8]=rz; o[9]=uz; o[10]=-fz; o[11]=0;
+  o[12]=-(rx*ex+ry*ey+rz*ez);
+  o[13]=-(ux*ex+uy*ey+uz*ez);
+  o[14]=  (fx*ex+fy*ey+fz*ez);
+  o[15]=1;
+  return o;
+}
+
+/* the animated life: a handful of small model-matrix draws */
+function drawLife(pr, time){
+  var i, slow = time * 0.5;
+  for (i = 0; i < LIFE.length; i++){
+    var L = LIFE[i], nm = L.type, yaw = L.yaw, y = L.y, x = L.x, z = L.z, s = 1;
+    var rg;
+    if (nm === 'sparrows') { nm = 'sparrow'; }
+    rg = PROTORANGE[nm];
+    if (!rg || !rg.count) { continue; }
+    var dx = x - CAM.x, dz = z - CAM.z;
+    if (dx * dx + dz * dz > 260 * 260) { continue; }
+    if (L.type === 'bell'){
+      /* bells swing on the hour, otherwise hang still */
+      var sw = Math.sin(time * 1.9 + L.ph) * BELLSWING;
+      trs(MMODEL, x, y, z, yaw, 1);
+      applyRoll(MMODEL, sw);
+    } else if (L.type === 'sails'){
+      trs(MMODEL, x, y, z, yaw, 1);
+      applyRollZ(MMODEL, time * (Math.PI * 2 / 12));
+    } else if (L.type === 'sloop'){
+      sloopAt(time, SLOOPP);
+      trs(MMODEL, SLOOPP[0], TUNE.WATER_Y - 0.08 + Math.sin(time * 0.7) * 0.03, SLOOPP[1], SLOOPP[2], 1);
+    } else if (L.type === 'heron'){
+      var bob = Math.sin(time * 0.31 + L.ph);
+      trs(MMODEL, x, y + (bob > 0.94 ? 0.05 : 0), z, yaw + Math.sin(time * 0.17 + L.ph) * 0.25, 1);
+    } else if (L.type === 'laundry'){
+      trs(MMODEL, x, y, z, yaw, 1);
+      applyRoll(MMODEL, Math.sin(time * 0.6 + L.ph) * 0.06);
+    } else if (L.type === 'sparrows'){
+      var hop = Math.max(0, Math.sin(time * 0.9 + L.ph)) * 0.06;
+      trs(MMODEL, x, y + hop, z, yaw + Math.sin(time * 0.4 + L.ph) * 0.8, 1);
+    } else {
+      trs(MMODEL, x, y, z, yaw, s);
+    }
+    gl.uniformMatrix4fv(pr.u.uModel, false, MMODEL);
+    gl.drawArrays(gl.TRIANGLES, rg.first, rg.count);
+    STATS.draws++;
+    if (L.type === 'cat'){
+      var tl = PROTORANGE.cattail;
+      if (tl && tl.count){
+        trs(MMODEL, x, y, z, yaw + Math.sin(time * 0.8 + L.ph) * 0.5, 1);
+        gl.uniformMatrix4fv(pr.u.uModel, false, MMODEL);
+        gl.drawArrays(gl.TRIANGLES, tl.first, tl.count);
+        STATS.draws++;
+      }
+    }
+  }
+}
+
+var BELLSWING = 0;
+var SLOOPP = [0, 0, 0];
+
+function applyRoll(m, a){    /* rotate about local X, in place */
+  var c = Math.cos(a), s = Math.sin(a);
+  var m4_=m[4], m5_=m[5], m6_=m[6], m8_=m[8], m9_=m[9], m10_=m[10];
+  m[4]=m4_*c+m8_*s;  m[5]=m5_*c+m9_*s;  m[6]=m6_*c+m10_*s;
+  m[8]=m8_*c-m4_*s;  m[9]=m9_*c-m5_*s;  m[10]=m10_*c-m6_*s;
+}
+function applyRollZ(m, a){   /* rotate about local Z, in place */
+  var c = Math.cos(a), s = Math.sin(a);
+  var m0_=m[0], m1_=m[1], m2_=m[2], m4_=m[4], m5_=m[5], m6_=m[6];
+  m[0]=m0_*c+m4_*s;  m[1]=m1_*c+m5_*s;  m[2]=m2_*c+m6_*s;
+  m[4]=m4_*c-m0_*s;  m[5]=m5_*c-m1_*s;  m[6]=m6_*c-m2_*s;
+}
+
+/* the sloop's position along its spline, and its heading */
+function sloopAt(time, out){
+  var n = SLOOP.length;
+  var u = (time * 0.045) % 1 * n;
+  var i0 = Math.floor(u), t = u - i0;
+  var p0 = SLOOP[(i0 - 1 + n) % n], p1 = SLOOP[i0 % n], p2 = SLOOP[(i0 + 1) % n], p3 = SLOOP[(i0 + 2) % n];
+  var t2 = t * t, t3 = t2 * t;
+  var x = 0.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * t + (2*p0[0] - 5*p1[0] + 4*p2[0] - p3[0]) * t2 + (-p0[0] + 3*p1[0] - 3*p2[0] + p3[0]) * t3);
+  var z = 0.5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * t + (2*p0[1] - 5*p1[1] + 4*p2[1] - p3[1]) * t2 + (-p0[1] + 3*p1[1] - 3*p2[1] + p3[1]) * t3);
+  var dx = 0.5 * ((-p0[0] + p2[0]) + 2*(2*p0[0] - 5*p1[0] + 4*p2[0] - p3[0]) * t + 3*(-p0[0] + 3*p1[0] - 3*p2[0] + p3[0]) * t2);
+  var dz = 0.5 * ((-p0[1] + p2[1]) + 2*(2*p0[1] - 5*p1[1] + 4*p2[1] - p3[1]) * t + 3*(-p0[1] + 3*p1[1] - 3*p2[1] + p3[1]) * t2);
+  out[0] = x; out[1] = z; out[2] = Math.atan2(dx, -dz);
+  return out;
+}
+
+/* ==================================================================
+   [15] input: pointer lock, keyboard, touch, gamepad
+   ================================================================== */
+
+var TOUCH = false;
+var KEY = {};
+var IN = {
+  fwd: 0, side: 0, up: 0,      /* -1..1 wish axes                    */
+  sprint: false,
+  locked: false, dragLook: false,
+  lookDX: 0, lookDY: 0,        /* consumed each step                 */
+  interact: false, firstMoveSkipped: false,
+  touchMove: null, touchLook: null,
+  stickX: 0, stickZ: 0, stickMag: 0, stickHold: 0,
+  pad: -1, active: false
+};
+
+function isTouch(){
+  return (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || false;
+}
+
+function bindInput(){
+  TOUCH = isTouch();
+
+  window.addEventListener('keydown', function(e){
+    var k = e.key ? e.key.toLowerCase() : '';
+    if (KEY[k]) { return; }
+    KEY[k] = true;
+    onKey(k, e);
+  });
+  window.addEventListener('keyup', function(e){
+    var k = e.key ? e.key.toLowerCase() : '';
+    KEY[k] = false;
+  });
+  window.addEventListener('blur', function(){ KEY = {}; });
+
+  /* --- pointer lock ---------------------------------------------- */
+  if (CV){
+    CV.addEventListener('click', requestLock);
+    var gate = document.getElementById('gate');
+    if (gate) { gate.addEventListener('click', requestLock); }
+  }
+  document.addEventListener('pointerlockchange', function(){
+    IN.locked = (document.pointerLockElement === CV);
+    IN.firstMoveSkipped = false;
+    uiGate(!IN.locked);
+  });
+  document.addEventListener('pointerlockerror', function(){
+    IN.dragLook = true; uiGate(false);
+  });
+  window.addEventListener('mousemove', function(e){
+    if (IN.locked){
+      if (!IN.firstMoveSkipped){ IN.firstMoveSkipped = true; return; }
+      var mx = e.movementX || 0, my = e.movementY || 0;
+      /* some platforms deliver one bogus spike right after locking */
+      if (Math.abs(mx) > 200 || Math.abs(my) > 200) { return; }
+      IN.lookDX += mx; IN.lookDY += my;
+    } else if (IN.dragLook && IN.dragging){
+      IN.lookDX += (e.movementX || 0) * 2.5;
+      IN.lookDY += (e.movementY || 0) * 2.5;
+    }
+  });
+  window.addEventListener('mousedown', function(){ IN.dragging = true; });
+  window.addEventListener('mouseup', function(){ IN.dragging = false; });
+
+  /* --- touch: left half drives, right half looks ------------------ */
+  if (CV){
+    CV.addEventListener('touchstart', onTouchStart, { passive: false });
+    CV.addEventListener('touchmove', onTouchMove, { passive: false });
+    CV.addEventListener('touchend', onTouchEnd, { passive: false });
+    CV.addEventListener('touchcancel', onTouchEnd, { passive: false });
+  }
+
+  window.addEventListener('gamepadconnected', function(e){ IN.pad = e.gamepad.index; });
+  window.addEventListener('gamepaddisconnected', function(){ IN.pad = -1; });
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden){ audioSuspend(); } else { audioResume(); }
+  });
+}
+
+function requestLock(){
+  if (!CV || TOUCH) { started(); return; }
+  started();
+  if (document.pointerLockElement === CV) { return; }
+  var p;
+  try { p = CV.requestPointerLock({ unadjustedMovement: true }); }
+  catch (e) { p = CV.requestPointerLock(); }
+  if (p && p.catch) { p.catch(function(){ try { CV.requestPointerLock(); } catch (e2) {} }); }
+}
+
+function onTouchStart(e){
+  e.preventDefault();
+  started();
+  var i, w = window.innerWidth || 1;
+  for (i = 0; i < e.changedTouches.length; i++){
+    var t = e.changedTouches[i];
+    if (t.clientX < w * 0.5 && IN.touchMove === null){
+      IN.touchMove = { id: t.identifier, ox: t.clientX, oy: t.clientY };
+      uiStick(true, t.clientX, t.clientY, 0, 0);
+    } else if (t.clientX >= w * 0.5 && IN.touchLook === null){
+      IN.touchLook = { id: t.identifier, x: t.clientX, y: t.clientY };
+    }
+  }
+}
+
+function onTouchMove(e){
+  e.preventDefault();
+  var i;
+  for (i = 0; i < e.changedTouches.length; i++){
+    var t = e.changedTouches[i];
+    if (IN.touchMove && t.identifier === IN.touchMove.id){
+      var dx = t.clientX - IN.touchMove.ox, dy = t.clientY - IN.touchMove.oy;
+      var L = Math.sqrt(dx * dx + dy * dy), R = 48;
+      if (L > R){ dx *= R / L; dy *= R / L; L = R; }
+      IN.stickX = dx / R; IN.stickZ = dy / R; IN.stickMag = L / R;
+      uiStick(true, IN.touchMove.ox, IN.touchMove.oy, dx, dy);
+    } else if (IN.touchLook && t.identifier === IN.touchLook.id){
+      IN.lookDX += (t.clientX - IN.touchLook.x) * (TUNE.TOUCH_LOOK / TUNE.SENS);
+      IN.lookDY += (t.clientY - IN.touchLook.y) * (TUNE.TOUCH_LOOK / TUNE.SENS);
+      IN.touchLook.x = t.clientX; IN.touchLook.y = t.clientY;
+    }
+  }
+}
+
+function onTouchEnd(e){
+  var i;
+  for (i = 0; i < e.changedTouches.length; i++){
+    var t = e.changedTouches[i];
+    if (IN.touchMove && t.identifier === IN.touchMove.id){
+      IN.touchMove = null; IN.stickX = 0; IN.stickZ = 0; IN.stickMag = 0; IN.stickHold = 0;
+      uiStick(false);
+    }
+    if (IN.touchLook && t.identifier === IN.touchLook.id){ IN.touchLook = null; }
+  }
+}
+
+function pollPad(dt){
+  if (IN.pad < 0 || !navigator.getGamepads) { return; }
+  var g = navigator.getGamepads()[IN.pad];
+  if (!g || !g.axes) { return; }
+  var dz = function(v){ return Math.abs(v) < 0.15 ? 0 : (v - sign(v) * 0.15) / 0.85; };
+  var ax = dz(g.axes[0] || 0), ay = dz(g.axes[1] || 0);
+  var lx = dz(g.axes[2] || 0), ly = dz(g.axes[3] || 0);
+  IN.side += ax; IN.fwd += -ay;
+  IN.lookDX += lx * Math.abs(lx) * 2.6 * dt / TUNE.SENS;
+  IN.lookDY += ly * Math.abs(ly) * 1.7 * dt / TUNE.SENS;
+  if (g.buttons){
+    if (g.buttons[4] && g.buttons[4].pressed) { IN.sprint = true; }
+    if (g.buttons[0] && g.buttons[0].pressed && !IN.padA){ IN.interact = true; }
+    IN.padA = !!(g.buttons[0] && g.buttons[0].pressed);
+  }
+}
+
+function readKeys(){
+  IN.fwd = 0; IN.side = 0; IN.up = 0;
+  if (KEY.w || KEY.arrowup) { IN.fwd += 1; }
+  if (KEY.s || KEY.arrowdown) { IN.fwd -= 1; }
+  if (KEY.a || KEY.arrowleft) { IN.side -= 1; }
+  if (KEY.d || KEY.arrowright) { IN.side += 1; }
+  if (KEY[' ']) { IN.up += 1; }
+  if (KEY.control) { IN.up -= 1; }
+  IN.sprint = !!(KEY.shift);
+  if (IN.stickMag > 0.25){
+    IN.fwd += -IN.stickZ; IN.side += IN.stickX;
+    if (IN.stickMag > 0.95){
+      IN.stickHold += TUNE.STEP;
+      if (IN.stickHold > 1) { IN.sprint = true; }
+    } else { IN.stickHold = 0; }
+  }
+}
+
+/* ==================================================================
+   [16] player: walk / fly / bike, ground, respawn
+   ================================================================== */
+
+var GS = {
+  px: 0, py: 0, pz: 0,
+  vx: 0, vz: 0, vy: 0,
+  yaw: 0, pitch: 0, roll: 0,
+  camY: TUNE.EYE, dip: 0,
+  onGround: true, mode: 'walk',
+  fov: TUNE.FOV,
+  bike: -1, bikeYaw: 0,
+  time: 0, started: false, paused: false,
+  swimming: false, respawnT: 0,
+  photo: false, muted: false
+};
+
+function spawn(x, z, yaw){
+  /* never start inside geometry: push out first, then stand up */
+  var out = colResolve(x, z, TUNE.PLAYER_R);
+  x = out[0]; z = out[1];
+  GS.px = x; GS.pz = z;
+  GS.swimming = false; GS.respawnT = 0;
+  groundAt(x, z, 2);
+  GS.py = gY;
+  GS.vx = GS.vz = GS.vy = 0;
+  GS.yaw = yaw === undefined ? 0 : yaw;
+  GS.pitch = 0; GS.camY = GS.py + TUNE.EYE;
+  GS.onGround = true;
+}
+
+function respawn(){
+  var best = -1, bd = 1e9, i;
+  for (i = 0; i < RESPAWNS.length; i++){
+    var dx = RESPAWNS[i][0] - GS.px, dz = RESPAWNS[i][1] - GS.pz;
+    var d = dx * dx + dz * dz;
+    if (d < bd){ bd = d; best = i; }
+  }
+  var p = best >= 0 ? RESPAWNS[best] : [0, -62];
+  var yaw = GS.yaw;
+  spawn(p[0], p[1], yaw);
+  GS.mode = 'walk'; GS.bike = -1;
+  GS.swimming = false;
+  uiToast('Het grachtenwater is kouder dan het eruitziet.');
+  uiDip();
+}
+
+function playerStep(dt){
+  readKeys();
+  pollPad(dt);
+
+  /* --- look ------------------------------------------------------- */
+  GS.yaw += IN.lookDX * TUNE.SENS;
+  GS.pitch -= IN.lookDY * TUNE.SENS;
+  IN.lookDX = 0; IN.lookDY = 0;
+  GS.pitch = clamp(GS.pitch, -TUNE.PITCH_MAX, TUNE.PITCH_MAX);
+  if (GS.yaw > Math.PI) { GS.yaw -= Math.PI * 2; }
+  if (GS.yaw < -Math.PI) { GS.yaw += Math.PI * 2; }
+
+  if (GS.photo) { return; }
+
+  /* --- wish direction in world space ------------------------------ */
+  var cy = Math.cos(GS.yaw), sy = Math.sin(GS.yaw);
+  var wx = IN.side * cy + IN.fwd * sy;
+  var wz = IN.side * sy - IN.fwd * cy;
+  var wl = Math.sqrt(wx * wx + wz * wz);
+  if (wl > 1){ wx /= wl; wz /= wl; wl = 1; }
+
+  if (GS.mode === 'fly'){ flyStep(dt, wx, wz); return; }
+  if (GS.mode === 'bike'){ bikeStep(dt, wx, wz, wl); return; }
+  walkStep(dt, wx, wz, wl);
+}
+
+function walkStep(dt, wx, wz, wl){
+  var sp = IN.sprint ? TUNE.SPRINT : TUNE.WALK;
+  var k = (wl > 0) ? TUNE.ACCEL_K : TUNE.DECEL_K;
+  var a = 1 - Math.exp(-k * dt);
+  GS.vx += (wx * sp - GS.vx) * a;
+  GS.vz += (wz * sp - GS.vz) * a;
+
+  GS.px += GS.vx * dt;
+  GS.pz += GS.vz * dt;
+  resolveAndGround(dt);
+
+  var want = GS.fov + (IN.sprint && wl > 0 ? TUNE.FOV_SPRINT : 0);
+  GS.fov = TUNE.FOV;
+  CAM.fov = CAM.fov + ((TUNE.FOV + (IN.sprint && wl > 0 ? TUNE.FOV_SPRINT : 0)) - CAM.fov) * (1 - Math.exp(-TUNE.FOV_K * dt));
+}
+
+function flyStep(dt, wx, wz){
+  var sp = IN.sprint ? TUNE.FLY_FAST : TUNE.FLY;
+  var cp = Math.cos(GS.pitch), sp2 = Math.sin(GS.pitch);
+  var fy = sp2 * (IN.fwd || 0);
+  var a = 1 - Math.exp(-8 * dt);
+  GS.vx += (wx * sp * cp - GS.vx) * a;
+  GS.vz += (wz * sp * cp - GS.vz) * a;
+  GS.vy += ((fy + IN.up) * sp - GS.vy) * a;
+  GS.px += GS.vx * dt; GS.py += GS.vy * dt; GS.pz += GS.vz * dt;
+  GS.py = clamp(GS.py, -8, 420);
+  GS.camY = GS.py;
+  GS.onGround = false;
+  CAM.fov = CAM.fov + (TUNE.FOV - CAM.fov) * (1 - Math.exp(-TUNE.FOV_K * dt));
+}
+
+function bikeStep(dt, wx, wz, wl){
+  /* a movement mode, not a vehicle sim: carve, don't pivot */
+  var fwd = IN.fwd;
+  var sp = TUNE.BIKE;
+  var cur = Math.sqrt(GS.vx * GS.vx + GS.vz * GS.vz);
+  var target = fwd > 0 ? sp : (fwd < 0 ? 0 : cur);
+  var k = fwd > 0 ? TUNE.BIKE_ACCEL_K : (fwd < 0 ? TUNE.BIKE_BRAKE_K : TUNE.BIKE_COAST_K);
+  var nsp = cur + (target - cur) * (1 - Math.exp(-k * dt));
+  var rate = 1.8 / (1 + nsp * 0.12);
+  var steer = -IN.side * rate * dt;
+  GS.bikeYaw += steer;
+  GS.yaw += steer;
+  var by = GS.bikeYaw;
+  GS.vx = Math.sin(by) * nsp; GS.vz = -Math.cos(by) * nsp;
+  GS.px += GS.vx * dt; GS.pz += GS.vz * dt;
+  GS.roll += (clamp(-steer / Math.max(dt, 1e-4) * nsp * 0.02, -0.12, 0.12) - GS.roll) * (1 - Math.exp(-6 * dt));
+  resolveAndGround(dt);
+  CAM.fov = CAM.fov + ((TUNE.FOV + nsp / TUNE.BIKE * TUNE.FOV_SPRINT) - CAM.fov) * (1 - Math.exp(-TUNE.FOV_K * dt));
+}
+
+function resolveAndGround(dt){
+  /* walls */
+  var out = colResolve(GS.px, GS.pz, TUNE.PLAYER_R);
+  GS.px = out[0]; GS.pz = out[1];
+  if (colHits > 0){
+    var vn = GS.vx * colNX + GS.vz * colNZ;
+    if (vn < 0){ GS.vx -= colNX * vn; GS.vz -= colNZ * vn; }
+  }
+
+  /* ground */
+  var feet = GS.py;
+  groundAt(GS.px, GS.pz, feet);
+  var gy = gY, kind = gKind;
+
+  if (kind === K_WATER && !GS.swimming && feet < TUNE.WATER_Y + 0.6){
+    GS.swimming = true;
+    GS.respawnT = 0;
+  }
+
+  if (GS.onGround || gy <= feet + TUNE.STEP_UP){
+    if (gy > feet + TUNE.STEP_UP){
+      /* too high to step: stay put, keep falling */
+      GS.vy -= TUNE.GRAVITY * dt;
+      GS.py += GS.vy * dt;
+      GS.onGround = false;
+    } else {
+      var fall = GS.onGround ? 0 : (feet - gy);
+      GS.py += (gy - GS.py) * (1 - Math.exp(-TUNE.GROUND_SNAP_K * dt));
+      if (Math.abs(GS.py - gy) < 0.02) { GS.py = gy; }
+      if (!GS.onGround && fall > 1) { GS.dip = TUNE.LAND_DIP; }
+      GS.onGround = true;
+      GS.vy = 0;
+    }
+  } else {
+    GS.vy -= TUNE.GRAVITY * dt;
+    GS.py += GS.vy * dt;
+    if (GS.py <= gy){ GS.py = gy; GS.vy = 0; GS.onGround = true; }
+  }
+
+  if (GS.py < TUNE.WATER_Y + 0.2 && kind === K_WATER){
+    GS.swimming = true;
+  }
+  if (GS.swimming){
+    GS.respawnT += dt;
+    if (GS.respawnT > 0.9){ respawn(); }
+  }
+
+  /* the universal bug net: any escape self-heals */
+  if (GS.py < -10 || !isFinite(GS.px + GS.py + GS.pz)){
+    if (!isFinite(GS.px + GS.py + GS.pz)){ GS.px = 0; GS.py = 0; GS.pz = -62; }
+    respawn();
+  }
+
+  GS.dip += (0 - GS.dip) * (1 - Math.exp(-6 * dt));
+  var eye = GS.py + TUNE.EYE - GS.dip;
+  GS.camY += (eye - GS.camY) * (1 - Math.exp(-TUNE.CAM_Y_K * dt));
+}
+
+/* ==================================================================
+   [17] systems: discovery, places, tiles, audio, photo mode
+   ================================================================== */
+
+var SAVE = { found: {}, tiles: {}, done: false };
+var DISC = { hold: {}, cardT: 0, cardOn: false };
+var PLACE = { cur: -1, t: 0, last: {} };
+
+function saveLoad(){
+  try {
+    var raw = window.localStorage ? window.localStorage.getItem(TUNE.STORE) : null;
+    if (raw){
+      var o = JSON.parse(raw);
+      SAVE.found = o.found || {}; SAVE.tiles = o.tiles || {}; SAVE.done = !!o.done;
+    }
+  } catch (e) { /* private mode: play without persistence */ }
+}
+function saveStore(){
+  try {
+    if (window.localStorage) { window.localStorage.setItem(TUNE.STORE, JSON.stringify(SAVE)); }
+  } catch (e) {}
+}
+function foundCount(){
+  var n = 0, i;
+  for (i = 0; i < LM.length; i++){ if (SAVE.found[LM[i].id]) { n++; } }
+  return n;
+}
+function tileCount(){
+  var n = 0, i;
+  for (i = 0; i < TILES.length; i++){ if (SAVE.tiles[i]) { n++; } }
+  return n;
+}
+
+function camForward(o){
+  var cp = Math.cos(GS.pitch);
+  o[0] = Math.sin(GS.yaw) * cp; o[1] = Math.sin(GS.pitch); o[2] = -Math.cos(GS.yaw) * cp;
+  return o;
+}
+var _fwd = [0, 0, 0];
+
+function discoveryStep(dt){
+  camForward(_fwd);
+  var i;
+  for (i = 0; i < LM.length; i++){
+    var L = LM[i];
+    if (SAVE.found[L.id]) { continue; }
+    var dx = L.x - GS.px, dz = L.z - GS.pz;
+    var d = Math.sqrt(dx * dx + dz * dz);
+    if (d > L.r){ DISC.hold[L.id] = 0; continue; }
+    var il = 1 / Math.max(d, 0.001);
+    var dot = (dx * il) * _fwd[0] + (dz * il) * _fwd[2];
+    if (dot < TUNE.TRIGGER_DOT){ DISC.hold[L.id] = 0; continue; }
+    DISC.hold[L.id] = (DISC.hold[L.id] || 0) + dt;
+    if (DISC.hold[L.id] >= TUNE.TRIGGER_HOLD){ discover(L); }
+  }
+  /* collectible tiles */
+  for (i = 0; i < TILES.length; i++){
+    if (SAVE.tiles[i]) { continue; }
+    var t = TILES[i];
+    var ax = t.x - GS.px, ay = t.y - (GS.py + 1.0), az = t.z - GS.pz;
+    if (ax * ax + ay * ay + az * az < TUNE.TILE_R * TUNE.TILE_R){
+      SAVE.tiles[i] = 1; saveStore();
+      sfxBlip();
+      var n = tileCount();
+      uiToast(n === TILES.length ? 'Alle vijftien tegels gevonden.' : ('Delfts blauw tegeltje — ' + n + ' van de ' + TILES.length));
+    }
+  }
+}
+
+function discover(L){
+  SAVE.found[L.id] = 1;
+  DISC.hold[L.id] = 0;
+  saveStore();
+  sfxBell(760, 0.16, 2.4);
+  uiCard(L.nm, L.tx);
+  uiPlace(L.nm, true);
+  uiPanelFill();
+  if (foundCount() === LM.length && !SAVE.done){
+    SAVE.done = true; saveStore();
+    later(function(){ uiToast('Je kent de stad. — druk F om te vliegen'); }, 9000);
+    var sub = document.getElementById('titleSub');
+    if (sub) { sub.textContent = 'Je kent de stad.'; }
+  }
+}
+
+function placeStep(dt){
+  var best = -1, bd = 1e9, i;
+  for (i = 0; i < PLACES.length; i++){
+    var p = PLACES[i];
+    var dx = p.x - GS.px, dz = p.z - GS.pz;
+    var d = dx * dx + dz * dz;
+    if (d < p.r * p.r && d < bd){ bd = d; best = i; }
+  }
+  if (best !== PLACE.cur){
+    PLACE.cur = best;
+    if (best >= 0){
+      var nm = PLACES[best].nm, now = GS.time * 1000;
+      if (!PLACE.last[nm] || now - PLACE.last[nm] > TUNE.PLACE_SUPPRESS){
+        PLACE.last[nm] = now;
+        uiPlace(nm, false);
+      }
+    }
+  }
+}
+
+/* --- distant landmark labels: the entire wayfinding UI ------------- */
+var LBL = [];
+function labelsInit(){
+  var host = document.getElementById('labels');
+  if (!host) { return; }
+  /* two at once, never three — the design is emphatic about this */
+  for (var i = 0; i < 2; i++){
+    var d = document.createElement('div');
+    d.className = 'lbl';
+    d.innerHTML = '<span class="dot"></span><span class="stem"></span>' +
+                  '<span class="bar"></span><span class="nm"></span>';
+    host.appendChild(d);
+    LBL.push({ el: d, tx: d.querySelector('.nm'), on: false, id: '' });
+  }
+}
+
+var _proj = [0, 0, 0, 0];
+function project(x, y, z, o){
+  o[0] = MVP[0]*x + MVP[4]*y + MVP[8]*z + MVP[12];
+  o[1] = MVP[1]*x + MVP[5]*y + MVP[9]*z + MVP[13];
+  o[2] = MVP[2]*x + MVP[6]*y + MVP[10]*z + MVP[14];
+  o[3] = MVP[3]*x + MVP[7]*y + MVP[11]*z + MVP[15];
+  return o[3] > 0.001;
+}
+
+function labelsStep(){
+  if (!LBL.length) { return; }
+  var cand = [], i;
+  for (i = 0; i < LM.length; i++){
+    var L = LM[i];
+    var dx = L.x - CAM.x, dz = L.z - CAM.z;
+    var d = Math.sqrt(dx * dx + dz * dz);
+    if (d < TUNE.LABEL_MIN || d > TUNE.FOG_OPAQUE * 0.8) { continue; }
+    if (!project(L.x, L.ay, L.z, _proj)) { continue; }
+    var sx = (_proj[0] / _proj[3]) * 0.5 + 0.5;
+    var sy = 1 - ((_proj[1] / _proj[3]) * 0.5 + 0.5);
+    if (sx < 0.06 || sx > 0.94 || sy < 0.05 || sy > 0.72) { continue; }
+    /* never over the copy column on wide screens */
+    if (sx < 0.40 && sy > 0.30 && sy < 0.85) { continue; }
+    cand.push({ id: L.id, nm: L.nm, sx: sx, sy: sy, d: d, found: !!SAVE.found[L.id] });
+  }
+  cand.sort(function(a, b){ return a.d - b.d; });
+  for (i = 0; i < LBL.length; i++){
+    var slot = LBL[i], c = cand[i];
+    if (c){
+      if (slot.id !== c.id){ slot.tx.textContent = c.nm; slot.id = c.id; }
+      slot.el.style.transform = 'translate3d(' + (c.sx * 100).toFixed(2) + 'vw,' + (c.sy * 100).toFixed(2) + 'vh,0)';
+      slot.el.classList.toggle('found', c.found);
+      if (!slot.on){ slot.el.classList.add('on'); slot.on = true; }
+    } else if (slot.on){
+      slot.el.classList.remove('on'); slot.on = false; slot.id = '';
+    }
+  }
+}
+
+/* --- audio: four voices, no files ---------------------------------- */
+var AC = null, AU = {};
+function audioInit(){
+  if (AC) { return; }
+  var Ctor = window.AudioContext || window.webkitAudioContext;
+  if (!Ctor) { return; }
+  try { AC = new Ctor(); } catch (e) { return; }
+  AU.master = AC.createGain();
+  AU.master.gain.value = GS.muted ? 0 : 1;
+  AU.master.connect(AC.destination);
+
+  /* one second of noise, looped, serves wind and water */
+  var n = AC.sampleRate | 0;
+  var buf = AC.createBuffer(1, n, AC.sampleRate);
+  var ch = buf.getChannelData(0);
+  for (var i = 0; i < n; i++){ ch[i] = Math.random() * 2 - 1; }
+
+  AU.wind = AC.createBufferSource(); AU.wind.buffer = buf; AU.wind.loop = true;
+  AU.windF = AC.createBiquadFilter(); AU.windF.type = 'lowpass'; AU.windF.frequency.value = 400;
+  AU.windG = AC.createGain(); AU.windG.gain.value = TUNE.VOL_WIND;
+  AU.wind.connect(AU.windF); AU.windF.connect(AU.windG); AU.windG.connect(AU.master);
+  AU.wind.start(0);
+
+  AU.water = AC.createBufferSource(); AU.water.buffer = buf; AU.water.loop = true;
+  AU.waterF = AC.createBiquadFilter(); AU.waterF.type = 'bandpass'; AU.waterF.frequency.value = 600; AU.waterF.Q.value = 0.9;
+  AU.waterG = AC.createGain(); AU.waterG.gain.value = 0;
+  AU.water.connect(AU.waterF); AU.waterF.connect(AU.waterG); AU.waterG.connect(AU.master);
+  AU.water.start(0);
+}
+function audioSuspend(){ if (AC && AC.suspend) { try { AC.suspend(); } catch (e) {} } }
+function audioResume(){ if (AC && AC.resume) { try { AC.resume(); } catch (e) {} } }
+
+function audioStep(dt){
+  if (!AC) { return; }
+  var sp = Math.sqrt(GS.vx * GS.vx + GS.vz * GS.vz);
+  if (AU.windF){
+    var f = 340 + sp * 26 + Math.sin(GS.time * 0.21) * 60;
+    AU.windF.frequency.value = f;
+    AU.windG.gain.value = TUNE.VOL_WIND * (0.7 + sp / TUNE.SPRINT * 0.5);
+  }
+  if (AU.waterG){
+    var d = canalDist(GS.px, GS.pz);
+    var amp = 1 / (1 + Math.max(0, d) * 0.35);
+    AU.waterG.gain.value = TUNE.VOL_WATER * amp * (0.6 + 0.4 * Math.sin(GS.time * 2.9));
+  }
+}
+
+/* a bell is its partials: the minor third is what makes it a bell */
+function sfxBell(f, gain, decay){
+  if (!AC) { return; }
+  var parts = [1, 2.0, 2.4, 3.0, 4.1], i;
+  var t0 = AC.currentTime;
+  for (i = 0; i < parts.length; i++){
+    var o = AC.createOscillator(), g = AC.createGain();
+    o.type = i > 2 ? 'sine' : 'triangle';
+    o.frequency.value = f * parts[i];
+    var a = gain * (i === 0 ? 1 : 0.45 / i);
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(a, t0 + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + decay * (1 - i * 0.12));
+    o.connect(g); g.connect(AU.master);
+    o.start(t0); o.stop(t0 + decay + 0.1);
+  }
+}
+function sfxBlip(){
+  if (!AC) { return; }
+  var t0 = AC.currentTime, o = AC.createOscillator(), g = AC.createGain();
+  o.type = 'triangle'; o.frequency.setValueAtTime(880, t0);
+  o.frequency.exponentialRampToValueAtTime(1320, t0 + 0.09);
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(TUNE.VOL_UI, t0 + 0.008);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.28);
+  o.connect(g); g.connect(AU.master); o.start(t0); o.stop(t0 + 0.32);
+}
+function sfxBikeBell(){
+  if (!AC) { return; }
+  sfxBell(2100, 0.10, 0.5);
+  later(function(){ sfxBell(2100, 0.07, 0.4); }, 130);
+}
+
+/* the carillon strikes the real hour, whether anyone is listening */
+var lastHour = -1, strikeQ = 0;
+function bellsStep(dt){
+  BELLSWING *= Math.exp(-1.2 * dt);
+  var h = (new Date()).getHours() % 12 || 12;
+  if (lastHour < 0){ lastHour = h; return; }
+  if (h !== lastHour){
+    lastHour = h;
+    strikeQ = h;
+    /* four-note chime first, then the count */
+    var seq = [0, 380, 760, 1140], i;
+    for (i = 0; i < 4; i++){
+      (function(k){ later(function(){ sfxBell([392, 440, 349, 262][k], TUNE.VOL_BELL, 4.0); BELLSWING = 0.30; }, seq[k]); })(i);
+    }
+    for (i = 0; i < strikeQ; i++){
+      (function(k){ later(function(){ sfxBell(262, TUNE.VOL_BELL, 5.0); BELLSWING = 0.34; }, 2000 + k * 1400); })(i);
+    }
+  }
+}
+
+/* --- photo mode ---------------------------------------------------- */
+function photoToggle(){
+  GS.photo = !GS.photo;
+  uiChrome(!GS.photo);
+  var fr = document.getElementById('frame');
+  if (fr) { fr.classList.toggle('on', GS.photo); }
+  uiTag(GS.photo ? 'FOTO — wiel: zoom · Q/E: kantelen · klik: opslaan' : '');
+}
+function photoCapture(){
+  if (!CV || !CV.toBlob) { return; }
+  draw(GS.time);                       /* fresh frame in this same task */
+  CV.toBlob(function(b){
+    if (!b || !window.URL) { return; }
+    var a = document.createElement('a');
+    a.href = window.URL.createObjectURL(b);
+    var d = new Date();
+    a.download = 'delft-' + d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2) + '.png';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    later(function(){ window.URL.revokeObjectURL(a.href); }, 4000);
+  });
+  uiToast('Foto opgeslagen.');
+}
+
+/* --- the bicycle ---------------------------------------------------- */
+function bikeNearest(){
+  var best = -1, bd = 9, i;
+  for (i = 0; i < BIKE_SPOTS.length; i++){
+    var b = BIKE_SPOTS[i];
+    var dx = b.x - GS.px, dz = b.z - GS.pz;
+    var d = Math.sqrt(dx * dx + dz * dz);
+    if (d < bd){ bd = d; best = i; }
+  }
+  return best;
+}
+function bikeToggle(){
+  if (GS.mode === 'bike'){
+    GS.mode = 'walk'; GS.bike = -1; GS.roll = 0;
+    uiTag(''); uiToast('Fiets neergezet.');
+    return;
+  }
+  var i = bikeNearest();
+  if (i < 0) { return; }
+  GS.mode = 'bike'; GS.bike = i;
+  GS.bikeYaw = GS.yaw;
+  uiTag('FIETS — B: bel · E: afstappen');
+  sfxBikeBell();
+}
+
+function interact(){
+  if (GS.mode === 'bike'){ bikeToggle(); return; }
+  if (bikeNearest() >= 0){ bikeToggle(); return; }
+  if (DISC.cardOn){ uiCardHide(); }
+}
+
+function onKey(k, e){
+  if (k === 'tab'){ if (e) { e.preventDefault(); } uiPanel(); return; }
+  if (k === 'escape'){ return; }
+  if (!GS.started) { return; }
+  if (k === 'e'){ interact(); }
+  else if (k === 'f'){
+    if (SAVE.done || GS.devFly){
+      GS.mode = (GS.mode === 'fly') ? 'walk' : 'fly';
+      uiTag(GS.mode === 'fly' ? 'VLIEGEN — F: terug' : '');
+    }
+  }
+  else if (k === 'p'){ photoToggle(); }
+  else if (k === 'b' && GS.mode === 'bike'){ sfxBikeBell(); }
+  else if (k === 'm'){
+    GS.muted = !GS.muted;
+    if (AU.master) { AU.master.gain.value = GS.muted ? 0 : 1; }
+    uiToast(GS.muted ? 'Geluid uit.' : 'Geluid aan.');
+  }
+}
+
+/* ==================================================================
+   [18] UI plumbing
+   ================================================================== */
+
+var UIT = { toast: 0, card: 0, place: 0, tag: 0, hint: 0, dip: 0 };
+function el(id){ return document.getElementById(id); }
+function cls(id, name, on){ var e = el(id); if (e) { e.classList.toggle(name, !!on); } }
+
+function uiGate(on){
+  cls('gate', 'on', on && GS.started && !TOUCH);
+  var g = el('gateTxt');
+  if (g && GS.started) { g.innerHTML = 'Klik om verder te gaan<small>WASD — lopen · muis — kijken · shift — sneller</small>'; }
+}
+function uiChrome(on){ cls('stage', 'chromed', on); }
+function uiToast(msg){
+  var t = el('toast');
+  if (!t) { return; }
+  t.textContent = msg;
+  t.classList.add('on');
+  unlater(UIT.toast);
+  UIT.toast = later(function(){ t.classList.remove('on'); }, 3800);
+}
+function uiTag(msg){
+  var t = el('tag');
+  if (!t) { return; }
+  if (!msg){ t.classList.remove('on'); return; }
+  t.textContent = msg; t.classList.add('on');
+}
+function uiDip(){
+  cls('dip', 'on', true);
+  unlater(UIT.dip);
+  UIT.dip = later(function(){ cls('dip', 'on', false); }, 620);
+}
+function uiPlace(nm, teal){
+  var p = el('place'), n = el('placeNm');
+  if (!p || !n) { return; }
+  n.textContent = nm;
+  p.classList.toggle('found', !!teal);
+  p.classList.add('on');
+  unlater(UIT.place);
+  UIT.place = later(function(){ p.classList.remove('on'); }, TUNE.PLACE_HOLD);
+}
+function uiCard(nm, tx){
+  var c = el('card');
+  if (!c) { return; }
+  var a = el('cardNm'), b = el('cardTx');
+  if (a) { a.textContent = nm; }
+  if (b) { b.textContent = tx; }
+  c.classList.add('on');
+  DISC.cardOn = true;
+  unlater(UIT.card);
+  UIT.card = later(uiCardHide, TUNE.CARD_MS);
+}
+function uiCardHide(){
+  cls('card', 'on', false);
+  DISC.cardOn = false;
+  unlater(UIT.card);
+}
+function uiPanel(){
+  var p = el('panel');
+  if (!p) { return; }
+  var on = !p.classList.contains('on');
+  uiPanelFill();
+  p.classList.toggle('on', on);
+}
+function uiPanelFill(){
+  var ul = el('panelList');
+  if (!ul) { return; }
+  var html = '', i;
+  for (i = 0; i < LM.length; i++){
+    var L = LM[i], f = !!SAVE.found[L.id];
+    html += '<li class="' + (f ? 'found' : '') + '">' + (f ? '<i></i>' + L.nm : '<span>— — —</span>') + '</li>';
+  }
+  ul.innerHTML = html;
+  var foot = el('panelFoot');
+  if (foot){
+    var n = foundCount(), t = tileCount();
+    foot.textContent = (n === LM.length ? 'Je kent de stad.' : n + ' van de ' + LM.length + ' gevonden')
+      + (t ? ' · ' + t + '/' + TILES.length + ' tegels' : '');
+  }
+}
+function uiStick(on, ox, oy, dx, dy){
+  var s = el('stick');
+  if (!s) { return; }
+  s.classList.toggle('on', !!on);
+  if (on){
+    s.style.transform = 'translate(' + (ox - 48) + 'px,' + (oy - 48) + 'px)';
+    var nub = s.querySelector('i');
+    if (nub) { nub.style.transform = 'translate(' + (dx || 0) + 'px,' + (dy || 0) + 'px)'; }
+  }
+}
+
+function started(){
+  if (GS.started) { uiGate(false); return; }
+  GS.started = true;
+  audioInit();
+  audioResume();
+  cls('title', 'off', true);
+  uiGate(false);
+  uiChrome(true);
+  var h = el('hint');
+  if (h){
+    h.textContent = TOUCH ? 'links — lopen · rechts — kijken' : 'WASD — lopen · muis — kijken · shift — sneller · tab — plaatsen';
+    h.classList.add('on');
+    later(function(){ h.classList.remove('on'); }, 6500);
+  }
+  if (TOUCH){ cls('tbtn', 'on', true); }
+}
+
+/* ==================================================================
+   [19] loop + boot + window.__game
+   ================================================================== */
+
+var ACC = 0, LAST = 0, RAF = 0;
+
+function step(dt){
+  GS.time += dt;
+  playerStep(dt);
+  if (!GS.photo){
+    discoveryStep(dt);
+    placeStep(dt);
+  }
+  bellsStep(dt);
+  audioStep(dt);
+  CAM.x = GS.px; CAM.y = GS.camY; CAM.z = GS.pz;
+  CAM.yaw = GS.yaw; CAM.pitch = GS.pitch; CAM.roll = GS.roll;
+}
+
+function frame(now){
+  RAF = window.requestAnimationFrame(frame);
+  var t = now * 0.001;
+  var dt = LAST ? Math.min(t - LAST, TUNE.DT_CLAMP) : TUNE.STEP;
+  LAST = t;
+  ACC += dt;
+  var guard = 0;
+  while (ACC >= TUNE.STEP && guard++ < 240){ step(TUNE.STEP); ACC -= TUNE.STEP; }
+  dynRes(dt, now);
+  draw(GS.time);
+  labelsStep();
+}
+
+function fallback(msg){
+  var g = el('gateTxt');
+  if (g){ g.innerHTML = 'Deze plattegrond heeft WebGL2 nodig<small>' + msg + '</small>'; }
+  cls('gate', 'on', true);
+  cls('title', 'off', false);
+}
+
+function boot(){
+  saveLoad();
+  buildWorld();
+  packWorld();
+  packInstances();
+  labelsInit();
+  bindInput();
+  /* start on the Markt, facing the Nieuwe Kerk down the square */
+  spawn(-10, -62, Math.PI * 0.5);
+  CAM.x = GS.px; CAM.y = GS.camY; CAM.z = GS.pz; CAM.yaw = GS.yaw;
+  uiPanelFill();
+
+  var ok = false;
+  try { ok = glInit(); } catch (e) { fallback(e && e.message ? e.message : 'shader'); return; }
+  if (!ok){ fallback('Je browser of GPU biedt het niet aan.'); return; }
+  resize();
+  if (!TOUCH) { cls('gate', 'on', true); }
+  else { started(); }
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    TUNE.CLOUD_DRIFT *= 0.06;
+  }
+  RAF = window.requestAnimationFrame(frame);
+}
+
+/* the contract the headless harness drives */
+window.__game = {
+  TUNE: TUNE, GS: GS, CAM: CAM, IN: IN, KEY: KEY,
+  STATS: STATS, CHUNKS: CHUNKS, COL: COL, LM: LM, TILES: TILES, PLACES: PLACES,
+  RESPAWNS: RESPAWNS, SAVE: SAVE, LIFE: LIFE,
+  step: step, draw: function(){ draw(GS.time); }, spawn: spawn, respawn: respawn,
+  groundAt: function(x, z, f){ return groundAt(x, z, f); },
+  gInfo: function(){ return { y: gY, kind: gKind, top: gTop, found: gFound }; },
+  colResolve: colResolve, colPenetration: colPenetration,
+  buildWorld: buildWorld, packWorld: packWorld, packInstances: packInstances,
+  worldBuf: function(){ return WORLDBUF; },
+  instBuf: function(){ return INSTBUF; },
+  waterV: function(){ return WATERV; },
+  protoRange: function(){ return PROTORANGE; },
+  instRange: function(){ return INSTRANGE; },
+  shaders: function(){ return { vsSolid: vsSolid(false), vsInst: vsSolid(true), fsSolid: FS_SOLID,
+                                vsWater: VS_WATER, fsWater: FS_WATER, vsSky: VS_SKY, fsSky: FS_SKY }; },
+  cull: function(){ cullChunks(); return VIS.length / 2; },
+  discover: discover, foundCount: foundCount, tileCount: tileCount,
+  boot: boot
+};
+
+if (document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', boot);
+} else { boot(); }
 </script>
 </body>
 </html>
