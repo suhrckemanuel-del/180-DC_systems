@@ -225,18 +225,27 @@ textarea {
 .hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(480px, 1.08fr);
-  gap: clamp(2.6rem, 5vw, 5rem);
+  column-gap: clamp(2.6rem, 5vw, 5rem);
+  row-gap: 2.2rem;
   align-items: center;
 }
 
 .hero-copy {
+  grid-column: 1;
+  grid-row: 1;
   min-width: 0;
 }
 
 .city-film {
+  grid-column: 2;
+  grid-row: 1 / span 2;
   min-width: 0;
   margin: 0;
   align-self: center;
+}
+
+.hero--mission .city-film {
+  grid-row: 1;
 }
 
 .city-film__viewport {
@@ -350,8 +359,8 @@ textarea {
   max-width: 78ch;
   margin-top: 0.8rem;
   color: var(--ink-soft);
-  font-size: 0.71rem;
-  line-height: 1.5;
+  font-size: 0.75rem;
+  line-height: 1.55;
 }
 
 .city-film figcaption a {
@@ -474,10 +483,12 @@ textarea {
 }
 
 .hero-facts {
+  grid-column: 1;
+  grid-row: 2;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1px;
-  margin: 2.2rem 0 0;
+  margin: 0;
   padding: 1px;
   border: 1px solid var(--line);
   background: var(--line);
@@ -1332,7 +1343,26 @@ summary {
 @media (max-width: 860px) {
   .hero-grid {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2.5rem;
+  }
+
+  .hero-copy {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .city-film {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .hero--mission .city-film {
+    grid-row: 2;
+  }
+
+  .hero-facts {
+    grid-column: 1;
+    grid-row: 3;
   }
 
   .proof-strip {
@@ -1441,10 +1471,6 @@ summary {
     border-radius: 16px 16px 16px 6px;
   }
 
-  .hero-facts {
-    margin-top: 2rem;
-  }
-
   .hero-facts > div {
     padding: 0.82rem;
   }
@@ -1514,6 +1540,10 @@ summary {
 }
 
 @media (max-width: 420px) {
+  .hero-grid {
+    gap: 2rem;
+  }
+
   .portrait-slot {
     max-height: 105px;
   }

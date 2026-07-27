@@ -28,7 +28,7 @@ Narrative: real Rotterdam first, a brief `#78B038` confluence, then real Delft.
 - Location evidence: the Commons description and credited source identify the walking film as Delft, Netherlands.
 - Excerpt used: **00:10:32.3–00:10:38.3**
 
-Edits: excerpts selected; audio omitted; scaled and centre-cropped; saturation restrained; a 0.8-second dissolve plus a brief translucent `#78B038` wash joins the cities; encoded as one route-local film. The combined adaptation is distributed under **CC BY-SA 3.0**, with attribution to both creators.
+Edits: excerpts selected; audio omitted; centre-cropped; saturation restrained; a 0.8-second dissolve plus a brief translucent `#78B038` wash joins the cities; the composite was time-compressed to 8.0 seconds and encoded at 768×480 as one route-local film. The combined adaptation is distributed under **CC BY-SA 3.0**, with attribution to both creators.
 
 ## Mission — Delft origin
 
@@ -56,15 +56,15 @@ Poster: `img/poster-clients-rotterdam.webp`
 - Excerpt used: **00:00.0–00:05.8**
 - Edits: selected the opening water-and-crane context before ceremonial material; audio omitted; scaled and centre-cropped; lightly desaturated and graded; converted to 24 fps H.264.
 
-## For students — TU Delft making
+## For students — TU Delft campus
 
 Shipped derivative: `media/students-delft-life.mp4`  
 Poster: `img/poster-students-delft.webp`
 
-- Work: **Go for the wall – First autonomous print of the metal 3D printer**
-- Creator credited by the source: **Metal 3D Printer TU Delft 2014**
-- Source: https://commons.wikimedia.org/wiki/File:Go_for_the_wall_-_First_autonomous_print_of_the_metal_3D_printer.webm
-- Licence: **CC BY 3.0** — https://creativecommons.org/licenses/by/3.0/
-- Context evidence: the source identifies the documented engineering work with TU Delft.
-- Excerpt used: **04:00.0–04:08.0**
-- Edits: selected a non-flashing inspection sequence showing hands and the printed component; audio omitted; scaled and centre-cropped; lightly desaturated and graded; converted to 24 fps H.264.
+- Work: **TUDelft Campus | Drone Showcase**
+- Creator: **TU Delft | NewMedia Centre**
+- Source: https://www.youtube.com/watch?v=Q6ZTj4_u01w
+- Licence: **Creative Commons Attribution (CC BY)**, as marked by the source — https://support.google.com/youtube/answer/2797468?hl=en
+- Context evidence: the official TU Delft NewMedia Centre channel identifies the work as a TU Delft campus showcase; the Library's grass roof and cone are visible in the selected sequence.
+- Excerpt used: **00:13.6–00:20.4**
+- Edits: selected one continuous aerial orbit across the TU Delft Library and surrounding campus; audio omitted; scaled and centre-cropped; lightly desaturated and graded; converted to 24 fps H.264.

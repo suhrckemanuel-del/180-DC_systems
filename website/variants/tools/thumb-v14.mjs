@@ -12,9 +12,12 @@ const url =
   pathToFileURL(join(here, "..", "v14-confluence", "index.html")).href;
 
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+const context = await browser.newContext({
+  viewport: { width: 1280, height: 800 },
+  reducedMotion: "reduce",
+});
+const page = await context.newPage();
 await page.goto(url, { waitUntil: "networkidle" });
-await page.emulateMedia({ reducedMotion: "reduce" });
 const png = await page.screenshot();
 await sharp(png).resize(720).webp({ quality: 72 }).toFile(out);
 await browser.close();

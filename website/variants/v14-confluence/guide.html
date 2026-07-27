@@ -81,13 +81,13 @@
           </article>
           <article class="card">
             <span class="card-index">04</span>
-            <h3>Students · Delft making</h3>
-            <p>A different TU Delft engineering film gives the student page a practical, campus-specific register. The people and work shown belong to the credited source and are never presented as this branch's members or consulting work.</p>
+            <h3>Students · Delft campus</h3>
+            <p>An official TU Delft NewMedia Centre aerial gives the student page a contemporary, campus-specific register. The campus users visible at a distance belong to the credited source and are never presented as this branch's members or consulting team.</p>
           </article>
         </div>
         <div class="prose" style="margin-top:2rem">
           <p>The public pages self-host their compressed MP4s and WebP posters; no third-party player, tracking request, remote embed, or audio stream is shipped. The earlier generated <code>img/hero-confluence.webp</code> remains as historical build material but is no longer referenced by a public page. Its slight fantasy quality survives only as a transparent brand-green grade and static diagonal lines inside each bounded film frame.</p>
-          <p><strong>Documentary ledger:</strong> each public <code>figcaption</code> links to the exact Wikimedia Commons source and its licence. The redesign's final verification must check those links, attribution terms, city identity, file sizes, and the absence of footage reuse across routes before release.</p>
+          <p><strong>Documentary ledger:</strong> each public <code>figcaption</code> links to the exact source page and its licence evidence—Wikimedia Commons for three routes, and TU Delft NewMedia Centre's official YouTube source for Students. Final verification checks those links, attribution terms, city identity, file sizes, and the absence of footage reuse across routes.</p>
         </div>
       </div>
     </section>
@@ -108,7 +108,7 @@
             <tr><th>Home</th><td>Rotterdam → green confluence → Delft. MP4 ceiling: <strong>720 KB</strong>; visited-page ceiling: <strong>900 KB</strong>.</td></tr>
             <tr><th>Mission</th><td>Delft origin. MP4 ceiling: <strong>520 KB</strong>; visited-page ceiling: <strong>700 KB</strong>.</td></tr>
             <tr><th>For clients</th><td>Rotterdam port scale. MP4 ceiling: <strong>420 KB</strong>; visited-page ceiling: <strong>650 KB</strong>.</td></tr>
-            <tr><th>Students</th><td>TU Delft making. MP4 ceiling: <strong>440 KB</strong>; visited-page ceiling: <strong>650 KB</strong>.</td></tr>
+            <tr><th>Students</th><td>TU Delft campus. MP4 ceiling: <strong>440 KB</strong>; visited-page ceiling: <strong>650 KB</strong>.</td></tr>
           </tbody>
         </table>
         <p class="lede" style="margin-top:1.5rem">The repository now stores several films, so the relevant performance invariant is the transfer for the page a visitor actually opens. No route references, preloads, or prefetches another route's MP4. Posters target 40 KB or less, and final measured transfer—not nominal bitrate—is the release gate.</p>
@@ -168,34 +168,34 @@
           </article>
           <article id="redesign-build">
             <h3>2026-07-26 — contained city-film redesign build</h3>
-            <p>Replaced the full-bleed generated-image heroes with white-dominant split layouts across Home, Mission, For clients, and Students while preserving their copy, fact grids, calls to action, navigation pattern, and content gaps. Each route now contains one source-less <code>video</code>, its own WebP poster and MP4 path, a visible city label, a documentary caption, and a distinct real-footage role: Home Rotterdam → Delft; Mission Delft origin; For clients Rotterdam scale; Students TU Delft making.</p>
+            <p>Replaced the full-bleed generated-image heroes with white-dominant split layouts across Home, Mission, For clients, and Students while preserving their copy, fact grids, calls to action, navigation pattern, and content gaps. Each route now contains one source-less <code>video</code>, its own WebP poster and MP4 path, a visible city label, a documentary caption, and a distinct real-footage role: Home Rotterdam → Delft; Mission Delft origin; For clients Rotterdam scale; Students TU Delft campus.</p>
             <p>Added one shared <code>media-controller.js</code> for route-local source attachment, viewport and tab pausing, one-shot Play/Pause/Replay state, runtime reduced-motion changes, Data Saver and 2G opt-in, and poster retention on failure. Removed the live Ken Burns and parallax treatment. The prior abstract still remains unreferenced historical material; verified brand-green grading and static confluence lines provide continuity inside the contained media frames.</p>
             <p><strong>Status:</strong> implementation complete; independent redesign critiques and final verification remain required below. No earlier screenshot, transfer figure, Lighthouse result, or gallery thumbnail is carried forward as proof.</p>
           </article>
           <article id="redesign-round-1">
             <h3>Contained-film critique round 1 — visual hierarchy and city clarity</h3>
-            <p><strong>Status:</strong> Pending fresh desktop and mobile screenshots. Record whether the split hero feels professional, whether Rotterdam and Delft read clearly without tourism-page spectacle, whether each crop remains useful at 320px/390px/768px, and whether labels, controls, captions, and the slight green treatment compete with the primary message.</p>
-            <p><strong>Fresh review findings:</strong> Pending.</p>
-            <p><strong>Applied fixes:</strong> Pending.</p>
+            <p><strong>Status:</strong> Completed from fresh 1440×900, 768×1024, 390×844, and 320×800 screenshots of all four public heroes.</p>
+            <p><strong>Fresh review findings:</strong> the contained 8:5 frames, copy-first desktop composition, green grade, city labels, and controls felt professional and should remain. Four correctable issues surfaced: Home's film said Rotterdam → Delft while its eyebrow and city fact reversed that sequence; on narrow phones the fact grids pushed the film too far below the opening message; the original low-light metal-printer excerpt looked soft and generic beside the other footage; and 0.71rem captions sat at the lower legibility limit.</p>
+            <p><strong>Applied fixes:</strong> aligned Home's narrative cues to Rotterdam → Delft while retaining the official Delft–Rotterdam masthead; made stacked heroes order introduction and actions → film and caption → fact grid, with a 2rem phone gap; replaced the soft student excerpt with a bright, contemporary aerial sequence from TU Delft's official NewMedia Centre; and raised captions to 0.75rem with 1.55 line-height. The restrained green transition, bounded film frame, and desktop geometry were intentionally retained.</p>
           </article>
           <article id="redesign-round-2">
             <h3>Contained-film critique round 2 — motion, accessibility, and performance</h3>
-            <p><strong>Status:</strong> Pending a fresh reviewer plus normal, reduced-motion, no-JavaScript, Data Saver, off-screen pause, tab-visibility, autoplay-rejection, replay, and media-error checks. Record actual route-local requests and transfer totals against the ceilings above.</p>
-            <p><strong>Fresh review findings:</strong> Pending.</p>
-            <p><strong>Applied fixes:</strong> Pending.</p>
+            <p><strong>Status:</strong> Completed by a fresh reviewer across normal playback, reduced motion, no JavaScript, Data Saver, off-screen and hidden-tab pausing, explicit-pause retention, autoplay rejection, replay, media failure, and 320/390/768/1440px layouts. All four routes retained their posters and captions, loaded only their own film, kept active controls at least 44px high, and recorded Lighthouse Accessibility 100.</p>
+            <p><strong>Fresh review findings:</strong> three degraded-state issues needed correction: a source-less native <code>video</code> could expose “Unable to play media” to assistive technology; Data Saver hid the focused control while a manual request loaded and exposed no persistent loading state; and a stale rejected <code>play()</code> promise could overwrite a new runtime reduced-motion state. The automated content check also used looser caps than this guide, and repeated cold Lighthouse runs showed volatile Home total-blocking-time while the longer 10.8-second, 707 KB composite offered an obvious optimization target.</p>
+            <p><strong>Applied fixes:</strong> treated each silent decorative video as hidden from the accessibility tree while preserving the visible <code>figcaption</code> and no-JavaScript image alternative; kept the Data Saver control visible and focusable as an <code>aria-live</code>, <code>aria-busy</code> Loading state; invalidated stale play promises with a guarded token; added direct regression checks for all three paths; aligned every automated ceiling with the table above; tightened Home to an 8.0-second 768×480 film at 488,439 bytes without losing the Rotterdam → green confluence → Delft sequence; and scheduled automatic attachment for the first post-paint idle opportunity while keeping manual playback immediate.</p>
           </article>
           <article id="redesign-round-3">
             <h3>Contained-film critique round 3 — documentary honesty and release polish</h3>
-            <p><strong>Status:</strong> Pending a fresh reviewer. Recheck every creator/source/licence link, city identification, contextual disclaimer, unique-footage assignment, copy-parity fact, service description, Consultant/Team Leader reference, visible placeholder, local link, fragment, focus state, and final responsive detail.</p>
-            <p><strong>Fresh review findings:</strong> Pending.</p>
-            <p><strong>Applied fixes:</strong> Pending.</p>
+            <p><strong>Status:</strong> Completed by a third fresh reviewer after the final media encodes and controller fixes. The review checked the four public heroes at desktop and 390px, every source and licence URL, the local media ledger, city and campus identification, documentary disclaimers, content parity, navigation, fragments, focus treatment, and all automated audit results.</p>
+            <p><strong>Fresh review findings:</strong> the redesign was judged ready to keep: Rotterdam reads unmistakably first on Home, Delft follows after the green confluence, all four films are byte-distinct and route-specific, no text sits over media, every caption separates context from branch work, all external credit links returned HTTP 200, and no generated image is presented as documentary evidence. One guide sentence incorrectly described all four sources as Wikimedia Commons even though Students uses TU Delft NewMedia Centre's official YouTube source. The reviewer also noted that YouTube marks that source simply as CC BY without exposing a version-specific deed.</p>
+            <p><strong>Applied fixes:</strong> corrected the documentary-ledger sentence to distinguish the three Commons sources from the official TU Delft YouTube source. The Students credit deliberately links YouTube's own CC BY evidence rather than inventing a licence version; title, creator, source, excerpt, and edits remain explicit in <code>MEDIA-CREDITS.md</code>. No layout, film assignment, public copy, or interaction change was recommended.</p>
           </article>
           <article id="redesign-verification">
-            <h3>Contained-film final verification — pending</h3>
-            <p><strong>Integrity:</strong> Pending asset, codec, duration, attribution, content-parity, local-link, and route-specific loading results.</p>
-            <p><strong>Responsive and degraded modes:</strong> Pending 320px/390px/768px overflow, keyboard, no-JavaScript, reduced-motion, Data Saver, poster, controls, and playback-state results.</p>
-            <p><strong>Performance:</strong> Pending final per-route MP4 sizes, visited-page transfer totals, and Lighthouse Performance/Accessibility/Best Practices/SEO results.</p>
-            <p><strong>Gallery:</strong> Pending a stable reduced-motion screenshot, replacement 720px WebP thumbnail, revised card thesis, and updated comparison row.</p>
+            <h3>Contained-film final verification — complete</h3>
+            <p><strong>Integrity:</strong> all four silent files are H.264 Main, yuv420p, 24 fps, fast-start MP4s with no audio stream. Home is 8.000s, 768×480, and 488,439 bytes; Mission is 6.792s, 960×600, and 507,466 bytes; For clients is 5.792s, 960×600, and 407,989 bytes; Students is 6.792s, 960×600, and 337,299 bytes. The content/link audit passed every shared fact, six exact service descriptions, Consultant/Team Leader terminology, placeholder, local page link, fragment, unique-film hash, and strict ceiling.</p>
+            <p><strong>Responsive and degraded modes:</strong> automated checks passed without horizontal overflow at 320px, 390px, 768px, and 1440px; all active navigation and film controls met the 44px target; and captions remained visible. Normal one-shot playback, explicit Pause/Play/Replay, off-screen and hidden-tab pausing, user-pause retention, reduced motion with zero MP4 request, no-JavaScript poster/copy, Data Saver opt-in and loading status, failed-media poster fallback, and the runtime reduced-motion/play-rejection race all passed.</p>
+            <p><strong>Performance:</strong> strict complete-route estimates are Home 600,242 bytes, Mission 638,939 bytes, For clients 524,768 bytes, and Students 464,219 bytes. Lighthouse transferred 552 KB on Home, 589 KB on Mission, 478 KB on For clients, and 419 KB on Students. Accessibility, Best Practices, and SEO were 100 on every route. Local cold-launch Performance was host-volatile—77–100 for repeated Home samples, and the first route in a shared browser absorbed the same slowdown—while warm sequential runs reached 100; the gallery reports the range rather than selecting only the best run.</p>
+            <p><strong>Gallery:</strong> generated and visually checked a real reduced-motion 720×450 WebP screenshot at 21,232 bytes, then replaced the obsolete abstract-still card, spotlight thesis, comparison row, imagery/JavaScript/motion labels, transfer figure, and score note.</p>
           </article>
         </div>
       </div>

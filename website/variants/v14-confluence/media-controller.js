@@ -18,13 +18,45 @@
     let userPaused = false;
     let pauseWasAutomatic = false;
     let playWhenReady = false;
+    let playToken = 0;
+    let autoAttachScheduled = false;
+    let autoAttachHandle = null;
+    let autoAttachKind = null;
+    let autoAttachToken = 0;
 
     const setControl = (label) => {
       control.textContent = label;
       control.setAttribute("aria-label", `${label} city film`);
+      control.removeAttribute("aria-busy");
+      control.removeAttribute("aria-disabled");
+    };
+
+    const setLoadingControl = () => {
+      control.textContent = "Loading";
+      control.setAttribute("aria-label", "Loading city film");
+      control.setAttribute("aria-busy", "true");
+      control.setAttribute("aria-disabled", "true");
+      control.disabled = false;
+      control.hidden = false;
+    };
+
+    const cancelAutoAttach = () => {
+      autoAttachToken += 1;
+      autoAttachScheduled = false;
+      if (autoAttachHandle !== null) {
+        if (autoAttachKind === "idle" && "cancelIdleCallback" in window) {
+          window.cancelIdleCallback(autoAttachHandle);
+        } else if (autoAttachKind === "timeout") {
+          window.clearTimeout(autoAttachHandle);
+        }
+      }
+      autoAttachHandle = null;
+      autoAttachKind = null;
     };
 
     const setStatic = () => {
+      cancelAutoAttach();
+      playToken += 1;
       playWhenReady = false;
       userPaused = false;
       pauseWasAutomatic = false;
@@ -48,10 +80,12 @@
 
     const requestPlay = () => {
       if (reducedMotion.matches || document.hidden || !inView) return;
+      const token = ++playToken;
       playWhenReady = true;
       const playPromise = video.play();
       if (playPromise) {
         playPromise.catch(() => {
+          if (token !== playToken || reducedMotion.matches || !attached) return;
           playWhenReady = false;
           figure.dataset.mediaState = "poster";
           setControl("Play");
@@ -61,14 +95,52 @@
       }
     };
 
-    const attach = () => {
+    const attach = (showProgress = false) => {
       if (attached || reducedMotion.matches) return;
       attached = true;
       playWhenReady = true;
       figure.dataset.mediaState = "loading";
-      control.hidden = true;
+      if (showProgress) {
+        setLoadingControl();
+      } else {
+        control.hidden = true;
+      }
       video.src = source;
       video.load();
+    };
+
+    const scheduleAutoAttach = () => {
+      if (
+        autoAttachScheduled ||
+        attached ||
+        dataSaver ||
+        reducedMotion.matches ||
+        document.hidden ||
+        !inView
+      ) return;
+
+      autoAttachScheduled = true;
+      const token = ++autoAttachToken;
+      window.requestAnimationFrame(() => {
+        if (token !== autoAttachToken || !autoAttachScheduled) return;
+        const run = () => {
+          if (token !== autoAttachToken) return;
+          autoAttachScheduled = false;
+          autoAttachHandle = null;
+          autoAttachKind = null;
+          if (!attached && !dataSaver && !reducedMotion.matches && !document.hidden && inView) {
+            attach();
+          }
+        };
+
+        if ("requestIdleCallback" in window) {
+          autoAttachKind = "idle";
+          autoAttachHandle = window.requestIdleCallback(run, { timeout: 1200 });
+        } else {
+          autoAttachKind = "timeout";
+          autoAttachHandle = window.setTimeout(run, 180);
+        }
+      });
     };
 
     const pauseAutomatically = () => {
@@ -80,6 +152,8 @@
 
     video.addEventListener("loadeddata", () => {
       control.disabled = false;
+      control.removeAttribute("aria-busy");
+      control.removeAttribute("aria-disabled");
       control.hidden = false;
       if (playWhenReady && inView && !document.hidden && !reducedMotion.matches) {
         requestPlay();
@@ -114,9 +188,12 @@
     });
 
     video.addEventListener("error", () => {
+      playToken += 1;
       playWhenReady = false;
       figure.dataset.mediaState = "error";
       control.hidden = true;
+      control.removeAttribute("aria-busy");
+      control.removeAttribute("aria-disabled");
       if (attached) {
         video.removeAttribute("src");
         video.load();
@@ -126,10 +203,9 @@
 
     control.addEventListener("click", () => {
       if (reducedMotion.matches) return;
+      if (figure.dataset.mediaState === "loading") return;
       if (!attached) {
-        control.disabled = true;
-        control.textContent = "Loading";
-        attach();
+        attach(true);
         return;
       }
       if (video.ended) {
@@ -153,12 +229,13 @@
       const entry = entries[0];
       inView = entry.isIntersecting;
       if (!inView) {
+        if (!attached) cancelAutoAttach();
         pauseAutomatically();
         return;
       }
       if (reducedMotion.matches) return;
       if (!attached) {
-        if (!dataSaver) attach();
+        if (!dataSaver) scheduleAutoAttach();
         return;
       }
       if (pauseWasAutomatic && !userPaused && !video.ended) requestPlay();
@@ -171,12 +248,15 @@
       }).observe(figure);
     } else {
       inView = true;
-      if (!reducedMotion.matches && !dataSaver) attach();
+      if (!reducedMotion.matches && !dataSaver) scheduleAutoAttach();
     }
 
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) {
+        if (!attached) cancelAutoAttach();
         pauseAutomatically();
+      } else if (inView && !attached && !reducedMotion.matches && !dataSaver) {
+        scheduleAutoAttach();
       } else if (
         inView &&
         pauseWasAutomatic &&
@@ -192,9 +272,10 @@
       if (reducedMotion.matches) {
         setStatic();
       } else if (dataSaver) {
+        cancelAutoAttach();
         showManualStart();
       } else if (inView) {
-        attach();
+        scheduleAutoAttach();
       } else {
         figure.dataset.mediaState = "poster";
       }

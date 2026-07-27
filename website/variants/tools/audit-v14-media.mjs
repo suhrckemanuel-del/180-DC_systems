@@ -41,12 +41,15 @@ for (const width of [320, 390, 768, 1440]) {
         h1: document.querySelector("h1")?.textContent.trim(),
         filmWidth: Math.round(document.querySelector(".city-film__viewport")?.getBoundingClientRect().width || 0),
         captionVisible: visible(document.querySelector(".city-film figcaption")),
+        videoHiddenFromAx: document.querySelector(".city-film video")?.getAttribute("aria-hidden") === "true",
         smallTargets,
       };
     });
     const label = `${width}px ${route.path || "home"}`;
     if (probe.scrollWidth > probe.viewport) fail(label, `horizontal overflow ${probe.scrollWidth}/${probe.viewport}`);
-    if (!probe.h1 || !probe.filmWidth || !probe.captionVisible) fail(label, "hero, film, or caption missing");
+    if (!probe.h1 || !probe.filmWidth || !probe.captionVisible || !probe.videoHiddenFromAx) {
+      fail(label, "hero, film, caption, or decorative-video AX treatment missing");
+    }
     if (probe.smallTargets.length) fail(label, `small targets ${JSON.stringify(probe.smallTargets.slice(0, 4))}`);
     console.log("[responsive]", label, JSON.stringify(probe));
     await page.close();
@@ -142,11 +145,12 @@ for (const route of routes) {
         poster: video?.poster,
         state: video?.closest("[data-city-film]")?.dataset.mediaState,
         controlHidden: control?.hidden,
+        videoHiddenFromAx: video?.getAttribute("aria-hidden") === "true",
         runningAnimations: document.getAnimations().filter((animation) => animation.playState === "running").length,
       };
     });
     if (mp4Requests.length || reduced.source || reduced.currentSource) fail(`${label} reduced`, "MP4 attached or requested");
-    if (!reduced.poster || reduced.state !== "static" || !reduced.controlHidden || reduced.runningAnimations) {
+    if (!reduced.poster || reduced.state !== "static" || !reduced.controlHidden || !reduced.videoHiddenFromAx || reduced.runningAnimations) {
       fail(`${label} reduced`, JSON.stringify(reduced));
     }
     console.log("[reduced]", label, JSON.stringify({ ...reduced, requests: mp4Requests.length }));
@@ -173,9 +177,10 @@ for (const route of routes) {
         poster: isVisible(document.querySelector(".city-film noscript img")),
         caption: isVisible(document.querySelector(".city-film figcaption")),
         control: isVisible(document.querySelector(".city-film__control")),
+        videoHiddenFromAx: document.querySelector(".city-film video")?.getAttribute("aria-hidden") === "true",
       };
     });
-    if (mp4Requests.length || !nojs.h1 || !nojs.poster || !nojs.caption || nojs.control) {
+    if (mp4Requests.length || !nojs.h1 || !nojs.poster || !nojs.caption || nojs.control || !nojs.videoHiddenFromAx) {
       fail(`${label} nojs`, JSON.stringify({ ...nojs, requests: mp4Requests.length }));
     }
     console.log("[nojs]", label, JSON.stringify({ ...nojs, requests: mp4Requests.length }));
@@ -194,6 +199,10 @@ for (const route of routes) {
   });
   const page = await context.newPage();
   const mp4Requests = [];
+  await page.route("**/*.mp4", async (request) => {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    await request.continue();
+  });
   page.on("request", (request) => {
     if (request.url().endsWith(".mp4")) mp4Requests.push(request.url());
   });
@@ -207,9 +216,30 @@ for (const route of routes) {
     fail("save-data before click", JSON.stringify({ before, requests: mp4Requests.length }));
   }
   await page.locator(".city-film__control").click();
+  const loading = await page.evaluate(() => {
+    const control = document.querySelector(".city-film__control");
+    return {
+      state: document.querySelector("[data-city-film]")?.dataset.mediaState,
+      text: control?.textContent.trim(),
+      hidden: control?.hidden,
+      disabled: control?.disabled,
+      ariaBusy: control?.getAttribute("aria-busy"),
+      ariaDisabled: control?.getAttribute("aria-disabled"),
+    };
+  });
+  if (
+    loading.state !== "loading" ||
+    loading.text !== "Loading" ||
+    loading.hidden ||
+    loading.disabled ||
+    loading.ariaBusy !== "true" ||
+    loading.ariaDisabled !== "true"
+  ) {
+    fail("save-data loading status", JSON.stringify(loading));
+  }
   await page.waitForFunction(() => document.querySelector("video")?.readyState >= 2);
   if (mp4Requests.length !== 1) fail("save-data after click", `expected one MP4 request, got ${mp4Requests.length}`);
-  console.log("[save-data]", JSON.stringify({ before, requestsAfterClick: mp4Requests.length }));
+  console.log("[save-data]", JSON.stringify({ before, loading, requestsAfterClick: mp4Requests.length }));
   await context.close();
 }
 
@@ -231,12 +261,52 @@ for (const route of routes) {
       currentSource: video?.currentSrc,
       readyState: video?.readyState,
       controlHidden: control?.hidden,
+      videoHiddenFromAx: video?.getAttribute("aria-hidden") === "true",
     };
   });
-  if (errored.state !== "error" || !errored.poster || errored.source || errored.readyState !== 0 || !errored.controlHidden) {
+  if (
+    errored.state !== "error" ||
+    !errored.poster ||
+    errored.source ||
+    errored.readyState !== 0 ||
+    !errored.controlHidden ||
+    !errored.videoHiddenFromAx
+  ) {
     fail("media error fallback", JSON.stringify(errored));
   }
   console.log("[error]", JSON.stringify(errored));
+  await context.close();
+}
+
+{
+  const route = routes[0];
+  const context = await browser.newContext({ reducedMotion: "no-preference" });
+  await context.addInitScript(() => {
+    HTMLMediaElement.prototype.play = function playWithDelayedRejection() {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => reject(new DOMException("Autoplay rejected", "NotAllowedError")), 180);
+      });
+    };
+  });
+  const page = await context.newPage();
+  await page.goto(routeUrl(route.path), { waitUntil: "load" });
+  await page.waitForFunction(() => document.querySelector("[data-city-film]")?.dataset.mediaState === "loading");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.waitForTimeout(350);
+  const race = await page.evaluate(() => {
+    const figure = document.querySelector("[data-city-film]");
+    const video = figure?.querySelector("video");
+    const control = figure?.querySelector(".city-film__control");
+    return {
+      state: figure?.dataset.mediaState,
+      source: video?.getAttribute("src"),
+      controlHidden: control?.hidden,
+    };
+  });
+  if (race.state !== "static" || race.source || !race.controlHidden) {
+    fail("runtime reduced-motion play rejection race", JSON.stringify(race));
+  }
+  console.log("[runtime-reduced-race]", JSON.stringify(race));
   await context.close();
 }
 

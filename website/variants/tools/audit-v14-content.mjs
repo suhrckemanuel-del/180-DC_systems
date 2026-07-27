@@ -73,9 +73,9 @@ for (const [file, source] of Object.entries(html)) {
 
 const media = [
   ["home-rotterdam-delft.mp4", 720_000],
-  ["mission-delft-origin.mp4", 560_000],
-  ["clients-rotterdam-port.mp4", 480_000],
-  ["students-delft-life.mp4", 480_000],
+  ["mission-delft-origin.mp4", 520_000],
+  ["clients-rotterdam-port.mp4", 420_000],
+  ["students-delft-life.mp4", 440_000],
 ];
 const mediaHashes = new Set();
 for (const [file, cap] of media) {
@@ -92,8 +92,8 @@ const commonBytes = ["styles.css", "media-controller.js", "img/180dc-globe.webp"
 const routeBudgets = [
   ["index.html", "home-rotterdam-delft.mp4", "poster-home-rotterdam-delft.webp", 900_000],
   ["mission.html", "mission-delft-origin.mp4", "poster-mission-delft.webp", 700_000],
-  ["for-clients.html", "clients-rotterdam-port.mp4", "poster-clients-rotterdam.webp", 700_000],
-  ["for-students.html", "students-delft-life.mp4", "poster-students-delft.webp", 700_000],
+  ["for-clients.html", "clients-rotterdam-port.mp4", "poster-clients-rotterdam.webp", 650_000],
+  ["for-students.html", "students-delft-life.mp4", "poster-students-delft.webp", 650_000],
 ];
 for (const [page, film, poster, cap] of routeBudgets) {
   const bytes = commonBytes
