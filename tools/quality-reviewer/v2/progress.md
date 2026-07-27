@@ -485,3 +485,47 @@ client material touches the tool until a sanitization gate exists, and it did no
    gold exists.
 3. **Expert recruitment.** The source backlog is clear (plan item 2a done), so start the
    ex-consultant recruitment, the longest lead time.
+
+## Session 10 (2026-07-25 to 2026-07-27): owner labeling round, 8 of 14 golds
+
+Human labeling work, single pass per the 2026-07-25 decision. The AI acted as scribe and
+reading aid only, it wrote no label and suggested no readiness level.
+
+- **A local case reader was built** to make the raw extractions readable. It parses the real
+  case files directly and splits them per slide or page, strips repeated chrome (the running
+  header, page numerals, the repeated breadcrumb nav), surfaces speaker notes and internal
+  comments in their own block, flags image-only slides, and lets the labeler attach a
+  screenshot per slide so a diagram is not judged blind. It is gitignored, it renders real
+  client decks.
+- **8 cases labeled by the owner:** real-01, real-02, real-03, real-04, real-05, real-08,
+  real-12, real-13. Spoken assessments were captured to worksheets, then written to gold
+  shape. Seven pass check-gold.js clean on the first run. real-02 is held as
+  real-02.gold.DRAFT.md because the labeler placed it between two readiness levels and the
+  level is an owner decision, not one the AI resolves.
+- **Readiness spread:** R0 on real-04 and real-08, R1 on real-12, R2 on real-01, real-03,
+  real-05 and real-13, real-02 undecided. Not clustered, which is what a usable gold needs.
+- **real-05 is the restraint case of the real set.** The owner rated it R2 and explicitly
+  called it almost R3, the strongest deliverable reviewed. Its gold names restraint in the
+  unacceptable-feedback section, so an over-escalating run on it is a scored failure. This is
+  the real-data analogue of synthetic case 05.
+- **A recurring standard emerged across the labeled cases,** unprompted and consistent: the
+  deliverable names what to do but never shows how, so the client cannot act (real-01,
+  real-02, real-03, real-05, real-12, real-13); no governing executive summary a busy reader
+  can lift in one pass (real-01, real-03, real-04, real-05, real-08, real-13); and competitor
+  or market depth is thin when that outside read is a large part of what a client is paying
+  for (real-01, real-08). Every must-catch selected lands on whether the client gets a
+  decision, not on style. That is a coherent and testable target for the baseline.
+- **One second read exists,** MF on real-02, from before the single-pass decision. Kept as a
+  bonus cross-check, not required. Both reads overlap at R2.
+- Note for the baseline: several labeled cases carry artifacts the labeler did not raise but
+  which are in the decks, recorded as observations inside the gold files rather than as
+  findings, so they neither inflate nor hide the human label.
+
+## Next actions (Session 10)
+
+1. **Owner decision on real-02**, set one readiness level, rename to real-02.gold.md, run
+   check-gold.js. One field, two minutes.
+2. **Team finishes the remaining six:** real-06, real-07, real-09, real-10, real-11,
+   real-14. That is the gate for plan item 1.5g.
+3. **Then the baseline (1.5m),** the first honest number on real work. The prompt is already
+   frozen, so this is unblocked the moment the golds exist.
