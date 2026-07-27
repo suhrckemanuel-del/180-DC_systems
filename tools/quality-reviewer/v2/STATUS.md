@@ -44,13 +44,13 @@ view for project leads.
    AI never writes a label. This is the long pole. Start with
    [eval-cases-real/labeling/calibration-batch.md](eval-cases-real/labeling/calibration-batch.md)
    and [eval-cases-real/labeling/PROTOCOL.md](eval-cases-real/labeling/PROTOCOL.md).
-   **Progress 2026-07-27: 8 of 14 cases labeled by the owner** (real-01, real-02, real-03,
-   real-04, real-05, real-08, real-12, real-13). Seven are written to gold shape and pass
-   check-gold.js clean. real-02 is held as `real-02.gold.DRAFT.md` pending one owner
-   decision, the readiness level, which the labeler left between two levels. The remaining
-   six (real-06, real-07, real-09, real-10, real-11, real-14) are with the team and the
-   ex-consultant reviewer. Readiness spread so far: two R0, one R1, four R2, one undecided.
-   Gold files stay local and gitignored, they carry real client deck text.
+   **Progress 2026-07-27: 8 of 14 cases labeled by the owner and complete** (real-01,
+   real-02, real-03, real-04, real-05, real-08, real-12, real-13). All eight are written to
+   gold shape and pass check-gold.js clean, 8 of 8. real-02's readiness was resolved by the
+   owner to R2, matching MF's independent second read exactly. The remaining six (real-06,
+   real-07, real-09, real-10, real-11, real-14) are with the team and the ex-consultant
+   reviewer. Readiness spread: two R0, one R1, five R2. Gold files stay local and gitignored,
+   they carry real client deck text.
 3. ~~Freeze the tool.~~ **Done 2026-07-26** (freeze tag frozen-2026-07-26). Next, once the
    gold exists, run it on the 14 real cases for the first honest number on real work. HARD
    RULE: no reviewer run on any real case before its gold exists.

@@ -499,11 +499,11 @@ reading aid only, it wrote no label and suggested no readiness level.
   client decks.
 - **8 cases labeled by the owner:** real-01, real-02, real-03, real-04, real-05, real-08,
   real-12, real-13. Spoken assessments were captured to worksheets, then written to gold
-  shape. Seven pass check-gold.js clean on the first run. real-02 is held as
-  real-02.gold.DRAFT.md because the labeler placed it between two readiness levels and the
-  level is an owner decision, not one the AI resolves.
-- **Readiness spread:** R0 on real-04 and real-08, R1 on real-12, R2 on real-01, real-03,
-  real-05 and real-13, real-02 undecided. Not clustered, which is what a usable gold needs.
+  shape. All eight pass check-gold.js clean, 8 of 8. real-02 was held as a draft because the
+  labeler placed it between two readiness levels, and the owner resolved it to R2 on
+  2026-07-27, which matches MF's independent second read exactly.
+- **Readiness spread:** R0 on real-04 and real-08, R1 on real-12, R2 on real-01, real-02,
+  real-03, real-05 and real-13. Not clustered, which is what a usable gold needs.
 - **real-05 is the restraint case of the real set.** The owner rated it R2 and explicitly
   called it almost R3, the strongest deliverable reviewed. Its gold names restraint in the
   unacceptable-feedback section, so an over-escalating run on it is a scored failure. This is
@@ -523,8 +523,8 @@ reading aid only, it wrote no label and suggested no readiness level.
 
 ## Next actions (Session 10)
 
-1. **Owner decision on real-02**, set one readiness level, rename to real-02.gold.md, run
-   check-gold.js. One field, two minutes.
+1. ~~Owner decision on real-02.~~ **Done 2026-07-27**, resolved to R2, gold written and
+   check-gold.js clean. The eight owner-labeled golds are complete.
 2. **Team finishes the remaining six:** real-06, real-07, real-09, real-10, real-11,
    real-14. That is the gate for plan item 1.5g.
 3. **Then the baseline (1.5m),** the first honest number on real work. The prompt is already
