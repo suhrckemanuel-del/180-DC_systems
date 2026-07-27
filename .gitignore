@@ -16,6 +16,8 @@ tools/quality-reviewer/v2/eval-cases-real/labeling/real-*.worksheet.*.md
 tools/quality-reviewer/v2/eval-cases-real/labeling/real-*.gold.md
 # Local case reader (renders real client decks): local-only.
 tools/quality-reviewer/v2/eval-cases-real/_case-reader.html
+# Labeling session record (per-case findings on real decks): local-only.
+tools/quality-reviewer/v2/eval-cases-real/_LABELING-RECORD.md
 
 # Local Cloudflare Wrangler build cache — not source.
 website/variants/tools/.wrangler/
