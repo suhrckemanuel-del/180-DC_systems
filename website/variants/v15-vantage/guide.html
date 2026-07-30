@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How this site was made | V15 Vantage</title>
+  <meta name="description" content="Build notes, motion discipline, and the image ledger for the V15 Vantage concept variant.">
+  <script>document.documentElement.classList.remove("no-js");</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2378B038'/%3E%3Ctext x='16' y='21' font-family='Segoe UI,Arial,sans-serif' font-size='12' fill='%2311180F' text-anchor='middle' font-weight='800'%3E180%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="index.html" aria-label="180 Degrees Consulting Delft–Rotterdam home">
+        <img src="img/180dc-globe.webp" alt="" width="34" height="24">
+        <span><strong>180 Degrees Consulting</strong> <small>Delft–Rotterdam</small></span>
+      </a>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html#services">What we do</a>
+        <a href="index.html#work">Our work</a>
+        <a href="index.html#committee">Team</a>
+        <a class="nav-page" href="mission.html">Mission</a>
+        <a class="nav-page" href="for-clients.html">For clients</a>
+        <a class="nav-page" href="for-students.html">Students</a>
+      </nav>
+
+      <div class="nav-tools">
+        <button class="nav-search liquid-glass" type="button" data-panel-open="site-search" aria-expanded="false" aria-haspopup="dialog">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <span>Search this site</span>
+        </button>
+        <button class="nav-profile liquid-glass" type="button" data-panel-open="member-area" aria-expanded="false" aria-haspopup="dialog" aria-label="Member area">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M4.6 20a7.4 7.4 0 0 1 14.8 0"></path></svg>
+        </button>
+        <button class="nav-toggle liquid-glass" type="button" data-nav-toggle aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
+    <div class="mobile-menu__inner">
+      <a href="index.html#services">What we do</a>
+      <a href="index.html#work">Our work</a>
+      <a href="index.html#committee">Team</a>
+      <a class="nav-page" href="mission.html">Mission</a>
+      <a class="nav-page" href="for-clients.html">For clients</a>
+      <a class="nav-page" href="for-students.html">Students</a>
+      <div class="mobile-menu__tools">
+        <button class="nav-search liquid-glass" type="button" data-panel-open="site-search" aria-expanded="false" aria-haspopup="dialog">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <span>Search this site</span>
+        </button>
+        <button class="nav-profile liquid-glass" type="button" data-panel-open="member-area" aria-expanded="false" aria-haspopup="dialog" aria-label="Member area">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M4.6 20a7.4 7.4 0 0 1 14.8 0"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="site-search" data-panel role="dialog" aria-label="Search this site">
+    <label class="skip" for="site-search-input">Search this site</label>
+    <input id="site-search-input" type="search" placeholder="Search pages and sections…" data-search-input autocomplete="off">
+    <ul class="panel__results" data-search-results></ul>
+  </div>
+
+  <div class="panel" id="member-area" data-panel role="dialog" aria-labelledby="member-area-title">
+    <h2 id="member-area-title">Member area</h2>
+    <p class="panel__note"><span class="placeholder">Placeholder — no member accounts exist yet</span></p>
+    <p class="panel__note">This branch has no login. The control is here to show where a member area would sit, not to imply one is running. Current members are reached by email.</p>
+    <a class="panel__mail" href="mailto:delft.rotterdam@180dc.org">delft.rotterdam@180dc.org</a>
+  </div>
+
+  <main id="main">
+    <section class="section" style="padding-top:3.5rem">
+      <div class="wrap guide-body">
+        <p class="eyebrow">Concept variant · build notes</p>
+        <h1 style="font-size:clamp(2.1rem,4.6vw,3.2rem)">V15 — Vantage</h1>
+        <p class="lede">A full-viewport photographic hero with a bottom-only blur, liquid-glass controls, and a browsable pool of Rotterdam and Delft backgrounds. Vanilla HTML, CSS, and JavaScript—no framework, no build step, no bundler. Every page opens correctly as a plain file from disk.</p>
+
+        <div class="notice">
+          <p><strong>The one thing to read on this page:</strong> every background image in this variant is <strong>AI-generated</strong>. None of them is a photograph, and none depicts a real 180 Degrees Consulting project, client, team, or event. The <a href="#images">image ledger</a> below records exactly what was generated and how.</p>
+        </div>
+
+        <h2 id="spec">Specification</h2>
+        <div class="table-scroll">
+          <table class="ledger">
+            <tbody>
+              <tr><th scope="row">Pages</th><td><code>index.html</code>, <code>for-clients.html</code>, <code>mission.html</code>, <code>for-students.html</code>, <code>guide.html</code>, <code>styles.css</code></td></tr>
+              <tr><th scope="row">Stack</th><td>Vanilla HTML/CSS/JS. Zero dependencies at runtime, zero build step. Deploys as static files; opens over <code>file://</code>.</td></tr>
+              <tr><th scope="row">Type</th><td>Inter 300–700, loaded from Google Fonts.</td></tr>
+              <tr><th scope="row">Scripts</th><td>Two files, <code>hero-controller.js</code> and <code>hero-depth.js</code> (about 24 KB each, unminified), both loaded <code>defer</code>. No library, no bundler.</td></tr>
+              <tr><th scope="row">Per-page weight</th><td>One hero photo plus CSS, JS, and two brand marks. A page fetches exactly one tier from the srcset: 7–49 KB on a phone, 26–151 KB at 1600, 48–283 KB on a 2× display. The spread is the subject, not the encoder — the Markthal facade is thousands of small windows and costs roughly five times the fog frame. Every page lands inside the 1 MB budget.</td></tr>
+              <tr><th scope="row">Nav differentiator</th><td>Scroll-anchor links are plain text; own-page links are glass pills carrying a green status dot, which fills and gains a halo on the current page.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="images">Image ledger — every background is AI-generated</h2>
+
+        <p>V14 Confluence shipped real documentary footage and credited each filmmaker. This variant has no photographer to credit, because <strong>there is no photograph.</strong> All ten backgrounds were produced with a generative image tool, and every one of them has since been re-rendered a second time by a different generative model to raise its resolution. They are rendered scenes of real Rotterdam and Delft landmarks, not captures of them.</p>
+
+        <p>That distinction matters in three specific ways, and the site is built so a visitor can find all three:</p>
+        <ul>
+          <li><strong>They are not evidence.</strong> No image shows an 180DC project, client, engagement, team, or event. They are atmosphere for a concept layout.</li>
+          <li><strong>They are not accurate records.</strong> The landmark geometry is close but generated. Details of the Erasmusbrug's cabling, the Oostpoort's brickwork, and the Delft canal facades will not survive comparison with the real structures.</li>
+          <li><strong>They are labelled in public.</strong> Every page footer carries “backgrounds are AI-generated” linking here. This page is not the only place the disclosure lives.</li>
+        </ul>
+
+        <h3>Generation record</h3>
+        <div class="table-scroll">
+          <table class="ledger">
+            <thead>
+              <tr><th>Shipped file</th><th>Source render</th><th>Subject as prompted</th><th>Used as</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>erasmusbrug-blue-hour.webp</code></td><td><code>erasmusbrug-hero-set/01-blue-hour.png</code></td><td>Erasmusbrug at blue-hour dusk, river mist, long-exposure traffic trails</td><td><strong>Home hero</strong> · pool 1/10</td></tr>
+              <tr><td><code>erasmusbrug-golden-hour.webp</code></td><td><code>erasmusbrug-hero-set/02-golden-hour-drama.png</code></td><td>Bridge backlit by a low sun, pylon in silhouette against amber</td><td>pool 2/10</td></tr>
+              <tr><td><code>erasmusbrug-storm-light.webp</code></td><td><code>erasmusbrug-hero-set/03-storm-light.png</code></td><td>Breaking-storm sky, one shaft of light on bridge and river</td><td>pool 3/10</td></tr>
+              <tr><td><code>erasmusbrug-fog.webp</code></td><td><code>erasmusbrug-hero-set/04-minimalist-fog.png</code></td><td>Dense fog, only the upper pylon and a few cables emerging</td><td>pool 4/10</td></tr>
+              <tr><td><code>erasmusbrug-night.webp</code></td><td><code>erasmusbrug-hero-set/05-night-energy.png</code></td><td>Night, architectural lighting, traffic trails across the deck</td><td>pool 5/10</td></tr>
+              <tr><td><code>erasmusbrug-pylon-night.webp</code></td><td><code>rotterdam-delft-night-set/rotterdam-02-erasmusbrug-pylon-night.png</code></td><td>Low oblique view up the pylon, cable fan against near-black sky</td><td><strong>For clients hero</strong> · pool 6/10</td></tr>
+              <tr><td><code>delft-canal-night.webp</code></td><td><code>rotterdam-delft-night-set/delft-02-canal-night.png</code></td><td>Narrow Delft canal at night, brick facades, one warm streetlamp</td><td><strong>Mission hero</strong> · pool 7/10</td></tr>
+              <tr><td><code>delft-oostpoort-night.webp</code></td><td><code>rotterdam-delft-night-set/delft-01-oostpoort-night.png</code></td><td>Oostpoort gate and Oostpoortbrug at night, warm window light</td><td><strong>Students hero</strong> · pool 8/10</td></tr>
+              <tr><td><code>markthal-evening.webp</code></td><td><code>rotterdam-delft-landmark-set/03-rotterdam-markthal-evening.png</code></td><td>Markthal at dusk, arched grey shell over an illuminated glass front</td><td>pool 9/10</td></tr>
+              <tr><td><code>delft-nieuwe-kerk.webp</code></td><td><code>rotterdam-delft-landmark-set/06-delft-markt-nieuwe-kerk-golden-hour.png</code></td><td>Delft Markt at golden hour, Nieuwe Kerk tower over gabled houses</td><td>pool 10/10</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Provenance and processing</h3>
+        <ul>
+          <li><strong>Origin.</strong> Three coordinated sets generated at 1536 × 1024 PNG. The full prompt text for every image is version-controlled at <code>_brand/erasmusbrug-hero-set/PROMPTS.md</code>, <code>_brand/rotterdam-delft-night-set/PROMPTS.md</code>, and <code>_brand/rotterdam-delft-landmark-set/PROMPTS.md</code>. The renders themselves are kept out of version control—they run to roughly 105 MB against 3.5 MB of shipped WebP—so the prompts, not the PNGs, are the reproducible record.</li>
+          <li><strong>Second pass: resolution.</strong> 1536 × 1024 was the ceiling of the original renders, and the 2400 px tier below was a lanczos upscale of it—no detail the source did not already have. On a 2× display that meant roughly 1536 px of real detail stretched to 2880. Every frame was therefore re-rendered image-to-image at 2528 × 1696 with <strong>Nano Banana Pro</strong> (<code>tools/regen-v15.mjs</code>), instructed to hold composition, framing, colour grade, and the calm lower third while adding only genuine detail. The originals remain in <code>_brand/</code> as the provenance record. <strong>These are re-renders, not upscales:</strong> fine geometry such as cable spacing shifts slightly between the two versions, which is why depth maps were regenerated and hero contrast re-measured on every frame afterwards.</li>
+          <li><strong>Constraints applied at generation.</strong> Every prompt excluded people, readable text, typography, logos, watermarks, and brand marks—so no invented signage or fake company presence reaches the page.</li>
+          <li><strong>Processing.</strong> Resized to 2400 px, 1600 px, and 900 px wide and converted to WebP with <code>tools/prep-v15.mjs</code>. No cropping, retouching, or colour grading was applied. The fog frame carries extra quality headroom because near-white gradients band under aggressive compression.</li>
+          <li><strong>Not shipped.</strong> The source PNGs stay outside the variant directory, exactly as V13 and V14 keep their raw sources out of the deployable folder.</li>
+        </ul>
+
+        <h3>What this variant does not claim</h3>
+        <p>No case study, client name, outcome figure, testimonial, team portrait, or partnership appears anywhere in this variant. Those spaces are visibly reserved. An AI-generated skyline is decoration and is labelled as such; an AI-generated client result would be a fabrication, and none exists here.</p>
+
+        <h2 id="motion">Motion is an upgrade, never the foundation</h2>
+
+        <p>The hero is a real <code>&lt;img&gt;</code> in the markup with <code>src</code>, <code>srcset</code>, and a written <code>alt</code>. Turn JavaScript off and the page is complete: the photo renders correctly cropped, the copy is legible, and every link works. The controller only adds behaviour on top.</p>
+
+        <div class="grid grid--3" style="margin:1.5rem 0">
+          <article class="card"><span class="card-index">A</span><h3>Two transforms, two elements</h3><p>The Ken Burns pan runs as a CSS animation on the <code>&lt;img&gt;</code>. The scroll parallax is a JavaScript-written transform on its wrapper. Separating them means the two never fight over one <code>transform</code> property, and neither ever animates a property that triggers layout.</p></article>
+          <article class="card"><span class="card-index">B</span><h3>Nothing runs unseen</h3><p>An <code>IntersectionObserver</code> pauses the pan and stops the parallax loop the moment the hero leaves the viewport; <code>visibilitychange</code> does the same for a hidden tab. The parallax is rAF-coalesced, reads a cached hero height rather than measuring per frame, and writes exactly one transform.</p></article>
+          <article class="card"><span class="card-index">C</span><h3>Preferences win</h3><p><code>prefers-reduced-motion: reduce</code> removes the pan, the parallax, the entrance stagger, and the crossfade, leaving a static correctly-cropped frame. It is re-evaluated when the preference changes at runtime, not only at load.</p></article>
+        </div>
+
+        <h3>The bottom-only blur</h3>
+        <p>A single element over the photo applies <code>backdrop-filter: blur(26px)</code> and masks itself with <code>linear-gradient(to top, black 0%, transparent 45%)</code>, so the blur is strong along the bottom edge and gone by mid-frame. There is no dark gradient over the photo—the effect is blur alone, which keeps the sky and skyline at full brightness while the text below sits on softened detail.</p>
+        <p>The blur element is scoped inside the hero rather than fixed to the viewport. That is a deliberate change from the original specification: a viewport-fixed blur keeps compositing the whole page as you scroll and, with JavaScript disabled, would smear the light content sections underneath it. Scoped to a hero with <code>overflow: hidden</code>, it cannot leak past the hero in any code path.</p>
+
+        <h3 id="depth">The depth hero — how a still photograph moves</h3>
+        <p>A pan and zoom moves the <em>frame</em>; it does not move the <em>scene</em>. To make the photograph itself feel alive, each image ships with a <strong>depth map</strong> — a small greyscale image where white is near and black is far — generated offline by Depth Anything V2 (<code>tools/depth-v15.mjs</code>, running in Node through ONNX; no PyTorch, no GPU, and nothing added to the shipped page). <code>hero-depth.js</code> then renders the photo through that depth map in plain WebGL. No Three.js, no framework, no build step.</p>
+
+        <p>Four things move, and only the first is a camera move:</p>
+        <ul>
+          <li><strong>Parallax.</strong> Each pixel is displaced by its depth, so the pylon, the bridge deck, and the far skyline slide against each other instead of moving as one flat plane. This is what reads as three-dimensional.</li>
+          <li><strong>Drift.</strong> A slow autonomous orbit, so the hero is alive even when the visitor does nothing at all — the difference between a photograph and a held shot.</li>
+          <li><strong>Water.</strong> A ripple masked by the depth map to the near, low part of the frame, so only the river or canal surface shimmers and the architecture stays rigid.</li>
+          <li><strong>Breathing.</strong> A very gentle zoom that replaces the CSS Ken Burns.</li>
+        </ul>
+
+        <p>Measured: <strong>85.9% of hero pixels change over a 3.5-second window with no user input</strong>, against <strong>0.0% under <code>prefers-reduced-motion</code></strong>.</p>
+
+        <h3>What the depth hero costs, and what it gives back</h3>
+        <p>A depth map is about <strong>2 KB</strong> — the ten together come to about 30 KB, and a page loads one. There is no video file, no decode, and no extra bandwidth worth naming.</p>
+        <p>It also makes the photograph <em>sharper</em>, which is the opposite of what adding an effect usually does. The CSS version had to give the parallax somewhere to travel, so <code>.hero__media</code> was 15% oversized and the pan zoomed to 1.13 — together magnifying the image about 1.3× before the display scaled it at all. Measured against the 1600px asset, that meant a 1440×900 screen was already showing a 1.24× upscale, a 1920×1080 screen 1.49×, and a 2× display 2.48×. The shader displaces coordinates inside the texture, so it needs neither the overscan nor the zoom, and the photo is sampled close to 1:1. A 2400px tier was added to <code>srcset</code> for high-DPI screens on top of that.</p>
+
+        <div class="notice">
+          <p><strong>It does not run from a bare file, by design of the browser.</strong> Opened over <code>file://</code>, Chromium treats every local image as cross-origin data and refuses to upload it as a WebGL texture. The layer detects this, never touches the DOM, and the page stays on the CSS pan — which is why the <code>&lt;img&gt;</code> is still the real content. Served over HTTP, as it deploys, the depth hero runs. Nothing is lost locally except the effect.</p>
+        </div>
+
+        <p>The layer removes itself, restoring the CSS pan, on any of: no WebGL, a failed shader compile or link, a lost context, a missing depth map, a texture that will not upload, or <strong>its own measured frame time</strong> — the loop times itself and stands down if it cannot hold a smooth rate, so a weak GPU gets the simple hero rather than a stuttering rich one. Crossfade frames are excluded from that judgement, since sampling two frames at once is the heaviest moment and lasts only 620 ms.</p>
+
+        <h3>Browsing the image pool</h3>
+        <p>The previous/next city buttons walk all ten backgrounds without a page reload. Each page starts on its own hero and shares one pool. The incoming layer's <code>src</code> is set, then <code>img.decode()</code> is awaited before the crossfade begins—so no visitor sees a half-painted photo—and the two neighbouring frames are prefetched during idle time so a second click is instant. Rapid clicks are handled with a token: a superseded swap abandons quietly instead of racing the newer one to the screen.</p>
+
+        <h2 id="content">Same facts, no invented proof</h2>
+        <p>Content is at parity with the other recent variants and carries the same verified facts: founded 2019 in Delft, the first multi-city branch of 180 Degrees Consulting, TU Delft × Erasmus University Rotterdam, six service areas, two roles (Consultant and Team Leader), and two consulting cycles a year running October–January and March–June.</p>
+
+        <h3>Visible placeholder register</h3>
+        <ul>
+          <li>Case studies — reserved on Home and For clients, awaiting client consent.</li>
+          <li>Team portraits — reserved on Home; roster still pending confirmation against Monday.com.</li>
+          <li>Member testimonials — reserved on For students, to be sourced with consent.</li>
+          <li>Partner logos — reserved on Home, awaiting first partnerships.</li>
+          <li>Intake form — UI only, visibly marked as not wired to a backend.</li>
+          <li>Events calendar — reserved on For students.</li>
+          <li>Impact numbers — reserved on Mission, for the first Impact Report.</li>
+          <li>Member area — the profile control opens a panel that states plainly that no accounts exist.</li>
+        </ul>
+        <p>The navbar's search control is the one right-hand affordance that is genuinely functional: it searches a real index of this site's pages and sections. It does not pretend to search content that has not been written.</p>
+
+        <h2 id="build">Build record</h2>
+        <p>Like every material build in this repository, V15 earned three rounds of self-critique before release. Findings and fixes are recorded below.</p>
+
+        <h3>2026-07-27 — V15 Vantage, initial build</h3>
+        <p>Ten AI-generated backgrounds compressed to WebP; six pages built; hero controller written against the mount/pause/reduced-motion discipline established in <code>v14-confluence/media-controller.js</code>.</p>
+
+        <p>Each round was run as a scripted browser audit rather than a read-through, so every claim below was measured. The scripts are checked in at <code>tools/audit-v15.mjs</code>, <code>tools/audit-v15-r2.mjs</code>, <code>tools/audit-v15-r3.mjs</code>, and <code>tools/audit-v15-hero-contrast.mjs</code>.</p>
+
+        <h3 id="round1">Critique round 1 — correctness of the effects</h3>
+        <ul>
+          <li><strong>Fixed — horizontal overflow between 1024 px and 1180 px.</strong> The desktop navbar switched on at the lg breakpoint, but the brand lockup, six links, labelled search pill, and profile button measured 1039 px against a 1024 px viewport, so every page scrolled sideways in that band. The search pill now collapses to its icon there and the link row is allowed to shrink.</li>
+          <li>Verified: no console or page errors on any page; the bottom blur resolves both <code>backdrop-filter</code> and its mask; two hero layers exist; the Ken Burns keyframes are bound; the swap decodes before painting; the counter wraps in both directions; six rapid clicks land on the correct frame with the label matching the painted photo; reduced motion and JavaScript-disabled paths both render a static legible hero; no page exceeds 165 KB on initial load.</li>
+        </ul>
+
+        <h3 id="round2">Critique round 2 — interaction polish and accessibility</h3>
+        <ul>
+          <li><strong>Fixed — Search and Profile were missing from the mobile menu.</strong> The rule hiding them in the header below 1024 px also matched the copies repeated inside the menu, so the narrow-viewport layout lost both controls the specification asks for. The rule is now scoped to <code>.site-header</code>.</li>
+          <li><strong>Fixed — closed panels kept compositing.</strong> The search and member panels declared <code>backdrop-filter</code> while hidden, which left a blurred rectangle being composited over the page at all times. The filter now attaches only in the open state.</li>
+          <li><strong>Fixed — the placeholder chip inside the member panel measured 3.16:1.</strong> It inherited the light-theme placeholder palette while sitting on the panel's dark surface. It now uses the dark treatment, as the dark sections already did.</li>
+          <li><strong>Fixed — touch targets were 38–40 px.</strong> Raised to 44 px under <code>(pointer: coarse)</code>, matching the size standard the rest of the repository uses.</li>
+          <li><strong>Fixed — the mobile menu's tools row appeared without an entrance</strong> while the links above it animated in. It now joins the stagger.</li>
+          <li>Verified by measurement: <strong>zero layout passes and 3.5 ms of style recalculation during a 1.6 second scroll</strong> with the pan and parallax both live — confirming the parallax is compositor-only. The hero pauses and releases <code>will-change</code> off-screen, opening the mobile menu produces a layout-shift score of 0, the scroll lock releases on close, focus returns to the toggle, every control shows a ring under real Tab traversal, and heading order is unbroken on all five pages.</li>
+        </ul>
+
+        <h3 id="round3">Critique round 3 — honesty, parity, and release polish</h3>
+        <ul>
+          <li><strong>Fixed — two facts were lost with V14's <code>hero-facts</code> block.</strong> This variant's bottom-aligned hero replaced that panel, and with it went “uniquely affordable” on Home and the October–January / March–June cycle dates on For students. Both are restored: the first into the Home metadata row, the second into the applications paragraph.</li>
+          <li><strong>Fixed — the fog frame broke hero legibility.</strong> Sampling the real rendered pixels behind every hero element across all ten frames showed white copy collapsing on the one near-white render: the secondary CTA, the cycling buttons, and the city label were effectively invisible. Since darkening the photo is ruled out, the pool entry now carries a <code>tone</code> flag that flips the hero to dark type and deepens the control tint for that frame. <strong>The worst contrast anywhere in the pool is now 5.62:1</strong>, against 4.5:1 required.</li>
+          <li>Verified: nothing from the “don't use” column of the brand terminology table appears in any page's copy — the fee-related phrasings, the superseded project-leadership job title, the disallowed synonym for “branches”, the run-together spelling of the organisation name, and the incorrect email domain were each checked by pattern. (The audit script scans this page too, which is why the rules are described here rather than quoted.) Every required fact present per page; six service areas on both pages that list them; the AI-generation disclosure in all five footers, each linking to the ledger; every placeholder in place; no dead links, anchors, or images; the pool wired to all ten frames on every page with every width on disk; and no framework, bundler, or build step anywhere in the variant.</li>
+        </ul>
+
+        <h3 id="release">Release measurement — Lighthouse</h3>
+        <p>Run locally against a static server, desktop preset, after the three critique rounds. Three further defects surfaced here and were fixed before these numbers were recorded:</p>
+        <ul>
+          <li><strong>Fixed — the footer's AI-disclosure link was unreadable.</strong> It inherited the body link green (<code>#4A7322</code>) against the near-black footer. The footer now uses a light green.</li>
+          <li><strong>Fixed — the brand link's accessible name did not contain its visible text.</strong> The two spans rendered as “180 Degrees ConsultingDelft–Rotterdam” with no separator, so it failed <code>label-content-name-mismatch</code> against the <code>aria-label</code>. A space between the spans fixes the name without changing the flex layout.</li>
+          <li><strong>Fixed — the navbar failed contrast on the guide.</strong> The header's translucent dark glass was tuned against the photo heroes; the guide has no hero, so white nav text sat on a near-white body at 55% opacity. Raised to 80%, which also covers the moment any page's header crosses into its light sections.</li>
+          <li><strong>Fixed — the webfont was fetched by <code>@import</code> inside the stylesheet</strong>, which chains HTML → CSS → font CSS → font files. It is now a <code>&lt;link&gt;</code> with <code>preconnect</code> in each page head.</li>
+        </ul>
+        <div class="table-scroll">
+          <table class="ledger">
+            <thead><tr><th>Page</th><th>Performance</th><th>Accessibility</th><th>Best practices</th><th>SEO</th><th>Transfer</th></tr></thead>
+            <tbody>
+              <tr><td>index.html</td><td>91</td><td>100</td><td>100</td><td>100</td><td>186 KB</td></tr>
+              <tr><td>for-clients.html</td><td>93</td><td>100</td><td>100</td><td>100</td><td>202 KB</td></tr>
+              <tr><td>mission.html</td><td>98</td><td>100</td><td>100</td><td>100</td><td>192 KB</td></tr>
+              <tr><td>for-students.html</td><td>99</td><td>100</td><td>100</td><td>100</td><td>175 KB</td></tr>
+              <tr><td>guide.html</td><td>100</td><td>100</td><td>100</td><td>100</td><td>137 KB</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Performance is the only figure that moves between runs; Accessibility, Best Practices, and SEO held at 100 on every page in every run. Home is the slowest and most variable — repeated warm runs settle at 91, while one cold browser launch produced a 48 — and the guide has been observed between 86 and 100. The table records one representative warm run rather than a best-of, and the observed spread is stated here instead of hidden, following the convention V14 set. Transfer figures are Lighthouse's total byte weight, which includes the webfont; the browser-measured initial page load is 125 KB for Home.</p>
+
+        <h3>Two deliberate deviations from the written specification</h3>
+        <p>Both are recorded here rather than left implicit:</p>
+        <ol>
+          <li><strong>The bottom blur is scoped to the hero, not fixed to the viewport.</strong> A viewport-fixed blur composites the whole page on every scroll frame and, with JavaScript disabled, smears the light content sections below the hero. Scoped inside a hero with <code>overflow: hidden</code> it is visually identical where it matters and cannot leak in any code path.</li>
+          <li><strong>Hero-scoped controls carry a tint the reusable class does not.</strong> <code>.liquid-glass</code> keeps its specified <code>rgba(255,255,255,0.01)</code> fill and is used unmodified in the navbar and panels, where it sits on dark chrome. Controls placed directly on the photography would be invisible at that value on light frames, so they add a neutral tint on top. The photograph itself is never darkened.</li>
+        </ol>
+
+        <h2 id="extend">Extending this variant</h2>
+        <ul>
+          <li><strong>Replacing the backgrounds with real photography</strong> is the intended upgrade path. Swap the files in <code>img/</code>, update the <code>POOL</code> array at the top of <code>hero-controller.js</code> with new labels and alt text, then rewrite this ledger to credit the photographer and licence in the shape V14's <code>MEDIA-CREDITS.md</code> uses. Delete the AI disclosure only once no generated image remains.</li>
+          <li><strong>Adding a page</strong> means copying any inner page, changing <code>data-hero-start</code> to the pool index you want it to open on, and adding an entry to the <code>INDEX</code> array so site search can find it.</li>
+          <li><strong>The pool size is not fixed.</strong> <code>POOL</code> drives the counter, the arrows, and the prefetch; adding a ninth image requires no other change.</li>
+          <li><strong>Do not reuse the generated images as evidence</strong> in a deck, report, or proposal. They are layout atmosphere with a disclosure attached, and the disclosure does not travel with the file.</li>
+        </ul>
+
+        <p style="margin-top:2.5rem"><a class="button button--deep" href="index.html">← Back to the site</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <img class="footer-lockup" src="img/180dc-lockup-white.webp" alt="180 Degrees Consulting" width="200" height="57" loading="lazy">
+          <p>TU Delft × Erasmus University Rotterdam<br>Leopoldstraat 7A, 3031 ST Rotterdam</p>
+        </div>
+        <div>
+          <h2>Contact</h2>
+          <div class="footer-links">
+            <a href="mailto:delft.rotterdam@180dc.org">delft.rotterdam@180dc.org</a>
+            <a href="https://www.instagram.com/180dc_delftrotterdam/">Instagram</a>
+            <a href="https://www.linkedin.com/company/180-degrees-consulting-delft/">LinkedIn</a>
+          </div>
+        </div>
+        <div>
+          <h2>Explore</h2>
+          <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="mission.html">Mission</a>
+            <a href="for-clients.html">For clients</a>
+            <a href="for-students.html">For students</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-legal"><span>© 180 Degrees Consulting Delft–Rotterdam</span><span>V15 Vantage · static concept variant · <a href="#images">backgrounds are AI-generated</a></span></div>
+    </div>
+  </footer>
+
+  <script src="hero-controller.js" defer></script>
+</body>
+</html>

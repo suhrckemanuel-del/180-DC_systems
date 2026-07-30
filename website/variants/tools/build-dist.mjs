@@ -34,17 +34,24 @@ for (const v of variants) {
       .replaceAll('href="for-clients.html"', 'href="../for-clients.html"')
       .replaceAll('href="for-students.html"', 'href="../for-students.html"')
       .replaceAll('href="guide.html"', 'href="./"')
-      .replaceAll('src="img/', 'src="../img/');
+      .replaceAll('src="img/', 'src="../img/')
+      // a guide that loads the variant's own script (V15 does, for its nav
+      // and panels) needs that path lifted a level too
+      .replace(/src="([\w-]+\.js)"/g, 'src="../$1"');
     mkdirSync(join(out, "guide"), { recursive: true });
     writeFileSync(join(out, "guide", "index.html"), g);
     rmSync(guidePath);
   }
 
-  // rewrite links to the guide in the variant's other pages
+  // rewrite links to the guide in the variant's other pages. The anchored
+  // form must be handled too — V15 links to guide.html#images from every
+  // footer, and guide.html no longer exists at that path once relocated.
   for (const f of readdirSync(out).filter((f) => f.endsWith(".html"))) {
     const p = join(out, f);
     let h = readFileSync(p, "utf8");
-    h = h.replaceAll('href="guide.html"', 'href="guide/"');
+    h = h
+      .replaceAll('href="guide.html#', 'href="guide/#')
+      .replaceAll('href="guide.html"', 'href="guide/"');
     writeFileSync(p, h);
   }
 }

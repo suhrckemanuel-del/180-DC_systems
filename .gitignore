@@ -52,3 +52,20 @@ Thumbs.db
 
 # Generated consolidated site tree (rebuilt by website/variants/tools/build-dist.mjs)
 website/variants/dist/
+
+# Generative source assets for the V15 hero pool. These are the multi-megabyte
+# renders the shipped WebP tiers are derived from (~105 MB in total), not
+# anything the site fetches — a page loads one 7–283 KB WebP from
+# website/variants/v15-vantage/img/, which IS tracked.
+#
+# The PROMPTS.md beside each set is deliberately NOT ignored: the prompt text is
+# the part the image ledger in v15-vantage/guide.html actually relies on, and it
+# is small. Regenerate the renders with tools/regen-v15.mjs, then rebuild the
+# tiers and depth maps with tools/prep-v15.mjs and tools/depth-v15.mjs.
+website/variants/_brand/**/*.png
+website/variants/tools/raw-video/
+
+# Throwaway diagnostic scripts and their output. Convention in tools/ is that a
+# leading underscore means "scratch, delete when done" — this keeps a
+# half-finished probe from being committed by an `git add -A`.
+website/variants/tools/_*
