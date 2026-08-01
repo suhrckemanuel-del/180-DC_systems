@@ -63,7 +63,7 @@ console.log("\n=== content parity ===");
               "March–June", "Team Leader", "uniquely affordable"],
     "for-students": ["Consultant", "Team Leader", "October–January", "March–June",
                      "September", "January/February", "TU Delft", "Erasmus"],
-    guide: ["AI-generated", "2019", "Consultant", "Team Leader", "October–January", "March–June"],
+    guide: ["Photographer", "Licence", "2019", "Consultant", "Team Leader", "October–January", "March–June"],
   };
 
   for (const p of PAGES) {
@@ -88,22 +88,48 @@ console.log("\n=== content parity ===");
     if (n !== 6) note(p, `${n}/6 service areas present`);
   }
 
-  /* ------------------------------------------------ AI disclosure ------- */
-  console.log("\n=== AI-generation disclosure ===");
+  /* ------------------------------------------------ photo credits ------- */
+  //
+  // This block used to assert the OPPOSITE: that every page disclosed
+  // AI-generated backgrounds. The imagery is now licensed photography, so the
+  // disclosure would be a false statement and the credit is the thing that
+  // must be present. Both directions are checked — a missing credit is an
+  // unlicensed publication, and a surviving disclosure is a lie.
+  console.log("\n=== photography credits ===");
   for (const p of PAGES) {
     await page.goto(url(p), { waitUntil: "networkidle" });
     const r = await page.evaluate(() => {
       const t = document.body.innerText;
       const footer = document.querySelector(".footer-legal")?.innerText || "";
+      const credit = document.querySelector("[data-city-credit]")?.textContent || "";
       return {
-        footerDiscloses: /AI-generated/i.test(footer),
+        footerCredits: /photograph|credit/i.test(footer),
         footerLinks: !!document.querySelector('.footer-legal a[href*="images"], .footer-legal a[href*="guide"]'),
-        anywhere: /AI-generated/i.test(t),
+        // the hero names the photographer of the frame on screen
+        heroCredit: credit.trim(),
+        hasHero: !!document.querySelector("[data-hero]"),
+        // No page may CLAIM the imagery is generated. Present tense only: the
+        // guide legitimately records that an earlier build used AI renders and
+        // why they were replaced, and flagging that would push the page toward
+        // hiding its own history, which is the opposite of the point.
+        claimsAI: /\b(is|are)\s+AI-generated/i.test(t),
       };
     });
-    if (!r.footerDiscloses) note(p, "footer does not disclose AI-generated backgrounds");
-    if (!r.footerLinks) note(p, "footer disclosure does not link to the ledger");
-    if (!r.anywhere) note(p, "no AI disclosure anywhere on page");
+    if (!r.footerCredits) note(p, "footer does not credit the photography");
+    if (!r.footerLinks) note(p, "footer credit does not link to the ledger");
+    if (r.claimsAI) note(p, "page still claims the backgrounds are AI-generated");
+    if (r.hasHero && !r.heroCredit) note(p, "hero shows no photographer credit for the current frame");
+  }
+
+  // every pooled frame must carry a credit in the controller
+  {
+    const js = readFileSync(join(dir, "hero-controller.js"), "utf8");
+    const files = [...js.matchAll(/file:\s*"([^"]+)"/g)].length;
+    const credits = [...js.matchAll(/credit:\s*"([^"]+)"/g)].map((m) => m[1]);
+    if (credits.length !== files) note("pool", `${credits.length} credits for ${files} frames`);
+    for (const c of credits) {
+      if (!/(CC0|CC BY|Public domain)/i.test(c)) note("pool", `credit has no licence: "${c}"`);
+    }
   }
 
   /* ------------------------------------------------ placeholder honesty - */
@@ -186,7 +212,7 @@ console.log("\n=== content parity ===");
   const imgs = readdirSync(join(dir, "img"));
   const js = readFileSync(join(dir, "hero-controller.js"), "utf8");
   const files = [...js.matchAll(/file:\s*"([^"]+)"/g)].map((m) => m[1]);
-  if (files.length < 8) note("pool", `POOL shrank to ${files.length} entries`);
+  if (files.length < 4) note("pool", `POOL shrank to ${files.length} entries`);
   for (const f of files) {
     if (!imgs.includes(`${f}.webp`)) note("pool", `missing img/${f}.webp`);
     if (!imgs.includes(`${f}-sm.webp`)) note("pool", `missing img/${f}-sm.webp`);

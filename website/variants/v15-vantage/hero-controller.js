@@ -24,82 +24,44 @@
   const desktopQuery = window.matchMedia("(min-width: 1024px)");
 
   /* ---------------------------------------------------------- photo pool --
-     The reusable image pool. Every page ships the same ten frames and
-     starts on its own, declared via data-hero-start; the prev/next control
-     walks the whole pool without a page reload.                            */
+     Six real, licensed photographs of Rotterdam and Delft. Every page ships the
+     same pool and opens on its own frame via data-hero-start; the prev/next
+     control walks the whole pool without a page reload.
+
+     `credit` is rendered in the hero beside the city label and changes with the
+     frame. A static footer line cannot honestly credit six different
+     photographers, and this variant is full-bleed with no <figcaption> slot.
+     The long form — work, source URL, licence URL, edits — lives in
+     MEDIA-CREDITS.md and the ledger in guide.html#images.               */
 
   const POOL = [
     {
-      file: "erasmusbrug-blue-hour",
-      city: "Rotterdam",
-      label: "Erasmusbrug · Blue hour",
-      alt: "The Erasmusbrug spanning the Nieuwe Maas at blue hour, its white pylon and harp of cables lit against a deep navy sky"
-    },
-    {
-      file: "erasmusbrug-golden-hour",
-      city: "Rotterdam",
-      label: "Erasmusbrug · Golden hour",
-      alt: "The Erasmusbrug backlit by a low sun, pylon and cables in silhouette against an amber sky"
-    },
-    {
-      file: "erasmusbrug-storm-light",
-      city: "Rotterdam",
-      label: "Erasmusbrug · Storm light",
-      alt: "A shaft of sunlight breaking through heavy cloud onto the Erasmusbrug and the river below"
-    },
-    {
-      file: "erasmusbrug-fog",
-      city: "Rotterdam",
-      label: "Erasmusbrug · Fog",
-      alt: "Dense white fog covering the Erasmusbrug, only the upper pylon and a few cables still visible",
-      // the only near-white frame in the pool: white hero copy cannot reach
-      // AA over it, so the hero switches to dark type for this one
-      tone: "light"
-    },
-    {
       file: "erasmusbrug-night",
       city: "Rotterdam",
-      label: "Erasmusbrug · Night",
-      alt: "The Erasmusbrug at night under architectural lighting, long-exposure traffic trails sweeping across the deck"
+      label: "Rotterdam · Erasmusbrug",
+      credit: "CyberDiver79 · CC0",
+      alt: "The Erasmusbrug at night seen from the water, its lit cable harp sweeping down to the deck with the Rotterdam skyline behind"
     },
     {
-      file: "erasmusbrug-pylon-night",
-      city: "Rotterdam",
-      label: "Erasmusbrug · Pylon",
-      alt: "A low view up the Erasmusbrug's asymmetrical pylon at night, cables fanning out against a near-black sky"
-    },
-    {
-      file: "delft-canal-night",
-      city: "Delft",
-      label: "Delft · Canal",
-      alt: "A narrow Delft canal at night lined with historic brick facades, a single streetlamp reflected in still water"
-    },
-    {
-      file: "delft-oostpoort-night",
+      file: "delft-oostpoort-air",
       city: "Delft",
       label: "Delft · Oostpoort",
-      alt: "Delft's Oostpoort gate at night, its paired towers and steep roofs reflected in the canal below"
+      credit: "Ludvig14 · CC BY-SA 4.0",
+      alt: "Delft's Oostpoort gate from the air, its twin towers between two canals with a white drawbridge alongside and the Nieuwe Kerk on the skyline"
     },
-    // Appended rather than slotted into the narrative order on purpose: each
-    // inner page opens on a fixed pool index via data-hero-start (5, 6, 7), so
-    // inserting mid-array would silently change which frame those pages open
-    // on. Cycling still reaches both.
     {
-      file: "markthal-evening",
+      file: "markthal-blue-hour",
       city: "Rotterdam",
       label: "Rotterdam · Markthal",
-      alt: "Rotterdam's Markthal at dusk, its grey arched shell curving over a vast illuminated glass front that glows orange above the empty square"
+      credit: "Radek Kucharski · CC BY 2.0",
+      alt: "Rotterdam's Markthal at blue hour, its grey arch curving over a vast painted glass front lit from within"
     },
     {
-      file: "delft-nieuwe-kerk",
+      file: "delft-oostpoort",
       city: "Delft",
-      label: "Delft · Markt",
-      alt: "Delft's Markt at golden hour, the Nieuwe Kerk's Gothic tower rising over a row of gabled brick houses with the old town hall across the empty square",
-      // Second light frame in the pool. The golden-hour sky behind the copy
-      // column measured 3.33:1 against white — the contrast audit failed all
-      // four small-text elements on it — so it takes the same dark-type
-      // treatment as the fog render.
-      tone: "light"
+      label: "Delft · Oostpoort gate",
+      credit: "Michielverbeek · CC BY-SA 4.0",
+      alt: "Delft's Oostpoort gate seen across still canal water, its paired brick towers and white drawbridge under a clear sky"
     }
   ];
 
@@ -128,6 +90,7 @@
     const nextBtn = hero.querySelector("[data-city-next]");
     const nowLabel = hero.querySelector("[data-city-label]");
     const nowCount = hero.querySelector("[data-city-count]");
+    const nowCredit = hero.querySelector("[data-city-credit]");
 
     let index = Number(hero.dataset.heroStart || 0);
     if (!Number.isInteger(index) || index < 0 || index >= POOL.length) index = 0;
@@ -288,10 +251,18 @@
       hero.dispatchEvent(new CustomEvent("hero:frame", { detail: { item, index } }));
     };
 
-    // light frames flip the hero to dark type rather than relying on a scrim,
-    // which the blur-only rule rules out. Called at the moment the photo it
-    // belongs to becomes the visible layer.
-    const applyTone = (item) => { hero.dataset.tone = item.tone || "dark"; };
+    // Light frames flip the hero to dark type rather than relying on a scrim,
+    // which the blur-only rule rules out. The credit moves with it: both belong
+    // to the photograph, so both are applied at the moment that photograph
+    // becomes the visible layer, not when the button is clicked.
+    //
+    // The credit deliberately lives outside .city-switch__now, which is
+    // aria-live — otherwise every cycle would announce the photographer and
+    // licence on top of the place name.
+    const applyTone = (item) => {
+      hero.dataset.tone = item.tone || "dark";
+      if (nowCredit && item.credit) nowCredit.textContent = `Photo: ${item.credit}`;
+    };
 
     // hero-depth.js needs the pool to preload and to resolve depth maps
     hero.heroPool = POOL;
@@ -526,8 +497,8 @@
     { title: "Start a conversation", href: "for-clients.html#intake", hint: "For clients" },
     { title: "For students", href: "for-students.html", hint: "Consultant · Team Leader" },
     { title: "The two roles", href: "for-students.html#roles", hint: "For students" },
-    { title: "How this site was made", href: "guide.html", hint: "Build notes and image ledger" },
-    { title: "Image ledger — AI-generated backgrounds", href: "guide.html#images", hint: "Guide" }
+    { title: "How this site was made", href: "guide.html", hint: "Build notes and photography credits" },
+    { title: "Photography credits — photographer, source and licence per image", href: "guide.html#images", hint: "Guide" }
   ];
 
   const searchInput = document.querySelector("[data-search-input]");

@@ -111,7 +111,7 @@ console.log("\n=== image cycling ===");
     }, frag, { timeout: 6000 });
 
   await page.click("[data-city-next]");
-  await settledOn("golden-hour");
+  await settledOn(POOL[1]);
 
   const after = await page.evaluate(() => {
     const imgs = [...document.querySelectorAll(".hero__img")];
@@ -128,7 +128,7 @@ console.log("\n=== image cycling ===");
 
   if (before.label === after.label) note("cycling", "label did not change after next");
   if (after.count !== `2 / ${N}`) note("cycling", `count wrong after one next: ${after.count}`);
-  if (!after.visibleSrc?.includes("golden-hour")) note("cycling", `wrong image after next: ${after.visibleSrc}`);
+  if (!after.visibleSrc?.includes(POOL[1])) note("cycling", `wrong image after next: ${after.visibleSrc}`);
   if (!after.visibleComplete) note("cycling", "swapped-in image not fully decoded/painted");
   if (!after.visibleAlt) note("cycling", "visible layer has empty alt");
   if (!after.hiddenAriaHidden) note("cycling", "hidden layer not aria-hidden");
@@ -136,7 +136,7 @@ console.log("\n=== image cycling ===");
   // wrap-around backwards from index 0
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.click("[data-city-prev]");          // 2/N -> 1/N
-  await settledOn("blue-hour");
+  await settledOn(POOL[0]);
   await page.click("[data-city-prev]");          // 1/N -> wraps to N/N
   await settledOn(POOL[N - 1]);
   const wrapped = await page.evaluate(() => document.querySelector("[data-city-count]").textContent);

@@ -28,6 +28,9 @@ const TARGETS = [
   { sel: "[data-city-next]", name: "next-city button", large: false, ownBg: true },
   { sel: ".city-switch__now strong", name: "city label", large: false },
   { sel: "[data-city-count]", name: "city counter", large: false },
+  // the photographer credit is small text over the photograph like any other,
+  // and it changes per frame — it must be measured on every frame, not assumed
+  { sel: "[data-city-credit]", name: "photo credit", large: false },
 ];
 
 const fail = [];

@@ -12,24 +12,24 @@ const brand = join(here, "..", "_brand");
 const out = join(here, "..", "v15-vantage", "img");
 mkdirSync(out, { recursive: true });
 
-// Sources are the 2K regeneration in _brand/hero-set-2k (see regen-v15.mjs).
-// The original 1536 sets stay in _brand/ as the provenance record. The point of
-// the regeneration is that the 2400px tier below now carries real detail rather
-// than a lanczos upscale of 1536.
-const src2k = join(brand, "hero-set-2k");
+// Sources are real, licensed photographs of Rotterdam and Delft, cropped to a
+// common 3:2 by tools/_fetch-photos.mjs and recorded with photographer, licence
+// and source URL in _brand/photo-set/SOURCES.json. That file is the input to
+// both v15-vantage/MEDIA-CREDITS.md and the credit ledger in guide.html.
+//
+// Nothing here is generated. The variant previously shipped AI renders and
+// disclosed them; it no longer does either.
+const photos = join(brand, "photo-set");
 
-// Cycling order is the narrative order: Rotterdam dusk -> night -> Delft.
+// Cycling order alternates the two cities rather than grouping them, so the
+// branch reads as Delft–Rotterdam wherever a visitor enters the pool.
 const set = [
-  { src: join(src2k, "01-blue-hour.png"),                        name: "erasmusbrug-blue-hour",   q: 74 },
-  { src: join(src2k, "02-golden-hour-drama.png"),                name: "erasmusbrug-golden-hour", q: 72 },
-  { src: join(src2k, "03-storm-light.png"),                      name: "erasmusbrug-storm-light", q: 72 },
-  { src: join(src2k, "04-minimalist-fog.png"),                   name: "erasmusbrug-fog",         q: 78 }, // near-white gradients band badly; needs headroom
-  { src: join(src2k, "05-night-energy.png"),                     name: "erasmusbrug-night",       q: 74 },
-  { src: join(src2k, "rotterdam-02-erasmusbrug-pylon-night.png"), name: "erasmusbrug-pylon-night", q: 74 },
-  { src: join(src2k, "delft-02-canal-night.png"),                name: "delft-canal-night",       q: 74 },
-  { src: join(src2k, "delft-01-oostpoort-night.png"),            name: "delft-oostpoort-night",   q: 74 },
-  { src: join(src2k, "03-rotterdam-markthal-evening.png"),       name: "markthal-evening",        q: 74 },
-  { src: join(src2k, "06-delft-markt-nieuwe-kerk-golden-hour.png"), name: "delft-nieuwe-kerk",    q: 74 },
+  { src: join(photos, "erasmusbrug-night.png"),   name: "erasmusbrug-night",    q: 74 },
+  { src: join(photos, "delft-oostpoort-air.png"), name: "delft-oostpoort-air",  q: 74 },
+  { src: join(photos, "markthal-blue-hour.png"),  name: "markthal-blue-hour",   q: 72 }, // dense facade, thousands of small windows
+  { src: join(photos, "delft-nieuwe-kerk.png"),   name: "delft-nieuwe-kerk",    q: 74 },
+  { src: join(photos, "delft-canal.png"),         name: "delft-canal",          q: 74 },
+  { src: join(photos, "delft-oostpoort.png"),     name: "delft-oostpoort",      q: 74 },
 ];
 
 // Three widths. The hero is a cover-crop that the browser magnifies, so even a

@@ -13,23 +13,20 @@ const brand = join(here, "..", "_brand");
 const out = join(here, "..", "v15-vantage", "img");
 mkdirSync(out, { recursive: true });
 
-// Every frame now comes from the 2K regeneration (regen-v15.mjs). The original
-// 1536 sets stay in _brand/ as the provenance record, but they are no longer
-// what ships: a depth map inferred from the 1536 source and applied to a 2528px
-// photo would be reading a different picture than the one on screen.
-const src2k = join(brand, "hero-set-2k");
+// MUST stay in lockstep with the set in prep-v15.mjs. The two lists are
+// separate on purpose (this one is slow and rarely re-run), but a depth map
+// inferred from one photograph and applied to another is a silent, invisible
+// failure: the displacement field would be reading a different picture than the
+// one on screen. Same sources, same names, or not at all.
+const photos = join(brand, "photo-set");
 
 const SET = [
-  { src: join(src2k, "01-blue-hour.png"), name: "erasmusbrug-blue-hour" },
-  { src: join(src2k, "02-golden-hour-drama.png"), name: "erasmusbrug-golden-hour" },
-  { src: join(src2k, "03-storm-light.png"), name: "erasmusbrug-storm-light" },
-  { src: join(src2k, "04-minimalist-fog.png"), name: "erasmusbrug-fog" },
-  { src: join(src2k, "05-night-energy.png"), name: "erasmusbrug-night" },
-  { src: join(src2k, "rotterdam-02-erasmusbrug-pylon-night.png"), name: "erasmusbrug-pylon-night" },
-  { src: join(src2k, "delft-02-canal-night.png"), name: "delft-canal-night" },
-  { src: join(src2k, "delft-01-oostpoort-night.png"), name: "delft-oostpoort-night" },
-  { src: join(src2k, "03-rotterdam-markthal-evening.png"), name: "markthal-evening" },
-  { src: join(src2k, "06-delft-markt-nieuwe-kerk-golden-hour.png"), name: "delft-nieuwe-kerk" },
+  { src: join(photos, "erasmusbrug-night.png"), name: "erasmusbrug-night" },
+  { src: join(photos, "delft-oostpoort-air.png"), name: "delft-oostpoort-air" },
+  { src: join(photos, "markthal-blue-hour.png"), name: "markthal-blue-hour" },
+  { src: join(photos, "delft-nieuwe-kerk.png"), name: "delft-nieuwe-kerk" },
+  { src: join(photos, "delft-canal.png"), name: "delft-canal" },
+  { src: join(photos, "delft-oostpoort.png"), name: "delft-oostpoort" },
 ];
 
 const list = process.argv.includes("--all") ? SET : SET.slice(0, 1);

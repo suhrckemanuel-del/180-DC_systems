@@ -88,7 +88,9 @@ console.log("\n=== depth maps present for every pooled frame ===");
   const files = [...js.matchAll(/file:\s*"([^"]+)"/g)].map((m) => m[1]);
   // The pool is the source of truth for its own size — hardcoding a count here
   // just means this check goes stale the next time a frame is added.
-  if (files.length < 8) note("pool", `pool shrank to ${files.length} entries`);
+  // A floor, not an equality: the pool size is a design choice, but dropping
+  // below a handful means the cycler has nothing to cycle.
+  if (files.length < 4) note("pool", `pool shrank to ${files.length} entries`);
   for (const f of files) {
     if (!imgs.includes(`${f}-depth.webp`)) note("depth", `missing img/${f}-depth.webp`);
     if (!imgs.includes(`${f}-2x.webp`)) note("hidpi", `missing img/${f}-2x.webp`);
@@ -258,7 +260,10 @@ console.log("\n=== cycling under the depth layer ===");
 
   const label = await page.textContent("[data-city-label]");
   const count = await page.textContent("[data-city-count]");
-  if (!label.includes("Golden hour")) note("cycle", `label wrong after next: ${label}`);
+  // second entry's label, read from the controller rather than named here
+  const labels = [...(await readFile(join(dir, "hero-controller.js"), "utf8"))
+    .matchAll(/label:\s*"([^"]+)"/g)].map((m) => m[1]);
+  if (labels[1] && label.trim() !== labels[1]) note("cycle", `label wrong after next: ${label}`);
   if (!/^2 \/ \d+$/.test(count.trim())) note("cycle", `count wrong after next: ${count}`);
   if (delta < 8) note("cycle", `frame did not visibly change (mean delta ${delta.toFixed(1)})`);
 

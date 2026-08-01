@@ -700,6 +700,21 @@ a { color: var(--green-deep); }
 }
 .city-switch__count { font-variant-numeric: tabular-nums; }
 
+/* Photographer + licence for the frame on screen. Tertiary by design: it must
+   be legible and findable, not compete with the place name above it. Sits
+   outside the aria-live region so cycling does not announce it. */
+.city-switch__credit {
+  margin: 0.15rem 0 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+}
+.hero[data-tone="light"] .city-switch__credit {
+  color: #1c2420;
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.8);
+}
+
 /* JS-only affordances stay hidden until JS confirms it is running */
 .no-js .city-switch,
 .no-js .nav-search,
@@ -1009,7 +1024,7 @@ a { color: var(--green-deep); }
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 0.82rem; color: rgba(255, 255, 255, 0.66);
 }
-/* the AI-disclosure link lives here; the default link green is far too dark
+/* the photography-credit link lives here; the default link green is far too dark
    against the footer's near-black */
 .footer-legal a { color: #a7d16a; }
 .footer-legal a:hover { color: #c6e39a; }

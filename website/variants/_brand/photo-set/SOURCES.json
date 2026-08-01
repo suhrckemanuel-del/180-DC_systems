@@ -1,0 +1,68 @@
+[
+  {
+    "name": "erasmusbrug-night",
+    "work": "Erasmus Bridge in Rotterdam seen from Deck 18 of AIDAnova",
+    "photographer": "CyberDiver79",
+    "licence": "CC0",
+    "licenceUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Erasmus_Bridge_in_Rotterdam_seen_from_Deck_18_of_AIDAnova.jpg",
+    "originalPx": "16320x12240",
+    "croppedTo": "16320x10880",
+    "edits": "centre-weighted 3:2 crop (bias 0.5 x / 0.6 y), resized to 2400px wide, converted to WebP by prep-v15.mjs"
+  },
+  {
+    "name": "markthal-blue-hour",
+    "work": "Market Hall in Rotterdam (52505656833)",
+    "photographer": "Radek Kucharski from Warsaw, Poland",
+    "licence": "CC BY 2.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Market_Hall_in_Rotterdam_(52505656833).jpg",
+    "originalPx": "7688x5128",
+    "croppedTo": "7688x5125",
+    "edits": "centre-weighted 3:2 crop (bias 0.5 x / 0.3 y), resized to 2400px wide, converted to WebP by prep-v15.mjs"
+  },
+  {
+    "name": "delft-oostpoort-air",
+    "work": "Delft EasternGate DJI 0076",
+    "photographer": "Ludvig14",
+    "licence": "CC BY-SA 4.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Delft_EasternGate_DJI_0076.jpg",
+    "originalPx": "6789x4526",
+    "croppedTo": "6789x4526",
+    "edits": "centre-weighted 3:2 crop (bias 0.5 x / 0.5 y), resized to 2400px wide, converted to WebP by prep-v15.mjs"
+  },
+  {
+    "name": "delft-nieuwe-kerk",
+    "work": "Delft NewChurch DJI 0132",
+    "photographer": "Ludvig14",
+    "licence": "CC BY-SA 4.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Delft_NewChurch_DJI_0132.jpg",
+    "originalPx": "5464x3640",
+    "croppedTo": "5460x3640",
+    "edits": "centre-weighted 3:2 crop (bias 0.5 x / 0.5 y), resized to 2400px wide, converted to WebP by prep-v15.mjs"
+  },
+  {
+    "name": "delft-canal",
+    "work": "DelftView DJI 0104",
+    "photographer": "Ludvig14",
+    "licence": "CC BY-SA 4.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:DelftView_DJI_0104.jpg",
+    "originalPx": "5464x3624",
+    "croppedTo": "5436x3624",
+    "edits": "centre-weighted 3:2 crop (bias 0.5 x / 0.5 y), resized to 2400px wide, converted to WebP by prep-v15.mjs"
+  },
+  {
+    "name": "delft-oostpoort",
+    "work": "Delft, de Oostpoort RM11968 foto11 2016-03-13 10.32",
+    "photographer": "Michielverbeek",
+    "licence": "CC BY-SA 4.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Delft,_de_Oostpoort_RM11968_foto11_2016-03-13_10.32.jpg",
+    "originalPx": "4352x2480",
+    "croppedTo": "3720x2480",
+    "edits": "centre-weighted 3:2 crop (bias 0.38 x / 0.5 y), resized to 2400px wide, converted to WebP by prep-v15.mjs"
+  }
+]

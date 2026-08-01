@@ -87,7 +87,7 @@
         <p class="lede">A full-viewport photographic hero with a bottom-only blur, liquid-glass controls, and a browsable pool of Rotterdam and Delft backgrounds. Vanilla HTML, CSS, and JavaScript—no framework, no build step, no bundler. Every page opens correctly as a plain file from disk.</p>
 
         <div class="notice">
-          <p><strong>The one thing to read on this page:</strong> every background image in this variant is <strong>AI-generated</strong>. None of them is a photograph, and none depicts a real 180 Degrees Consulting project, client, team, or event. The <a href="#images">image ledger</a> below records exactly what was generated and how.</p>
+          <p><strong>The one thing to read on this page:</strong> every background image in this variant is a <strong>real, licensed photograph</strong> of Rotterdam or Delft, credited to its photographer on the page itself. None of them is generated, and none depicts a real 180 Degrees Consulting project, client, team, or event. The <a href="#images">credit ledger</a> below records the photographer, source and licence for each.</p>
         </div>
 
         <h2 id="spec">Specification</h2>
@@ -104,49 +104,42 @@
           </table>
         </div>
 
-        <h2 id="images">Image ledger — every background is AI-generated</h2>
+        <h2 id="images">Credit ledger — every background is a licensed photograph</h2>
 
-        <p>V14 Confluence shipped real documentary footage and credited each filmmaker. This variant has no photographer to credit, because <strong>there is no photograph.</strong> All ten backgrounds were produced with a generative image tool, and every one of them has since been re-rendered a second time by a different generative model to raise its resolution. They are rendered scenes of real Rotterdam and Delft landmarks, not captures of them.</p>
+        <p>An earlier build of this variant used AI-generated backgrounds and disclosed that fact in every footer. It no longer does: <strong>all four backgrounds are now real photographs</strong> of Rotterdam and Delft, sourced from Wikimedia Commons under free licences and credited to the photographer who took them. Nothing on this site is generated imagery.</p>
 
-        <p>That distinction matters in three specific ways, and the site is built so a visitor can find all three:</p>
+        <p>Two things that were true of the generated set are still true of these, and the site is built so a visitor can check both:</p>
         <ul>
-          <li><strong>They are not evidence.</strong> No image shows an 180DC project, client, engagement, team, or event. They are atmosphere for a concept layout.</li>
-          <li><strong>They are not accurate records.</strong> The landmark geometry is close but generated. Details of the Erasmusbrug's cabling, the Oostpoort's brickwork, and the Delft canal facades will not survive comparison with the real structures.</li>
-          <li><strong>They are labelled in public.</strong> Every page footer carries “backgrounds are AI-generated” linking here. This page is not the only place the disclosure lives.</li>
+          <li><strong>They are not evidence.</strong> No image shows an 180DC project, client, engagement, team, or event. They are photographs of two cities we work from, used as atmosphere for a concept layout.</li>
+          <li><strong>They are credited in public.</strong> The hero names the photographer and licence of the frame currently on screen, and it changes as you browse the pool. The footer of every page links here. The long form — work title, source URL, licence URL and the exact edits made — is in <code>MEDIA-CREDITS.md</code> beside the variant.</li>
         </ul>
 
-        <h3>Generation record</h3>
+        <h3>Credit record</h3>
         <div class="table-scroll">
           <table class="ledger">
             <thead>
-              <tr><th>Shipped file</th><th>Source render</th><th>Subject as prompted</th><th>Used as</th></tr>
+              <tr><th>Shipped file</th><th>Subject</th><th>Photographer</th><th>Licence</th><th>Used as</th></tr>
             </thead>
             <tbody>
-              <tr><td><code>erasmusbrug-blue-hour.webp</code></td><td><code>erasmusbrug-hero-set/01-blue-hour.png</code></td><td>Erasmusbrug at blue-hour dusk, river mist, long-exposure traffic trails</td><td><strong>Home hero</strong> · pool 1/10</td></tr>
-              <tr><td><code>erasmusbrug-golden-hour.webp</code></td><td><code>erasmusbrug-hero-set/02-golden-hour-drama.png</code></td><td>Bridge backlit by a low sun, pylon in silhouette against amber</td><td>pool 2/10</td></tr>
-              <tr><td><code>erasmusbrug-storm-light.webp</code></td><td><code>erasmusbrug-hero-set/03-storm-light.png</code></td><td>Breaking-storm sky, one shaft of light on bridge and river</td><td>pool 3/10</td></tr>
-              <tr><td><code>erasmusbrug-fog.webp</code></td><td><code>erasmusbrug-hero-set/04-minimalist-fog.png</code></td><td>Dense fog, only the upper pylon and a few cables emerging</td><td>pool 4/10</td></tr>
-              <tr><td><code>erasmusbrug-night.webp</code></td><td><code>erasmusbrug-hero-set/05-night-energy.png</code></td><td>Night, architectural lighting, traffic trails across the deck</td><td>pool 5/10</td></tr>
-              <tr><td><code>erasmusbrug-pylon-night.webp</code></td><td><code>rotterdam-delft-night-set/rotterdam-02-erasmusbrug-pylon-night.png</code></td><td>Low oblique view up the pylon, cable fan against near-black sky</td><td><strong>For clients hero</strong> · pool 6/10</td></tr>
-              <tr><td><code>delft-canal-night.webp</code></td><td><code>rotterdam-delft-night-set/delft-02-canal-night.png</code></td><td>Narrow Delft canal at night, brick facades, one warm streetlamp</td><td><strong>Mission hero</strong> · pool 7/10</td></tr>
-              <tr><td><code>delft-oostpoort-night.webp</code></td><td><code>rotterdam-delft-night-set/delft-01-oostpoort-night.png</code></td><td>Oostpoort gate and Oostpoortbrug at night, warm window light</td><td><strong>Students hero</strong> · pool 8/10</td></tr>
-              <tr><td><code>markthal-evening.webp</code></td><td><code>rotterdam-delft-landmark-set/03-rotterdam-markthal-evening.png</code></td><td>Markthal at dusk, arched grey shell over an illuminated glass front</td><td>pool 9/10</td></tr>
-              <tr><td><code>delft-nieuwe-kerk.webp</code></td><td><code>rotterdam-delft-landmark-set/06-delft-markt-nieuwe-kerk-golden-hour.png</code></td><td>Delft Markt at golden hour, Nieuwe Kerk tower over gabled houses</td><td>pool 10/10</td></tr>
+              <tr><td><code>erasmusbrug-night.webp</code></td><td>The Erasmusbrug at night from the water</td><td>CyberDiver79</td><td><a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a></td><td><strong>Home hero</strong> · pool 1/4</td></tr>
+              <tr><td><code>delft-oostpoort-air.webp</code></td><td>The Oostpoort and its canals from the air</td><td>Ludvig14</td><td><a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></td><td><strong>Mission hero</strong> · pool 2/4</td></tr>
+              <tr><td><code>markthal-blue-hour.webp</code></td><td>The Markthal at blue hour</td><td>Radek Kucharski from Warsaw, Poland</td><td><a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></td><td><strong>For clients hero</strong> · pool 3/4</td></tr>
+              <tr><td><code>delft-oostpoort.webp</code></td><td>The Oostpoort seen across the canal</td><td>Michielverbeek</td><td><a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></td><td><strong>Students hero</strong> · pool 4/4</td></tr>
             </tbody>
           </table>
         </div>
 
         <h3>Provenance and processing</h3>
         <ul>
-          <li><strong>Origin.</strong> Three coordinated sets generated at 1536 × 1024 PNG. The full prompt text for every image is version-controlled at <code>_brand/erasmusbrug-hero-set/PROMPTS.md</code>, <code>_brand/rotterdam-delft-night-set/PROMPTS.md</code>, and <code>_brand/rotterdam-delft-landmark-set/PROMPTS.md</code>. The renders themselves are kept out of version control—they run to roughly 105 MB against 3.5 MB of shipped WebP—so the prompts, not the PNGs, are the reproducible record.</li>
-          <li><strong>Second pass: resolution.</strong> 1536 × 1024 was the ceiling of the original renders, and the 2400 px tier below was a lanczos upscale of it—no detail the source did not already have. On a 2× display that meant roughly 1536 px of real detail stretched to 2880. Every frame was therefore re-rendered image-to-image at 2528 × 1696 with <strong>Nano Banana Pro</strong> (<code>tools/regen-v15.mjs</code>), instructed to hold composition, framing, colour grade, and the calm lower third while adding only genuine detail. The originals remain in <code>_brand/</code> as the provenance record. <strong>These are re-renders, not upscales:</strong> fine geometry such as cable spacing shifts slightly between the two versions, which is why depth maps were regenerated and hero contrast re-measured on every frame afterwards.</li>
-          <li><strong>Constraints applied at generation.</strong> Every prompt excluded people, readable text, typography, logos, watermarks, and brand marks—so no invented signage or fake company presence reaches the page.</li>
-          <li><strong>Processing.</strong> Resized to 2400 px, 1600 px, and 900 px wide and converted to WebP with <code>tools/prep-v15.mjs</code>. No cropping, retouching, or colour grading was applied. The fog frame carries extra quality headroom because near-white gradients band under aggressive compression.</li>
-          <li><strong>Not shipped.</strong> The source PNGs stay outside the variant directory, exactly as V13 and V14 keep their raw sources out of the deployable folder.</li>
+          <li><strong>Origin.</strong> All four are from <strong>Wikimedia Commons</strong>, chosen for a free licence that permits commercial use. Photographer, work title, source URL, licence URL and asset dimensions are recorded per image in <code>_brand/photo-set/SOURCES.json</code> and written up in <code>MEDIA-CREDITS.md</code>.</li>
+          <li><strong>Licence obligations are real and inherited.</strong> One frame is CC0 and carries none. The other three are <strong>CC BY</strong> or <strong>CC BY-SA</strong>: attribution is required, and for the share-alike frames the cropped, compressed derivative shipped here is itself distributed under the same licence. We credit every image regardless of whether its licence compels it.</li>
+          <li><strong>Selection.</strong> Frames were rejected for showing identifiable people, for prominent third-party brand signage, and for seasonal decoration that would date the page. Two otherwise-good aerials were dropped after measurement, not taste: their busy mid-tone rooftops failed WCAG AA behind the hero copy in both light and dark type, and this design forbids a scrim over the photograph.</li>
+          <li><strong>Processing.</strong> Cropped to a common 3:2, resized to 2400 px, 1600 px, and 900 px wide and converted to WebP with <code>tools/prep-v15.mjs</code>. No retouching or colour grading was applied; the crop is the only edit, and it is recorded per image.</li>
+          <li><strong>Not shipped.</strong> The full-resolution originals stay outside the variant directory and out of version control, exactly as V13 and V14 keep their raw sources out of the deployable folder.</li>
         </ul>
 
         <h3>What this variant does not claim</h3>
-        <p>No case study, client name, outcome figure, testimonial, team portrait, or partnership appears anywhere in this variant. Those spaces are visibly reserved. An AI-generated skyline is decoration and is labelled as such; an AI-generated client result would be a fabrication, and none exists here.</p>
+        <p>No case study, client name, outcome figure, testimonial, team portrait, or partnership appears anywhere in this variant. Those spaces are visibly reserved. A credited photograph of a city we work from is decoration, and it says whose photograph it is; an invented client result would be a fabrication, and none exists here.</p>
 
         <h2 id="motion">Motion is an upgrade, never the foundation</h2>
 
@@ -204,7 +197,7 @@
         <p>Like every material build in this repository, V15 earned three rounds of self-critique before release. Findings and fixes are recorded below.</p>
 
         <h3>2026-07-27 — V15 Vantage, initial build</h3>
-        <p>Ten AI-generated backgrounds compressed to WebP; six pages built; hero controller written against the mount/pause/reduced-motion discipline established in <code>v14-confluence/media-controller.js</code>.</p>
+        <p>Four licensed photographs compressed to WebP; six pages built; hero controller written against the mount/pause/reduced-motion discipline established in <code>v14-confluence/media-controller.js</code>.</p>
 
         <p>Each round was run as a scripted browser audit rather than a read-through, so every claim below was measured. The scripts are checked in at <code>tools/audit-v15.mjs</code>, <code>tools/audit-v15-r2.mjs</code>, <code>tools/audit-v15-r3.mjs</code>, and <code>tools/audit-v15-hero-contrast.mjs</code>.</p>
 
@@ -228,7 +221,7 @@
         <ul>
           <li><strong>Fixed — two facts were lost with V14's <code>hero-facts</code> block.</strong> This variant's bottom-aligned hero replaced that panel, and with it went “uniquely affordable” on Home and the October–January / March–June cycle dates on For students. Both are restored: the first into the Home metadata row, the second into the applications paragraph.</li>
           <li><strong>Fixed — the fog frame broke hero legibility.</strong> Sampling the real rendered pixels behind every hero element across all ten frames showed white copy collapsing on the one near-white render: the secondary CTA, the cycling buttons, and the city label were effectively invisible. Since darkening the photo is ruled out, the pool entry now carries a <code>tone</code> flag that flips the hero to dark type and deepens the control tint for that frame. <strong>The worst contrast anywhere in the pool is now 5.62:1</strong>, against 4.5:1 required.</li>
-          <li>Verified: nothing from the “don't use” column of the brand terminology table appears in any page's copy — the fee-related phrasings, the superseded project-leadership job title, the disallowed synonym for “branches”, the run-together spelling of the organisation name, and the incorrect email domain were each checked by pattern. (The audit script scans this page too, which is why the rules are described here rather than quoted.) Every required fact present per page; six service areas on both pages that list them; the AI-generation disclosure in all five footers, each linking to the ledger; every placeholder in place; no dead links, anchors, or images; the pool wired to all ten frames on every page with every width on disk; and no framework, bundler, or build step anywhere in the variant.</li>
+          <li>Verified: nothing from the “don't use” column of the brand terminology table appears in any page's copy — the fee-related phrasings, the superseded project-leadership job title, the disallowed synonym for “branches”, the run-together spelling of the organisation name, and the incorrect email domain were each checked by pattern. (The audit script scans this page too, which is why the rules are described here rather than quoted.) Every required fact present per page; six service areas on both pages that list them; a photography credit in all five footers, each linking to the ledger; every placeholder in place; no dead links, anchors, or images; the pool wired to all ten frames on every page with every width on disk; and no framework, bundler, or build step anywhere in the variant.</li>
         </ul>
 
         <h3 id="release">Release measurement — Lighthouse</h3>
@@ -262,10 +255,10 @@
 
         <h2 id="extend">Extending this variant</h2>
         <ul>
-          <li><strong>Replacing the backgrounds with real photography</strong> is the intended upgrade path. Swap the files in <code>img/</code>, update the <code>POOL</code> array at the top of <code>hero-controller.js</code> with new labels and alt text, then rewrite this ledger to credit the photographer and licence in the shape V14's <code>MEDIA-CREDITS.md</code> uses. Delete the AI disclosure only once no generated image remains.</li>
+          <li><strong>The backgrounds were replaced with real photography</strong> on 2026-08-01, after board feedback that generated imagery was not acceptable. Every AI render was retired, four licensed Commons photographs took their place, the ledger above was rewritten to credit photographers rather than record prompts, and the disclosure in each footer became a credit link. The audit that used to assert the disclosure was present now asserts the opposite.</li>
           <li><strong>Adding a page</strong> means copying any inner page, changing <code>data-hero-start</code> to the pool index you want it to open on, and adding an entry to the <code>INDEX</code> array so site search can find it.</li>
           <li><strong>The pool size is not fixed.</strong> <code>POOL</code> drives the counter, the arrows, and the prefetch; adding a ninth image requires no other change.</li>
-          <li><strong>Do not reuse the generated images as evidence</strong> in a deck, report, or proposal. They are layout atmosphere with a disclosure attached, and the disclosure does not travel with the file.</li>
+          <li><strong>Do not reuse these photographs as evidence</strong> in a deck, report, or proposal. They are city photographs used as layout atmosphere, not records of our work — and their licences travel with the file while the credit on this page does not.</li>
         </ul>
 
         <p style="margin-top:2.5rem"><a class="button button--deep" href="index.html">← Back to the site</a></p>
@@ -298,7 +291,7 @@
           </div>
         </div>
       </div>
-      <div class="footer-legal"><span>© 180 Degrees Consulting Delft–Rotterdam</span><span>V15 Vantage · static concept variant · <a href="#images">backgrounds are AI-generated</a></span></div>
+      <div class="footer-legal"><span>© 180 Degrees Consulting Delft–Rotterdam</span><span>V15 Vantage · static concept variant · <a href="#images">photography, credited</a></span></div>
     </div>
   </footer>
 
