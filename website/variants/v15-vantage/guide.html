@@ -162,18 +162,14 @@
         <p>A single element over the photo applies <code>backdrop-filter: blur(26px)</code> and masks itself with <code>linear-gradient(to top, black 0%, transparent 45%)</code>, so the blur is strong along the bottom edge and gone by mid-frame. There is no dark gradient over the photo—the effect is blur alone, which keeps the sky and skyline at full brightness while the text below sits on softened detail.</p>
         <p>The blur element is scoped inside the hero rather than fixed to the viewport. That is a deliberate change from the original specification: a viewport-fixed blur keeps compositing the whole page as you scroll and, with JavaScript disabled, would smear the light content sections underneath it. Scoped to a hero with <code>overflow: hidden</code>, it cannot leak past the hero in any code path.</p>
 
-        <h3 id="depth">The depth hero — how a still photograph moves</h3>
+        <h3 id="depth">The depth hero — depth separation, on scroll</h3>
         <p>A pan and zoom moves the <em>frame</em>; it does not move the <em>scene</em>. To make the photograph itself feel alive, each image ships with a <strong>depth map</strong> — a small greyscale image where white is near and black is far — generated offline by Depth Anything V2 (<code>tools/depth-v15.mjs</code>, running in Node through ONNX; no PyTorch, no GPU, and nothing added to the shipped page). <code>hero-depth.js</code> then renders the photo through that depth map in plain WebGL. No Three.js, no framework, no build step.</p>
 
-        <p>Four things move, and only the first is a camera move:</p>
-        <ul>
-          <li><strong>Parallax.</strong> Each pixel is displaced by its depth, so the pylon, the bridge deck, and the far skyline slide against each other instead of moving as one flat plane. This is what reads as three-dimensional.</li>
-          <li><strong>Drift.</strong> A slow autonomous orbit, so the hero is alive even when the visitor does nothing at all — the difference between a photograph and a held shot.</li>
-          <li><strong>Water.</strong> A ripple masked by the depth map to the near, low part of the frame, so only the river or canal surface shimmers and the architecture stays rigid.</li>
-          <li><strong>Breathing.</strong> A very gentle zoom that replaces the CSS Ken Burns.</li>
-        </ul>
+        <p><strong>One thing moves, and only when you scroll.</strong> Each pixel is displaced by its depth, so as the scroll dollies in, the pylon, the bridge deck and the far skyline separate instead of scaling as one flat plane. That is what reads as three-dimensional, and it is the whole reason this layer exists rather than a CSS transform.</p>
 
-        <p>Measured: <strong>85.9% of hero pixels change over a 3.5-second window with no user input</strong>, against <strong>0.0% under <code>prefers-reduced-motion</code></strong>.</p>
+        <p>An earlier build also carried a slow autonomous orbit, a depth-masked water ripple, a highlight shimmer and a breathing zoom. All four are gone. Two reasons. The brief is a clear photograph, and ambient motion competes with it directly — the shimmer keyed on brightness alone and visibly broke the white pylon into blocks, which is the worst thing that can happen to the one landmark in shot. And every threshold in them was measured against one specific set of images: the ripple's depth gate assumed the river was the nearest thing in frame, so it ran across dry paving the moment a photograph of a city square joined the pool. Constants derived from one image set are not a feature, they are a liability.</p>
+
+        <p>Removing them paid twice. The zoom margin those effects needed is now free, so the hero samples <strong>97% of the texture instead of 85%</strong> — less magnification, a measurably sharper image. Measured: <strong>0.00% of hero pixels change over a two-second window with no input</strong>, and <strong>85.9% change when you scroll</strong>.</p>
 
         <h3>What the depth hero costs, and what it gives back</h3>
         <p>A depth map is about <strong>2 KB</strong> — the ten together come to about 30 KB, and a page loads one. There is no video file, no decode, and no extra bandwidth worth naming.</p>

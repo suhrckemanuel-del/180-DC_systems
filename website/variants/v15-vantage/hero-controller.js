@@ -49,8 +49,6 @@
     },
     {
       file: "erasmusbrug-fog",
-      // no water in shot: its depth map reads 0.59-0.64 across the upper frame, so the mask reaches into the fog itself
-      water: false,
       city: "Rotterdam",
       label: "Erasmusbrug · Fog",
       alt: "Dense white fog covering the Erasmusbrug, only the upper pylon and a few cables still visible",
@@ -88,16 +86,12 @@
     // on. Cycling still reaches both.
     {
       file: "markthal-evening",
-      // no water in shot: the foreground is the dry paved square, in the same depth band as river water
-      water: false,
       city: "Rotterdam",
       label: "Rotterdam · Markthal",
       alt: "Rotterdam's Markthal at dusk, its grey arched shell curving over a vast illuminated glass front that glows orange above the empty square"
     },
     {
       file: "delft-nieuwe-kerk",
-      // no water in shot: the foreground is the Markt cobblestones, not water
-      water: false,
       city: "Delft",
       label: "Delft · Markt",
       alt: "Delft's Markt at golden hour, the Nieuwe Kerk's Gothic tower rising over a row of gabled brick houses with the old town hall across the empty square",

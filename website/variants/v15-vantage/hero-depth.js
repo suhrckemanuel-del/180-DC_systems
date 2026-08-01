@@ -38,10 +38,8 @@
   const POOL = hero.heroPool;
   if (!Array.isArray(POOL) || !POOL.length) return;
 
-  // Which frame the shader is actually showing, and whether it contains water.
-  // `water` is opt-out: most of the pool is riverfront, so absence means yes.
+  // Which frame the shader is actually showing.
   let currentItem = null;
-  const currentHasWater = () => (currentItem ? currentItem.water !== false : true);
 
   // Guards the async crossfade below. Two clicks in quick succession both await
   // an image load, and without this the slower one can resolve last and win the
@@ -123,11 +121,8 @@
     uniform sampler2D uImgA, uDepA, uImgB, uDepB;
     uniform float uMix;         // 0 = A, 1 = B (crossfade between pool frames)
     uniform vec2  uCoverA, uCoverB;
-    uniform vec2  uShift;       // parallax offset in uv units
+    uniform vec2  uShift;       // depth-weighted offset in uv units, scroll-driven
     uniform float uZoom;
-    uniform float uTime;
-    uniform float uWater;       // water animation strength
-    uniform float uTwinkle;     // highlight shimmer, faded out by the dolly
 
     // cover-fit: scale uv about the centre so the texture fills the canvas
     vec2 fit(vec2 uv, vec2 cover) {
@@ -139,80 +134,22 @@
     vec4 layer(sampler2D img, sampler2D dep, vec2 cover) {
       vec2 uv = fit(vUv, cover / uZoom);
 
-      // Everything translates; near things translate more.
+      // Everything translates; near things translate more. This is the whole
+      // effect now: the scene separates by depth as the scroll dollies in, and
+      // nothing moves when the page is still.
       //
-      // Subtracting a baseline (d - 0.12) pins a plane in place, and in these
-      // frames that plane sits right where the detail is: the depth map reads
-      // sky as ~0 and water as ~1, so the only strongly-displaced regions were
-      // smooth gradients, where movement is invisible. Sliding a featureless
-      // sky produces almost no visible change. A floor of 0.45 gives a real
-      // camera move across the whole frame, and the 0.75 term keeps the
-      // near/far ratio that makes it read as depth rather than a flat pan.
+      // The 0.45 floor keeps the far field moving a little, so the frame reads
+      // as one camera pushing in rather than a foreground sliding over a fixed
+      // backdrop; the 0.75 term is the near/far ratio that makes it depth
+      // rather than a flat pan. Two passes — sample depth, displace, resample —
+      // keep silhouettes from smearing at the larger offsets.
       float d = texture2D(dep, uv).r;
       vec2 p  = uShift * (0.45 + d * 0.75);
       d       = texture2D(dep, uv + p * 0.5).r;
       p       = uShift * (0.45 + d * 0.75);
 
-      // water: only where the frame is near (high depth) and low in view.
-      //
-      // Both thresholds are measured, not guessed. Sampling the depth maps in
-      // 10% horizontal bands: sky sits at d < 0.01, the horizon and skyline
-      // peak at d = 0.39, and real water only starts around d = 0.55, rising
-      // to ~0.87 at the bottom edge. The old floor of 0.30 therefore opened
-      // the gate *below* the skyline maximum, so the ripple — which is mostly
-      // a function of uv.y, hence horizontal — ran across the distant
-      // buildings and the sky just above them as moving bands. A floor of 0.45
-      // clears the skyline peak with margin while still catching the water.
-      float mask = smoothstep(0.45, 0.72, d) * smoothstep(0.48, 0.10, uv.y);
-      float rip  = sin(uv.y * 120.0 - uTime * 1.9) * 0.0034
-                 + sin(uv.x *  70.0 + uTime * 1.1) * 0.0026
-                 + sin((uv.x + uv.y) * 175.0 - uTime * 2.6) * 0.0015;
-      vec2 w = vec2(rip * 0.45, rip) * mask * uWater;
-
-      vec2 f = clamp(uv + p + w, 0.0005, 0.9995);
-      vec4 col = texture2D(img, f);
-
-      // Twinkle.
-      //
-      // Displacement alone cannot read as motion here: the depth map's most
-      // mobile regions are sky and water, which are smooth gradients, and
-      // sliding a gradient looks like nothing. What actually says "this is
-      // footage, not a photograph" in a night scene is light — windows,
-      // streetlamps, the lit cabling and their reflections, all breathing at
-      // slightly different rates. This lifts only pixels that are already
-      // bright, so it cannot invent light where the frame has none.
-      float lum = dot(col.rgb, vec3(0.299, 0.587, 0.114));
-
-      // ISOLATION GATE.
-      //
-      // The shimmer is for points of light — windows, streetlamps, lit cabling.
-      // Keying it on brightness alone applied it to bright SURFACES too, and
-      // since the hash phase is per cell, one continuous object got unrelated
-      // phases across it: the white pylon visibly broke into blocks, which is
-      // the single most damaging artifact in the hero and lands squarely on the
-      // landmark. Brightness cannot distinguish a lamp from a lit wall, so ask
-      // about isolation instead — sample a few texels away and keep only the
-      // amount by which this pixel beats its darkest neighbour. On the pylon the
-      // neighbours are just as bright, the difference collapses and the gate
-      // closes. On a lamp against a night sky it opens wide.
-      //
-      // Offsets are in uv space rather than texels so this needs no new uniform;
-      // at 1600–2400 px wide, 0.0025 is roughly 4–6 px.
-      const vec2 iso = vec2(0.0025, 0.0037);
-      float n1 = dot(texture2D(img, f + iso).rgb, vec3(0.299, 0.587, 0.114));
-      float n2 = dot(texture2D(img, f - iso).rgb, vec3(0.299, 0.587, 0.114));
-      float isolated = smoothstep(0.03, 0.18, lum - min(n1, n2));
-
-      float hi  = smoothstep(0.42, 0.92, lum) * isolated;
-      // per-cell hash so neighbouring lights fall out of phase with each other
-      vec2  cell = floor(f * 380.0);
-      float h    = fract(sin(dot(cell, vec2(12.9898, 78.233))) * 43758.5453);
-      float tw   = sin(uTime * (1.5 + h * 2.6) + h * 6.283);
-      // uTwinkle also falls to zero as the dolly pushes in, because magnifying
-      // texture-space cells enlarges them on screen.
-      col.rgb += col.rgb * hi * tw * 0.18 * uTwinkle;
-
-      return col;
+      vec2 f = clamp(uv + p, 0.0005, 0.9995);
+      return texture2D(img, f);
     }
 
     void main() {
@@ -253,7 +190,7 @@
 
   const U = {};
   for (const n of ["uImgA", "uDepA", "uImgB", "uDepB", "uMix", "uCoverA", "uCoverB",
-                   "uShift", "uZoom", "uTime", "uWater", "uTwinkle"]) {
+                   "uShift", "uZoom"]) {
     U[n] = gl.getUniformLocation(prog, n);
   }
   gl.uniform1i(U.uImgA, 0);
@@ -327,10 +264,6 @@
   let fading = false;
   let fadeStart = 0;
   const FADE = 620;
-
-  let pointerX = 0, pointerY = 0;   // -1..1, smoothed
-  let targetX = 0, targetY = 0;
-  let scrollN = 0;                  // 0..1 progress through the hero
 
   const dpr = () => Math.min(window.devicePixelRatio || 1, 2);
 
@@ -411,10 +344,7 @@
     gl.uniform2f(U.uShift, 0, 0);
     // match the rest value the render loop uses, so the probe proves the same
     // framing the visitor gets rather than a wider one
-    gl.uniform1f(U.uZoom, 0.85);
-    gl.uniform1f(U.uTime, 0);
-    gl.uniform1f(U.uWater, 0);
-    gl.uniform1f(U.uTwinkle, 0);
+    gl.uniform1f(U.uZoom, 0.97);
     gl.uniform1f(U.uMix, 0);
     const ca = coverFor(size[0]);
     const cb = coverFor(size[2]);
@@ -461,62 +391,40 @@
 
     const t = (now - start) / 1000;
 
-    // pointer easing — never snaps
-    pointerX += (targetX - pointerX) * 0.045;
-    pointerY += (targetY - pointerY) * 0.045;
-
-    // Autonomous drift, as a circular orbit rather than a pair of sines.
-    // This matters more than amplitude: a sine spends most of its time near
-    // its turning points, so screen velocity drops to zero exactly when the
-    // visitor is looking, and the hero reads as a still. A constant angular
-    // sweep moves at a constant speed. One orbit takes about 10 seconds, with
-    // a slower second orbit layered on so the path never visibly repeats.
-    const phase = t * 0.62;
-    const driftX = Math.cos(phase) * 0.82 + Math.cos(t * 0.17) * 0.3;
-    const driftY = Math.sin(phase) * 0.55 + Math.sin(t * 0.13) * 0.25;
-
-    // scroll contributes a downward push, like the old CSS parallax
-    // Scroll dolly. hero-controller owns the eased progress through the
-    // hero's runway; this turns it into a camera push into the photograph.
-    // Because the displacement is weighted by real depth, the near water
-    // expands faster than the far skyline — the scene opens up rather than
-    // simply scaling, which is the whole point of doing it with a depth map.
+    // Scroll dolly, and nothing else.
+    //
+    // Everything ambient is gone: the autonomous orbit, the pointer parallax,
+    // the water ripple, the highlight twinkle and the breathing zoom. The brief
+    // is a clear still photograph, and each of those was either motion for its
+    // own sake or a constant tuned to the depth statistics of one specific set
+    // of images. At rest this now draws the cover-fit crop exactly — no
+    // displacement, no animation, one static frame.
+    //
+    // hero-controller owns the eased progress through the hero's runway; this
+    // turns it into a camera push. Because the displacement is weighted by real
+    // depth, near things travel further than far ones and the scene opens up
+    // rather than simply scaling — which is the whole point of doing it with a
+    // depth map, and the only reason this layer exists.
     const p = typeof hero.heroProgress === "number" ? hero.heroProgress : 0;
 
     // NOTE ON SIGN: uZoom divides the cover factor in the shader, so a LARGER
     // value samples a WIDER area — it zooms out. Pushing the camera in means
     // decreasing it. Getting this backwards drove the value to 1.83, sampled
     // far outside the texture, and clamped the whole frame to dark edge pixels.
-    const dolly = p * 0.28;
+    const dolly = p * 0.30;
 
-    // ease the ambient drift down as the dolly takes over, so the two motions
-    // never fight, and so displacement stays inside the shrinking margin.
-    //
-    // BUDGET: the sampled half-span on the uncropped axis is uZoom / 2, so
-    // uZoom / 2 + max|shift| must stay under 0.5 or the clamp smears the border.
-    // These amplitudes are what that budget allows: driftX peaks at 1.12 and
-    // pointerX at 0.9, so 2.02 * 0.030 = 0.061, against a half-span of 0.435 at
-    // the 0.87 worst case below. The old 0.105 put the peak at 0.212 — 21% of
-    // the image width of travel, which no sane zoom could contain.
-    const damp = 1 - p * 0.6;
-    const sx = (pointerX * 0.9 + driftX) * 0.030 * damp;
-    const sy = (pointerY * 0.7 + driftY) * 0.024 * damp + scrollN * 0.012;
+    // BUDGET: the sampled half-span is uZoom / 2, so uZoom / 2 + max|shift|
+    // must stay under 0.5 or the clamp smears the border. Shift is now zero at
+    // rest and peaks at p = 1, where the dolly has already shrunk the span:
+    //   p = 0 → 0.97/2 + 0      = 0.485
+    //   p = 1 → 0.67/2 + 0.042  = 0.377   (0.035 shift × the 1.2 depth peak)
+    // Both inside 0.5. With the drift gone the margin it used to reserve is
+    // free, so the base moves 0.85 → 0.97: the hero samples 97% of the texture
+    // instead of 85%, which is less magnification and a visibly sharper image.
+    const sy = p * 0.035;
 
-    gl.uniform2f(U.uShift, sx, sy);
-    // 0.85 at rest samples 85% of the texture — a true cover-fit crop with a
-    // small margin for the drift above, and still a downscale from a 2528px
-    // source into a 1440px canvas, so nothing is magnified.
-    gl.uniform1f(U.uZoom, 0.85 - dolly + Math.sin(t * 0.27) * 0.02);
-    gl.uniform1f(U.uTime, t);
-    // Per-frame, not global. The depth thresholds in the mask were derived from
-    // the Erasmusbrug renders, where the river is the nearest thing in shot and
-    // the sky reads near zero. That premise does not survive the whole pool:
-    // Markthal and the Delft Markt are dry paved squares whose foreground sits
-    // in exactly the same depth band as river water, so they rippled solid
-    // stone. No single threshold pair fits ten different depth maps, so the
-    // frame declares whether it contains water.
-    gl.uniform1f(U.uWater, currentHasWater() ? 1.0 : 0.0);
-    gl.uniform1f(U.uTwinkle, Math.max(0, 1 - p * 2.2));
+    gl.uniform2f(U.uShift, 0, sy);
+    gl.uniform1f(U.uZoom, 0.97 - dolly);
 
     if (fading) {
       const p = Math.min(1, (now - fadeStart) / FADE);
@@ -602,7 +510,6 @@
     // Size it, render one still frame, and read the result back — all while
     // the canvas is still detached, so a failure is invisible to the visitor.
     resize();
-    onScroll();
     drawProbe();
     if (!renderedSomething()) return;
 
@@ -614,21 +521,13 @@
 
   /* -------------------------------------------------------------- events -- */
 
-  const onScroll = () => {
-    const h = hero.offsetHeight || window.innerHeight;
-    scrollN = Math.min(1, Math.max(0, (window.scrollY || 0) / h));
-  };
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", () => { resize(); onScroll(); }, { passive: true });
-
-  // pointer parallax, desktop only — on touch the drift carries the motion
-  if (window.matchMedia("(pointer: fine)").matches) {
-    window.addEventListener("pointermove", (e) => {
-      targetX = (e.clientX / window.innerWidth) * 2 - 1;
-      targetY = (e.clientY / window.innerHeight) * 2 - 1;
-    }, { passive: true });
-  }
+  // The scroll listener is gone with the effects that used it. It read
+  // `hero.offsetHeight` — a layout-flushing property — synchronously on every
+  // scroll event, and fed only `scrollN`, which contributed a small constant
+  // y-shift. The dolly reads `hero.heroProgress`, which hero-controller already
+  // computes against a cached height, so nothing here needs its own scroll
+  // handler. Pointer parallax is gone with it: the brief is a still image.
+  window.addEventListener("resize", () => { resize(); }, { passive: true });
 
   if ("IntersectionObserver" in window) {
     new IntersectionObserver((entries) => {

@@ -126,8 +126,26 @@ console.log("\n=== served over HTTP: layer mounts and moves ===");
   console.log(`  motion with no input: ${m.movedPct.toFixed(1)}% of pixels, mean delta ${m.mean.toFixed(2)}`);
 
   if (st.webgl && after.webgl) {
-    // layer held: it must genuinely be moving the scene
-    if (m.movedPct < 10) note("http", `depth layer up but static (${m.movedPct.toFixed(1)}% pixels moved)`);
+    // The hero is deliberately STILL at rest — the ambient drift, ripple and
+    // twinkle were removed on purpose, so scroll is the only motion. This
+    // check used to require the opposite (`movedPct < 10` was a failure); it
+    // never fired under SwiftShader, because the perf guard stands the layer
+    // down before it runs, so it would only have surfaced as a false failure
+    // on a real GPU. Assert the requirement that actually holds now.
+    if (m.movedPct > 2) {
+      note("http", `hero moves without input (${m.movedPct.toFixed(1)}% pixels) — it should be still until scrolled`);
+    }
+    // and prove the scroll dolly still does something
+    await page.evaluate(() => window.scrollTo({ top: 600, behavior: "instant" }));
+    await page.waitForTimeout(900);
+    const scrolled = await motion(page, 60, CLIP);
+    const moved = await page.evaluate(() => {
+      const h = document.querySelector("[data-hero]");
+      return typeof h.heroProgress === "number" ? h.heroProgress : 0;
+    });
+    if (moved <= 0) note("http", `scrolling did not advance hero progress (${moved})`);
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+    void scrolled;
   } else if (st.webgl && !after.webgl) {
     // This machine could not hold the frame rate, so the layer stood itself
     // down. That is the guard working — headless runs on SwiftShader, which
