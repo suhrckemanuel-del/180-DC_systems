@@ -1,0 +1,100 @@
+{
+  "meta": {
+    "title": "Client Z packaging cost review",
+    "client": "Client Z",
+    "artifactType": "draft deck",
+    "mode": "deep",
+    "slideCount": 14,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Nearly ready with minor edits",
+    "mainReason": "No blocking rule fired, the decision is clear and what remains would only tidy the deck.",
+    "highestRiskIssue": "Two slides share a chart title on slides 11 and 12, which slows a skimming reader.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "Source notes for the figures were not supplied, and seeing them could change the evidence read."
+  },
+  "blockingIssues": [],
+  "scorecard": {
+    "diagnosticMean": 4.5,
+    "confidence": "Medium",
+    "effort": "1-2 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The decision is clear." },
+      { "name": "Problem framing", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Scope holds throughout." },
+      { "name": "Storyline and pyramid logic", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The order works." },
+      { "name": "Evidence quality", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Figures read as sound." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Comparison is reasonable." },
+      { "name": "Recommendation specificity", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "A named supplier and a date." },
+      { "name": "Feasibility and implementation", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "The window is realistic." },
+      { "name": "Risks, assumptions and uncertainty", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Light on sensitivity." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Two repeated titles." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Clean." }
+    ]
+  },
+  "strengths": [
+    { "point": "The recommendation is a single named action the client can act on.", "quote": "Client Z should switch to Supplier B.", "slide": 13 }
+  ],
+  "findings": [
+    {
+      "short": "Repeated chart title",
+      "title": "Slides 11 and 12 carry the same chart title, so a reader cannot tell what changed between them.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "Slide titles carry the argument, not the label.",
+      "diagnosis": "Two consecutive slides are titled identically with no action title distinguishing them.",
+      "evidence": [{ "slide": 11, "quote": "Cost by category" }],
+      "why": "A skimming reader treats the pair as a duplicate.",
+      "reflect": "What does each slide prove that the other does not?",
+      "fix": "Give each slide the action title that states its own point.",
+      "tags": ["Communication"]
+    },
+    {
+      "short": "Agenda is a list",
+      "title": "The agenda names sections rather than the argument the deck is about to make.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "An agenda can carry the storyline instead of the table of contents.",
+      "diagnosis": "The agenda lists six section labels with no through line.",
+      "evidence": [{ "slide": 2, "quote": "Context. Current spend. Supplier options. The saving. Rollout. Next steps." }],
+      "why": "The reader waits until late in the deck to learn what it concludes.",
+      "reflect": "If the reader only read the agenda, what would they know?",
+      "fix": "Write the agenda as the argument in sequence.",
+      "tags": ["Communication"]
+    },
+    {
+      "short": "Depot count unlinked",
+      "title": "The depot count is stated in context and never used again in the analysis.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "thinking",
+      "owner": "team",
+      "principle": "Context earns its place by returning later.",
+      "diagnosis": "Slide 3 gives the network size, and no later slide uses it to size anything.",
+      "evidence": [{ "slide": 3, "quote": "Client Z is a logistics co-operative serving 60 member depots across two regions." }],
+      "why": "The reader cannot tell whether scale matters to the recommendation.",
+      "reflect": "Does the depot count change what you would recommend?",
+      "fix": "Either use the depot count in the rollout or drop it from the context.",
+      "tags": ["Analysis"]
+    }
+  ],
+  "comments": [],
+  "questionsForLead": [],
+  "learningNote": {
+    "lesson": "A tidy deck can still be missing the number its recommendation rests on.",
+    "weakHabit": "Reviewing the surface before the spine.",
+    "exercise": "Name the one figure the recommendation depends on, then look for its build.",
+    "principle": "Evidence grounding"
+  },
+  "notAssessed": [
+    "Source notes were not supplied, so figure provenance was not assessed.",
+    "Slides 6 and 7 are image only in the extract."
+  ]
+}

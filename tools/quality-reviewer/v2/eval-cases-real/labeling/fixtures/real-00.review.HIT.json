@@ -1,0 +1,114 @@
+{
+  "meta": {
+    "title": "Client Z packaging cost review",
+    "client": "Client Z",
+    "artifactType": "draft deck",
+    "mode": "deep",
+    "slideCount": 14,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Needs targeted revision",
+    "mainReason": "The switch is the right shape of answer but the saving it rests on is stated with no build, so the client would be deciding on a number it cannot defend.",
+    "highestRiskIssue": "Slide 9 states a 2.4 million euro saving with no build and no source, and slide 13 recommends the switch on the strength of it.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "The build behind the saving, unit prices and volumes with their sources, would settle this and could move it to Nearly ready."
+  },
+  "blockingIssues": [
+    {
+      "rule": 4,
+      "label": "Headline saving is ungrounded and the recommendation depends on it",
+      "ceiling": "Needs targeted revision",
+      "evidence": [{ "slide": 9, "quote": "Switching supplier delivers a 2.4 million euro saving." }]
+    }
+  ],
+  "scorecard": {
+    "diagnosticMean": 3.7,
+    "confidence": "Medium",
+    "effort": "4-6 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The decision is named, the basis for it is not." },
+      { "name": "Problem framing", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Scope is the packaging line and stays there." },
+      { "name": "Storyline and pyramid logic", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The argument runs in order but the governing message arrives late." },
+      { "name": "Evidence quality", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The one number the decision turns on has no build and no source." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Options are compared, the comparison is not interpreted." },
+      { "name": "Recommendation specificity", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "A named supplier, no owner." },
+      { "name": "Feasibility and implementation", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "A rollout window with no pilot and no fallback." },
+      { "name": "Risks, assumptions and uncertainty", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "No sensitivity on the saving." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Clean slides, two repeated chart titles." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Nothing exposed, tone is appropriate." }
+    ]
+  },
+  "strengths": [
+    { "point": "The option set is defined on the axes a client would actually use.", "quote": "Three suppliers were compared on unit price, lead time and recycled content.", "slide": 8 }
+  ],
+  "findings": [
+    {
+      "short": "Saving unsourced",
+      "title": "The recommendation rests on a 2.4 million euro saving that is stated with no build behind it and no source.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Evidence grounding: the number a decision turns on carries its own build.",
+      "diagnosis": "Slide 9 states the saving as a finished figure. No slide shows the unit price delta, the volume it is applied to, or where either input comes from. Slide 10 gives a direction of travel, not a build.",
+      "evidence": [
+        { "slide": 9, "quote": "Switching supplier delivers a 2.4 million euro saving." },
+        { "slide": 10, "quote": "The saving comes from a lower unit price and fewer part loads." }
+      ],
+      "why": "The client cannot defend the figure to its board, and if the build is wrong the whole switch is wrong. This is the finding that sets readiness.",
+      "reflect": "Write the saving as an equation. Which input are you least able to source today?",
+      "fix": "Show the build behind the saving and name the source of each input, or state it as a range with the assumptions it depends on.",
+      "tags": ["Evidence grounding", "Decision defensibility"]
+    },
+    {
+      "short": "No pilot step",
+      "title": "The rollout goes straight to full migration without the pilot the switch would normally earn.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "implementation",
+      "owner": "team",
+      "principle": "Implementation: a reversible first step de-risks an irreversible one.",
+      "diagnosis": "Slide 14 sets a two quarter window from switch to complete migration with no staged step in between.",
+      "evidence": [{ "slide": 14, "quote": "Begin the switch in Q1 and complete migration by Q3." }],
+      "why": "If Supplier B underdelivers on lead time the co-operative has already moved every depot.",
+      "reflect": "What would you need to see in the first quarter to be sure the switch is working?",
+      "fix": "Stage the rollout so one region proves the unit price and lead time before the rest follow.",
+      "tags": ["Implementation", "Risk"]
+    },
+    {
+      "short": "Repeated chart title",
+      "title": "Slides 11 and 12 carry the same chart title, so a reader cannot tell what changed between them.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "Slide titles carry the argument, not the label.",
+      "diagnosis": "Two consecutive slides are titled identically with no action title distinguishing them.",
+      "evidence": [{ "slide": 11, "quote": "Cost by category" }],
+      "why": "A skimming reader reads the pair as a duplicate and stops looking for the difference.",
+      "reflect": "What does each of these two slides prove that the other does not?",
+      "fix": "Give each slide the action title that states its own point.",
+      "tags": ["Communication"]
+    }
+  ],
+  "comments": [
+    { "location": "Slide 4", "problem": "The revenue figure sits alone with no link to the packaging line.", "why": "A reader cannot size the saving against the business without it.", "fix": "Put the packaging spend beside the revenue so the saving has a denominator." }
+  ],
+  "questionsForLead": [
+    "Has anyone checked the unit price quote behind the saving with the supplier directly?"
+  ],
+  "learningNote": {
+    "lesson": "The number the recommendation turns on is the one that has to be built up in front of the client.",
+    "weakHabit": "Presenting a computed figure as a finished fact.",
+    "exercise": "Take the headline number and write it as an equation with a source beside every input.",
+    "principle": "Evidence grounding"
+  },
+  "notAssessed": [
+    "The supplier quotes themselves were not seen, so the unit price could not be verified.",
+    "Slides 6 and 7 are image only in the extract and were not assessed."
+  ]
+}

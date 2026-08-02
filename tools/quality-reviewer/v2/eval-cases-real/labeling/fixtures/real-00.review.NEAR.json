@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "title": "Client Z packaging cost review",
+    "client": "Client Z",
+    "artifactType": "draft deck",
+    "mode": "deep",
+    "slideCount": 14,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Needs targeted revision",
+    "mainReason": "The saving the whole recommendation turns on is asserted rather than built, so the client would be committing to a migration on an unverified number.",
+    "highestRiskIssue": "The rollout on slide 14 starts before the saving has been shown to hold.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "A build for the saving with sources for each input would settle it."
+  },
+  "blockingIssues": [
+    {
+      "rule": 4,
+      "label": "Headline saving is ungrounded and the recommendation depends on it",
+      "ceiling": "Needs targeted revision",
+      "evidence": [{ "slide": 14, "quote": "Begin the switch in Q1 and complete migration by Q3." }]
+    }
+  ],
+  "scorecard": {
+    "diagnosticMean": 3.7,
+    "confidence": "Medium",
+    "effort": "4-6 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "The decision is named." },
+      { "name": "Problem framing", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Scope holds." },
+      { "name": "Storyline and pyramid logic", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Runs in order." },
+      { "name": "Evidence quality", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The saving is asserted." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Comparison is not interpreted." },
+      { "name": "Recommendation specificity", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Named supplier, no owner." },
+      { "name": "Feasibility and implementation", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "No pilot." },
+      { "name": "Risks, assumptions and uncertainty", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "No sensitivity." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 3, "checksTotal": 4, "note": "Repeated chart titles." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Appropriate." }
+    ]
+  },
+  "strengths": [
+    { "point": "The comparison axes are the ones a buyer would use.", "quote": "Three suppliers were compared on unit price, lead time and recycled content.", "slide": 8 }
+  ],
+  "findings": [
+    {
+      "short": "Saving asserted",
+      "title": "The 2.4 million euro saving is asserted with no build or source, and the whole recommendation turns on that number.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": true,
+      "issueType": "communication",
+      "owner": "team",
+      "principle": "A migration plan should not run ahead of the number that justifies it.",
+      "diagnosis": "The rollout is dated and sequenced while the saving behind it is still a single asserted figure.",
+      "evidence": [{ "slide": 14, "quote": "Begin the switch in Q1 and complete migration by Q3." }],
+      "why": "The client commits capacity to a migration before the case for it is defensible.",
+      "reflect": "What has to be true about the saving before Q1 starts?",
+      "fix": "Tie the rollout gate to a verified saving rather than to a date.",
+      "tags": ["Evidence grounding", "Sequencing"]
+    },
+    {
+      "short": "No pilot step",
+      "title": "The rollout goes to full migration with no staged proof in between.",
+      "severity": "minor",
+      "severityLabel": "Minor",
+      "deliveryCritical": false,
+      "issueType": "implementation",
+      "owner": "team",
+      "principle": "Implementation: a reversible first step de-risks an irreversible one.",
+      "diagnosis": "Two quarters from switch to complete migration with nothing staged.",
+      "evidence": [{ "slide": 13, "quote": "Client Z should switch to Supplier B." }],
+      "why": "Every depot has moved before lead time is proven.",
+      "reflect": "What would the first quarter have to show?",
+      "fix": "Prove the switch in one region first.",
+      "tags": ["Implementation"]
+    }
+  ],
+  "comments": [],
+  "questionsForLead": [],
+  "learningNote": {
+    "lesson": "Anchor a finding to the slide that carries the evidence, not to the slide that carries the consequence.",
+    "weakHabit": "Citing the downstream slide.",
+    "exercise": "For each finding, name the slide a reader would open to check it.",
+    "principle": "Evidence grounding"
+  },
+  "notAssessed": [
+    "Supplier quotes were not seen.",
+    "Slides 6 and 7 are image only in the extract."
+  ]
+}

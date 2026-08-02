@@ -1,0 +1,17 @@
+{
+  "name": "quality-reviewer-v2-harness",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Calibration harness for the 180DC AI Quality Reviewer v2: runs the frozen reviewer over the gold-backed real cases, validates against the output contract, scores against the human gold, and emits the baseline scorecard.",
+  "scripts": {
+    "baseline": "node run-reviews.js && node scorecard.js --latest",
+    "baseline:dry": "node run-reviews.js --dry-run",
+    "scorecard": "node scorecard.js --latest",
+    "log": "node scorecard.js --log",
+    "gold": "node score-review.js --eligible eval-cases-real/labeling",
+    "test": "bash eval-cases-real/labeling/fixtures/check-gold.test.sh && bash eval-cases-real/labeling/fixtures/score-review.test.sh"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.72.0"
+  }
+}

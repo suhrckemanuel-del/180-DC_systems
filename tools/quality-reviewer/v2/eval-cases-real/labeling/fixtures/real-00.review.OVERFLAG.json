@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "title": "Client Z packaging cost review",
+    "client": "Client Z",
+    "artifactType": "draft deck",
+    "mode": "deep",
+    "slideCount": 14,
+    "version": "Review v2"
+  },
+  "readiness": {
+    "level": "Not ready for client review",
+    "mainReason": "The deck recommends a full supplier migration on a saving it never builds, and a client acting on it could commit the network to a switch that does not pay back.",
+    "highestRiskIssue": "Slide 13 recommends the switch while slide 9 leaves the saving behind it unbuilt.",
+    "confidence": "Medium",
+    "whatCouldChangeIt": "A build for the saving and a fallback in the rollout would change this assessment materially."
+  },
+  "blockingIssues": [
+    {
+      "rule": 1,
+      "label": "The recommendation could mislead the client into an irreversible switch",
+      "ceiling": "Not ready for client review",
+      "evidence": [{ "slide": 13, "quote": "Client Z should switch to Supplier B." }]
+    },
+    {
+      "rule": 4,
+      "label": "Headline saving is ungrounded and the recommendation depends on it",
+      "ceiling": "Needs targeted revision",
+      "evidence": [{ "slide": 9, "quote": "Switching supplier delivers a 2.4 million euro saving." }]
+    }
+  ],
+  "scorecard": {
+    "diagnosticMean": 2.9,
+    "confidence": "Medium",
+    "effort": "12-16 hrs",
+    "dimensions": [
+      { "name": "Client decision usefulness", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The client cannot act safely on this." },
+      { "name": "Problem framing", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Scope is stated but never bounded." },
+      { "name": "Storyline and pyramid logic", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "The conclusion arrives without its support." },
+      { "name": "Evidence quality", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "The decisive number is unbuilt." },
+      { "name": "Analysis and insight", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Description rather than interpretation." },
+      { "name": "Recommendation specificity", "result": "fail", "checksPassed": 1, "checksTotal": 4, "note": "No owner, no measure, no fallback." },
+      { "name": "Feasibility and implementation", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "A window with no staging." },
+      { "name": "Risks, assumptions and uncertainty", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "No risk register at all." },
+      { "name": "Slide-level communication", "result": "partial", "checksPassed": 2, "checksTotal": 4, "note": "Repeated titles and thin slides." },
+      { "name": "Professionalism, tone and confidentiality", "result": "pass", "checksPassed": 4, "checksTotal": 4, "note": "Nothing exposed." }
+    ]
+  },
+  "strengths": [],
+  "findings": [
+    {
+      "short": "Migration on an unbuilt case",
+      "title": "The deck commits the whole network to a supplier switch on a saving it never builds.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "recommendation",
+      "owner": "team",
+      "principle": "A recommendation carries the weight of its evidence, not more.",
+      "diagnosis": "Slide 13 states the switch as settled while the saving on slide 9 has no build and no source behind it.",
+      "evidence": [{ "slide": 13, "quote": "Client Z should switch to Supplier B." }],
+      "why": "A client that acts on this moves every depot on a number nobody has checked.",
+      "reflect": "If the saving were half the stated figure, would you still recommend the switch?",
+      "fix": "Hold the recommendation until the saving is built, or state it conditionally with the threshold that makes it hold.",
+      "tags": ["Decision risk", "Evidence grounding"]
+    },
+    {
+      "short": "Saving unsourced",
+      "title": "The 2.4 million euro saving is stated with no build and no source.",
+      "severity": "critical",
+      "severityLabel": "High impact",
+      "deliveryCritical": true,
+      "issueType": "evidence",
+      "owner": "team",
+      "principle": "Evidence grounding: the number a decision turns on carries its own build.",
+      "diagnosis": "Slide 9 asserts the figure. Nothing shows the unit price delta or the volume it is applied to.",
+      "evidence": [{ "slide": 9, "quote": "Switching supplier delivers a 2.4 million euro saving." }],
+      "why": "The whole recommendation turns on this number and the client cannot defend it.",
+      "reflect": "Write the saving as an equation. Which input is weakest?",
+      "fix": "Show the build and source each input.",
+      "tags": ["Evidence grounding"]
+    },
+    {
+      "short": "No risk treatment",
+      "title": "The deck names no risk in a switch that moves every depot at once.",
+      "severity": "major",
+      "severityLabel": "Moderate",
+      "deliveryCritical": false,
+      "issueType": "implementation",
+      "owner": "team",
+      "principle": "An irreversible move states what would make it fail.",
+      "diagnosis": "The rollout runs from Q1 to Q3 with no risk, no owner and no fallback named anywhere.",
+      "evidence": [{ "slide": 14, "quote": "Begin the switch in Q1 and complete migration by Q3." }],
+      "why": "The client has no trigger for stopping if lead times slip.",
+      "reflect": "What would tell you in month two that this is going wrong?",
+      "fix": "Add the two or three risks that would stop the switch and what the team would do about each.",
+      "tags": ["Risk", "Implementation"]
+    }
+  ],
+  "comments": [],
+  "questionsForLead": [
+    "Was the supplier quote behind the saving ever seen by the team, or is it a modelled figure?"
+  ],
+  "learningNote": {
+    "lesson": "An unbuilt number under a recommendation is a decision risk, not a formatting gap.",
+    "weakHabit": "Stating a computed figure as a fact.",
+    "exercise": "Write the headline number as an equation with a source per input.",
+    "principle": "Evidence grounding"
+  },
+  "notAssessed": [
+    "Supplier quotes were not supplied.",
+    "Slides 6 and 7 are image only in the extract."
+  ]
+}
