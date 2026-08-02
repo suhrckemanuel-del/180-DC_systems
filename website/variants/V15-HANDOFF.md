@@ -1,218 +1,247 @@
 # V15 Vantage — handoff
 
 Everything a fresh session needs to finish this without re-deriving anything.
-Written 2026-07-28.
+Rewritten **2026-08-02**. The previous version described the AI-imagery build and
+is superseded in full — do not trust older copies.
 
 ---
 
 ## 1. What this is
 
-`website/variants/v15-vantage/` — the fifteenth design variant in a gallery of
-fifteen. The gallery (`website/variants/gallery/index.html`) exists so the 180DC
-Delft–Rotterdam board can pick one direction. **V15 is a candidate, not the
-final site.**
+`website/variants/v15-vantage/` — one of fifteen design variants in a gallery the
+180DC Delft–Rotterdam board will use to pick a direction. **V15 is a candidate,
+not the final site.**
 
-Six pages: `index.html`, `for-clients.html`, `mission.html`, `for-students.html`,
-`guide.html`, `styles.css`.
+Six files: `index.html`, `for-clients.html`, `mission.html`, `for-students.html`,
+`guide.html`, `styles.css`, plus `hero-controller.js` and `hero-depth.js`.
+Only four pages have a hero — `guide.html` has none.
 
----
-
-## 2. Constraints — what changed
-
-The original brief said "vanilla only, zero build step, non-negotiable." **The
-owner lifted that on 2026-07-28** ("I forgot about these guardrails, install
-everything we need").
-
-Still true and worth keeping:
-
-- **Under 1 MB per page.** Currently 125 KB on Home. The gallery's comparison
-  table ranks all fifteen variants on weight; blowing this makes V15
-  incomparable to V1–V14 on the axis the gallery exists to measure.
-- **`build-dist.mjs` copies 15 directories flat.** Anything needing a compile
-  step means changing shared deployment infrastructure for 1 of 15.
-- **Content parity + honesty ledger** (see §6). Non-negotiable for real reasons.
-
-Now allowed, and already vendored in `v15-vantage/vendor/` (plain `<script>`,
-no bundler):
-
-| File | gzip | Use |
-|---|---|---|
-| `gsap.min.js` | 27 KB | animation |
-| `ScrollTrigger.min.js` | 17 KB | `pin: true` — robust pinning, survives resize |
-| `lenis.min.js` | 4 KB | smooth scroll |
-
-**Recommendation: do NOT add three.js.** The hero renders *one fullscreen quad
-with one fragment shader*. three.js is ~150 KB gzipped of scene graph, camera
-and material systems we would use none of. `hero-depth.js` (~700 lines) already
-does this at a measured 60fps. The reference component the owner shared needs
-three.js because it builds real geometry (5,000 stars, mountain meshes) — we
-don't.
-
-**If a full React/Next/Tailwind build is wanted, build it at `website/app/`,
-not as variant sixteen.** That keeps the fifteen-way comparison intact.
+Gallery: `website/variants/gallery/index.html`, live at
+**https://180dc-variants.pages.dev/**
 
 ---
 
-## 3. Credentials and tooling — already set up
+## 2. State as of 2026-08-02
 
-- **`website/.env`** (gitignored at `.gitignore:35`) holds `FAL_KEY`,
-  `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
-  Owner said keys will be rotated after the session — don't treat as secret
-  long-term, but never commit them.
-- **fal.ai balance: ~$23.77** (started $25, three video generations).
-  Check: `curl -H "Authorization: Key $FAL_KEY" https://rest.alpha.fal.ai/billing/user_balance`
-- **ffmpeg installed** but not on PATH in a fresh shell:
-  ```
-  export PATH="$PATH:/c/Users/Manuel/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1.2-full_build/bin"
-  ```
-- **`@huggingface/transformers`** installed in `tools/` (depth maps, no PyTorch).
-- **playwright + sharp + lighthouse** already in `tools/node_modules`.
+Committed at **`183d418`** on branch `idea/reviewer-v2`, pushed.
+**NOT DEPLOYED** — the live Pages site still serves the old AI build. That is
+deliberate; nothing half-finished is public.
 
-**The owner's credits are limited. Never batch-generate video without showing
-one result first.** Real cost is **$0.62 per 5s clip**, not the $0.25 first
-estimated.
+Two large changes landed this session.
+
+### Imagery: AI renders are gone
+
+Board feedback rejected AI-generated backgrounds. All ten renders were retired
+and replaced with **four licensed Wikimedia Commons photographs**:
+
+| Frame | Photographer | Licence | Opens on |
+|---|---|---|---|
+| `erasmusbrug-night` | CyberDiver79 | **CC0** | Home |
+| `delft-oostpoort-air` | Ludvig14 | CC BY-SA 4.0 | Mission |
+| `markthal-blue-hour` | Radek Kucharski | CC BY 2.0 | For clients |
+| `delft-oostpoort` | Michielverbeek | CC BY-SA 4.0 | Students |
+
+Provenance is in `_brand/photo-set/SOURCES.json` (tracked — the PNG masters are
+gitignored). `v15-vantage/MEDIA-CREDITS.md` is **generated from it**, so credits
+cannot drift from what was actually downloaded. Regenerate it rather than editing
+it by hand.
+
+The hero names the photographer and licence of the frame on screen, and it
+changes as you cycle. It has to be per-frame: one static footer line cannot
+honestly credit four different photographers.
+
+### Motion: the hero is still until you scroll
+
+Owner's call — no video-like movement, no ripple, a clear image. Removed: the
+autonomous orbit, pointer parallax, water ripple, highlight twinkle, breathing
+zoom, and `hero-depth`'s own scroll listener. What remains is depth-weighted
+displacement driven by scroll progress.
+
+That freed the zoom margin those effects reserved, so `uZoom` went **0.85 →
+0.97**: the hero samples 97% of the texture instead of 85%, which is less
+magnification and a sharper image.
+
+Measured on a real GPU, copy hidden, 1440×900 DPR 1:
+`0.00%` of pixels change over 2s at rest · edge activity 0.12–0.91 at both edges
+(0.000 would be clamped smear) · `85.9%` change on scroll.
 
 ---
 
-## 4. Current state — what works, verified
+## 3. Open items — start here
 
-**Hero stack, highest tier first.** Each falls back cleanly to the next:
+1. **The Home hero's lede is hard to read.** It sits on the illuminated skyline
+   of the Erasmusbrug night shot. Owner has seen it and called it acceptable for
+   now, to fix properly. Three routes: swap Home to the Oostpoort aerial (which
+   demonstrably reads well), re-crop the Erasmusbrug so the darker right bank
+   falls behind the copy column, or source another Rotterdam night frame.
 
-1. **Depth hero** (`hero-depth.js`) — plain WebGL. Renders the photo through a
-   depth map (Depth Anything V2, generated offline). Parallax, autonomous
-   drift, water ripple, highlight twinkle, and a scroll-driven dolly.
-   Measured 16.6 ms median frame time on the owner's GPU, 0% frames over budget.
-2. **CSS fallback** — image scales on the same `--hero-p` progress value.
-3. **Static frame** under `prefers-reduced-motion` (verified 0.0% pixel change).
+2. **Rotterdam is under-represented — 1 frame against 3 Delft**, for a
+   Delft–Rotterdam branch. Commons has very few clean, people-free, wide
+   Rotterdam shots. **Unsplash and Pexels have not been searched yet** — only
+   Commons was. That is the obvious next move.
 
-**Scroll choreography** — native CSS `animation-timeline: view()`, no JS.
-Section heads, cards, timeline steps, team tiles reveal on entry and stagger
-themselves. Hero pins for a two-viewport runway and dollies in. Progress UI
-(SCROLL + rail + live %). Verified nothing is ever left stuck invisible.
+3. **Deploy.** `node thumb-v15.mjs`, `node build-dist.mjs`, then
+   `tools/deploy-cf.ps1`. Verify with a cache-buster (see trap 6).
 
-**Image pool** — 8 frames, each with a depth map (~2 KB) and three widths
-(900 / 1600 / 2400). Prev/next cycles all 8 on every page with decode-before-swap.
+Two frames are **benched, not deleted**: `delft-nieuwe-kerk` and `delft-canal`.
+Both failed WCAG AA behind the hero copy in *both* light and dark type — the
+dark-type treatment made it worse, 4.39:1 → 4.05:1 — because of busy mid-tone
+rooftops, and this design forbids a scrim. Their tiers and depth maps are still
+in `img/`, so reinstating them is a POOL edit if the copy layout ever changes.
 
-**Lighthouse**: a11y / best-practices / SEO **100 on all five pages**;
-performance 91–100 (one cold-launch 48 outlier).
+---
 
-**Five audit suites, all passing:**
-```
+## 4. Image selection rules the owner set
+
+- **No identifiable people.** No close crops. Wide views where everything reads.
+- **No prominent third-party brand signage.** An Erasmusbrug frame was rejected
+  for KPN and bank logos — the same reason V13 rejected port frames with Maersk
+  and Evergreen liveries.
+- **No seasonal decoration.** A Markthal frame was rejected for a neon Christmas
+  tree that dated it to December.
+- **Composition must survive a brutal mobile crop.** At 390px the hero shows only
+  the **central ~26%** of a 3:2 image.
+- Sources must be free-licence and verifiable. On Unsplash beware **Unsplash+ /
+  Getty** images — those are a separate paid licence, so check per image.
+
+---
+
+## 5. Honesty rules — do not break these
+
+- **No image on this site is AI-generated any more.** Do not reintroduce
+  generated imagery without also reinstating the disclosure everywhere.
+- **Every photograph is credited** — photographer and licence in the hero, full
+  record in `MEDIA-CREDITS.md` and the ledger at `guide.html#images`.
+- **Licence obligations are inherited.** One frame is CC0. The rest are CC BY or
+  CC BY-SA; for share-alike frames the cropped, compressed derivative shipped in
+  `img/` is itself under the same licence. Credit every image regardless of
+  whether its licence compels it.
+- **`audit-v15-r3.mjs` now asserts the opposite of what it used to.** A credit
+  must be present on every page, every pooled frame must carry a licence string,
+  and no page may claim in the present tense that the imagery is generated. The
+  check deliberately allows the guide's past-tense record of what was replaced
+  and why — pushing a page to hide its own history is the opposite of the point.
+- **Placeholders stay visible and must never be filled with invented content:**
+  case studies, team portraits, testimonials, partner logos, intake form, events,
+  impact numbers, member area.
+- Terminology: **"Consultant / Team Leader"**. Banned: "pro bono", "free", "€0",
+  "chapters", "180Degrees", any email domain other than `180dc.org`.
+
+---
+
+## 6. Traps — each of these cost a debugging cycle
+
+1. **The audits can pass while the hero is visibly broken.** Headless runs on
+   SwiftShader, which trips the layer's own performance guard within about a
+   second, so every check after that measures the CSS fallback rather than the
+   shader. This is exactly how a cover-fit bug that smeared a fifth of the frame
+   shipped through five green suites. **Always look at a real-GPU screenshot**:
+   launch with `["--use-gl=angle","--use-angle=default","--enable-unsafe-swiftshader"]`.
+
+2. **The contrast audit measures a *mean*, not a worst case.** A skyline of lit
+   windows averages out against the dark gaps between them and scores 8.49:1
+   while reading badly — which is precisely the Home-hero problem in §3. A
+   worst-tile check would catch it and is a cheap change to
+   `audit-v15-hero-contrast.mjs`. Trust your eyes over the number.
+
+3. **`coverFor()` must return the ratio, not its reciprocal.** `fit()` divides,
+   so the sampled span is `uZoom / cover`; a cover-fit crop needs `cover` above
+   1. Getting it inverted made the shader clamp and repeat the border texel.
+   Detect it by measuring column-to-column variation near each edge — clamped
+   smear reads as *exactly* 0.000.
+
+4. **Keep the zoom budget.** Sampled half-span is `uZoom / 2`; `uZoom / 2 +
+   max|shift|` must stay under 0.5 or the clamp smears the border.
+
+5. **`prep-v15.mjs` and `depth-v15.mjs` hold separate copies of the source
+   list.** Edit both. A depth map inferred from one photograph and applied to
+   another is a silent, invisible failure.
+
+6. **Cloudflare Pages returns HTTP 200 for missing assets** (it serves an HTML
+   fallback), and caches HTML. Verifying a deploy by status code proves nothing —
+   check `content_type`, and append a cache-buster. This is how a missing V13
+   thumbnail hid for weeks.
+
+7. **`data-tone` and the credit apply at the opacity swap, not at click time.**
+   Applied at click, they described a photograph that was still a decode plus a
+   620ms crossfade away.
+
+8. **The credit sits outside `.city-switch__now`**, which is `aria-live` —
+   otherwise every cycle announces photographer and licence over the place name.
+
+9. **Audits must derive frame names and counts from `hero-controller.js`.** Four
+   of them hardcoded the old pool. One hardcoded `"blue-hour"` and would have
+   silently matched the new `markthal-blue-hour` — the wrong frame.
+
+10. **Photographs are 2–3× heavier than the AI renders were.** The 2x tier went
+    48–283 KB to 327–582 KB. This is not an encoder setting: q74 → q58 saves only
+    21% and costs visible detail. Still inside the 1 MB budget. Correct the
+    published weight figures rather than degrading the images.
+
+11. **`renderedSomething()`** requires >8/255 contrast in two horizontal strips at
+    40% and 68% of canvas height. A genuinely low-contrast photograph would fail
+    it and the depth hero would **silently not mount**, with no error anywhere.
+
+---
+
+## 7. How to run it
+
+```bash
 cd website/variants/tools
-node audit-v15.mjs              # effects wiring, cycling, no-JS, overflow, weight
-node audit-v15-r2.mjs           # smoothness, a11y, contrast, focus, targets
-node audit-v15-r3.mjs           # parity, terminology, disclosure, links
-node audit-v15-hero-contrast.mjs # samples real pixels behind hero copy, all 8 frames
-node audit-v15-depth.mjs        # WebGL over HTTP + clean degradation on file://
+
+# serve the variant (WebGL needs a real origin — file:// cannot build textures)
+cd ../v15-vantage && node -e "const h=require('http'),f=require('fs'),p=require('path');const T={'.html':'text/html;charset=utf-8','.css':'text/css','.js':'text/javascript','.webp':'image/webp'};h.createServer((q,r)=>{let x=p.join(process.cwd(),decodeURIComponent(q.url.split('?')[0]));if(q.url==='/')x=p.join(process.cwd(),'index.html');f.readFile(x,(e,d)=>{if(e){r.writeHead(404);r.end();return}r.writeHead(200,{'Content-Type':T[p.extname(x)]||'application/octet-stream','Cache-Control':'no-cache'});r.end(d)})}).listen(8099,()=>console.log('http://localhost:8099'))"
+
+# the five suites — run them ONE AT A TIME, they share a port
+node audit-v15.mjs                # effects wiring, cycling, no-JS, overflow, weight
+node audit-v15-r2.mjs             # smoothness, a11y, contrast, focus, targets
+node audit-v15-r3.mjs             # parity, terminology, PHOTO CREDITS, links
+node audit-v15-hero-contrast.mjs  # real pixels behind hero copy, every frame
+node audit-v15-depth.mjs          # WebGL over HTTP + clean degradation on file://
+
+# assets
+node prep-v15.mjs                 # 3 WebP tiers per frame
+node depth-v15.mjs --all          # depth maps (~3s/frame)
+
+# ship
+node thumb-v15.mjs "http://localhost:8099/index.html"
+node build-dist.mjs
+./deploy-cf.ps1                   # PowerShell; reads the token from website/.env
 ```
 
-**Serve it** (WebGL needs a real origin — see trap 3):
-```
-cd website/variants/v15-vantage && node -e "const h=require('http'),f=require('fs'),p=require('path');const T={'.html':'text/html;charset=utf-8','.css':'text/css','.js':'text/javascript','.webp':'image/webp','.mp4':'video/mp4'};h.createServer((q,r)=>{let x=p.join(process.cwd(),decodeURIComponent(q.url.split('?')[0]));if(q.url==='/')x=p.join(process.cwd(),'index.html');f.readFile(x,(e,d)=>{if(e){r.writeHead(404);r.end();return}r.writeHead(200,{'Content-Type':T[p.extname(x)]||'application/octet-stream','Cache-Control':'no-cache'});r.end(d)})}).listen(8080,()=>console.log('http://localhost:8080'))"
-```
+Adding a photograph: download the original, crop to 3:2, drop it in
+`_brand/photo-set/`, add it to **both** `prep-v15.mjs` and `depth-v15.mjs`, add a
+POOL entry in `hero-controller.js` with `file` / `city` / `label` / `credit` /
+`alt`, then run prep, depth, and the contrast audit. Set `tone: "light"` if the
+contrast audit says so. Update `SOURCES.json` and regenerate `MEDIA-CREDITS.md`.
+
+**`data-hero-start` is a pool index.** Inner pages open on 1, 2 and 3. Inserting
+mid-array silently changes which frame those pages open on — append, or update
+all four pages. Each page also repeats its filename in **three** places: `src`,
+`srcset`, and a `<link rel="preload" imagesrcset>` in `<head>`.
 
 ---
 
-## 5. Decisions — owner ruled 2026-07-28
+## 8. Credentials
 
-**RULED: the fog is rejected. A clear, high-quality image is the top priority.**
-Owner's words: *"we just don't need it that much... it's better to have a clear
-image, like, for high quality image. That's the most important thing."*
-
-This is bigger than the one clip, because **clarity and video are in direct
-tension**, and the ranking has now flipped:
-
-- The shipped clips are 1280×720 H.264 at ~200–320 KB. That is **materially
-  softer** than the still they replace — the 2400 px WebP tier is ~57 KB and
-  far sharper. Video buys motion by spending exactly the thing the owner just
-  said matters most.
-- The **WebGL depth hero moves the full-resolution still** — motion at no cost
-  to sharpness. It is the only option that satisfies both.
-
-**Therefore:**
-
-1. **Do not regenerate the bridge clip to fix the fog.** Fixing it would cost
-   $0.62 to produce an asset that is still softer than the still.
-2. **Do not wire video in as the top hero tier.** The depth hero is the primary
-   treatment. Leave `media/*.mp4` on disk, unreferenced, pending a decision to
-   use them somewhere lower-stakes (an inline section band, say) or drop them.
-   **Spend no further credits on video without asking.**
-3. **Image quality is now the active workstream.** Sources are 1536×1024 native
-   — the real ceiling. Upscaling barely helped (swin2SR tested: ~14 min/image
-   for a marginal gain over lanczos). The genuine fix is **regenerating the
-   eight frames at 2K+** via Nano Banana Pro or Flux Ultra on fal (~$0.06 each,
-   ~$0.50 total). Confirm the model and show one before doing all eight.
-   Regenerate depth maps afterwards (`node depth-v15.mjs --all`, ~30s) and
-   re-run `prep-v15.mjs`.
-
-Still open:
-
-4. **Scroll choreography has not had the owner's eyes on it.**
+`website/.env` (gitignored at `.gitignore:35`) holds `FAL_KEY`,
+`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. fal is no longer needed — image
+generation is retired — but the balance was ~$21.81 when last checked.
 
 ---
 
-## 6. Honesty rules — do not break these
+## 9. Also known, not scheduled
 
-Every background image is **AI-generated** and this is disclosed in every page
-footer, linking to the ledger in `guide.html#images`. If images are regenerated
-or replaced, **update the ledger**. If real photography ever replaces them,
-credit the photographer and licence in the shape `v14-confluence/MEDIA-CREDITS.md`
-uses, and delete the AI disclosure only when no generated image remains.
+`hero-depth.js`'s `teardown()` still leaks: it never removes its `resize`
+listener and never calls `deleteTexture`/`deleteProgram`/`loseContext`, so four
+textures (~18–41 MB VRAM) survive indefinitely. `upload()` never checks
+`gl.getError()`. `hero-controller.js`'s resize handler does not recompute
+`--hero-p`. None breaks the page in normal use.
 
-Placeholders are deliberate and must stay visible: case studies, team portraits,
-testimonials, partner logos, intake form, events, impact numbers, member area.
-**Never fill these with invented content.**
+An art-direction review is recorded in memory and **not applied** — it changes
+design intent and is the board's call: a dead second viewport of hero, two
+competing nav treatments, the cycling control carrying near-CTA weight, the h1
+rag, and mobile hero density at 754 of 844px.
 
-Terminology (`_brand/BRAND.md`): "Consultant / Team Leader" — the brief and
-V14 both use *Team Leader*, which diverges from BRAND.md's table calling for
-*Project Manager*. **Flagged to the owner, unresolved.** Banned everywhere:
-"pro bono", "free", "€0", "chapters", "180Degrees", wrong email domain.
-`audit-v15-r3.mjs` enforces this by pattern — and it scans `guide.html` too,
-so describe the rules there rather than quoting the forbidden words.
-
----
-
-## 7. Traps — these already cost a debugging cycle each
-
-1. **`overflow: hidden` on an ancestor silently disables `position: sticky`**
-   on descendants. `.hero` had it; the pinned stage scrolled away and the next
-   section read as "the hero went black."
-2. **`uZoom` in the shader is inverted.** It divides the cover factor, so
-   *larger = wider*. Dollying in means *decreasing* it. Getting this backwards
-   sampled far outside the texture and clamped the frame to black.
-3. **WebGL textures cannot be built from `file://` images**, and
-   `texImage2D` does **not** reliably throw — it sometimes silently yields a
-   black texture. Never trust the exception: `hero-depth.js` renders one frame
-   while the canvas is still detached and reads pixels back before attaching.
-4. **`scroll-behavior: smooth` defeats per-frame `scrollTo()` in tests** — each
-   call restarts the animation, so the page never moves and the test finishes at
-   `scrollY 0`. Use `scrollTo({top, behavior: "instant"})`. This made round 2's
-   smoothness check pass vacuously for days.
-5. **Size the canvas to `.hero__media`, not `.hero`.** On a staged hero the
-   section is two viewports tall; measuring it doubled the drawing buffer and
-   squashed the photo.
-6. **Don't share a rAF `ticking` flag between the scroll handler and a
-   self-scheduling ease** — the ease stops one frame in and freezes part-way,
-   which looks exactly like a mis-measured runway.
-7. **`innerText` reflects `text-transform`**, so uppercase UI rows read as
-   missing in content checks. Compare case-insensitively.
-8. **Scroll the page before asserting lazy images loaded**, or footer art
-   reports as failed.
-9. **Video: `end_image_url` pinned to the source bounds grade drift** and gives
-   a near-seamless loop for free (loop seam went 49.5 → 2.65). Without it the
-   model burns off fog and saturates the sky into a tourist postcard.
-10. **Seedance over Kling for architecture** — `camera_fixed: true` is the
-    decisive parameter; it stops the model inventing a camera move and warping
-    the landmark. Kling has no equivalent.
-
----
-
-## 8. Definition of done
-
-- [ ] Fog decision made; video wired in as the top tier with clean fallback
-- [ ] Owner has scrolled the choreography and signed off
-- [ ] `_review.html` deleted (already done), `media/_compare-*` removed
-- [ ] `guide.html` build record updated with any new rounds + the video ledger
-- [ ] Gallery card, comparison row and thumbnail regenerated (`node thumb-v15.mjs`)
-- [ ] All five audit suites green
-- [ ] `node build-dist.mjs` run, `dist/v15-vantage/` verified
+Session memory lives in
+`C:\Users\Manuel\.claude\projects\c--Users-Manuel-180-DC-systems\memory\`.
