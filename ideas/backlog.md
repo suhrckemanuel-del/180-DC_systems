@@ -15,6 +15,7 @@ Every idea, flat. The visual relationships live in [idea-map.md](idea-map.md). S
 | AI workflow lab (25 ideas, top 7 spec'd) | ready | AI team | [../lab/](../lab/) | 25 ranked demo ideas; top 7 with full build packs; method in [/guide](../guide/) |
 | Branch website (Delft-Rotterdam) | shaping | AI team | [../website/](../website/) | Research + full brainstorm + build stack done; gated on President's answers and access tokens |
 | Branch portfolio site from this repo | spark | — | — | Reuse the renderer pattern to publish what we built; likely folds into the branch website's "show the machine" page |
+| Deliverable showcase (slides in reviewer, case studies on site) | shaping | AI team | [cards/deliverable-showcase.md](cards/deliverable-showcase.md) | One slide extraction, two consumers. Reviewer half unblocked; website half gated on client consent — start that conversation first |
 
 ## How to use this
 
