@@ -24,23 +24,33 @@
   const desktopQuery = window.matchMedia("(min-width: 1024px)");
 
   /* ---------------------------------------------------------- photo pool --
-     Six real, licensed photographs of Rotterdam and Delft. Every page ships the
-     same pool and opens on its own frame via data-hero-start; the prev/next
-     control walks the whole pool without a page reload.
+     Five real, licensed photographs of Rotterdam and Delft — three Rotterdam,
+     two Delft, alternating so the branch reads as Delft–Rotterdam wherever a
+     visitor enters. Every page ships the same pool and opens on its own frame
+     via data-hero-start; the prev/next control walks the whole pool without a
+     page reload.
+
+     Frames 0 and 4 are Pexels; the rest are Wikimedia Commons. Mixed sources
+     mean the licence string genuinely varies per frame, so it is carried per
+     frame rather than assumed.
 
      `credit` is rendered in the hero beside the city label and changes with the
-     frame. A static footer line cannot honestly credit six different
+     frame. A static footer line cannot honestly credit five different
      photographers, and this variant is full-bleed with no <figcaption> slot.
      The long form — work, source URL, licence URL, edits — lives in
      MEDIA-CREDITS.md and the ledger in guide.html#images.               */
 
   const POOL = [
     {
-      file: "erasmusbrug-night",
+      // Home. The only frame in the pool that clears AA on every piece of hero
+      // copy at BOTH 1440 and 390 — a 390px viewport crops to roughly the
+      // central quarter, and most frames put the copy on their busiest band
+      // when it does. Its dark sky and still water survive that crop.
+      file: "rotterdam-maas-night",
       city: "Rotterdam",
-      label: "Rotterdam · Erasmusbrug",
-      credit: "CyberDiver79 · CC0",
-      alt: "The Erasmusbrug at night seen from the water, its lit cable harp sweeping down to the deck with the Rotterdam skyline behind"
+      label: "Rotterdam · Maas",
+      credit: "ClickerHappy · Pexels License",
+      alt: "Rotterdam's skyline at night across the Nieuwe Maas, lit towers and quayside houses above still blue water with the Erasmusbrug at the right"
     },
     {
       file: "delft-oostpoort-air",
@@ -62,6 +72,13 @@
       label: "Delft · Oostpoort gate",
       credit: "Michielverbeek · CC BY-SA 4.0",
       alt: "Delft's Oostpoort gate seen across still canal water, its paired brick towers and white drawbridge under a clear sky"
+    },
+    {
+      file: "erasmusbrug-harp",
+      city: "Rotterdam",
+      label: "Rotterdam · Erasmusbrug",
+      credit: "Igor Passchier · Pexels License",
+      alt: "The Erasmusbrug from above at night, its lit cable harp sweeping across the Maas with the Rotterdam skyline beyond"
     }
   ];
 

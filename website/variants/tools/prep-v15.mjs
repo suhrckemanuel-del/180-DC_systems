@@ -1,7 +1,6 @@
-// V15 Vantage — compress the AI-generated Rotterdam/Delft hero set to WebP.
-// Sources are the two generated PNG sets in _brand/ (1536x1024 each). They are
-// NOT photography; provenance + prompts are disclosed in v15-vantage/guide.html.
-// Two widths per image: full (1600) for desktop heroes, sm (900) for phones.
+// V15 Vantage — compress the licensed Rotterdam/Delft photograph set to WebP.
+// Three widths per image: 2400 for hi-DPI, 1600 for desktop heroes, 900 for
+// phones. Provenance for every frame is in _brand/photo-set/SOURCES.json.
 import sharp from "sharp";
 import { readdirSync, statSync, mkdirSync } from "fs";
 import { fileURLToPath } from "url";
@@ -24,12 +23,15 @@ const photos = join(brand, "photo-set");
 // Cycling order alternates the two cities rather than grouping them, so the
 // branch reads as Delft–Rotterdam wherever a visitor enters the pool.
 const set = [
-  { src: join(photos, "erasmusbrug-night.png"),   name: "erasmusbrug-night",    q: 74 },
+  { src: join(photos, "erasmusbrug-harp.png"),    name: "erasmusbrug-harp",     q: 74 },
   { src: join(photos, "delft-oostpoort-air.png"), name: "delft-oostpoort-air",  q: 74 },
   { src: join(photos, "markthal-blue-hour.png"),  name: "markthal-blue-hour",   q: 72 }, // dense facade, thousands of small windows
+  { src: join(photos, "delft-oostpoort.png"),     name: "delft-oostpoort",      q: 74 },
+  { src: join(photos, "rotterdam-maas-night.png"), name: "rotterdam-maas-night", q: 74 },
+  // benched, not deleted — kept buildable so reinstating one is a POOL edit
+  { src: join(photos, "erasmusbrug-night.png"),   name: "erasmusbrug-night",    q: 74 },
   { src: join(photos, "delft-nieuwe-kerk.png"),   name: "delft-nieuwe-kerk",    q: 74 },
   { src: join(photos, "delft-canal.png"),         name: "delft-canal",          q: 74 },
-  { src: join(photos, "delft-oostpoort.png"),     name: "delft-oostpoort",      q: 74 },
 ];
 
 // Three widths. The hero is a cover-crop that the browser magnifies, so even a

@@ -3,14 +3,47 @@
 // sample the real pixels behind each text element and compute contrast
 // against that element's rendered colour. This is the check that catches a
 // frame whose luminance breaks white type.
+//
+// Two things this script learned the hard way, both recorded in the handoff:
+//
+// 1. A MEAN IS NOT A LEGIBILITY MEASURE. A night skyline of lit windows
+//    averages out against the dark gaps between them and scored 8.49:1 while
+//    reading badly. Nobody reads the mean of a paragraph's background; they
+//    read one word at a time, and a word sitting on a lit window is gone. So
+//    every target is now also tiled at roughly glyph scale and the WORST tile
+//    is what gates. The mean is still printed, because the gap between the two
+//    numbers is exactly the diagnosis: 8.49 mean / 1.9 worst means "busy", not
+//    "dark".
+//
+// 2. IT MUST RUN ON A REAL GPU OVER HTTP. This used to load file:// on default
+//    headless, where the WebGL depth layer cannot build textures at all — so it
+//    measured the CSS fallback's framing, not the shader's. The shader samples
+//    97% of the texture with depth displacement; that is a different crop, and
+//    therefore different pixels behind the copy. It now serves the variant and
+//    launches ANGLE, so what it measures is what ships.
 import { chromium } from "playwright";
 import sharp from "sharp";
-import { fileURLToPath, pathToFileURL } from "url";
-import { dirname, join } from "path";
+import http from "http";
 import { readFile } from "fs/promises";
+import { fileURLToPath } from "url";
+import { dirname, join, extname } from "path";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const dir = join(here, "..", "v15-vantage");
+const PORT = 8734;
+
+const TYPES = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".webp": "image/webp" };
+const server = http.createServer(async (q, r) => {
+  let p = join(dir, decodeURIComponent(q.url.split("?")[0]));
+  if (q.url === "/" || q.url === "") p = join(dir, "index.html");
+  try {
+    const d = await readFile(p);
+    r.writeHead(200, { "Content-Type": TYPES[extname(p)] || "application/octet-stream" });
+    r.end(d);
+  } catch { r.writeHead(404); r.end(); }
+});
+await new Promise((res) => server.listen(PORT, res));
+const HTTP = `http://localhost:${PORT}`;
 
 const lum = (r, g, b) => {
   const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
@@ -33,10 +66,23 @@ const TARGETS = [
   { sel: "[data-city-credit]", name: "photo credit", large: false },
 ];
 
+// A tile is sized from the element's own font so the sample matches what a
+// reader resolves: roughly one glyph for the lede, a much larger patch for a
+// 5rem headline. Clamped so a tiny counter still gets a few tiles and a huge
+// headline does not degenerate to a single one.
+const tileFor = (fontPx) => Math.max(8, Math.min(40, Math.round(fontPx * 0.8)));
+
+// Worst-tile is deliberately held to a slightly softer bar than the mean. Every
+// target carries a text-shadow, which buys real separation on a hard edge but
+// cannot be credited as a flat contrast ratio, and one unlucky tile behind a
+// descender should not condemn a frame that reads. 0.8 of AA is the line: it
+// still fails the Erasmusbrug lede, which is the frame a human called unreadable.
+const WORST_FACTOR = 0.8;
+
 const fail = [];
-const browser = await chromium.launch();
-const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
-const page = await ctx.newPage();
+const browser = await chromium.launch({
+  args: ["--use-gl=angle", "--use-angle=default", "--enable-unsafe-swiftshader"],
+});
 
 // Read the pool size from the controller rather than hardcoding it, so a frame
 // added to the pool is automatically covered by this check instead of silently
@@ -44,14 +90,41 @@ const page = await ctx.newPage();
 const POOL_SIZE = (await readFile(join(dir, "hero-controller.js"), "utf8"))
   .match(/file:\s*"/g).length;
 
-console.log(`\n=== hero contrast across all ${POOL_SIZE} pool frames ===`);
+// Desktop is not the hard case. A 390px viewport cover-crops a 3:2 photograph
+// down to roughly its central quarter, so a frame can be calm behind the copy
+// at 1440 and land that same copy on the busiest part of the image on a phone —
+// which is exactly what the first replacement Home frame did. The owner's
+// selection rules require the composition to survive that crop, so it is
+// measured rather than assumed.
+const VIEWPORTS = [
+  { w: 1440, h: 900, name: "desktop 1440x900" },
+  { w: 390, h: 780, name: "mobile 390x780" },
+];
+
+for (const vp of VIEWPORTS) {
+// NOT reducedMotion:"reduce" — that flag suppresses the WebGL depth layer, so
+// the whole suite would silently measure the CSS fallback's framing instead of
+// the shader's. It was safe to set only while the hero still had a Ken Burns
+// pan to freeze; the hero is now still until you scroll, so there is nothing
+// to hold still and every reason to let the real layer mount.
+const ctx = await browser.newContext({ viewport: { width: vp.w, height: vp.h } });
+const page = await ctx.newPage();
+
+console.log(`\n=== hero contrast — ${vp.name} — all ${POOL_SIZE} pool frames ===`);
+
+// Confirm the shader is actually up. If this says false the numbers below
+// describe the CSS fallback and are not evidence about what ships.
+await page.goto(`${HTTP}/index.html`, { waitUntil: "networkidle" });
+await page.waitForTimeout(1200);
+const webgl = await page.evaluate(() => document.querySelector("[data-hero]").classList.contains("is-webgl"));
+console.log(`    depth layer: ${webgl ? "WebGL (measuring the shader)" : "CSS fallback"}`);
 
 for (let frame = 0; frame < POOL_SIZE; frame++) {
-  await page.goto(pathToFileURL(join(dir, "index.html")).href, { waitUntil: "networkidle" });
-  await page.waitForTimeout(300);
+  await page.goto(`${HTTP}/index.html`, { waitUntil: "networkidle" });
+  await page.waitForTimeout(600);
   for (let k = 0; k < frame; k++) {
     await page.click("[data-city-next]");
-    await page.waitForTimeout(820);
+    await page.waitForTimeout(900);
   }
   await page.mouse.move(20, 20); // clear hover state
   await page.waitForTimeout(250);
@@ -71,6 +144,7 @@ for (let frame = 0; frame < POOL_SIZE; frame++) {
         name: t.name, large: t.large, ownBg: !!t.ownBg,
         color: cs.color,
         bg: cs.backgroundColor,
+        fontPx: parseFloat(cs.fontSize) || 16,
         x: Math.max(0, Math.round(r.x)), y: Math.max(0, Math.round(r.y)),
         w: Math.round(r.width), h: Math.round(r.height),
       });
@@ -80,12 +154,11 @@ for (let frame = 0; frame < POOL_SIZE; frame++) {
 
   // hide the copy and shoot the bare photo
   await page.evaluate(() => { document.querySelector(".hero__inner").style.visibility = "hidden"; });
-  await page.waitForTimeout(150);
+  await page.waitForTimeout(200);
   const shot = await page.screenshot();
   await page.evaluate(() => { document.querySelector(".hero__inner").style.visibility = ""; });
 
-  const img = sharp(shot);
-  const meta = await img.metadata();
+  const meta = await sharp(shot).metadata();
 
   const rows = [];
   for (const it of items) {
@@ -93,45 +166,101 @@ for (let frame = 0; frame < POOL_SIZE; frame++) {
     const h = Math.min(it.h, meta.height - it.y);
     if (w < 2 || h < 2) continue;
 
-    const stats = await sharp(shot).extract({ left: it.x, top: it.y, width: w, height: h }).stats();
-    const [r, g, b] = stats.channels.slice(0, 3).map((c) => c.mean);
+    // one raw read per element; tile means are computed here rather than with
+    // a sharp call per tile, which was ~40x slower for identical numbers
+    const { data, info } = await sharp(shot)
+      .extract({ left: it.x, top: it.y, width: w, height: h })
+      .raw().toBuffer({ resolveWithObject: true });
+    const ch = info.channels;
 
-    let bgLum;
+    const [tr, tg, tb] = parseRGB(it.color);
+    const textLum = lum(tr, tg, tb);
     const comps = (it.bg.match(/[\d.]+/g) || []).map(Number);
     // rgb(...) has 3 components and is opaque; only rgba(...) carries alpha
     const alpha = comps.length >= 4 ? comps[3] : 1;
-    if (it.ownBg && comps.length >= 3 && alpha > 0) {
-      // control paints its own surface over the photo — composite it
-      const [br, bg_, bb] = comps;
-      bgLum = lum(
-        br * alpha + r * (1 - alpha),
-        bg_ * alpha + g * (1 - alpha),
-        bb * alpha + b * (1 - alpha)
-      );
-    } else {
-      bgLum = lum(r, g, b);
+    const hasOwnBg = it.ownBg && comps.length >= 3 && alpha > 0;
+
+    // a control paints its own surface over the photo — composite it, exactly
+    // as the mean path always did, so the two numbers stay comparable
+    const ratioOf = (r, g, b) => {
+      let bgLum;
+      if (hasOwnBg) {
+        const [br, bg_, bb] = comps;
+        bgLum = lum(br * alpha + r * (1 - alpha), bg_ * alpha + g * (1 - alpha), bb * alpha + b * (1 - alpha));
+      } else {
+        bgLum = lum(r, g, b);
+      }
+      return contrast(textLum, bgLum);
+    };
+
+    // whole-box mean
+    let sr = 0, sg = 0, sb = 0;
+    for (let i = 0; i < data.length; i += ch) { sr += data[i]; sg += data[i + 1]; sb += data[i + 2]; }
+    const n = data.length / ch;
+    const meanRatio = ratioOf(sr / n, sg / n, sb / n);
+
+    // worst tile at glyph scale
+    const t = tileFor(it.fontPx);
+    const cols = Math.max(1, Math.floor(w / t));
+    const rowsN = Math.max(1, Math.floor(h / t));
+    const cw = w / cols, chh = h / rowsN;
+    let worstRatio = Infinity, bad = 0, total = 0;
+    for (let cy = 0; cy < rowsN; cy++) {
+      for (let cx = 0; cx < cols; cx++) {
+        const x0 = Math.floor(cx * cw), x1 = Math.floor((cx + 1) * cw);
+        const y0 = Math.floor(cy * chh), y1 = Math.floor((cy + 1) * chh);
+        let ar = 0, ag = 0, ab = 0, c = 0;
+        for (let y = y0; y < y1; y++) {
+          for (let x = x0; x < x1; x++) {
+            const i = (y * w + x) * ch;
+            ar += data[i]; ag += data[i + 1]; ab += data[i + 2]; c++;
+          }
+        }
+        if (!c) continue;
+        const r = ratioOf(ar / c, ag / c, ab / c);
+        total++;
+        if (r < worstRatio) worstRatio = r;
+        if (r < (it.large ? 3 : 4.5) * WORST_FACTOR) bad++;
+      }
     }
 
-    const [tr, tg, tb] = parseRGB(it.color);
-    const ratio = contrast(lum(tr, tg, tb), bgLum);
     const need = it.large ? 3 : 4.5;
-    rows.push({ name: it.name, ratio, need, pass: ratio >= need });
+    const needWorst = need * WORST_FACTOR;
+    rows.push({
+      name: it.name, mean: meanRatio, worst: worstRatio, need, needWorst,
+      badPct: total ? (bad / total) * 100 : 0,
+      pass: meanRatio >= need && worstRatio >= needWorst,
+    });
   }
 
   const bad = rows.filter((r) => !r.pass);
-  const worst = rows.reduce((a, b) => (a && a.ratio < b.ratio ? a : b), null);
+  const worstRow = rows.reduce((a, b) => (a && a.worst < b.worst ? a : b), null);
   const flag = bad.length ? "✗" : "✓";
-  console.log(`  ${flag} ${String(frame + 1).padStart(2)}/${POOL_SIZE}  ${label.padEnd(30)} worst ${worst.ratio.toFixed(2)}:1 (${worst.name})`);
+  console.log(`  ${flag} ${String(frame + 1).padStart(2)}/${POOL_SIZE}  ${label.padEnd(30)} worst-tile ${worstRow.worst.toFixed(2)}:1 (${worstRow.name})`);
+  for (const r of rows) {
+    const mark = r.pass ? " " : "✗";
+    console.log(
+      `      ${mark} ${r.name.padEnd(18)} mean ${r.mean.toFixed(2).padStart(6)}:1` +
+      `   worst-tile ${r.worst.toFixed(2).padStart(6)}:1 (needs ${r.needWorst.toFixed(2)})` +
+      `   ${r.badPct.toFixed(0)}% of tiles under`
+    );
+  }
   for (const r of bad) {
-    const m = `frame ${frame + 1} "${label}": ${r.name} ${r.ratio.toFixed(2)}:1 needs ${r.need}`;
-    fail.push(m);
-    console.log(`        ${r.name}: ${r.ratio.toFixed(2)}:1 (needs ${r.need})`);
+    fail.push(
+      r.mean < r.need
+        ? `[${vp.name}] frame ${frame + 1} "${label}": ${r.name} mean ${r.mean.toFixed(2)}:1 needs ${r.need}`
+        : `[${vp.name}] frame ${frame + 1} "${label}": ${r.name} worst-tile ${r.worst.toFixed(2)}:1 needs ${r.needWorst.toFixed(2)} (${r.badPct.toFixed(0)}% of tiles under) — mean ${r.mean.toFixed(2)}:1 hides it`
+    );
   }
 }
 
+await ctx.close();
+}
+
 await browser.close();
+server.close();
 
 console.log("\n=== SUMMARY ===");
-if (!fail.length) console.log("Hero copy meets AA on every frame in the pool.");
+if (!fail.length) console.log("Hero copy meets AA on every frame in the pool, by mean and by worst tile.");
 else { console.log(`${fail.length} failure(s):`); fail.forEach((f) => console.log(" - " + f)); }
 process.exit(fail.length ? 1 : 0);

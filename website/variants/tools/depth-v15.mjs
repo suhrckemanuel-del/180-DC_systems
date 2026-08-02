@@ -21,12 +21,15 @@ mkdirSync(out, { recursive: true });
 const photos = join(brand, "photo-set");
 
 const SET = [
-  { src: join(photos, "erasmusbrug-night.png"), name: "erasmusbrug-night" },
+  { src: join(photos, "erasmusbrug-harp.png"), name: "erasmusbrug-harp" },
   { src: join(photos, "delft-oostpoort-air.png"), name: "delft-oostpoort-air" },
   { src: join(photos, "markthal-blue-hour.png"), name: "markthal-blue-hour" },
+  { src: join(photos, "delft-oostpoort.png"), name: "delft-oostpoort" },
+  { src: join(photos, "rotterdam-maas-night.png"), name: "rotterdam-maas-night" },
+  // benched, not deleted — see prep-v15.mjs
+  { src: join(photos, "erasmusbrug-night.png"), name: "erasmusbrug-night" },
   { src: join(photos, "delft-nieuwe-kerk.png"), name: "delft-nieuwe-kerk" },
   { src: join(photos, "delft-canal.png"), name: "delft-canal" },
-  { src: join(photos, "delft-oostpoort.png"), name: "delft-oostpoort" },
 ];
 
 const list = process.argv.includes("--all") ? SET : SET.slice(0, 1);

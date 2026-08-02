@@ -1,5 +1,29 @@
 [
   {
+    "name": "erasmusbrug-harp",
+    "work": "Suspension Bridge in Rotterdam at Night",
+    "photographer": "Igor Passchier",
+    "licence": "Pexels License",
+    "licenceUrl": "https://www.pexels.com/license/",
+    "source": "https://www.pexels.com/photo/suspension-bridge-in-rotterdam-at-night-20655923/",
+    "originalPx": "5472x3648",
+    "croppedTo": "5472x3648",
+    "edits": "already native 3:2, no crop; resized to 2400px wide, converted to WebP by prep-v15.mjs",
+    "note": "Chosen for the Home hero because it is the only screened frame whose meta line, headline and lede all clear AA by worst-tile, not just by mean. Checked at 3x hero scale for third-party signage: none legible."
+  },
+  {
+    "name": "rotterdam-maas-night",
+    "work": "City Skyline Under Clear Sky during Nighttime",
+    "photographer": "ClickerHappy",
+    "licence": "Pexels License",
+    "licenceUrl": "https://www.pexels.com/license/",
+    "source": "https://www.pexels.com/photo/city-skyline-under-clear-sky-during-nighttime-1049842/",
+    "originalPx": "3552x2152",
+    "croppedTo": "3228x2152",
+    "edits": "3:2 crop taking 324px off the LEFT edge (bias 1.0 x), resized to 2400px wide, converted to WebP by prep-v15.mjs",
+    "note": "The left trim is deliberate: it removes a third-party neon company sign that sat at the frame edge. The remaining lit sign reads HULSTKAMP, which is the name of the listed building it is on, not third-party advertising. Source page marks the photo 'Free to use (CC0)'; the governing licence for Pexels content is recorded here as the Pexels License."
+  },
+  {
     "name": "erasmusbrug-night",
     "work": "Erasmus Bridge in Rotterdam seen from Deck 18 of AIDAnova",
     "photographer": "CyberDiver79",
@@ -8,7 +32,8 @@
     "source": "https://commons.wikimedia.org/wiki/File:Erasmus_Bridge_in_Rotterdam_seen_from_Deck_18_of_AIDAnova.jpg",
     "originalPx": "16320x12240",
     "croppedTo": "16320x10880",
-    "edits": "centre-weighted 3:2 crop (bias 0.5 x / 0.6 y), resized to 2400px wide, converted to WebP by prep-v15.mjs"
+    "edits": "centre-weighted 3:2 crop (bias 0.5 x / 0.6 y), resized to 2400px wide, converted to WebP by prep-v15.mjs",
+    "benchedBecause": "Was the Home frame until 2026-08-02. The hero lede sits on the illuminated waterfront and measures 2.36:1 at its worst tile against a 3.60 floor, with 6% of tiles under — the whole-frame mean of 6.88:1 hides it. Replaced by erasmusbrug-harp, which is the same landmark from above with the copy column falling on dark sky and water."
   },
   {
     "name": "markthal-blue-hour",
@@ -41,7 +66,8 @@
     "source": "https://commons.wikimedia.org/wiki/File:Delft_NewChurch_DJI_0132.jpg",
     "originalPx": "5464x3640",
     "croppedTo": "5460x3640",
-    "edits": "centre-weighted 3:2 crop (bias 0.5 x / 0.5 y), resized to 2400px wide, converted to WebP by prep-v15.mjs"
+    "edits": "centre-weighted 3:2 crop (bias 0.5 x / 0.5 y), resized to 2400px wide, converted to WebP by prep-v15.mjs",
+    "benchedBecause": "Benched on 2026-08-01 for failing AA behind the hero copy at 4.39:1. That number came from the contrast audit before 2026-08-02, when sharp.stats() was found to be ignoring extract() — so it was the mean of the whole page, not the pixels behind the copy. The bench reason is therefore unverified; re-measure with the fixed audit before ruling on it."
   },
   {
     "name": "delft-canal",
@@ -52,7 +78,8 @@
     "source": "https://commons.wikimedia.org/wiki/File:DelftView_DJI_0104.jpg",
     "originalPx": "5464x3624",
     "croppedTo": "5436x3624",
-    "edits": "centre-weighted 3:2 crop (bias 0.5 x / 0.5 y), resized to 2400px wide, converted to WebP by prep-v15.mjs"
+    "edits": "centre-weighted 3:2 crop (bias 0.5 x / 0.5 y), resized to 2400px wide, converted to WebP by prep-v15.mjs",
+    "benchedBecause": "Benched on 2026-08-01 for failing AA behind the hero copy at 4.05:1 in dark type. Same caveat as delft-nieuwe-kerk: that figure predates the 2026-08-02 fix to the contrast audit and measured the whole page, not the copy background. Unverified; re-measure before ruling on it."
   },
   {
     "name": "delft-oostpoort",

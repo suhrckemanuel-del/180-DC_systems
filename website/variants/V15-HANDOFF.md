@@ -1,8 +1,16 @@
 # V15 Vantage — handoff
 
 Everything a fresh session needs to finish this without re-deriving anything.
-Rewritten **2026-08-02**. The previous version described the AI-imagery build and
-is superseded in full — do not trust older copies.
+Rewritten **2026-08-02**, then updated later the same day after the deploy.
+Older copies described the AI-imagery build and are superseded in full.
+
+> **Read this first.** The contrast audit was broken until 2026-08-02: sharp's
+> `stats()` silently ignores `extract()`, so for every text element it returned
+> the mean of the **whole 1440×900 page**, not the pixels behind that element.
+> Every legibility number this project recorded before that date is void —
+> including the 8.49:1 for the Home lede, and the 4.39:1 / 4.05:1 that got
+> `delft-nieuwe-kerk` and `delft-canal` benched. Those two were benched on
+> evidence that never existed; re-measure before ruling on them.
 
 ---
 
@@ -21,30 +29,36 @@ Gallery: `website/variants/gallery/index.html`, live at
 
 ---
 
-## 2. State as of 2026-08-02
+## 2. State as of 2026-08-02 (after the deploy)
 
-Committed at **`183d418`** on branch `idea/reviewer-v2`, pushed.
-**NOT DEPLOYED** — the live Pages site still serves the old AI build. That is
-deliberate; nothing half-finished is public.
-
-Two large changes landed this session.
+**DEPLOYED** and live at https://180dc-variants.pages.dev/v15-vantage/ —
+verified on a real GPU: WebGL layer up, no console errors, all 20 pooled image
+assets serving `image/webp` at their exact byte sizes.
 
 ### Imagery: AI renders are gone
 
 Board feedback rejected AI-generated backgrounds. All ten renders were retired
-and replaced with **four licensed Wikimedia Commons photographs**:
+and replaced with photographs. The pool is now **five frames, three Rotterdam to
+two Delft**, alternating city:
 
-| Frame | Photographer | Licence | Opens on |
-|---|---|---|---|
-| `erasmusbrug-night` | CyberDiver79 | **CC0** | Home |
-| `delft-oostpoort-air` | Ludvig14 | CC BY-SA 4.0 | Mission |
-| `markthal-blue-hour` | Radek Kucharski | CC BY 2.0 | For clients |
-| `delft-oostpoort` | Michielverbeek | CC BY-SA 4.0 | Students |
+| # | Frame | Photographer | Licence | Opens on |
+|---|---|---|---|---|
+| 0 | `rotterdam-maas-night` | ClickerHappy | Pexels | **Home** |
+| 1 | `delft-oostpoort-air` | Ludvig14 | CC BY-SA 4.0 | Mission |
+| 2 | `markthal-blue-hour` | Radek Kucharski | CC BY 2.0 | For clients |
+| 3 | `delft-oostpoort` | Michielverbeek | CC BY-SA 4.0 | Students |
+| 4 | `erasmusbrug-harp` | Igor Passchier | Pexels | cycling only |
+
+Frames 0 and 4 were added 2026-08-02 from **Pexels** — the first non-Commons
+sources, so the licence genuinely varies per frame and the credit string must
+carry it. `erasmusbrug-night` is now **benched**, not deleted.
 
 Provenance is in `_brand/photo-set/SOURCES.json` (tracked — the PNG masters are
-gitignored). `v15-vantage/MEDIA-CREDITS.md` is **generated from it**, so credits
-cannot drift from what was actually downloaded. Regenerate it rather than editing
-it by hand.
+gitignored). `v15-vantage/MEDIA-CREDITS.md` **is now genuinely generated**, by
+`tools/credits-v15.mjs`, from SOURCES.json plus the POOL in `hero-controller.js`
+— so it cannot drift from the frames the page actually loads. (The previous
+handoff claimed this was already true. It was not; the file was hand-written.
+`node credits-v15.mjs --check` fails if it is stale.)
 
 The hero names the photographer and licence of the frame on screen, and it
 changes as you cycle. It has to be per-frame: one static footer line cannot
@@ -69,27 +83,60 @@ Measured on a real GPU, copy hidden, 1440×900 DPR 1:
 
 ## 3. Open items — start here
 
-1. **The Home hero's lede is hard to read.** It sits on the illuminated skyline
-   of the Erasmusbrug night shot. Owner has seen it and called it acceptable for
-   now, to fix properly. Three routes: swap Home to the Oostpoort aerial (which
-   demonstrably reads well), re-crop the Erasmusbrug so the darker right bank
-   falls behind the copy column, or source another Rotterdam night frame.
+The three items the previous handoff listed are **done**: Home is fixed and
+measurably legible, two Rotterdam frames were added, and the build is deployed.
+What remains is one real problem, now visible for the first time because the
+audit works.
 
-2. **Rotterdam is under-represented — 1 frame against 3 Delft**, for a
-   Delft–Rotterdam branch. Commons has very few clean, people-free, wide
-   Rotterdam shots. **Unsplash and Pexels have not been searched yet** — only
-   Commons was. That is the obvious next move.
+1. **Three of the five frames still fail the worst-tile check.** This is not a
+   regression — they always failed; the broken audit could not see it. Home
+   (frame 1) and `erasmusbrug-harp` on desktop are clean. The rest:
 
-3. **Deploy.** `node thumb-v15.mjs`, `node build-dist.mjs`, then
-   `tools/deploy-cf.ps1`. Verify with a cache-buster (see trap 6).
+   | Frame | Desktop | Mobile 390 |
+   |---|---|---|
+   | 1 `rotterdam-maas-night` | ✓ | ✓ |
+   | 2 `delft-oostpoort-air` | meta 1.83 mean, headline 2.09 | meta, headline, lede |
+   | 3 `markthal-blue-hour` | headline 2.29, lede 2.59 | lede 1.91 |
+   | 4 `delft-oostpoort` | meta, headline, lede | meta, lede, 2nd CTA |
+   | 5 `erasmusbrug-harp` | ✓ | lede 1.47 |
 
-Two frames are **benched, not deleted**: `delft-nieuwe-kerk` and `delft-canal`.
-Both failed WCAG AA behind the hero copy in *both* light and dark type — the
-dark-type treatment made it worse, 4.39:1 → 4.05:1 — because of busy mid-tone
-rooftops, and this design forbids a scrim. Their tiers and depth maps are still
-in `img/`, so reinstating them is a POOL edit if the copy layout ever changes.
+   **The binding constraint is the copy treatment, not the supply of
+   photographs.** Sixteen candidates were screened; the only ones that clear the
+   bar are dark night frames. A daylight photograph essentially cannot carry
+   white 300-weight type at 19px with no scrim. Three routes, and this is a
+   design decision the board owns, so it was **not** applied:
+   - extend `.hero__blur`'s mask up the copy column — blur is already the
+     design's sanctioned mechanism and it is what kills the high-frequency lit
+     windows that break the worst tile;
+   - tighten the text-shadows from wide-and-soft (`0 1px 16px`) to a dense
+     1–2px halo. Note this will **not** move the audit numbers: WCAG contrast
+     ignores text-shadow, so it improves the eye without improving the score;
+   - accept a pool of night frames only.
+
+2. **Re-measure the two frames benched on void numbers** — `delft-nieuwe-kerk`
+   and `delft-canal`. See the banner at the top. Reinstating one is a POOL edit;
+   their tiers and depth maps are still in `img/`.
+
+3. **The gallery index still says "thirteen published design variants"** in its
+   `<title>`; there are fifteen.
 
 ---
+
+12. **Stock captions are not evidence of location.** A Pexels photo captioned
+    "Erasmus Bridge Illuminated at Night in Rotterdam" is the Ba Son bridge in
+    Ho Chi Minh City. It screened well and would have shipped as a Rotterdam
+    frame on a Delft–Rotterdam site. Identify every candidate by eye against a
+    known landmark before it goes anywhere near the pool.
+
+13. **`reducedMotion: "reduce"` suppresses the WebGL depth layer.** Any Playwright
+    context that sets it measures the CSS fallback. The contrast audit had it set
+    and so was measuring the wrong compositing path as well as the wrong pixels.
+    It was only ever there to freeze the Ken Burns pan, which no longer exists.
+
+14. **The screener optimises contrast with no idea whether the frame is worth
+    looking at.** An empty black sky scores perfectly. `screen-frames-v15.mjs`
+    picked a near-empty crop of a portrait skyline shot at headroom 2.32. Always
+    render the chosen crop with `preview-crop-v15.mjs` and look at it.
 
 ## 4. Image selection rules the owner set
 
@@ -103,6 +150,29 @@ in `img/`, so reinstating them is a POOL edit if the copy layout ever changes.
   the **central ~26%** of a 3:2 image.
 - Sources must be free-licence and verifiable. On Unsplash beware **Unsplash+ /
   Getty** images — those are a separate paid licence, so check per image.
+- **Verify the photograph is actually of the city it claims to be** (trap 12).
+
+### Sourcing, as of 2026-08-02
+
+Unsplash's search API needs a key this project does not have; its public
+`napi` endpoint returns "Authorization required". **Pexels** works — search
+pages are readable, and originals come from
+`https://images.pexels.com/photos/<id>/pexels-photo-<id>.jpeg` with no key.
+Commons works through its normal `api.php`.
+
+Screen candidates *before* wiring any of them in:
+
+```bash
+node screen-frames-v15.mjs <image…>      # worst-tile score against the real copy boxes
+node preview-crop-v15.mjs <src> <out.png> [biasX] [biasY]   # then LOOK at it
+```
+
+The screener reproduces the hero framing offline and sweeps the crop bias. It is
+deliberately pessimistic — it does not model `.hero__blur`, which lifts the lede
+and everything below it — so a frame that screens well will measure at least as
+well live. Rejected this session: an Allianz logo on a tower (brand signage), a
+street-level Delfshaven frame (heavy foreground the depth shader would tear), and
+the Ho Chi Minh City frame in trap 12.
 
 ---
 
@@ -138,11 +208,27 @@ in `img/`, so reinstating them is a POOL edit if the copy layout ever changes.
    shipped through five green suites. **Always look at a real-GPU screenshot**:
    launch with `["--use-gl=angle","--use-angle=default","--enable-unsafe-swiftshader"]`.
 
-2. **The contrast audit measures a *mean*, not a worst case.** A skyline of lit
-   windows averages out against the dark gaps between them and scores 8.49:1
-   while reading badly — which is precisely the Home-hero problem in §3. A
-   worst-tile check would catch it and is a cheap change to
-   `audit-v15-hero-contrast.mjs`. Trust your eyes over the number.
+2. **`sharp.stats()` ignores everything before it in the pipeline.**
+   `sharp(buf).extract(region).stats()` returns stats for the *whole image*, not
+   the region — silently, with no error. This is what void'd every legibility
+   number in this project. If you need stats for a crop, read raw bytes and
+   average them yourself: `.extract(r).raw().toBuffer({resolveWithObject:true})`.
+   Verify any new use by extracting three obviously different regions and
+   checking the numbers actually differ.
+
+2b. **A mean is not a legibility measure even when it is measured correctly.** A
+   skyline of lit windows averages out against the dark gaps between them and
+   scores 9.7:1 while a word sitting on a lit window is unreadable. The audit now
+   tiles each element at roughly glyph scale (`fontSize × 0.8`) and gates on the
+   **worst tile** at 0.8 × AA, printing mean and worst side by side — the gap
+   between them is the diagnosis. Trust your eyes over the mean; the worst tile
+   agrees with your eyes.
+
+2c. **Measure mobile.** A 390px viewport cover-crops a 3:2 photograph to roughly
+   its central quarter, so a frame can be calm behind the copy at 1440 and put
+   that same copy on its busiest band on a phone. `erasmusbrug-harp` passes
+   desktop at 3.16 and fails mobile at 1.47 — it was very nearly shipped as the
+   Home frame on desktop evidence alone. The audit now runs both viewports.
 
 3. **`coverFor()` must return the ratio, not its reciprocal.** `fit()` divides,
    so the sampled span is `uZoom / cover`; a cover-fit crop needs `cover` above
@@ -196,12 +282,17 @@ cd ../v15-vantage && node -e "const h=require('http'),f=require('fs'),p=require(
 node audit-v15.mjs                # effects wiring, cycling, no-JS, overflow, weight
 node audit-v15-r2.mjs             # smoothness, a11y, contrast, focus, targets
 node audit-v15-r3.mjs             # parity, terminology, PHOTO CREDITS, links
-node audit-v15-hero-contrast.mjs  # real pixels behind hero copy, every frame
+node audit-v15-hero-contrast.mjs  # real pixels behind hero copy, every frame,
+                                  # desktop + mobile, mean AND worst tile.
+                                  # Serves its own origin on 8734 and launches a
+                                  # real GPU, so it measures the shader. Currently
+                                  # RED on frames 2/3/4 — pre-existing, see §3.
 node audit-v15-depth.mjs          # WebGL over HTTP + clean degradation on file://
 
 # assets
 node prep-v15.mjs                 # 3 WebP tiers per frame
 node depth-v15.mjs --all          # depth maps (~3s/frame)
+node credits-v15.mjs              # regenerate MEDIA-CREDITS.md (--check to verify)
 
 # ship
 node thumb-v15.mjs "http://localhost:8099/index.html"
@@ -209,11 +300,14 @@ node build-dist.mjs
 ./deploy-cf.ps1                   # PowerShell; reads the token from website/.env
 ```
 
-Adding a photograph: download the original, crop to 3:2, drop it in
-`_brand/photo-set/`, add it to **both** `prep-v15.mjs` and `depth-v15.mjs`, add a
-POOL entry in `hero-controller.js` with `file` / `city` / `label` / `credit` /
-`alt`, then run prep, depth, and the contrast audit. Set `tone: "light"` if the
-contrast audit says so. Update `SOURCES.json` and regenerate `MEDIA-CREDITS.md`.
+Adding a photograph: screen it first (§4), then download the original, crop to
+3:2 at 2400×1600, drop it in `_brand/photo-set/`, add it to **both**
+`prep-v15.mjs` and `depth-v15.mjs`, add a POOL entry in `hero-controller.js` with
+`file` / `city` / `label` / `credit` / `alt`, add a `SOURCES.json` record, then
+run prep, depth, `credits-v15.mjs`, and the contrast audit. Set `tone: "light"`
+if the contrast audit says so. The credit string must name a licence the r3 audit
+recognises (`CC0`, `CC BY…`, `Public domain`, `Pexels License`, `Unsplash
+License`).
 
 **`data-hero-start` is a pool index.** Inner pages open on 1, 2 and 3. Inserting
 mid-array silently changes which frame those pages open on — append, or update

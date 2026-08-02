@@ -127,8 +127,14 @@ console.log("\n=== content parity ===");
     const files = [...js.matchAll(/file:\s*"([^"]+)"/g)].length;
     const credits = [...js.matchAll(/credit:\s*"([^"]+)"/g)].map((m) => m[1]);
     if (credits.length !== files) note("pool", `${credits.length} credits for ${files} frames`);
+    // The pool is no longer Commons-only, so the licence a credit may name is
+    // no longer only a Creative Commons one. Pexels frames carry the Pexels
+    // License, which compels no attribution at all — they are credited anyway,
+    // and the credit still has to say under what terms the photograph is used.
     for (const c of credits) {
-      if (!/(CC0|CC BY|Public domain)/i.test(c)) note("pool", `credit has no licence: "${c}"`);
+      if (!/(CC0|CC BY|Public domain|Pexels License|Unsplash License)/i.test(c)) {
+        note("pool", `credit has no licence: "${c}"`);
+      }
     }
   }
 
