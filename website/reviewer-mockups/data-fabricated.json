@@ -1,0 +1,575 @@
+{
+  "review": {
+    "meta": {
+      "title": "Client Z packaging supplier decision",
+      "client": "Client Z",
+      "artifactType": "draft deck",
+      "mode": "deep",
+      "slideCount": 14,
+      "version": "Review v2"
+    },
+    "readiness": {
+      "level": "Needs substantial revision",
+      "mainReason": "The 18 percent saving that the whole recommendation rests on has no source anywhere in the deck, and slide 11 names a risk that would remove the saving entirely.",
+      "highestRiskIssue": "Slide 4 states the headline saving as fact and slide 11 says the quote excludes freight, which is the largest cost line.",
+      "confidence": "Medium",
+      "whatCouldChangeIt": "The supplier quotes behind slide 4. If they are landed costs including freight, finding 1 and finding 4 both shrink."
+    },
+    "blockingIssues": [
+      {
+        "rule": 4,
+        "label": "The headline saving the recommendation depends on is ungrounded",
+        "ceiling": "Needs targeted revision",
+        "evidence": [
+          {
+            "slide": 4,
+            "quote": "Switching to Supplier B delivers an 18% reduction in packaging spend."
+          }
+        ]
+      },
+      {
+        "rule": 1,
+        "label": "Slide 11 names a risk that would erase the saving the deck recommends acting on",
+        "ceiling": "Not ready for client review",
+        "evidence": [
+          {
+            "slide": 11,
+            "quote": "Supplier B's quote excludes inbound freight, which Client Z currently absorbs."
+          }
+        ]
+      }
+    ],
+    "scorecard": {
+      "diagnosticMean": 2.8,
+      "confidence": "Medium",
+      "effort": "8-12 hrs",
+      "dimensions": [
+        {
+          "name": "Client decision usefulness",
+          "result": "partial",
+          "checksPassed": 3,
+          "checksTotal": 4,
+          "note": "The decision is named on slide 2 and answered on slide 13. The first action is missing."
+        },
+        {
+          "name": "Problem framing",
+          "result": "pass",
+          "checksPassed": 4,
+          "checksTotal": 4,
+          "note": "Scope, success criteria and constraints all stated on slide 2 and held throughout."
+        },
+        {
+          "name": "Storyline and pyramid logic",
+          "result": "partial",
+          "checksPassed": 2,
+          "checksTotal": 4,
+          "note": "The governing insight arrives on slide 9, five slides later than it should."
+        },
+        {
+          "name": "Evidence quality",
+          "result": "fail",
+          "checksPassed": 1,
+          "checksTotal": 4,
+          "note": "The headline saving is unsourced. Two of three supplier quotes are undated."
+        },
+        {
+          "name": "Analysis and insight",
+          "result": "partial",
+          "checksPassed": 2,
+          "checksTotal": 4,
+          "note": "Costs are compared but the implication for the switching decision is never drawn."
+        },
+        {
+          "name": "Recommendation specificity",
+          "result": "partial",
+          "checksPassed": 3,
+          "checksTotal": 4,
+          "note": "Action and owner are named on slide 13. No measure of success."
+        },
+        {
+          "name": "Feasibility and implementation",
+          "result": "fail",
+          "checksPassed": 1,
+          "checksTotal": 4,
+          "note": "A full switch is recommended with no sequence, no dependency and no pilot."
+        },
+        {
+          "name": "Risks, assumptions and uncertainty",
+          "result": "partial",
+          "checksPassed": 2,
+          "checksTotal": 4,
+          "note": "Risks are listed on slide 11 but never fed back into the recommendation."
+        },
+        {
+          "name": "Slide-level communication",
+          "result": "partial",
+          "checksPassed": 2,
+          "checksTotal": 4,
+          "note": "Roughly half the titles are assertions. Slides 6 and 7 are topic labels."
+        },
+        {
+          "name": "Professionalism, tone and confidentiality",
+          "result": "pass",
+          "checksPassed": 4,
+          "checksTotal": 4,
+          "note": "Clean throughout. No individual named, no confidential data, certainty appropriate."
+        }
+      ]
+    },
+    "strengths": [
+      {
+        "point": "Slide 2 states the decision, the scope and what success looks like, which most draft decks never do.",
+        "quote": "This deck answers one question: should Client Z move packaging volume to a new supplier before the Q3 contract renewal.",
+        "slide": 2
+      },
+      {
+        "point": "The team says plainly where the data ran out instead of filling the gap with an estimate.",
+        "quote": "We could not obtain 2024 volumes for the northern depot and have excluded it from the comparison.",
+        "slide": 8
+      },
+      {
+        "point": "Slide 11 surfaces the freight exclusion rather than burying it, which is exactly the honesty the analysis needs.",
+        "quote": "Supplier B's quote excludes inbound freight, which Client Z currently absorbs.",
+        "slide": 11
+      }
+    ],
+    "findings": [
+      {
+        "short": "Risk erases the saving",
+        "title": "Slide 11 names a cost the recommendation does not account for, and it is large enough to remove the saving entirely.",
+        "severity": "critical",
+        "severityLabel": "High impact",
+        "deliveryCritical": true,
+        "issueType": "thinking",
+        "owner": "team",
+        "principle": "A risk you have already found belongs inside the recommendation, not in a list after it.",
+        "diagnosis": "Slide 4 presents the saving as the reason to switch. Slide 11 records that the quote behind it excludes inbound freight, a cost Client Z currently carries. The deck never returns to slide 4 to net the two, so the recommendation on slide 13 stands on a number the deck itself has already qualified.",
+        "evidence": [
+          {
+            "slide": 4,
+            "quote": "Switching to Supplier B delivers an 18% reduction in packaging spend."
+          },
+          {
+            "slide": 11,
+            "quote": "Supplier B's quote excludes inbound freight, which Client Z currently absorbs."
+          }
+        ],
+        "why": "If freight is material the saving could be small or negative, and the client would be switching suppliers for nothing. They would find this out after signing, which is the worst possible moment.",
+        "reflect": "What does inbound freight cost per year today, and what is the saving once you subtract it?",
+        "fix": "Net the freight into the headline before anything else changes. Show the saving on a landed-cost basis and let the recommendation follow whatever that number turns out to be. If freight is unknown, say so on slide 4 rather than slide 11.",
+        "tags": [
+          "contradiction",
+          "cost analysis"
+        ]
+      },
+      {
+        "short": "Saving unsourced",
+        "title": "The 18 percent saving that carries the whole deck has no source, no date and no method.",
+        "severity": "critical",
+        "severityLabel": "High impact",
+        "deliveryCritical": true,
+        "issueType": "evidence",
+        "owner": "team",
+        "principle": "The number the decision rests on carries its source on the same slide.",
+        "diagnosis": "Slide 4 states the saving as a fact. No quote reference, no date, no basis of comparison appears on the slide or in an appendix. Slides 5 and 6 compare unit prices but do not reconcile to 18 percent.",
+        "evidence": [
+          {
+            "slide": 4,
+            "quote": "Switching to Supplier B delivers an 18% reduction in packaging spend."
+          },
+          {
+            "slide": 6,
+            "quote": "Unit prices were collected from supplier websites and follow-up emails."
+          }
+        ],
+        "why": "An unsourced headline number is the fastest way to lose a client's trust in everything else in the deck. A procurement lead will ask where it came from in the first two minutes.",
+        "reflect": "Which quote, dated when, on what volume assumption, produces exactly 18 percent?",
+        "fix": "Put the derivation on the slide or one click away: the baseline spend, the quoted rates, the volume assumption and the date. If the quotes are stale, say how stale. A number the team cannot reconstruct in the meeting should not be the headline.",
+        "tags": [
+          "unsourced number",
+          "traceability"
+        ]
+      },
+      {
+        "short": "Only two of three",
+        "title": "The deck compares two suppliers and slide 7 records that a third was shortlisted and then dropped without explanation.",
+        "severity": "major",
+        "severityLabel": "Moderate",
+        "deliveryCritical": false,
+        "issueType": "thinking",
+        "owner": "team",
+        "principle": "A comparison the client can see holes in is a comparison they will not act on.",
+        "diagnosis": "Slide 7 lists three shortlisted suppliers. Slides 8 through 10 compare only two. Nothing in the deck says why Supplier C left the analysis, so the reader cannot tell whether it was excluded on merit or on convenience.",
+        "evidence": [
+          {
+            "slide": 7,
+            "quote": "Three suppliers were shortlisted: Supplier A, Supplier B and Supplier C."
+          }
+        ],
+        "why": "The client is being asked to switch on a two-way comparison when the team's own shortlist had three. If Supplier C was cheaper, the recommendation may be wrong. If it was excluded for a good reason, the deck is stronger for saying so.",
+        "reflect": "Why did Supplier C drop out, and would that reason survive the client asking about it?",
+        "fix": "Say what happened to Supplier C in one line on slide 7, with the reason. Either bring it back into the comparison or close it explicitly. An unexplained gap in a shortlist reads as an oversight even when it was a decision.",
+        "tags": [
+          "scope",
+          "comparison"
+        ]
+      },
+      {
+        "short": "No pilot step",
+        "title": "The deck recommends moving all volume at renewal with no pilot, no sequence and no way back.",
+        "severity": "major",
+        "severityLabel": "Moderate",
+        "deliveryCritical": false,
+        "issueType": "implementation",
+        "owner": "team",
+        "principle": "Where the downside is reversible, make it reversible on purpose.",
+        "diagnosis": "Slide 13 names the action and the owner but treats the switch as a single event at renewal. No depot-by-depot sequence, no trial volume, no dependency on the freight question from slide 11 and no exit if quality disappoints.",
+        "evidence": [
+          {
+            "slide": 13,
+            "quote": "Move all packaging volume to Supplier B at the Q3 renewal date."
+          }
+        ],
+        "why": "A co-operative this size cannot absorb a failed switch across every depot at once. A staged move costs a little margin and removes most of the risk, and the client will be far more likely to actually do it.",
+        "reflect": "Which single depot could run Supplier B for one quarter, and what would tell you it worked?",
+        "fix": "Sequence it. Name a first depot, a trial period and the measure that decides whether the rest follows. Tie the go decision to the freight number from slide 11 so the two open questions close together.",
+        "tags": [
+          "implementation",
+          "pilot"
+        ]
+      },
+      {
+        "short": "Titles are topics",
+        "title": "Slides 6 and 7 are labelled with topics rather than the point they make, so the argument stops being readable from the titles.",
+        "severity": "minor",
+        "severityLabel": "Minor",
+        "deliveryCritical": false,
+        "issueType": "communication",
+        "owner": "team",
+        "principle": "A partner reading only the titles should be able to reconstruct the argument.",
+        "diagnosis": "Most titles in this deck are assertions, which is why these two stand out. Slide 6 is titled Cost Comparison and slide 7 is titled Supplier Shortlist. Both slides make a point that the title does not carry.",
+        "evidence": [
+          {
+            "slide": 6,
+            "quote": "Cost Comparison"
+          },
+          {
+            "slide": 7,
+            "quote": "Supplier Shortlist"
+          }
+        ],
+        "why": "The rest of the deck reads well from the titles alone. These two break the chain in the middle, which is where the cost argument is being built.",
+        "reflect": "What does each of those two slides actually prove, in one sentence?",
+        "fix": "Replace both with the takeaway the slide supports. The test is whether someone reading only the titles in order still gets the argument.",
+        "tags": [
+          "action titles"
+        ]
+      }
+    ],
+    "comments": [],
+    "questionsForLead": [
+      "Are the supplier quotes on landed-cost or ex-works terms? Two findings turn on the answer.",
+      "Was Supplier C dropped for a reason the team can defend to the client?",
+      "Does Client Z have a depot that could run a one-quarter trial without disrupting the network?"
+    ],
+    "learningNote": {
+      "lesson": "A risk you have already discovered belongs inside the recommendation. Listing it separately looks like diligence and functions as a disclaimer.",
+      "weakHabit": "Finding the problem and then filing it, rather than letting it change the answer. The freight exclusion was known by slide 11 and the recommendation on slide 13 ignores it.",
+      "exercise": "Take every risk on your risk slide and write one sentence for each: if this is true, what changes about what we recommend. Anything that changes the recommendation is not a risk, it is a finding, and it moves forward in the deck.",
+      "principle": "Let the risk change the answer"
+    },
+    "notAssessed": [
+      "The supplier quotes themselves were not supplied, so whether the rates are current or on comparable terms was not checked.",
+      "Whether Supplier B can meet Client Z's volume was not assessed. No capacity evidence appears in the deck.",
+      "Visual design and chart construction. Only the deck text was reviewed."
+    ],
+    "timeline": {
+      "sections": [
+        {
+          "label": "Frame",
+          "span": 3
+        },
+        {
+          "label": "Cost case",
+          "span": 4
+        },
+        {
+          "label": "Comparison",
+          "span": 3
+        },
+        {
+          "label": "Risk",
+          "span": 2
+        },
+        {
+          "label": "Recommendation",
+          "span": 2
+        }
+      ],
+      "tiles": [
+        {
+          "slide": 1,
+          "state": "pass"
+        },
+        {
+          "slide": 2,
+          "state": "pass"
+        },
+        {
+          "slide": 3,
+          "state": "pass"
+        },
+        {
+          "slide": 4,
+          "state": "critical"
+        },
+        {
+          "slide": 5,
+          "state": "pass"
+        },
+        {
+          "slide": 6,
+          "state": "partial"
+        },
+        {
+          "slide": 7,
+          "state": "partial"
+        },
+        {
+          "slide": 8,
+          "state": "pass"
+        },
+        {
+          "slide": 9,
+          "state": "pass"
+        },
+        {
+          "slide": 10,
+          "state": "pass"
+        },
+        {
+          "slide": 11,
+          "state": "critical"
+        },
+        {
+          "slide": 12,
+          "state": "pass"
+        },
+        {
+          "slide": 13,
+          "state": "partial"
+        },
+        {
+          "slide": 14,
+          "state": "pass"
+        }
+      ],
+      "callouts": [
+        {
+          "at": 4,
+          "state": "critical",
+          "label": "Saving stated, not sourced"
+        },
+        {
+          "at": 7,
+          "state": "partial",
+          "label": "Third supplier disappears"
+        },
+        {
+          "at": 11,
+          "state": "critical",
+          "label": "Freight excluded"
+        },
+        {
+          "at": 13,
+          "state": "partial",
+          "label": "No pilot, no measure"
+        }
+      ],
+      "connectors": [
+        {
+          "from": 4,
+          "to": 11,
+          "label": "Saving claimed, then qualified"
+        },
+        {
+          "from": 7,
+          "to": 8,
+          "label": "Three shortlisted, two compared"
+        },
+        {
+          "from": 11,
+          "to": 13,
+          "label": "Risk named, recommendation unchanged"
+        }
+      ]
+    }
+  },
+  "pages": [
+    {
+      "n": 1,
+      "label": "Title"
+    },
+    {
+      "n": 2,
+      "label": "The question we answer"
+    },
+    {
+      "n": 3,
+      "label": "How we approached it"
+    },
+    {
+      "n": 4,
+      "label": "Headline: 18% saving"
+    },
+    {
+      "n": 5,
+      "label": "Current packaging spend"
+    },
+    {
+      "n": 6,
+      "label": "Cost Comparison"
+    },
+    {
+      "n": 7,
+      "label": "Supplier Shortlist"
+    },
+    {
+      "n": 8,
+      "label": "Supplier A in detail"
+    },
+    {
+      "n": 9,
+      "label": "Supplier B in detail"
+    },
+    {
+      "n": 10,
+      "label": "Service and lead times"
+    },
+    {
+      "n": 11,
+      "label": "Risks we identified"
+    },
+    {
+      "n": 12,
+      "label": "What this means"
+    },
+    {
+      "n": 13,
+      "label": "Recommendation"
+    },
+    {
+      "n": 14,
+      "label": "Appendix"
+    }
+  ],
+  "portfolio": [
+    {
+      "team": "Team Aurora",
+      "client": "Client Z",
+      "deliverable": "D2 draft deck",
+      "level": 1,
+      "blockers": 2,
+      "findings": 5,
+      "days": 1,
+      "effort": "8-12 hrs",
+      "note": "Freight exclusion could erase the whole saving."
+    },
+    {
+      "team": "Team Meridian",
+      "client": "Client Q",
+      "deliverable": "D3 final deck",
+      "level": 0,
+      "blockers": 3,
+      "findings": 5,
+      "days": 3,
+      "effort": "20-30 hrs",
+      "note": "Recommendation section is one page and names no action."
+    },
+    {
+      "team": "Team Kestrel",
+      "client": "Client M",
+      "deliverable": "D2 synthesis memo",
+      "level": 2,
+      "blockers": 1,
+      "findings": 3,
+      "days": 2,
+      "effort": "4-6 hrs",
+      "note": "One unsourced market figure, otherwise sound."
+    },
+    {
+      "team": "Team Solstice",
+      "client": "Client H",
+      "deliverable": "D1 problem frame",
+      "level": 3,
+      "blockers": 0,
+      "findings": 2,
+      "days": 5,
+      "effort": "2-3 hrs",
+      "note": "Clean. Two refinements, nothing blocking."
+    },
+    {
+      "team": "Team Vantage",
+      "client": "Client K",
+      "deliverable": "D3 implementation plan",
+      "level": 2,
+      "blockers": 1,
+      "findings": 4,
+      "days": 8,
+      "effort": "6-9 hrs",
+      "note": "Not reviewed in over a week. Renewal is in 10 days."
+    }
+  ],
+  "practice": {
+    "habit": "Let the risk change the answer",
+    "seen": 3,
+    "of": 4,
+    "history": [
+      {
+        "deliverable": "D1 problem frame",
+        "when": "Week 2",
+        "hit": false,
+        "note": "Nothing to trigger it. No risk section yet."
+      },
+      {
+        "deliverable": "D2 research plan",
+        "when": "Week 5",
+        "hit": true,
+        "note": "Named a data-access risk, plan unchanged."
+      },
+      {
+        "deliverable": "D2 synthesis memo",
+        "when": "Week 8",
+        "hit": true,
+        "note": "Sample-size caveat in a footnote, conclusion unqualified."
+      },
+      {
+        "deliverable": "D2 draft deck",
+        "when": "Week 11",
+        "hit": true,
+        "note": "Freight exclusion on slide 11, recommendation on 13 ignores it."
+      }
+    ],
+    "others": [
+      {
+        "habit": "Source the headline number",
+        "seen": 2,
+        "of": 4,
+        "trend": "flat"
+      },
+      {
+        "habit": "Sequence before you recommend",
+        "seen": 2,
+        "of": 4,
+        "trend": "improving"
+      },
+      {
+        "habit": "Action titles, not topics",
+        "seen": 1,
+        "of": 4,
+        "trend": "improving"
+      }
+    ]
+  },
+  "notice": "<b>Everything on this page is invented.</b> Client Z is not a real client and the deck it reviews does not exist. The content is here so the design can be judged, nothing more. Eight directions across two modes, switchable above."
+}

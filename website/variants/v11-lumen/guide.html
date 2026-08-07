@@ -31,44 +31,60 @@
 
 <section class="hero">
   <div class="wrap">
-    <span class="eyebrow">Design specification — not client-facing</span>
-    <h1>V11 — Lumen</h1>
-    <p class="lede"><strong>Thesis:</strong> clean institutional clarity — the calm, well-run register of a university consultancy society. White-dominant, generous whitespace, the verified 180DC green as a single confident accent, system fonts for zero asset weight. The design gets out of the way so a first-time visitor knows instantly where to go. Reference point (not template): Imperial College Union's consultancy society page — borrowed its institutional order and metadata-card device, kept none of its blue and none of its layout verbatim.</p>
-  </div>
-</section>
-
-<section class="band">
-  <div class="wrap">
-    <span class="eyebrow">Design system</span>
-    <h2>Specification</h2>
-    <div class="grid grid-2" style="margin-top:1.6rem">
-      <div class="card"><h3>Palette</h3><p>Paper <code>#FFFFFF</code>, green-tinted wash <code>#F6F9F1</code> for alternating bands, soft tint <code>#EAF3DF</code> for callouts/chips. Ink <code>#1A2417</code> (warm near-black), soft ink <code>#4C5748</code> for secondary text. The verified 180DC green <code>#78B038</code> is the only accent — fills, top-rules, chips; links and small green text drop to the AA-safe <code>#4A7322</code>. No second colour competes.</p></div>
-      <div class="card"><h3>Type</h3><p>System font stack (Segoe UI / SF / Roboto) — no web fonts, no asset weight, instant render, institutional-neutral. Weights 500/700/800; headings tight at −0.02em; uppercase 0.14em eyebrows.</p></div>
-      <div class="card"><h3>Layout &amp; spacing</h3><p>1080px measure, centred. Sections alternate white / wash so bands read without heavy colour. 10px radii, hairline <code>#E2E7DB</code> rules, one soft shadow on cards. Breadcrumb eyebrow on every page.</p></div>
-      <div class="card"><h3>Signature devices</h3><p>The metadata "fact chips" row (real facts only — founded, cities, first-branch); fact strip with green top-rules; service cards with a short green top-rule; a pill CTA in green; monogram team avatars (reserved for the photo session); a dotted vertical timeline for the engagement.</p></div>
+    <p class="crumb"><a href="index.html">Home</a><span>›</span>Delft–Rotterdam<span>›</span>Guide</p>
+    <div class="hero-row">
+      <div>
+        <h1>V11 —<br><span class="g">Lumen.</span></h1>
+        <p class="sub"><strong>Design specification — not client-facing.</strong></p>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="plain">
+<section class="block block--paper">
   <div class="wrap">
-    <span class="eyebrow">Method &amp; honesty</span>
-    <h2>How it was made &amp; how to extend it</h2>
-    <div style="max-width:62ch;margin-top:1.2rem">
-      <p style="margin-bottom:1rem"><strong>Build:</strong> hand-written static HTML/CSS, one stylesheet, no framework, no build step, no web fonts. The only assets are three compressed WebP logo files shared across the golden-set variants (globe mark + branch lockup + white wordmark). One JS-gated, reduced-motion-gated fade-in; everything renders without JavaScript.</p>
-      <p style="margin-bottom:1rem"><strong>Born correct on the rebrand spec:</strong> unlike the other variants, Lumen was built after the 2026-07-23 client feedback round, so it starts already-correct — the verified brand green (never the invented pine-green), the real logo and a green favicon, the affordable-not-free terminology, Project Manager / Branch President roles, the Mission and Our Work sections, the two real consulting cycles (Oct–Jan, Mar–Jun) and recruitment windows (Sept, Jan/Feb), and every honest placeholder. Content source: <code>website/variants/content-v2v3v7.md</code>.</p>
-      <p style="margin-bottom:1rem"><strong>Honesty devices:</strong> every gap is a visible green-tinted placeholder chip — impact numbers, case studies (with the Situation → Approach → Outcome structure shown), team photos, the roster (flagged pending Monday.com confirmation), recruitment portal, events, testimonials, partner logos, and the non-submitting form. Nothing is invented: no fake clients, numbers, photos, or logos.</p>
-      <p style="margin-bottom:1rem"><strong>To extend:</strong> new pages reuse <code>.card</code>, <code>.facts</code>, <code>.chip</code>, and the alternating band rhythm. Keep the one-accent rule — if a second colour wants in, it belongs to another variant. Keep the whitespace generous; the point of this variant is calm.</p>
+    <div class="welcome">
+      <div><span class="label">Thesis</span><h2 class="sm">A close homage to the Imperial College Union template</h2></div>
+      <div class="prose">
+        <p>This variant deliberately mirrors the structure of Imperial College Union's activity-page template (their consultancy society page was the direct reference): full-width flat colour-block sections, a giant display title with a metadata block in the hero, an "interested in joining?" callout with a pill button, and the signature committee list of huge names.</p>
+        <p>Recoloured to a white-dominant palette — ICU's loud orange and pink blocks become near-white green tints, and the footer keeps a deep green (ICU's own footer is green, and it happens to be exactly on-brand for us). The verified 180DC green <code>#78B038</code> is the single accent. Our content throughout; born already-correct on the 2026-07-23 rebrand spec.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="band">
+<section class="block block--tint">
   <div class="wrap">
-    <span class="eyebrow">Build log</span>
-    <h2>Log</h2>
-    <div style="max-width:62ch;margin-top:1.2rem">
-      <p style="margin-bottom:1rem"><strong>2026-07-24 — initial build (golden-set addition).</strong> Created as the fourth "golden set" variant alongside V2 (Port), V3 (De Stijl), and V7 (Polder) — the set the branch will A/B and human-label this semester. Passes the automated eval (<code>tools/eval-v2v3v7.mjs</code>, extended to cover v11): 0 FAIL. Zero horizontal overflow at 390px (<code>tools/check-overflow.mjs</code>). Distinct visual register from the other ten variants — none of them was clean-institutional.</p>
+    <span class="label">Design system</span>
+    <h2 class="sm">Specification</h2>
+    <div class="grid grid-2">
+      <div class="card"><h3>Palette</h3><p>Paper <code>#FFFFFF</code>, faint green block <code>#F3F8EC</code> and deeper green block <code>#E7F1D6</code> in place of ICU's orange and pink, callout <code>#EAF3DF</code> in place of its lilac. Ink <code>#14180F</code>, secondary <code>#55604B</code>. The verified 180DC green <code>#78B038</code> is the only accent (links drop to AA-safe <code>#4A7322</code>); the footer is a deep on-brand green <code>#23431C</code>.</p></div>
+      <div class="card"><h3>Type</h3><p>Heavy grotesque display via a system stack (Helvetica Neue / Arial / Segoe UI) at 800 weight, tight −0.03em, uppercase — the giant hero title and committee names read like ICU's. Body in system-ui. No web fonts, zero asset weight.</p></div>
+      <div class="card"><h3>Layout</h3><p>Full-bleed flat colour-block sections stacked top to bottom, 1240px inner measure. Hairline <code>#DDE4D2</code> rules. No radii except the pill buttons and social dots. Breadcrumb on every page.</p></div>
+      <div class="card"><h3>ICU devices, mirrored</h3><p>The giant display hero with a right-aligned metadata block (Founded / Cities / Network / Cost + a quality-system link + social dots); the "interested in joining?" callout with a pill button; the "products"-style colour block for services; and the committee list rendered as huge names with small role labels, separated by rules.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block block--paper">
+  <div class="wrap">
+    <span class="label">Method &amp; honesty</span>
+    <h2 class="sm">How it was made &amp; how to extend it</h2>
+    <div style="max-width:64ch;margin-top:1.2rem">
+      <p style="margin-bottom:1rem"><strong>Build:</strong> hand-written static HTML/CSS, one stylesheet, no framework, no build step, no web fonts. The only assets are three compressed WebP logo files shared across the golden-set variants. One JS-gated, reduced-motion-gated fade-in; everything renders without JavaScript.</p>
+      <p style="margin-bottom:1rem"><strong>Born correct on the rebrand spec:</strong> built after the 2026-07-23 client feedback round, so it starts already-correct — the verified brand green (never the invented pine-green), the real logo and a green favicon, the affordable-not-free terminology, Project Manager / Branch President roles, the Mission and Our Work sections, the two real consulting cycles (Oct–Jan, Mar–Jun) and recruitment windows (Sept, Jan/Feb), and every honest placeholder. Content source: <code>website/variants/content-v2v3v7.md</code>.</p>
+      <p style="margin-bottom:1rem"><strong>Honesty devices:</strong> every gap is a visible dashed-green placeholder — impact facts, case studies (with the Situation → Approach → Outcome structure shown), team photos, the roster (flagged pending Monday.com confirmation), recruitment portal, events, testimonials, partner logos, and the non-submitting form. Nothing is invented.</p>
+      <p style="margin-bottom:1rem"><strong>To extend:</strong> new pages stack more <code>.block</code> colour sections; reuse <code>.card</code>, <code>.callout</code>, <code>.committee</code>, and the metadata hero. Keep the one-accent rule and ICU's flat-block discipline — no gradients, no shadows.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block block--tint">
+  <div class="wrap">
+    <span class="label">Build log</span>
+    <h2 class="sm">Log</h2>
+    <div style="max-width:64ch;margin-top:1.2rem">
+      <p style="margin-bottom:1rem"><strong>2026-07-24 — rebuilt as a close ICU homage.</strong> First cut was a looser "clean institutional" take; on client feedback it was rebuilt to mirror the Imperial College Union activity-page template much more closely — flat colour-block sections, giant display type, metadata hero, and the committee-names list — recoloured white + green with our content. Fourth "golden set" variant alongside V2 (Port), V3 (De Stijl), V7 (Polder). Passes the automated eval (<code>tools/eval-v2v3v7.mjs</code>): 0 FAIL. Zero horizontal overflow at 390px.</p>
       <p style="margin-bottom:1rem"><strong>Outstanding blockers (shared with the golden set):</strong> (1) Monday.com roster confirmation pending — the <code>monday</code> MCP needs interactive OAuth; the roster shown is the live-page snapshot, flagged pending. (2) The "first multi-city branch" claim is confirmed live on 180dc.org and kept as-is; a one-line sign-off from Stefan Kluwer (Branch President) is recommended before treating it as fully final. (3) Case studies, team photos, testimonials, partner logos, and the recruitment/events links remain honest placeholders awaiting real content.</p>
       <p><strong>Still owed:</strong> standard Critic rounds (three, per the pipeline in <code>website/variants/RESUME-STATE.md</code>) — Lumen has had none yet.</p>
     </div>

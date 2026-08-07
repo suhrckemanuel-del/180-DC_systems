@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reviewer v2 — design directions</title>
+<style>
+  :root{
+    --green:#16A66A; --green-deep:#0F8455; --green-soft:#E8F6EF; --green-tint:#F1FAF5;
+    --panel:#F5F7F6; --ink:#111827; --ink-2:#1F2933; --muted:#6B7280; --muted-2:#9AA3AF;
+    --border:#DADDE3; --border-soft:#E7EAEE;
+    --amber:#E8910C; --amber-soft:#FDF4E3; --amber-border:#F4C77E;
+    --red:#E5534B; --red-soft:#FEF2F2; --red-border:#F6B6B1;
+    --blue:#3B6FD4; --blue-soft:#EEF3FD; --blue-border:#BFD2F4;
+    --shadow:0 1px 2px rgba(17,24,39,.04), 0 8px 28px rgba(17,24,39,.06);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:#EDEFF2; color:var(--ink); -webkit-font-smoothing:antialiased;
+    font-size:15px; line-height:1.5;
+  }
+  .shell{max-width:1240px;margin:0 auto;padding:18px 18px 70px}
+
+  .chooser{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    background:var(--ink);border-radius:var(--radius) var(--radius) 0 0;padding:12px 16px;
+  }
+  .chooser .lbl{color:#fff;font-weight:700;font-size:14px;letter-spacing:-.01em}
+  .chooser .sub{color:#9AA3AF;font-size:12.5px;flex:1;min-width:140px}
+  .picks{display:flex;gap:4px;background:rgba(255,255,255,.08);border-radius:10px;padding:4px}
+  .pick{border:0;background:transparent;font:inherit;font-size:13px;font-weight:600;
+    color:#C7CDD6;padding:7px 14px;border-radius:8px;cursor:pointer;white-space:nowrap}
+  .pick.on{background:#fff;color:var(--ink)}
+  .subbar{
+    background:#252C38;border-radius:0 0 var(--radius) var(--radius);padding:9px 16px;
+    display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;
+  }
+  .pick2{border:0;background:transparent;font:inherit;font-size:12.5px;font-weight:600;
+    color:#98A2B0;padding:6px 13px;border-radius:8px;cursor:pointer;white-space:nowrap}
+  .pick2.on{background:rgba(255,255,255,.13);color:#fff}
+  .notice{background:var(--blue-soft);border:1px solid var(--blue-border);border-radius:10px;
+    padding:10px 14px;margin:10px 0 0;font-size:12.5px;color:#274d96}
+  .notice b{font-weight:700}
+  .caption{font-size:12.5px;color:var(--muted);margin:0 0 14px;padding:0 4px}
+  .caption b{color:var(--ink-2)}
+  .stage{display:none}
+  .stage.on{display:block}
+
+  .appbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;
+    border:1px solid var(--border-soft);border-radius:var(--radius);padding:12px 16px;
+    box-shadow:var(--shadow);margin-bottom:14px}
+  .logo{font-weight:800;color:var(--green-deep);font-size:17px;letter-spacing:-.02em}
+  .divider{width:1px;height:26px;background:var(--border)}
+  .apptitle{font-weight:700;font-size:15px;letter-spacing:-.01em}
+  .appsub{font-size:12.5px;color:var(--muted)}
+  .spacer{flex:1}
+  .deckname{font-size:12.5px;color:var(--muted);text-align:right}
+  .deckname b{display:block;color:var(--ink-2);font-size:13px}
+  .seg{display:flex;gap:3px;background:var(--panel);border-radius:9px;padding:3px}
+  .seg button{border:0;background:transparent;font:inherit;font-size:12.5px;font-weight:600;
+    color:var(--muted);padding:6px 13px;border-radius:7px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(17,24,39,.08)}
+  .btn{border:1px solid var(--border);background:#fff;font:inherit;font-size:13px;font-weight:600;
+    color:var(--ink-2);padding:8px 14px;border-radius:9px;cursor:pointer}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+  .btn.primary:disabled{background:var(--border);border-color:var(--border);color:var(--muted-2)}
+  .btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+  .card{background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    padding:18px 20px;box-shadow:var(--shadow);margin-bottom:14px}
+  .kicker{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+  .quote{background:var(--panel);border-left:3px solid var(--border);border-radius:0 8px 8px 0;
+    padding:9px 12px;font-size:12.5px;font-style:italic;color:var(--ink-2)}
+  .quote .sl{display:block;font-style:normal;font-weight:700;font-size:10px;
+    text-transform:uppercase;letter-spacing:.06em;color:var(--muted-2);margin-bottom:3px}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:1px}
+  .dot.red{background:var(--red)} .dot.amber{background:var(--amber)} .dot.green{background:var(--green)}
+  textarea.attempt{width:100%;resize:vertical;font:inherit;font-size:13.5px;color:var(--ink);
+    border:1px solid var(--border);border-radius:10px;padding:10px 12px;outline:none;background:#fff}
+  textarea.attempt:focus{border-color:var(--green)}
+
+  /* ============ LEAD A ============ */
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+  .tile{background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    padding:15px 17px;box-shadow:var(--shadow)}
+  .tile .kicker{margin-bottom:9px;display:block}
+  .tile .val{font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+  .tile .val.sm{font-size:17px}
+  .stars{color:var(--green);font-size:13px;letter-spacing:2px;margin-left:5px}
+  .stars .off{color:var(--border)}
+  .critrow{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .crit{font-size:12px;font-weight:600;padding:5px 11px;border-radius:20px;
+    border:1px solid var(--amber-border);background:var(--amber-soft);color:#8a5a08}
+  .crit.pass{border-color:#BFE6D3;background:var(--green-soft);color:var(--green-deep)}
+  .crit.fail{border-color:var(--red-border);background:var(--red-soft);color:#a33}
+  .crit b{font-weight:700;opacity:.75;margin-left:3px}
+  .tl-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+  .tl-head h3{margin:0;font-size:16px;letter-spacing:-.01em}
+  .legend{display:flex;gap:14px;font-size:12px;color:var(--muted)}
+  .callband{position:relative;height:62px}
+  .callout{position:absolute;transform:translateX(-50%);font-size:11px;font-weight:600;
+    white-space:nowrap;padding:4px 9px;border-radius:7px;border:1px solid var(--red-border);
+    background:var(--red-soft);color:#a33}
+  .callout.r0{top:0} .callout.r1{top:30px}
+  .callout:after{content:"";position:absolute;left:50%;top:100%;width:1px;background:var(--red-border)}
+  .callout.r0:after{height:38px} .callout.r1:after{height:8px}
+  .strip{display:flex;gap:4px}
+  .sl-tile{flex:1;min-width:0;height:30px;border-radius:7px;display:flex;align-items:center;
+    justify-content:center;font-size:11.5px;font-weight:700;color:#fff;background:var(--green)}
+  .sl-tile.partial{background:var(--amber)} .sl-tile.critical{background:var(--red)}
+  .conns{margin-top:12px;display:flex;flex-direction:column;gap:5px}
+  .conn{font-size:12px;color:var(--muted)} .conn b{color:var(--ink-2)}
+  .footnote{text-align:center;font-size:12.5px;color:var(--muted);margin:16px 0 10px}
+  .ctas{display:flex;gap:10px;justify-content:center}
+
+  /* ============ DECK WALK (lead B + coach C share) ============ */
+  .walk{display:grid;grid-template-columns:186px 1fr;gap:14px;align-items:start}
+  .film{background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    padding:8px;box-shadow:var(--shadow);position:sticky;top:14px;max-height:78vh;overflow:auto}
+  .filmhead{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+    color:var(--muted-2);padding:5px 8px 8px}
+  .fr{display:flex;gap:9px;align-items:center;padding:7px 8px;border-radius:9px;cursor:pointer;
+    border:1px solid transparent}
+  .fr:hover{background:var(--panel)}
+  .fr.on{background:var(--green-tint);border-color:#BFE6D3}
+  .fr .n{flex:none;width:22px;height:22px;border-radius:6px;background:var(--panel);
+    border:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);
+    display:flex;align-items:center;justify-content:center}
+  .fr.critical .n{background:var(--red-soft);border-color:var(--red-border);color:var(--red)}
+  .fr.partial .n{background:var(--amber-soft);border-color:var(--amber-border);color:var(--amber)}
+  .fr.pass .n{background:var(--green-soft);border-color:#BFE6D3;color:var(--green-deep)}
+  .fr .t{font-size:11.5px;color:var(--ink-2);line-height:1.3;overflow:hidden}
+  .fr .c{margin-left:auto;font-size:10px;font-weight:700;color:var(--red);flex:none}
+  .fr .c.ok{color:var(--green-deep)}
+  .sheetwrap{display:grid;grid-template-columns:1fr 348px;gap:14px;align-items:start}
+  .sheet{background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    box-shadow:var(--shadow);min-height:390px;overflow:hidden}
+  .sheet-top{padding:10px 18px;border-bottom:1px solid var(--border-soft);
+    display:flex;align-items:center;gap:10px;background:var(--panel);flex-wrap:wrap}
+  .sheet-top .pg{font-size:11px;font-weight:700;color:var(--muted-2);text-transform:uppercase;letter-spacing:.07em}
+  .sheet-top .nm{font-size:13.5px;font-weight:650}
+  .linkchip{margin-left:auto;font-size:11px;font-weight:600;color:var(--blue);background:var(--blue-soft);
+    border:1px solid var(--blue-border);padding:3px 9px;border-radius:20px;cursor:pointer}
+  .linkchip:hover{background:#e2ebfb}
+  .sheet-body{padding:26px 30px}
+  .sheet-body h4{margin:0 0 14px;font-size:20px;letter-spacing:-.02em}
+  .skel{height:9px;border-radius:5px;background:var(--panel);margin-bottom:9px}
+  .skel.s1{width:96%} .skel.s2{width:88%} .skel.s3{width:92%} .skel.s4{width:60%}
+  .skel.hot{background:var(--red-soft);box-shadow:inset 0 0 0 1px var(--red-border)}
+  .skel.good{background:var(--green-soft);box-shadow:inset 0 0 0 1px #BFE6D3}
+  .margin{display:flex;flex-direction:column;gap:10px}
+  .mnote{background:#fff;border:1px solid var(--border-soft);border-left:3px solid var(--red);
+    border-radius:0 var(--radius) var(--radius) 0;padding:13px 15px;box-shadow:var(--shadow)}
+  .mnote.good{border-left-color:var(--green)}
+  .mnote .top{display:flex;gap:8px;align-items:center;margin-bottom:7px}
+  .mnote .av{width:20px;height:20px;border-radius:50%;background:var(--green-deep);color:#fff;
+    font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+  .mnote .who{font-size:11.5px;font-weight:700}
+  .mnote .tag{margin-left:auto;font-size:10px;font-weight:700;color:var(--red);
+    background:var(--red-soft);border:1px solid var(--red-border);padding:1px 7px;border-radius:20px}
+  .mnote .tag.good{color:var(--green-deep);background:var(--green-soft);border-color:#BFE6D3}
+  .mnote p{margin:0 0 8px;font-size:12.5px;color:var(--ink-2)}
+  .mnote .act{font-size:12px;color:var(--green-deep);font-weight:600}
+  .clean{background:var(--green-tint);border:1px dashed #BFE6D3;border-radius:var(--radius);
+    padding:22px 16px;text-align:center;font-size:12.5px;color:var(--green-deep)}
+  .walknav{display:flex;gap:8px;justify-content:space-between;margin-top:12px;align-items:center}
+  .kbd{font-size:11.5px;color:var(--muted-2)}
+  .kbd b{background:var(--panel);border:1px solid var(--border);border-radius:5px;
+    padding:1px 6px;font-size:10.5px;color:var(--ink-2)}
+
+  /* ============ LEAD C ============ */
+  .desk{display:grid;grid-template-columns:1fr 380px;gap:14px;align-items:start}
+  .wl{background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    box-shadow:var(--shadow);overflow:hidden}
+  .wl-head{padding:13px 18px;border-bottom:1px solid var(--border-soft);display:flex;
+    align-items:center;gap:10px;flex-wrap:wrap}
+  .wl-head .t{font-size:14px;font-weight:700}
+  .wl-head .s{font-size:12.5px;color:var(--muted)}
+  .row{padding:15px 18px;border-bottom:1px solid var(--border-soft);transition:opacity .15s}
+  .row:last-child{border-bottom:0}
+  .row.cut{opacity:.4}
+  .row-top{display:flex;gap:10px;align-items:flex-start;margin-bottom:9px}
+  .sev{flex:none;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;margin-top:2px;
+    background:var(--red-soft);color:var(--red);border:1px solid var(--red-border)}
+  .sev.major{background:var(--amber-soft);color:#8a5a08;border-color:var(--amber-border)}
+  .sev.minor{background:var(--panel);color:var(--muted);border-color:var(--border)}
+  .row-title{font-size:14px;font-weight:650;letter-spacing:-.01em;line-height:1.35}
+  .row .quote{margin:0 0 10px}
+  .tri{display:flex;gap:4px;background:var(--panel);border-radius:9px;padding:3px;width:fit-content}
+  .tri button{border:0;background:transparent;font:inherit;font-size:12px;font-weight:600;
+    color:var(--muted);padding:5px 13px;border-radius:7px;cursor:pointer}
+  .tri button.on{background:#fff;box-shadow:0 1px 2px rgba(17,24,39,.1)}
+  .tri button.on[data-v="keep"]{color:var(--green-deep)}
+  .tri button.on[data-v="ask"]{color:var(--blue)}
+  .tri button.on[data-v="cut"]{color:var(--red)}
+  .note{background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    box-shadow:var(--shadow);position:sticky;top:14px;overflow:hidden}
+  .note-head{padding:13px 17px;border-bottom:1px solid var(--border-soft);background:var(--panel)}
+  .note-head .t{font-size:13px;font-weight:700}
+  .note-head .s{font-size:12px;color:var(--muted);margin-top:2px}
+  .note-body{padding:16px 17px;font-size:12.5px;color:var(--ink-2);max-height:46vh;overflow:auto;
+    -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 26px),transparent 100%);
+    mask-image:linear-gradient(to bottom,#000 calc(100% - 26px),transparent 100%)}
+  .note-body .greet{margin:0 0 11px}
+  .note-body ol{margin:0 0 12px;padding-left:19px}
+  .note-body li{margin-bottom:9px}
+  .note-body li b{display:block;font-weight:650}
+  .note-body .q{font-size:11.5px;color:var(--muted);font-style:italic}
+  .note-body .askline{color:var(--blue)}
+  .verdictpick{padding:13px 17px;border-top:1px solid var(--border-soft);background:var(--green-tint)}
+  .verdictpick .kicker{display:block;margin-bottom:8px}
+  .vopts{display:flex;flex-direction:column;gap:5px}
+  .vopt{display:flex;align-items:center;gap:8px;font-size:12.5px;cursor:pointer;padding:5px 8px;
+    border-radius:8px;border:1px solid transparent}
+  .vopt:hover{background:#fff}
+  .vopt.on{background:#fff;border-color:#BFE6D3;font-weight:650}
+  .vopt .ai{margin-left:auto;font-size:10px;font-weight:700;color:var(--muted-2);
+    border:1px solid var(--border);padding:1px 6px;border-radius:20px}
+  .note-foot{padding:13px 17px;border-top:1px solid var(--border-soft);display:flex;gap:8px}
+  .warn{margin:0 17px 13px;padding:9px 11px;border-radius:9px;background:var(--blue-soft);
+    border:1px solid var(--blue-border);font-size:11.5px;color:#274d96}
+
+  /* ============ COACH A (original) ============ */
+  .coachwrap{display:grid;grid-template-columns:250px 1fr;gap:14px;align-items:start}
+  .flist{background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    padding:8px;box-shadow:var(--shadow)}
+  .fitem{display:flex;gap:9px;align-items:center;padding:9px;border-radius:9px;cursor:pointer;
+    border:1px solid transparent;font-size:12.5px}
+  .fitem:hover{background:var(--panel)}
+  .fitem.on{background:var(--green-tint);border-color:#BFE6D3;font-weight:650}
+  .fitem .i{flex:none;width:21px;height:21px;border-radius:6px;background:var(--red-soft);
+    border:1px solid var(--red-border);color:var(--red);font-size:11px;font-weight:700;
+    display:flex;align-items:center;justify-content:center}
+  .fitem .done{margin-left:auto;color:var(--green-deep);font-weight:700;font-size:12px}
+  .block-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+    color:var(--muted-2);margin:15px 0 5px}
+  .prose{font-size:13.5px;color:var(--ink-2)}
+  .reflect{background:var(--green-tint);border:1px solid #BFE6D3;border-radius:10px;
+    padding:11px 13px;font-size:13.5px;font-weight:600;color:var(--green-deep);margin-bottom:10px}
+  .locked{margin-top:12px;border:1.5px dashed var(--border);border-radius:12px;padding:14px 16px;
+    color:var(--muted-2);font-size:13px;display:flex;align-items:center;gap:9px}
+  .gate-row{display:flex;align-items:center;gap:12px;margin-top:12px}
+  .gate-note{font-size:12px;color:var(--muted)}
+  .nav{display:flex;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border-soft)}
+
+  /* ============ COACH B (thread) ============ */
+  .thread{max-width:760px;margin:0 auto}
+  .tprog{display:flex;gap:5px;margin-bottom:14px}
+  .tprog .p{flex:1;height:5px;border-radius:3px;background:var(--border)}
+  .tprog .p.done{background:var(--green)}
+  .tprog .p.cur{background:var(--amber)}
+  .bub{display:flex;gap:11px;margin-bottom:14px;align-items:flex-start}
+  .bub .av{width:29px;height:29px;border-radius:50%;flex:none;display:flex;align-items:center;
+    justify-content:center;font-size:11px;font-weight:700;color:#fff;background:var(--green-deep)}
+  .bub.me{flex-direction:row-reverse}
+  .bub.me .av{background:var(--ink-2)}
+  .bub .body{background:#fff;border:1px solid var(--border-soft);border-radius:14px;
+    padding:13px 16px;box-shadow:var(--shadow);max-width:82%}
+  .bub.me .body{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .bub .body p{margin:0 0 9px;font-size:13.5px}
+  .bub .body p:last-child{margin:0}
+  .bub .body .qs{font-size:13.5px;font-weight:650;color:var(--green-deep)}
+  .bub .body .quote{margin:9px 0}
+  .composer{background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    padding:13px 15px;box-shadow:var(--shadow);position:sticky;bottom:14px}
+  .composer .row2{display:flex;gap:9px;align-items:flex-end;margin-top:9px}
+  .cnt{font-size:11.5px;color:var(--muted-2);flex:1}
+  .cnt.ok{color:var(--green-deep);font-weight:600}
+
+  /* ============ COACH C (fix desk) ============ */
+  .prog{background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    padding:13px 17px;box-shadow:var(--shadow);margin-bottom:14px;display:flex;
+    align-items:center;gap:14px;flex-wrap:wrap}
+  .bar{flex:1;min-width:160px;height:8px;border-radius:5px;background:var(--panel);overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--green);border-radius:5px;transition:width .25s}
+  .todo{background:#fff;border:1px solid var(--border-soft);border-left:3px solid var(--amber);
+    border-radius:0 var(--radius) var(--radius) 0;padding:14px 16px;box-shadow:var(--shadow);margin-bottom:10px}
+  .todo.done{border-left-color:var(--green);opacity:.62}
+  .todo .h{display:flex;gap:9px;align-items:flex-start;margin-bottom:8px}
+  .todo .ck{flex:none;width:19px;height:19px;border-radius:6px;border:1.5px solid var(--border);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;
+    color:transparent;margin-top:2px}
+  .todo.done .ck{background:var(--green);border-color:var(--green);color:#fff}
+  .todo .ttl{font-size:13.5px;font-weight:650;line-height:1.35}
+  .todo .ask{font-size:12.5px;color:var(--green-deep);font-weight:600;margin:9px 0 7px}
+
+  /* ============ LEAD D: THE ROUNDS ============ */
+  .roundhead{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+  .rh{background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    padding:13px 15px;box-shadow:var(--shadow);border-top:3px solid var(--border)}
+  .rh.r0{border-top-color:var(--red)} .rh.r1{border-top-color:#E8734B}
+  .rh.r2{border-top-color:var(--amber)} .rh.r3{border-top-color:var(--green)}
+  .rh .num{font-size:24px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .rh .lab{font-size:11.5px;color:var(--muted);margin-top:4px}
+  .rounds{background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    box-shadow:var(--shadow);overflow:hidden}
+  .rrow{display:grid;grid-template-columns:26px 1.5fr 1.3fr 1fr 96px 120px;gap:12px;
+    padding:14px 18px;border-bottom:1px solid var(--border-soft);align-items:center}
+  .rrow:last-child{border-bottom:0}
+  .rrow.hdr{background:var(--panel);padding:9px 18px;font-size:10.5px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.07em;color:var(--muted-2)}
+  .rank{width:23px;height:23px;border-radius:7px;background:var(--ink);color:#fff;font-size:11.5px;
+    font-weight:700;display:flex;align-items:center;justify-content:center}
+  .rank.low{background:var(--border);color:var(--muted)}
+  .rteam{font-size:13.5px;font-weight:650} .rteam span{display:block;font-size:11.5px;
+    font-weight:400;color:var(--muted)}
+  .rnote{font-size:12px;color:var(--ink-2)}
+  .pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;
+    background:var(--panel);color:var(--muted);border:1px solid var(--border);display:inline-block}
+  .pill.r0{background:var(--red-soft);color:#a33;border-color:var(--red-border)}
+  .pill.r1{background:#FEF0EA;color:#B4501F;border-color:#F3C3AB}
+  .pill.r2{background:var(--amber-soft);color:#8a5a08;border-color:var(--amber-border)}
+  .pill.r3{background:var(--green-soft);color:var(--green-deep);border-color:#BFE6D3}
+  .stale{font-size:11.5px;color:var(--muted)} .stale.old{color:var(--red);font-weight:650}
+
+  /* ============ COACH D: THE PRACTICE ============ */
+  .hero{background:linear-gradient(135deg,#0F8455,#16A66A);border-radius:var(--radius);
+    padding:24px 26px;color:#fff;margin-bottom:14px;box-shadow:var(--shadow)}
+  .hero .k{font-size:11px;text-transform:uppercase;letter-spacing:.09em;opacity:.8;font-weight:700}
+  .hero h2{margin:8px 0 10px;font-size:27px;letter-spacing:-.03em;line-height:1.15}
+  .hero p{margin:0;font-size:14px;opacity:.94;max-width:640px}
+  .hero .cnt{margin-top:16px;display:flex;gap:8px;align-items:center}
+  .hd{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.18);
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
+    border:1px solid rgba(255,255,255,.28)}
+  .hd.hit{background:#fff;color:var(--green-deep);border-color:#fff}
+  .hd .x{font-size:15px}
+  .trace{display:flex;flex-direction:column;gap:0}
+  .tr{display:grid;grid-template-columns:96px 22px 1fr;gap:12px;align-items:start;padding:12px 0}
+  .tr .when{font-size:12px;color:var(--muted);font-weight:650;text-align:right;padding-top:1px}
+  .tr .mk{position:relative;display:flex;justify-content:center}
+  .tr .mk i{width:12px;height:12px;border-radius:50%;background:var(--border);
+    border:2px solid #fff;box-shadow:0 0 0 1px var(--border);z-index:1}
+  .tr.hit .mk i{background:var(--amber);box-shadow:0 0 0 1px var(--amber)}
+  .tr .mk:before{content:"";position:absolute;top:12px;bottom:-14px;width:2px;background:var(--border-soft)}
+  .tr:last-child .mk:before{display:none}
+  .tr .txt{font-size:13px}
+  .tr .txt b{display:block;font-size:13.5px}
+  .tr .txt span{color:var(--muted);font-size:12.5px}
+  .habits{display:flex;flex-direction:column;gap:9px}
+  .hb{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--panel);
+    border-radius:10px;font-size:13px}
+  .hb .bars{display:flex;gap:3px;margin-left:auto}
+  .hb .bars i{width:15px;height:7px;border-radius:2px;background:var(--border)}
+  .hb .bars i.on{background:var(--amber)}
+  .hb .tt{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;
+    background:var(--green-soft);color:var(--green-deep);border:1px solid #BFE6D3}
+  .hb .tt.flat{background:var(--panel);color:var(--muted);border-color:var(--border)}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+
+  @media(max-width:1040px){
+    .roundhead{grid-template-columns:repeat(2,1fr)}
+    .rrow{grid-template-columns:26px 1fr;gap:8px}
+    .rrow.hdr{display:none}
+    .twocol{grid-template-columns:1fr}
+    .tiles{grid-template-columns:repeat(2,1fr)}
+    .walk,.coachwrap{grid-template-columns:1fr}
+    .film{position:static;max-height:none;display:flex;overflow-x:auto}
+    .filmhead{display:none}
+    .fr{flex-direction:column;min-width:76px;text-align:center}
+    .fr .t{display:none}
+    .sheetwrap,.desk{grid-template-columns:1fr}
+    .note{position:static}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="chooser">
+    <div class="lbl" id="modeLbl">Team Lead Mode</div>
+    <div class="sub">Same review, same data. Only the shape changes.</div>
+    <div class="picks">
+      <button class="pick on" data-m="l">Team lead</button>
+      <button class="pick" data-m="c">Student coach</button>
+    </div>
+  </div>
+  <div class="subbar" id="subbar"></div>
+  <div id="notice"></div>
+  <div class="caption" id="cap"></div>
+
+  <div class="stage on" id="stage-la"></div>
+  <div class="stage" id="stage-lb"></div>
+  <div class="stage" id="stage-lc"></div>
+  <div class="stage" id="stage-ld"></div>
+  <div class="stage" id="stage-ca"></div>
+  <div class="stage" id="stage-cb"></div>
+  <div class="stage" id="stage-cc"></div>
+  <div class="stage" id="stage-cd"></div>
+
+</div>
+
+<script id="data" type="application/json">__DATA__</script>
+<script>
+var D = JSON.parse(document.getElementById('data').textContent);
+var R = D.review, PAGES = D.pages;
+var LEVELS = ['Not ready for client review','Needs substantial revision',
+              'Needs targeted revision','Nearly ready with minor edits'];
+var ATTEMPT_MIN = 40;
+
+var DIRS = {
+  l: [['la','A · Original'],['lb','B · Deck Walk'],['lc','C · Triage Desk']],
+  c: [['ca','A · Original'],['cb','B · Coach Thread'],['cc','C · Fix Desk']]
+};
+if(D.portfolio) DIRS.l.push(['ld','D · The Rounds']);
+if(D.practice)  DIRS.c.push(['cd','D · The Practice']);
+var CAPS = {
+  la:'<b>A. The original.</b> Status board. Verdict, score and the deck strip above the fold. The verdict is the biggest thing on screen.',
+  lb:'<b>B. The deck walk.</b> The deck is the interface. Arrow keys move you page to page. Strengths show as green notes, contradictions link the two pages together, and clean pages say so.',
+  lc:'<b>C. The triage desk.</b> The AI drafts, you decide. Keep, ask or cut each finding and the note writes itself. The readiness call is yours.',
+  ca:'<b>A. The original.</b> One finding at a time. Four prose blocks, then the reflect question, then two boxes, then the fix unlocks. Faithful to what is built today, density and all.',
+  cb:'<b>B. The coach thread.</b> Same gate, shaped as a conversation. The reviewer asks, you answer, it responds and opens up. Type 40 characters and watch it unlock.',
+  cc:'<b>C. The fix desk.</b> The student side of the deck walk. Your pages, your open items, checked off as you go. Progress is pages resolved, not findings read.',
+  ld:'<b>D. The rounds.</b> A different altitude. A lead runs four or five teams, not one deck, so the screen answers "where does my next hour go" across all of them. Ranked by risk and by staleness, not alphabetically.',
+  cd:'<b>D. The practice.</b> Coaching across deliverables instead of inside one. It tracks the habit you keep repeating, shows where it showed up, and gives you the drill. This deck is one data point in a longer line.'
+};
+
+function esc(s){ return String(s == null ? '' : s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function tileState(n){
+  var t = (R.timeline.tiles || []).filter(function(x){ return x.slide === n; })[0];
+  return t ? t.state : 'pass';
+}
+function findingsOn(n){
+  return R.findings.filter(function(f){
+    return (f.evidence || []).some(function(e){ return e.slide === n; });
+  });
+}
+function strengthsOn(n){ return (R.strengths || []).filter(function(s){ return s.slide === n; }); }
+function quoteOn(f, n){ return (f.evidence || []).filter(function(e){ return e.slide === n; })[0]; }
+function linksFor(n){
+  return (R.timeline.connectors || []).filter(function(c){ return c.from === n || c.to === n; });
+}
+function flaggedPages(){
+  return PAGES.filter(function(p){ return findingsOn(p.n).length; }).map(function(p){ return p.n; });
+}
+
+/* ---------------- LEAD A ---------------- */
+function renderLA(){
+  var lvl = LEVELS.indexOf(R.readiness.level);
+  var dotc = lvl >= 3 ? 'green' : (lvl >= 2 ? 'amber' : 'red');
+  var score = R.scorecard.diagnosticMean, full = Math.round(score), stars = '';
+  for(var i=1;i<=5;i++) stars += (i <= full ? '<span>&#9733;</span>' : '<span class="off">&#9733;</span>');
+  var n = R.meta.slideCount;
+
+  document.getElementById('stage-la').innerHTML =
+   '<div class="appbar"><div class="logo">180DC</div><div class="divider"></div>' +
+   '<div><div class="apptitle">Team Lead Mode</div><div class="appsub">Deck readiness at a glance</div></div>' +
+   '<div class="seg"><button class="on">Team Lead</button><button>Student</button></div>' +
+   '<button class="btn">New review</button><div class="spacer"></div>' +
+   '<div class="deckname"><b>' + esc(R.meta.client) + '</b>' + n + ' pages analyzed &middot; Review v2</div></div>' +
+   '<div class="tiles">' +
+     '<div class="tile"><span class="kicker">Verdict</span><div class="val sm"><span class="dot ' +
+       dotc + '"></span>' + esc(R.readiness.level) + '</div></div>' +
+     '<div class="tile"><span class="kicker">Score</span><div class="val">' + score.toFixed(1) +
+       ' / 5<span class="stars">' + stars + '</span></div></div>' +
+     '<div class="tile"><span class="kicker">Estimated effort</span><div class="val">' +
+       esc(R.scorecard.effort) + '</div></div>' +
+     '<div class="tile"><span class="kicker">Confidence</span><div class="val"><span class="dot ' +
+       (R.readiness.confidence === 'High' ? 'green' : R.readiness.confidence === 'Medium' ? 'amber' : 'red') +
+       '"></span>' + esc(R.readiness.confidence) + '</div></div></div>' +
+   '<div class="critrow"><span class="kicker">Ten criteria</span>' +
+     R.scorecard.dimensions.map(function(d){
+       var cls = d.result === 'pass' ? 'pass' : d.result === 'fail' ? 'fail' : '';
+       return '<span class="crit ' + cls + '">' + esc(d.name) + '<b>' + d.checksPassed + '/' +
+              d.checksTotal + '</b></span>';
+     }).join('') + '</div>' +
+   '<div class="card"><div class="tl-head"><h3>Deck timeline</h3><div class="legend">' +
+     '<span><span class="dot green"></span>Pass</span><span><span class="dot amber"></span>Partial issue</span>' +
+     '<span><span class="dot red"></span>Critical issue</span></div></div>' +
+     '<div class="callband">' + (R.timeline.callouts || []).map(function(c, i){
+       return '<div class="callout r' + (i % 2) + '" style="left:' +
+              (((c.at - 0.5) / n) * 100).toFixed(2) + '%">' + esc(c.label) + '</div>';
+     }).join('') + '</div>' +
+     '<div class="strip">' + (R.timeline.tiles || []).map(function(t){
+       return '<div class="sl-tile ' + t.state + '">' + t.slide + '</div>';
+     }).join('') + '</div>' +
+     '<div class="conns">' + (R.timeline.connectors || []).map(function(c){
+       return '<div class="conn"><b>' + c.from + ' &rarr; ' + c.to + '.</b> ' + esc(c.label) + '</div>';
+     }).join('') + '</div></div>' +
+   '<div class="footnote">Student mode locks each fix until the consultant attempts it first. No ghostwriting.</div>' +
+   '<div class="ctas"><button class="btn primary">Send back with notes</button>' +
+   '<button class="btn">Coach me through the findings</button></div>';
+}
+
+/* ---------------- LEAD B: DECK WALK ---------------- */
+var walkPage = 3, walkFilter = 'all';
+function renderLB(){
+  var flagged = flaggedPages();
+  var clean = R.meta.slideCount - flagged.length;
+  var shown = PAGES.filter(function(p){
+    return walkFilter === 'all' || findingsOn(p.n).length;
+  });
+
+  var h = '<div class="appbar"><div class="logo">180DC</div><div class="divider"></div>' +
+    '<div><div class="apptitle">Walk the deck</div><div class="appsub">' +
+      esc(R.readiness.level) + ' &middot; ' + R.findings.length + ' findings on ' +
+      flagged.length + ' pages &middot; ' + clean + ' pages clean</div></div>' +
+    '<div class="spacer"></div>' +
+    '<div class="seg"><button data-f="all" class="' + (walkFilter === 'all' ? 'on' : '') + '">All pages</button>' +
+      '<button data-f="flag" class="' + (walkFilter === 'flag' ? 'on' : '') + '">Flagged only</button></div>' +
+    '<button class="btn" id="nextIssue">Jump to next issue</button>' +
+    '<button class="btn primary">Send back with notes</button></div>';
+
+  h += '<div class="walk"><div class="film"><div class="filmhead">' +
+       (walkFilter === 'all' ? 'All ' + R.meta.slideCount + ' pages' : flagged.length + ' flagged pages') +
+       '</div>' +
+       shown.map(function(p){
+         var st = tileState(p.n), fs = findingsOn(p.n), ss = strengthsOn(p.n);
+         return '<div class="fr ' + st + (p.n === walkPage ? ' on' : '') + '" data-p="' + p.n + '">' +
+           '<div class="n">' + p.n + '</div><div class="t">' + esc(p.label) + '</div>' +
+           (fs.length ? '<div class="c">' + fs.length + '</div>' :
+             ss.length ? '<div class="c ok">&#10003;</div>' : '') + '</div>';
+       }).join('') + '</div>';
+
+  var pg = PAGES.filter(function(p){ return p.n === walkPage; })[0];
+  var fs = findingsOn(walkPage), ss = strengthsOn(walkPage), lk = linksFor(walkPage);
+
+  h += '<div><div class="sheetwrap"><div class="sheet">' +
+    '<div class="sheet-top"><span class="pg">Page ' + pg.n + ' of ' + R.meta.slideCount + '</span>' +
+    '<span class="nm">' + esc(pg.label) + '</span>' +
+    lk.map(function(c){
+      var other = c.from === walkPage ? c.to : c.from;
+      return '<span class="linkchip" data-jump="' + other + '">&#8644; page ' + other + ' &middot; ' +
+             esc(c.label) + '</span>';
+    }).join('') +
+    '</div><div class="sheet-body"><h4>' + esc(pg.label) + '</h4>' +
+      ['s1','s2','s3','s1','s2','s4'].map(function(c, i){
+        var cls = c;
+        if(fs.length && (i === 1 || i === 4)) cls += ' hot';
+        else if(!fs.length && ss.length && i === 2) cls += ' good';
+        return '<div class="skel ' + cls + '"></div>';
+      }).join('') + '</div></div>';
+
+  h += '<div class="margin">';
+  if(fs.length || ss.length){
+    h += fs.map(function(f){
+      var q = quoteOn(f, walkPage);
+      return '<div class="mnote"><div class="top"><div class="av">AI</div><div class="who">Reviewer</div>' +
+        '<span class="tag">' + esc(f.severityLabel) + '</span></div>' +
+        '<p>' + esc(f.title) + '</p>' +
+        (q ? '<div class="quote"><span class="sl">on this page</span>' + esc(q.quote) + '</div>' : '') +
+        '<p style="margin-top:8px" class="act">&rarr; ' + esc(f.fix.split('. ')[0]) + '.</p></div>';
+    }).join('');
+    h += ss.map(function(s){
+      return '<div class="mnote good"><div class="top"><div class="av">AI</div><div class="who">Reviewer</div>' +
+        '<span class="tag good">Works well</span></div><p>' + esc(s.point) + '</p>' +
+        '<div class="quote"><span class="sl">on this page</span>' + esc(s.quote) + '</div></div>';
+    }).join('');
+  } else {
+    h += '<div class="clean"><b>Nothing flagged on this page.</b><br />' +
+         'The reviewer read it and had no comment.</div>';
+  }
+  h += '</div></div>';
+
+  h += '<div class="walknav"><button class="btn" data-nav="-1">&larr; Previous</button>' +
+       '<div class="kbd">Use <b>&larr;</b> <b>&rarr;</b> to walk the deck</div>' +
+       '<button class="btn" data-nav="1">Next &rarr;</button></div></div></div>';
+
+  var el = document.getElementById('stage-lb');
+  el.innerHTML = h;
+
+  Array.prototype.forEach.call(el.querySelectorAll('.fr'), function(x){
+    x.onclick = function(){ walkPage = +x.dataset.p; renderLB(); };
+  });
+  Array.prototype.forEach.call(el.querySelectorAll('[data-nav]'), function(x){
+    x.onclick = function(){ stepWalk(+x.dataset.nav); };
+  });
+  Array.prototype.forEach.call(el.querySelectorAll('[data-f]'), function(x){
+    x.onclick = function(){ walkFilter = x.dataset.f; renderLB(); };
+  });
+  Array.prototype.forEach.call(el.querySelectorAll('[data-jump]'), function(x){
+    x.onclick = function(){ walkPage = +x.dataset.jump; renderLB(); };
+  });
+  el.querySelector('#nextIssue').onclick = function(){
+    var f = flaggedPages(), nxt = f.filter(function(p){ return p > walkPage; })[0];
+    walkPage = nxt === undefined ? f[0] : nxt;
+    renderLB();
+  };
+}
+function stepWalk(d){
+  var list = walkFilter === 'all'
+    ? PAGES.map(function(p){ return p.n; })
+    : flaggedPages();
+  var i = list.indexOf(walkPage);
+  if(i === -1) i = 0;
+  walkPage = list[Math.min(list.length - 1, Math.max(0, i + d))];
+  renderLB();
+}
+document.addEventListener('keydown', function(e){
+  if(!document.getElementById('stage-lb').classList.contains('on')) return;
+  if(e.key === 'ArrowLeft') stepWalk(-1);
+  if(e.key === 'ArrowRight') stepWalk(1);
+});
+
+/* ---------------- LEAD C: TRIAGE ---------------- */
+var triage = {}, leadLevel = null;
+function renderLC(){
+  R.findings.forEach(function(f, i){ if(!triage[i]) triage[i] = 'keep'; });
+  if(leadLevel === null) leadLevel = LEVELS.indexOf(R.readiness.level);
+  var kept = R.findings.filter(function(f, i){ return triage[i] === 'keep'; });
+  var asked = R.findings.filter(function(f, i){ return triage[i] === 'ask'; });
+  var cutN = R.findings.filter(function(f, i){ return triage[i] === 'cut'; }).length;
+
+  var h = '<div class="appbar"><div class="logo">180DC</div><div class="divider"></div>' +
+    '<div><div class="apptitle">Triage desk</div><div class="appsub">The reviewer drafted ' +
+    R.findings.length + ' findings. You decide what goes back.</div></div><div class="spacer"></div>' +
+    '<div class="deckname"><b>' + esc(R.meta.client) + '</b>' + R.meta.slideCount +
+    ' pages &middot; ' + esc(R.meta.mode) + ' mode</div></div>';
+
+  h += '<div class="desk"><div class="wl"><div class="wl-head"><div class="t">Drafted findings</div>' +
+    '<div class="s">' + kept.length + ' keep &middot; ' + asked.length + ' ask &middot; ' + cutN + ' cut</div></div>' +
+    R.findings.map(function(f, i){
+      var q = (f.evidence || [])[0];
+      return '<div class="row ' + (triage[i] === 'cut' ? 'cut' : '') + '">' +
+        '<div class="row-top"><span class="sev ' + f.severity + '">' + esc(f.severityLabel) + '</span>' +
+        '<div class="row-title">' + esc(f.title) + '</div></div>' +
+        (q ? '<div class="quote"><span class="sl">Page ' + q.slide + '</span>' + esc(q.quote) + '</div>' : '') +
+        '<div class="tri" data-i="' + i + '">' + ['keep','ask','cut'].map(function(v){
+          var lab = v === 'keep' ? 'Keep' : v === 'ask' ? 'Turn into a question' : 'Cut';
+          return '<button data-v="' + v + '" class="' + (triage[i] === v ? 'on' : '') + '">' + lab + '</button>';
+        }).join('') + '</div></div>';
+    }).join('') + '</div>';
+
+  h += '<div class="note"><div class="note-head"><div class="t">Note back to the team</div>' +
+    '<div class="s">Writes itself as you triage. Editable before sending.</div></div><div class="note-body">' +
+    '<p class="greet">Team, I have read the ' + esc(R.meta.artifactType) +
+    '. Here is where I would put the next block of work.</p>' +
+    (kept.length ? '<ol>' + kept.map(function(f){
+      var q = (f.evidence || [])[0];
+      return '<li><b>' + esc(f.title) + '</b>' + (q ? '<span class="q">Page ' + q.slide + ': &ldquo;' +
+        esc(q.quote.slice(0, 90)) + (q.quote.length > 90 ? '&hellip;' : '') + '&rdquo;</span>' : '') + '</li>';
+    }).join('') + '</ol>' : '<p><i>Nothing kept yet.</i></p>') +
+    (asked.length ? '<p class="askline"><b>Questions for you before I sign off:</b></p><ol>' +
+      asked.map(function(f){ return '<li class="askline">' + esc(f.reflect) + '</li>'; }).join('') + '</ol>' : '') +
+    '</div>';
+
+  h += '<div class="verdictpick"><span class="kicker">Your readiness call</span><div class="vopts">' +
+    LEVELS.map(function(l, i){
+      return '<div class="vopt ' + (leadLevel === i ? 'on' : '') + '" data-l="' + i + '">' +
+        '<span class="dot ' + (i >= 3 ? 'green' : i >= 2 ? 'amber' : 'red') + '"></span>' + esc(l) +
+        (LEVELS.indexOf(R.readiness.level) === i ? '<span class="ai">AI said</span>' : '') + '</div>';
+    }).join('') + '</div></div>';
+  if(leadLevel !== LEVELS.indexOf(R.readiness.level)){
+    h += '<div class="warn">You overrode the AI by ' + Math.abs(leadLevel - LEVELS.indexOf(R.readiness.level)) +
+      ' level(s). Logged for calibration. The team only ever sees your call.</div>';
+  }
+  h += '<div class="note-foot"><button class="btn primary">Send to team</button>' +
+    '<button class="btn ghost">Save draft</button></div></div></div>';
+
+  var el = document.getElementById('stage-lc');
+  el.innerHTML = h;
+  Array.prototype.forEach.call(el.querySelectorAll('.tri button'), function(b){
+    b.onclick = function(){ triage[b.parentNode.dataset.i] = b.dataset.v; renderLC(); };
+  });
+  Array.prototype.forEach.call(el.querySelectorAll('.vopt'), function(x){
+    x.onclick = function(){ leadLevel = +x.dataset.l; renderLC(); };
+  });
+}
+
+/* ---------------- COACH A: ORIGINAL ---------------- */
+var caIdx = 0, caState = {};
+function renderCA(){
+  R.findings.forEach(function(f, i){ if(!caState[i]) caState[i] = { attempt:'', rewrite:'', revealed:false }; });
+  var f = R.findings[caIdx], st = caState[caIdx];
+  var ok = st.attempt.trim().length >= ATTEMPT_MIN;
+
+  var h = '<div class="appbar"><div class="logo">180DC</div><div class="divider"></div>' +
+    '<div><div class="apptitle">Student Mode</div><div class="appsub">Coach</div></div>' +
+    '<div class="seg"><button>Team Lead</button><button class="on">Student</button></div>' +
+    '<div class="spacer"></div><div class="deckname"><b>' + esc(R.meta.client) + '</b>Finding ' +
+    (caIdx + 1) + ' of ' + R.findings.length + '</div></div>';
+
+  h += '<div class="coachwrap"><div class="flist">' + R.findings.map(function(x, i){
+    return '<div class="fitem ' + (i === caIdx ? 'on' : '') + '" data-i="' + i + '">' +
+      '<div class="i">' + (i + 1) + '</div><div>' + esc(x.short) + '</div>' +
+      (caState[i] && caState[i].revealed ? '<div class="done">&#10003;</div>' : '') + '</div>';
+  }).join('') + '</div>';
+
+  h += '<div class="card" style="margin:0"><h3 style="margin:0 0 4px;font-size:19px;letter-spacing:-.02em">' +
+    esc(f.title) + '</h3>' +
+    '<div class="block-label">The principle</div><div class="prose">' + esc(f.principle) + '</div>' +
+    '<div class="block-label">What is happening</div><div class="prose">' + esc(f.diagnosis) + '</div>' +
+    '<div class="block-label">Evidence</div>' + (f.evidence || []).map(function(e){
+      return '<div class="quote" style="margin-bottom:6px"><span class="sl">Page ' + e.slide + '</span>' +
+             esc(e.quote) + '</div>';
+    }).join('') +
+    '<div class="block-label">Why it matters to the client</div><div class="prose">' + esc(f.why) + '</div>' +
+    '<div class="block-label">Answer this before the fix unlocks</div>' +
+    '<div class="reflect">' + esc(f.reflect) + '</div>' +
+    '<textarea class="attempt" id="caAttempt" rows="3" placeholder="Your answer. The fix stays locked until you make a real attempt."></textarea>' +
+    '<div class="block-label">Your own version of the change</div>' +
+    '<textarea class="attempt" id="caRewrite" rows="2" placeholder="Your own version of the change."></textarea>' +
+    '<div class="gate-row"><button class="btn primary" id="caReveal" ' + (ok ? '' : 'disabled') +
+      '>Reveal the reviewer fix</button><div class="gate-note">' +
+      (ok ? 'Attempt accepted.' : (ATTEMPT_MIN - st.attempt.trim().length) + ' more characters needed.') +
+      '</div></div>' +
+    (st.revealed
+      ? '<div class="card" style="background:var(--green-tint);border-color:#BFE6D3;margin:12px 0 0">' +
+        '<span class="kicker">The reviewer fix</span><div class="prose" style="margin-top:6px">' +
+        esc(f.fix) + '</div></div>'
+      : '<div class="locked">&#128274; The fix is locked until you make a real attempt.</div>') +
+    '<div class="nav"><button class="btn" data-d="-1">Previous</button>' +
+    '<button class="btn" data-d="1">Next finding</button></div></div></div>';
+
+  var el = document.getElementById('stage-ca');
+  el.innerHTML = h;
+  el.querySelector('#caAttempt').value = st.attempt;
+  el.querySelector('#caRewrite').value = st.rewrite;
+  el.querySelector('#caAttempt').oninput = function(){ st.attempt = this.value; renderCA(); focusEnd('#caAttempt'); };
+  el.querySelector('#caRewrite').oninput = function(){ st.rewrite = this.value; };
+  el.querySelector('#caReveal').onclick = function(){ st.revealed = true; renderCA(); };
+  Array.prototype.forEach.call(el.querySelectorAll('.fitem'), function(x){
+    x.onclick = function(){ caIdx = +x.dataset.i; renderCA(); };
+  });
+  Array.prototype.forEach.call(el.querySelectorAll('[data-d]'), function(x){
+    x.onclick = function(){
+      caIdx = Math.min(R.findings.length - 1, Math.max(0, caIdx + (+x.dataset.d)));
+      renderCA();
+    };
+  });
+}
+function focusEnd(sel){
+  var t = document.querySelector(sel);
+  if(!t) return;
+  t.focus();
+  t.setSelectionRange(t.value.length, t.value.length);
+}
+
+/* ---------------- COACH B: THREAD ---------------- */
+var cbIdx = 0, cbState = {}, cbDraft = '';
+function renderCB(){
+  R.findings.forEach(function(f, i){ if(!cbState[i]) cbState[i] = { answer:'', done:false }; });
+  var f = R.findings[cbIdx], st = cbState[cbIdx];
+  var q = (f.evidence || [])[0];
+  var ok = cbDraft.trim().length >= ATTEMPT_MIN;
+
+  var h = '<div class="appbar"><div class="logo">180DC</div><div class="divider"></div>' +
+    '<div><div class="apptitle">Coaching session</div><div class="appsub">' +
+    esc(R.meta.client) + ' &middot; working through ' + R.findings.length + ' findings</div></div>' +
+    '<div class="spacer"></div><button class="btn ghost">Save and come back</button></div>';
+
+  h += '<div class="thread"><div class="tprog">' + R.findings.map(function(x, i){
+    return '<div class="p ' + (cbState[i].done ? 'done' : i === cbIdx ? 'cur' : '') + '"></div>';
+  }).join('') + '</div>';
+
+  h += '<div class="bub"><div class="av">AI</div><div class="body">' +
+    '<p>Finding ' + (cbIdx + 1) + ' of ' + R.findings.length + '. ' + esc(f.title) + '</p>' +
+    (q ? '<div class="quote"><span class="sl">Page ' + q.slide + '</span>' + esc(q.quote) + '</div>' : '') +
+    '<p>' + esc(f.why) + '</p></div></div>';
+
+  h += '<div class="bub"><div class="av">AI</div><div class="body">' +
+    '<p class="qs">' + esc(f.reflect) + '</p></div></div>';
+
+  if(st.done){
+    h += '<div class="bub me"><div class="av">You</div><div class="body"><p>' + esc(st.answer) + '</p></div></div>';
+    h += '<div class="bub"><div class="av">AI</div><div class="body">' +
+      '<p>Good. That is the question the fix turns on. Here is the direction I would take:</p>' +
+      '<p><b>' + esc(f.fix) + '</b></p>' +
+      '<p style="color:var(--muted);font-size:12.5px">The principle: ' + esc(f.principle) + '</p></div></div>';
+    h += '<div class="composer"><button class="btn primary" id="cbNext">' +
+      (cbIdx < R.findings.length - 1 ? 'Next finding &rarr;' : 'Finish session') + '</button></div>';
+  } else {
+    h += '<div class="composer"><textarea class="attempt" id="cbBox" rows="3" ' +
+      'placeholder="Type your answer. Nothing unlocks until you have really tried."></textarea>' +
+      '<div class="row2"><div class="cnt ' + (ok ? 'ok' : '') + '">' +
+      (ok ? 'Ready to send.' : (ATTEMPT_MIN - cbDraft.trim().length) + ' more characters') +
+      '</div><button class="btn primary" id="cbSend" ' + (ok ? '' : 'disabled') + '>Send</button></div></div>';
+  }
+  h += '</div>';
+
+  var el = document.getElementById('stage-cb');
+  el.innerHTML = h;
+  var box = el.querySelector('#cbBox');
+  if(box){
+    box.value = cbDraft;
+    box.oninput = function(){ cbDraft = this.value; renderCB(); focusEnd('#cbBox'); };
+    el.querySelector('#cbSend').onclick = function(){
+      st.answer = cbDraft; st.done = true; cbDraft = ''; renderCB();
+    };
+  }
+  var nb = el.querySelector('#cbNext');
+  if(nb) nb.onclick = function(){
+    if(cbIdx < R.findings.length - 1){ cbIdx++; cbDraft = ''; renderCB(); }
+  };
+}
+
+/* ---------------- COACH C: FIX DESK ---------------- */
+var ccPage = null, ccDone = {};
+function renderCC(){
+  var flagged = flaggedPages();
+  if(ccPage === null) ccPage = flagged[0];
+  var doneCount = Object.keys(ccDone).filter(function(k){ return ccDone[k]; }).length;
+  var total = R.findings.length;
+
+  var h = '<div class="appbar"><div class="logo">180DC</div><div class="divider"></div>' +
+    '<div><div class="apptitle">Fix desk</div><div class="appsub">Your deck, your open items</div></div>' +
+    '<div class="seg"><button>Team Lead</button><button class="on">Student</button></div>' +
+    '<div class="spacer"></div><div class="deckname"><b>' + esc(R.meta.client) + '</b>' +
+    doneCount + ' of ' + total + ' addressed</div></div>';
+
+  h += '<div class="prog"><span class="kicker">Progress</span>' +
+    '<div class="bar"><i style="width:' + Math.round(doneCount / total * 100) + '%"></i></div>' +
+    '<div style="font-size:12.5px;color:var(--muted)">' + flagged.length +
+    ' pages need work &middot; ' + (R.meta.slideCount - flagged.length) + ' pages are fine as they are</div></div>';
+
+  h += '<div class="walk"><div class="film"><div class="filmhead">Pages needing work</div>' +
+    flagged.map(function(n){
+      var p = PAGES.filter(function(x){ return x.n === n; })[0];
+      var fs = findingsOn(n);
+      var allDone = fs.every(function(f){ return ccDone[R.findings.indexOf(f)]; });
+      return '<div class="fr ' + (allDone ? 'pass' : 'critical') + (n === ccPage ? ' on' : '') +
+        '" data-p="' + n + '"><div class="n">' + n + '</div><div class="t">' + esc(p.label) + '</div>' +
+        '<div class="c ' + (allDone ? 'ok' : '') + '">' + (allDone ? '&#10003;' : fs.length) + '</div></div>';
+    }).join('') + '</div>';
+
+  var pg = PAGES.filter(function(x){ return x.n === ccPage; })[0];
+  var fs = findingsOn(ccPage);
+
+  h += '<div><div class="sheetwrap"><div class="sheet">' +
+    '<div class="sheet-top"><span class="pg">Page ' + pg.n + '</span><span class="nm">' +
+    esc(pg.label) + '</span></div><div class="sheet-body"><h4>' + esc(pg.label) + '</h4>' +
+    ['s1','s2','s3','s1','s2','s4'].map(function(c, i){
+      return '<div class="skel ' + c + ((i === 1 || i === 4) ? ' hot' : '') + '"></div>';
+    }).join('') + '</div></div>';
+
+  h += '<div class="margin">' + fs.map(function(f){
+    var gi = R.findings.indexOf(f), done = !!ccDone[gi];
+    return '<div class="todo ' + (done ? 'done' : '') + '">' +
+      '<div class="h"><div class="ck" data-ck="' + gi + '">&#10003;</div>' +
+      '<div class="ttl">' + esc(f.title) + '</div></div>' +
+      '<div class="ask">' + esc(f.reflect) + '</div>' +
+      (done
+        ? '<div class="prose" style="font-size:12.5px;color:var(--muted)">Marked as addressed. The reviewer direction was: ' +
+          esc(f.fix.split('. ')[0]) + '.</div>'
+        : '<textarea class="attempt" rows="2" placeholder="What you changed, in your own words."></textarea>') +
+      '</div>';
+  }).join('') + '</div></div></div></div>';
+
+  var el = document.getElementById('stage-cc');
+  el.innerHTML = h;
+  Array.prototype.forEach.call(el.querySelectorAll('.fr'), function(x){
+    x.onclick = function(){ ccPage = +x.dataset.p; renderCC(); };
+  });
+  Array.prototype.forEach.call(el.querySelectorAll('[data-ck]'), function(x){
+    x.onclick = function(){ var i = x.dataset.ck; ccDone[i] = !ccDone[i]; renderCC(); };
+  });
+}
+
+/* ---------------- LEAD D: THE ROUNDS ---------------- */
+var SHORT = ['Not ready','Substantial revision','Targeted revision','Nearly ready'];
+function renderLD(){
+  if(!D.portfolio) return;
+  var P = D.portfolio.slice();
+  /* attention = how bad, then how stale */
+  P.forEach(function(p){ p.score = (3 - p.level) * 10 + Math.min(p.days, 10); });
+  P.sort(function(a, b){ return b.score - a.score; });
+  var counts = [0,0,0,0];
+  P.forEach(function(p){ counts[p.level]++; });
+  var needToday = P.filter(function(p){ return p.level <= 1; }).length;
+
+  var h = '<div class="appbar"><div class="logo">180DC</div><div class="divider"></div>' +
+    '<div><div class="apptitle">Your rounds</div><div class="appsub">' + P.length +
+    ' active deliverables &middot; ' + needToday + ' need you today</div></div>' +
+    '<div class="spacer"></div><div class="seg"><button class="on">By attention</button>' +
+    '<button>By team</button><button>By deadline</button></div></div>';
+
+  h += '<div class="roundhead">' + [0,1,2,3].map(function(i){
+    return '<div class="rh r' + i + '"><div class="num">' + counts[i] + '</div>' +
+           '<div class="lab">' + SHORT[i] + '</div></div>';
+  }).join('') + '</div>';
+
+  h += '<div class="rounds"><div class="rrow hdr"><div></div><div>Team</div><div>What the reviewer says</div>' +
+    '<div>Readiness</div><div>Last read</div><div></div></div>' +
+    P.map(function(p, i){
+      return '<div class="rrow"><div class="rank ' + (p.level >= 2 ? 'low' : '') + '">' + (i + 1) + '</div>' +
+        '<div class="rteam">' + esc(p.team) + '<span>' + esc(p.client) + ' &middot; ' +
+          esc(p.deliverable) + '</span></div>' +
+        '<div class="rnote">' + esc(p.note) + '<br /><span style="color:var(--muted);font-size:11.5px">' +
+          p.findings + ' findings &middot; ' + p.blockers + ' blocking &middot; ' + esc(p.effort) + '</span></div>' +
+        '<div><span class="pill r' + p.level + '">' + esc(SHORT[p.level]) + '</span></div>' +
+        '<div class="stale ' + (p.days >= 5 ? 'old' : '') + '">' + p.days + ' day' +
+          (p.days === 1 ? '' : 's') + ' ago</div>' +
+        '<div><button class="btn">Open review</button></div></div>';
+    }).join('') + '</div>';
+
+  h += '<div class="footnote">Ranked by readiness first, then by how long it has sat unread. ' +
+       'Nothing here is sent to a team until you open it.</div>';
+
+  document.getElementById('stage-ld').innerHTML = h;
+}
+
+/* ---------------- COACH D: THE PRACTICE ---------------- */
+function renderCD(){
+  if(!D.practice) return;
+  var pr = D.practice;
+
+  var h = '<div class="appbar"><div class="logo">180DC</div><div class="divider"></div>' +
+    '<div><div class="apptitle">Your practice</div><div class="appsub">' +
+    'Across ' + pr.history.length + ' deliverables this cycle</div></div>' +
+    '<div class="seg"><button>This deck</button><button class="on">Across the cycle</button></div>' +
+    '<div class="spacer"></div><button class="btn ghost">Share with my project lead</button></div>';
+
+  h += '<div class="hero"><div class="k">The habit that keeps coming back</div>' +
+    '<h2>' + esc(pr.habit) + '</h2>' +
+    '<p>' + esc(R.learningNote.weakHabit) + '</p>' +
+    '<div class="cnt">' + pr.history.map(function(x){
+      return '<div class="hd ' + (x.hit ? 'hit' : '') + '" title="' + esc(x.deliverable) + '">' +
+             (x.hit ? '<span class="x">&#9679;</span>' : '<span class="x">&#9675;</span>') + '</div>';
+    }).join('') + '<div style="font-size:13px;opacity:.94;margin-left:6px">Seen in ' +
+    pr.seen + ' of your last ' + pr.of + ' deliverables</div></div></div>';
+
+  h += '<div class="twocol"><div class="card" style="margin:0">' +
+    '<span class="kicker">Where it showed up</span><div class="trace" style="margin-top:12px">' +
+    pr.history.map(function(x){
+      return '<div class="tr ' + (x.hit ? 'hit' : '') + '"><div class="when">' + esc(x.when) + '</div>' +
+        '<div class="mk"><i></i></div><div class="txt"><b>' + esc(x.deliverable) + '</b>' +
+        '<span>' + esc(x.note) + '</span></div></div>';
+    }).join('') + '</div></div>';
+
+  h += '<div><div class="card" style="margin:0 0 14px"><span class="kicker">The drill</span>' +
+    '<p style="font-size:13.5px;margin:9px 0 0;color:var(--ink-2)">' + esc(R.learningNote.exercise) + '</p>' +
+    '<div class="reflect" style="margin:14px 0 0">' + esc(R.learningNote.lesson) + '</div></div>' +
+    '<div class="card" style="margin:0"><span class="kicker">Your other habits</span>' +
+    '<div class="habits" style="margin-top:12px">' + pr.others.map(function(o){
+      return '<div class="hb"><span>' + esc(o.habit) + '</span>' +
+        '<span class="tt ' + (o.trend === 'flat' ? 'flat' : '') + '">' + esc(o.trend) + '</span>' +
+        '<div class="bars">' + [0,1,2,3].map(function(i){
+          return '<i class="' + (i < o.seen ? 'on' : '') + '"></i>';
+        }).join('') + '</div></div>';
+    }).join('') + '</div></div></div></div>';
+
+  document.getElementById('stage-cd').innerHTML = h;
+}
+
+/* ---------------- chooser ---------------- */
+var mode = 'l', dir = 'la';
+if(D.notice) document.getElementById('notice').innerHTML = '<div class="notice">' + D.notice + '</div>';
+function renderSubbar(){
+  document.getElementById('subbar').innerHTML = DIRS[mode].map(function(d){
+    return '<button class="pick2 ' + (d[0] === dir ? 'on' : '') + '" data-d="' + d[0] + '">' + d[1] + '</button>';
+  }).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('.pick2'), function(b){
+    b.onclick = function(){ dir = b.dataset.d; show(); };
+  });
+}
+function show(){
+  Array.prototype.forEach.call(document.querySelectorAll('.pick'), function(p){
+    p.classList.toggle('on', p.dataset.m === mode);
+  });
+  document.getElementById('modeLbl').textContent = mode === 'l' ? 'Team Lead Mode' : 'Student Coach Mode';
+  renderSubbar();
+  Array.prototype.forEach.call(document.querySelectorAll('.stage'), function(s){
+    s.classList.toggle('on', s.id === 'stage-' + dir);
+  });
+  document.getElementById('cap').innerHTML = CAPS[dir];
+  window.scrollTo(0, 0);
+}
+Array.prototype.forEach.call(document.querySelectorAll('.pick'), function(p){
+  p.onclick = function(){ mode = p.dataset.m; dir = DIRS[mode][0][0]; show(); };
+});
+
+renderLA(); renderLB(); renderLC(); renderLD();
+renderCA(); renderCB(); renderCC(); renderCD();
+show();
+</script>
+</body>
+</html>
