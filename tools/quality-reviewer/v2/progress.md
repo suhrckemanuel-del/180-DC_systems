@@ -304,7 +304,7 @@ planning constant, not an incident.
   before seeing the rubric. Feeds the expert-calibration track (plan Q2). It was already
   built and orphaned, so it is now tracked.
 
-## Next actions
+## Next actions (session 7, superseded by session 8 below)
 
 1. **Decide the case 05 question, now sharper.** The restraint case over-escalates 3 of 5.
    Either take another pass at the severity test before the freeze (the escalation floor plus
@@ -322,3 +322,317 @@ planning constant, not an incident.
 
 See [eval-runs/NEXT-SESSION-PROMPT.md](eval-runs/NEXT-SESSION-PROMPT.md) for the earlier
 paste-ready continuation prompt (now largely superseded by this session).
+
+## Session 8 (2026-08-02): the real-deck baseline exists
+
+The first honest measurement of the reviewer on real client work. Run folder
+`eval-runs/real-baseline/2026-07-29T16-29-44-subagent-packs/` (gitignored). Prompt
+`frozen-2026-07-26` sha256 `20cc7e4add709427`, matcher `mc-match-1`, no prompt edits made
+during the run.
+
+- **7 pending cases reviewed blind and collected**, joining the 2 already done. Batches of 4
+  then 3, one Claude Code subagent per case, each seeing only its own `<case>.input.md` plus
+  `03-output-contract.md`. No agent touched a gold, a worksheet or another case's review. All
+  9 reviews are contract-valid on `check-review-v2.js`, with two non-fatal warns (real-02
+  reuses a quote across findings 1 and 4, real-08 has a scorecard dimension result that does
+  not match its own check count).
+- **The set is 9, not 11.** `real-10` and `real-11` carry REVIEW-NEEDED banners and fail
+  `check-gold.js` with the same contradiction: readiness at R1 and R0 respectively, with the
+  single must-catch issue marked critical, but the blocking-rule field left as `none`. The
+  eligibility gate skips both, which is why they never had input packs. This needs a human
+  call, not a labeling pass: cite the rule that fires, lower the issue to major, or raise
+  readiness. Resolving it takes the set from 9 to 11.
+
+### Headline (n=9)
+
+| metric | value |
+| --- | --- |
+| readiness exact | 22.2% |
+| readiness within one level | 55.6% |
+| must-catch recall | 22.2% (66.7% counting the 4 near misses) |
+| over-flag rate | 66.7% |
+| restraint violations | 1 of 1 |
+| severity exact where matched | 100% (n=2) |
+| blocking false positives | 66.7% |
+| blocking rules missed | 0% |
+| gold issue coverage | 21.6% |
+| mean findings per review | 4.9 |
+
+Holdout (real-05, real-08, real-13) vs tuning: within-one 66.7% vs 50%, exact 0% vs 33.3%,
+must-catch 33.3% vs 16.7%, over-flag 66.7% in both. The holdout is not better than the tuning
+set, so the over-flagging is not an artifact of tuning.
+
+### The owner question, answered with numbers
+
+Does the tool over-flag strong decks on real work the way it does on synthetic case 05? **Yes,
+and worse.** The failure is not spread across the set. It is entirely concentrated on strong
+decks and it is unanimous there.
+
+Strong-deck cases are the 6 golds at R2 "Needs targeted revision", the highest readiness any
+real gold reached. `real-05` is additionally an explicit restraint case: its gold says in as
+many words that it is a strong deck and that manufacturing criticals to justify a lower
+readiness would be a calibration failure. The tool did exactly that.
+
+| case | gold | tool | delta |
+| --- | --- | --- | --- |
+| real-01 | R2 | R0 | -2 |
+| real-02 | R2 | R0 | -2 |
+| real-03 | R2 | R0 | -2 |
+| real-05 (restraint) | R2 | R1 | -1 |
+| real-13 | R2 | R0 | -2 |
+| real-14 | R2 | R1 | -1 |
+
+**6 of 6 escalated. 0 exact. 4 of the 6 by two full levels**, landing on "Not ready for client
+review" for decks a human called ready with targeted fixes. Synthetic case 05 over-escalated 3
+of 5. On real strong decks it is 6 of 6.
+
+The contrast is the useful part. On the 3 weak and mid decks the tool is dependable: real-04
+R0 exact, real-12 R1 exact, real-08 R0 called R1, which errs soft, the direction the rubric
+intends. Blocking rules missed is 0% across the whole set, so it does not let real problems
+through. It invents blockers on good work instead: on the 6 strong decks it cited 1 to 3
+blocking issues each where the gold cited none.
+
+Read that as a competence boundary, not a general accuracy problem. The readiness verdict is
+trustworthy when the deck is weak and untrustworthy when the deck is nearly good. That is
+backwards for a pilot, since near-ready decks are most of what students would submit.
+
+**This is the owner's call and it is not made here.** The two options from session 7 stand,
+now with evidence: recalibrate the readiness rules and re-measure all 9, or pilot lead-mode
+only so a student never sees a readiness level. Nothing was changed in the prompt, the rubric
+or the output contract this session.
+
+Caveats worth stating: 9 cases is small and one case moves a headline metric by 11.1 points.
+Must-catch matching is deliberately conservative (text overlap plus two of three supporting
+signals), so 22.2% is a floor and the 4 near misses (real-02, real-08, real-12, real-14) are
+where a human call decides. Severity exact is 100% but on n=2, which is too thin to lean on.
+
+### Also this session
+
+- **Stability on a weak deck confirmed.** real-04 was reviewed twice under the frozen prompt by
+  independent sessions, 2026-07-29 and 2026-08-02, and the two runs are identical: same 5
+  findings in the same order, same severities, same R0, same 4 blocking rules, same
+  diagnosticMean 1.7, same score on all four axes. That is the stability floor for a weak deck
+  where the blocking rules fire unambiguously. It says nothing about strong decks, which is
+  where the variance lives. Both files preserved, plus a short-mode review of the same deck for
+  the Track B renderer.
+- **Harness committed** (`867d0bb`): `run-reviews.js`, `score-review.js`, `scorecard.js`,
+  `check-gold.js`, `package.json`, `package-lock.json` and the fabricated `real-00` fixtures.
+  Confirmed before staging that decks, golds, worksheets and `eval-runs/real-baseline/` are all
+  gitignored. No real-case material is in the repo.
+- **Harness defect worth knowing.** `run-reviews.js` does not recognise `--help` and treats any
+  unknown flag as the real API run. An accidental `--help` this session started a live run over
+  all 9 cases. Every request failed with a 400 (`compiled grammar is too large`) so nothing was
+  written and nothing was spent, and the empty run folder it created was deleted. Two things to
+  fix later: add a `--help` guard, and note that the API path is currently broken by that
+  grammar error, which is why the subagent path is the working one.
+- **STATUS.md rewritten.** It had claimed the tool had never run on a real deliverable and that
+  human labeling was the long pole. Both are now false.
+
+## Session 9 (2026-08-02): the calibration sprint, measured
+
+Three prompt edits in one pass, then a full blind re-run of the same 9 cases. Run folder
+`eval-runs/real-baseline/2026-08-02T20-40-19-subagent-packs/`, prompt `frozen-2026-08-03`
+(sha256 `39c18fbca9e5d218`). The full write-up with both tables is `RESULT.md` in that folder.
+
+- **The old prompt was archived first**, verbatim, to `eval-runs/prompt-archive/frozen-2026-07-26.txt`.
+  It re-hashes to `20cc7e4add709427`, which is the hash the baseline run recorded, so the
+  before/after is reproducible and the revert path is proven rather than assumed.
+- **The success test was written before the first case ran**, as `EXPECTATIONS.md` in the run
+  folder. Primary test, regression guard and secondary metrics were all fixed in advance,
+  because a result you can rationalise afterwards is not a measurement.
+- **The three edits.** Extraction awareness appended to the evidence rule, naming the
+  "Extraction notes" section explicitly (its heading says "for labelers, not part of the
+  deliverable", which invites the reviewer to ignore it). A two-part decision-change test on
+  blocking rule 1, replacing the "walks into" loophole. Severity no longer inherits from
+  readiness, appended to the severity section.
+- **The nine input packs are byte-identical to the baseline's**, verified by hashing each pack
+  from its `<!-- USER INPUT` marker down. The prompt was the only variable.
+- **Primary test passed at the low end.** real-13 came back R2 and exact. That is the first
+  time the tool has used either of its top two readiness levels on real work. The bar for a
+  fixed instrument was three or four of six. This was one of six.
+- **The regression guard held on all three.** real-04 exact at R0 and still firing rule 1,
+  real-12 exact at R1, real-08 unchanged at R1. The over-flag improvement was not bought by
+  going soft on genuinely bad decks, which was the failure mode most worth watching for.
+- **Every headline moved the right way**: readiness exact 22.2 to 33.3, within one 55.6 to
+  77.8, over-flag 66.7 to 55.6, strong-deck over-flag 6 of 6 to 5 of 6, must-catch recall
+  22.2 to 33.3, gold issue coverage 21.6 to 32.4. Blocking rules missed stayed 0%. Severity
+  exact fell from 100% (n=2) to 66.7% (n=3), which is one review disagreeing on a base too
+  small to read.
+- **Rule 1 is no longer the ceiling, rule 2 is.** Rule 1 stopped firing on real-01 and kept
+  firing where the gold agrees. Six of nine cases now sit at R1 on rule 2, and rule 2 has no
+  decision-change test. That is the obvious next edit if the owner picks iterate.
+- **Extraction awareness is visibly working.** Every subagent independently reported routing
+  flagged-table values into `questionsForLead` and `notAssessed` instead of building findings
+  on them. That was the exact real-01 failure the sprint targeted.
+- **Variance is real and unmeasured, and it lands on the behaviour under test.** real-03's
+  first attempt failed the contract (a minor finding marked deliveryCritical) and was re-run
+  per the sprint rule. That attempt had assigned R1 and explicitly declined rule 1. The re-run
+  assigned R0 and fired rule 1. Same prompt, same input, two levels apart. Only the valid
+  re-run is scored. `check-stability.js` is the tool for sizing this band and it has not been
+  run on real cases.
+- **The `--help` trap is closed.** `run-reviews.js` now prints usage and exits 0 on `--help`,
+  and exits 2 on any unrecognised flag, on the `--flag=value` form that `arg()` cannot see,
+  and on any stray positional. Previously all of those fell through into a live run over all
+  9 cases. The header usage comment carries the same warning.
+- One harness wrinkle worth knowing: `--collect` only processes manifest rows still marked
+  `pending`, so a case that failed the contract stays `invalid` and its re-run is silently
+  skipped until the row is reset. Reset the status before re-collecting.
+
+## Next actions (session 9, superseded by sessions 10 to 12 below)
+
+1. **Owner decides ship, iterate or revert** on the 08-03 result, target Wednesday 2026-08-05.
+   Read `RESULT.md` in the 08-03 run folder. Revert is intact: the archived prompt reproduces
+   the baseline exactly and the 07-29 run folder is untouched. Any further prompt edit
+   invalidates the 08-03 run and forces another full re-run of all 9.
+2. **Run `check-stability.js` on two or three cases before deciding.** real-03 disagreed with
+   itself by two levels this session. Until that band is sized, a one-case improvement cannot
+   be told apart from noise, and it is cheap to find out.
+3. **If the call is iterate: blocking rule 2 gets the same surgery rule 1 just got.** It is
+   the binding ceiling now, it holds six of nine cases at R1, and the precedent is in
+   [11-decision-log.md](11-decision-log.md).
+4. **Resolve the real-10 and real-11 gold contradictions.** A human decision, roughly minutes of
+   work, and it is the cheapest available improvement to the sample: 9 cases to 11.
+5. **Have the ex-consultant adjudicate the near misses** (real-08 and real-14 this run). The
+   matcher is conservative by design and these are the band where must-catch recall could move
+   from 33.3% to as high as 55.6% without any change to the tool.
+6. **Investigate the API-path grammar error** (`compiled grammar is too large`). The subagent
+   path is the working one, so this is not blocking, but the API path stays broken until it
+   is looked at.
+7. **Track B, the visual**: port the v1 Team Lead Mode renderer onto the v2 contract. The
+   short-mode real-04 review is sitting in the run folder as its input. Has its own build prompt.
+8. Still open from the source register: confirm the S4 journal tables match the working paper
+   figures.
+
+## Session 10 (2026-08-03): stability on real cases, and the gate stop
+
+The single most important pre-pilot number, and it came back badly. Full conclusions in
+[18-evidence-base.md](18-evidence-base.md) A3, A4 and A9.
+
+- **Findings repeat. The verdict does not.** Under a frozen prompt on byte-identical input,
+  one case repeated four of its five findings across all three draws and another repeated its
+  top critical finding in all three. The readiness level on one case returned R0, R0 and R2,
+  with blocking rules firing `1,4`, then `1,2`, then none. Readiness is compared as an exact
+  level match and never touches the finding matcher, so this is not a scoring artifact.
+- **The reviewer reads consistently and grades inconsistently.** That sentence is the central
+  result of the whole programme and it is what the live product is built around.
+- **Single-draw evaluation is invalid from here on.** Every metric produced before today is
+  one sample from a distribution now known to span two readiness levels, which includes the
+  baseline headline and the calibration sprint's apparent improvement. The difference between
+  them may be nothing. Every future experiment runs N draws and costs roughly three times as
+  much.
+- **The critique-quality sprint stopped at its own preregistered gate, unedited.** The gate
+  asked whether the scorer could resolve the change the sprint proposed. It cannot: the
+  must-catch verdict flips between `miss` and `near` on three of four stability cases, one
+  flip decided by 0.005 of match score and another by 0.010. Record in
+  [GATE-STOP-critique-quality.md](GATE-STOP-critique-quality.md). Stopping on a gate you wrote
+  in advance is cheap. Ignoring it is what costs.
+- **[17-override-log.md](17-override-log.md) written**, specifying the lead override record
+  that becomes the calibration source once hand-labelling stops paying for itself.
+
+## Session 11 (2026-08-05): the Triage Desk goes live, and the prompt changes
+
+- **Live at https://180dc-reviewer.pages.dev.** A lead does the whole loop from a link: read
+  the status board, triage every finding as keep, question or cut with a reason, set their own
+  readiness level, release a note. About four minutes on a five-finding deck. Two deliberate
+  refusals: the desk does not start pre-agreed with the reviewer, because one that starts fully
+  kept manufactures the agreement it exists to measure, and no readiness level ever reaches a
+  student.
+- **The prompt changed on the two-axis thesis.** An ex-McKinsey consultant, asked independently
+  where a consultant's return sits, put roughly 60% of it on clarity of communication, which
+  corroborates A6 from outside the data, and named interrogating numbers as the other half. Four
+  edits: the rule that cut communication findings first is deleted, a reader test added,
+  readability given a slot in the priority order, and a comparator test (compared to what, so is
+  that good, and if not what is it a symptom of). Plus a lead-with-the-point rule. Now
+  `frozen-2026-08-05c`, sha `80983d7179eb950f`. Full record in
+  [19-prompt-change-2026-08-05.md](19-prompt-change-2026-08-05.md).
+- **Archive discipline broke once and is recorded rather than hidden.** Revision `b` was edited
+  into `c` without being archived first, so `b` cannot be restored byte-exact. Nothing was
+  measured on it and both revert points that matter re-hash correctly.
+- **The cheapest quality check found seven ambiguities in two rounds.** Hand the prompt to blind
+  reviewers on a real case and ask which instructions were ambiguous to execute. Round two found
+  that three of round one's four patches had narrowed the ambiguity rather than closed it. This
+  should be routine after every prompt edit.
+- **A8b: every subagent pack back to the 07-29 baseline was incomplete.** `--emit-packs`
+  extracted only section A of the prompt document, so packs carried no noise budget, no scope
+  matrix and no output contract. Runs came back contract-valid because the operator supplied the
+  missing pieces in the subagent brief, unrecorded and unhashed. Fixed, and the manifest now
+  records a `contextSha256`. Not retro-fixable, and it matters most for restraint, which was
+  scored against a budget the reviewer was never shown.
+
+## Session 12 (2026-08-05): the scorer measured, and it failed
+
+The sprint that changed what every earlier number means. Method and decision rules were written
+before any result was seen. Full record in
+[21-scorer-refit-sprint.md](21-scorer-refit-sprint.md).
+
+- **178 gold-issue and finding pairs, adjudicated blind by two independent agents.** They agreed
+  with each other at 98.9%, kappa 0.971, so the judgement is stable and answerable. The matcher
+  agreed with them at AUC 0.718.
+- **The decisive figure.** At its single best possible cut point the match score classifies 88%
+  of pairs correctly. Calling every pair not-caught, with no model at all, gets 85%. The whole
+  discriminative power of the instrument is three points over a constant that ignores the input.
+- **Thresholds were re-fitted anyway.** `T_HIT` 0.45 to 0.39, `T_NEAR` 0.28 to 0.24,
+  `MATCHER_VERSION` now `mc-match-2`. F1 improved by about a third on both and precision at the
+  new `T_HIT` is still 46%, so more than half of everything called a hit is not one. One of three
+  unstable stability cases stabilised. Two still flip. Scores are not comparable across
+  `MATCHER_VERSION`.
+- **The cause is known.** It scores vocabulary overlap. The judgement that matters is whether two
+  texts describe the same problem. Both adjudicators independently reported the two failure
+  shapes: real catches are same-complaint-different-vocabulary, false positives are
+  same-slides-different-problem. Overlap scoring gets both backwards.
+- **Both baselines re-scored under `mc-match-2`, and two published numbers moved.** Must-catch
+  recall reads 22.2% to 44.4%, not 33.3%, so that gain was understated and is twice what was
+  claimed. Gold issue coverage reads 35.1% to 37.8%, not 21.6% to 32.4%, so a reported +10.8
+  points is really +2.7 and was largely an artifact. Every direction survives re-scoring. One
+  magnitude does not.
+- **The ship, iterate or revert call was resolved: iterate.** Next build is `mc-match-3`, an LLM
+  judge, validated against the 178-pair set that now exists. No prompt is re-run until it lands.
+  The sprint incidentally proved the approach: two LLM adjudicators agreed with each other at
+  kappa 0.971 on exactly this call.
+- **Standing rule from this session.** No recall, coverage or must-catch percentage from this
+  project goes into any external communication until the matcher is replaced. The honest
+  statement is that we have not yet measured this reliably, not a number.
+
+## Session 13 (2026-08-07): documentation integrity
+
+Nothing measured. A sweep of every tracked document against the code and against
+[18-evidence-base.md](18-evidence-base.md), after an audit found STATUS.md describing a sprint
+that had already run as not started, and a decision reported as taken at the top of the file and
+open at the bottom.
+
+- **Version drift was the small half and it was nearly clean.** Two dead links, no stale prompt
+  hash or threshold asserted as current anywhere. The hash discipline in the prompt worked.
+- **Stale claims of state were the large half.** Around a dozen documents still said the tool had
+  never run on a real deliverable, that no gold labels existed, that stability was unmeasured or
+  that no renderer was built. All four have been false since 2026-08-05 at the latest. The worst
+  were the outward-facing ones.
+- **`check-docs.js` built.** Reads prompt version, prompt sha, matcher version and thresholds
+  from the code and flags any document asserting a different value in the present tense, plus
+  dead links and anchors. No network. Tuned to under-flag: it cannot catch a stale claim of
+  state, which is the half that actually bit.
+- **The decision log had stopped on 2026-07-23** and was missing every decision from the real
+  baseline onward, including the iterate call. Fifteen entries appended from the primary records.
+
+## Next actions (current)
+
+Superseding every earlier list in this file. The ordered version lives in
+[STATUS.md](STATUS.md) and this is the same sequence.
+
+1. **Build `mc-match-3` as an LLM judge.** Everything waits on this. Validation set exists.
+   The design problem is determinism: fixed prompt, low temperature, N draws with a majority
+   vote, cached by pair hash.
+2. **Then re-run all nine cases on `frozen-2026-08-05c`**, N draws per case. Not before. At 46%
+   precision the numbers would move and nobody could attribute the movement.
+3. **Resolve the real-10 and real-11 gold contradictions.** A human cites the rule that fires,
+   lowers the issue to major, or raises readiness. Minutes of work, and it takes the set from 9
+   to 11.
+4. **Get the ex-consultant to sanity-check the tool's judgment on a real deck**, especially the
+   near misses. This is the Phase 2 calibration that has never happened. The 2026-08-05
+   conversation changed the prompt but he has never seen the output.
+5. **Blocking rule 2 gets the same decision-change test rule 1 got.** It is the binding ceiling
+   now. After the matcher lands, not before.
+6. **Small pilot**, scoped once 1 and 2 have run.
+7. **Investigate the API-path grammar error** (`compiled grammar is too large`). Not blocking,
+   the subagent path works.
+8. Still open from the source register: confirm the S4 journal tables match the working paper
+   figures.

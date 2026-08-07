@@ -7,6 +7,15 @@ roadmap where reality has moved past it.
 
 Voice rules apply. No Oxford commas. No em or en dashes.
 
+**Status note, 2026-08-07. Phase 1.5, the workstream this plan exists to define, has run.**
+Labeling, the stability measurement and two baseline runs on real cases are all done. The
+sequencing argument in sections B and C was sound and it is now spent. What this plan did not
+have a phase for, and what turned out to be on the critical path all along, is the scoring
+instrument: it was treated throughout as a given rather than as something to validate, and on
+2026-08-05 it was measured and found to be three percentage points better than a constant
+that ignores the input ([21-scorer-refit-sprint.md](21-scorer-refit-sprint.md)). Read this
+document for the reasoning, not for the state. State is in [STATUS.md](STATUS.md).
+
 ---
 
 ## A. Where we actually are
@@ -36,6 +45,23 @@ The honest summary in four lines.
 4. The fitness verdict on record is expert or lead companion, not yet student-facing.
    Nothing since has changed that verdict, because nothing since has produced new
    behavioural evidence. Sessions 4 and 5 built infrastructure, not evidence.
+
+**All four lines above are as at 2026-07-22 and three of them have since changed. Corrected
+2026-08-07:**
+
+1. It has run on real deliverables twice, blind, on the 9 gold-backed cases. The gate held:
+   no run happened before gold existed.
+2. The synthetic five are no longer the evidence base. What replaced them is
+   [18-evidence-base.md](18-evidence-base.md), built on real cases.
+3. Stability was measured on 2026-08-03. Findings repeat, the readiness verdict does not: R0,
+   R0, R2 on byte-identical input. The consequence is that every single-draw metric this
+   project produced before that date is one sample from a two-level distribution.
+4. Unchanged. Lead companion, not student-facing, now enforced in the live product rather
+   than stated in a document.
+
+**And one line that was not on the list and should have been.** The scoring instrument was
+never in any of the three states in the table above. It was assumed. It is now measured and it
+does not work, which is the only thing on the critical path today.
 
 Two things the roadmap does not yet reflect. Phase 1 is materially complete (live runs
 done, validator built, full set scored, threshold cleared), and a whole workstream that

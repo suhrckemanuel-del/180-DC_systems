@@ -1,5 +1,9 @@
 # Sprint report: live validation of the v2 reviewer (2026-07-02)
 
+<!-- check-docs: historical -->
+
+**Dated record, not a status report. A dated sprint report from 2026-07-02.** For current state read [STATUS.md](STATUS.md).
+
 Readable without the session that produced it. Raw scores in
 [eval-runs/scoring-2026-07-02.md](eval-runs/scoring-2026-07-02.md), running log in
 [progress.md](progress.md), change rationale in [11-decision-log.md](11-decision-log.md).

@@ -35,14 +35,14 @@ const { execFileSync } = require('child_process');
  * Version stamp. Any change to thresholds, clusters or the match rule must
  * bump this, because scores from different matcher versions are not comparable.
  * ------------------------------------------------------------------------- */
-const MATCHER_VERSION = 'mc-match-1';
+const MATCHER_VERSION = 'mc-match-2';
 
-/* Thresholds. These are UNVALIDATED until the first real baseline run: they were
- * calibrated on fabricated fixtures only (fixtures/score-review.test.sh). Review them
- * against the first batch of `near` verdicts before anyone quotes the recall number as
- * settled, and bump MATCHER_VERSION if they move. */
-const T_HIT = 0.45;   // text score at or above this can be a hit
-const T_NEAR = 0.28;  // text score at or above this can be a near miss
+/* Thresholds. Fitted 2026-08-05 against 178 blind pair adjudications from two
+ * independent adjudicators (raw agreement 99%, kappa 0.97) over the twelve
+ * stability runs. AUC of textScore against the consensus label was 0.718. Method and
+ * result in 21-scorer-refit-sprint.md. Scores are NOT comparable across MATCHER_VERSION. */
+const T_HIT = 0.39;   // text score at or above this can be a hit
+const T_NEAR = 0.24;  // text score at or above this can be a near miss
 const SLIDE_TOLERANCE = 2; // a finding may sit this many slides off the gold location
 
 // ---- readiness ------------------------------------------------------------
@@ -640,6 +640,12 @@ function main(argv) {
 module.exports = {
   parseGold, scoreReview, renderScore, goldEligibility, listEligibleGolds, LEVELS, MATCHER_VERSION,
   _concepts: concepts,   // exported for fixtures/score-review.test.sh only
+  /* Exported for the threshold re-fit only (build-refit-set.js). scorePair is the function
+   * whose T_NEAR/T_HIT cut points are UNVALIDATED, so calibration tooling has to be able to
+   * call it directly and see the raw textScore before any threshold is applied. Additive
+   * export, no behaviour change: nothing in the scoring path reads this. */
+  _scorePair: scorePair,
+  _thresholds: { T_HIT, T_NEAR },
 };
 
 if (require.main === module) process.exit(main(process.argv.slice(2)));

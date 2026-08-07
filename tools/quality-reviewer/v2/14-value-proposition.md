@@ -94,15 +94,25 @@ that Monday-morning question in your own head. That is the actual product.
 
 ### What is not proven yet, in your language
 
-It has never once been run on a real 180DC deliverable. Everything we know about it comes
-from five short made-up decks that we wrote ourselves, each one built around a single
-obvious flaw, all of them clean typed text rather than a PDF that came out of PowerPoint
-sideways. Your deck will be longer, messier and will have three problems tangled together.
-We do not know yet how it behaves there.
+**Updated 2026-08-07.** It has now been run on nine real past 180DC decks, long and messy and
+with several problems tangled together, so we do know roughly how it behaves on work like
+yours. Two things have held every single time: it has never missed a problem serious enough to
+block a deliverable, and every quote it shows you is really in your deck, checked
+automatically.
 
-It has also been wrong in exactly the way that would annoy you most. On the one practice
-deck that was genuinely good, an early version invented drama: it graded three fair but
-small observations as serious problems and marked the deck as needing work when it did not.
+What we cannot tell you is a score. We measured our own marking method in August and it turned
+out to be barely better than guessing, so any "it catches X% of problems" number you might
+hear from us is not one to rely on. We are rebuilding that before we quote anything.
+
+It has also been wrong in exactly the way that would annoy you most, and this has got worse
+rather than better. On practice decks that were genuinely good it invented drama: it graded
+fair but small observations as serious problems and marked good work as needing fixing. On the
+first real run it did that to every strong deck it saw. If your deck is good and the tool is
+harsh with it, that is a known fault in the tool and not a message about your work.
+
+One more. It cannot tell when your PDF came out badly. If a finding is built on a number from
+a table, check the table first, because flattened columns have made it call a formatting
+accident a contradiction.
 We fixed that, and the fixed version returned the right verdict with two minor points, but
 that fix has been confirmed on one run, not many. So if it tells you something is a big
 problem and you think it is not, you are allowed to be right. Say so to your lead. Your
@@ -191,22 +201,26 @@ which of slide 3 or slide 6 is wrong.
 
 ### What is not proven yet, in your language
 
-Three things you should know before you commit a team to this.
+**Updated 2026-08-07.** All three of the points that used to sit here have been measured. Two
+came back badly and one came back well. Here is what a lead needs.
 
-1. **We have not measured whether it says the same thing twice.** Every test case has been
-   run once per prompt version. The verdict level is probably stable because those decks
-   are unambiguous, but the finding list, the confidence label and the accounting of what
-   caps the deck have never been run repeatedly under a frozen prompt. This is the single
-   biggest hole in the evidence and it is the next thing on the list.
-2. **The test inputs were nothing like your inputs.** Five short decks, one planted flaw
-   each, written by the same people who built the tool, pasted as clean text. Real decks are
-   thirty slides with three overlapping problems and text extracted out of a PDF with the
-   columns scrambled. The quote-checking that makes it safe is untested against that.
-3. **The answer keys were written in-house with no second marker.** So "the AI matched the
-   gold" partly measures whether the AI learned the same conventions as the person who wrote
-   the gold. A fourteen-case set built from real past deliverables now exists in
-   [eval-cases-real/](eval-cases-real/), but it is unlabeled and the reviewer has never been
-   run on any of it.
+1. **It says the same things twice. It does not give the same verdict twice.** Measured on
+   2026-08-03: one deck repeated four of its five findings across all three runs, but the
+   overall readiness level came back R0, R0 and R2 on byte-identical input, with different
+   blocking rules firing each time. The reading is stable and the grade is not. That is
+   exactly why the tool now suggests a readiness level and you set it.
+2. **The test inputs are now your inputs.** Nine real past branch deliverables, long, with
+   overlapping problems and PDF extraction noise, run blind. The quote-checking held: no
+   fabricated quote has ever survived to a scored result.
+3. **We cannot yet tell you how much it caught.** This is the one that got worse. In August we
+   checked our own marking method against 178 human judgements and found it barely
+   distinguishes a real catch from a miss. So the answer keys exist, the runs exist, and the
+   comparison between them is not trustworthy yet. We are rebuilding it. Until then, treat
+   any percentage you hear about this tool as not yet measured.
+4. **The answer keys were written by one person with no second marker.** Unchanged, and it now
+   matters more, because those keys are the basis for the real-case results rather than for a
+   practice exercise. Two competent readers already landed at opposite ends of the scale on
+   one deck.
 
 ---
 
@@ -287,16 +301,31 @@ instead of surprising them with it at the final presentation.
 
 ### What is not proven yet, in your language
 
-This is a designed and internally tested instrument. It is not a piloted one. We have no
-evidence about real deliverables, no evidence about consistency across teams, no evidence
-about lead workload and no evidence about member learning, because none of those have been
-measured. The entire evidence base is five short decks we wrote ourselves, each containing
-one deliberate flaw, and our own honest internal review of that exercise concluded the tool
-is fit today as a companion for an expert or a project lead and not yet as something handed
-straight to students. Our own tests also found it over-worrying a genuinely good deck,
-which is the failure mode most likely to demoralize a team, and although the fix worked it
-has been confirmed once. Approving this means approving a small pilot with a named exit
-test, not adopting a validated system.
+**Updated 2026-08-07.**
+
+This is a built and internally tested instrument. It is not a piloted one. It is now live and
+it has been run blind on nine real past branch deliverables against human-written answer keys,
+so the "no evidence about real deliverables" line above is no longer true. What is still true,
+and what you should hold us to:
+
+- **We cannot give you a performance percentage.** In August we measured our own scoring
+  method against 178 human judgements and found it barely better than a coin weighted the
+  right way. Any recall or coverage figure from this project is unusable until we replace it.
+  We would rather say that than quote you one.
+- **Two things have held across roughly thirty reviews and neither depends on that scoring
+  method.** It has never missed a problem serious enough to block a deliverable, and it has
+  never produced a quote that was not in the deck. Both are checked mechanically.
+- **Its overall readiness verdict is not repeatable.** The same deck ran three times and came
+  back with two different verdicts. A named human sets that verdict now and the tool only
+  suggests. No student ever sees one.
+- **It over-worries good work.** On the first real run it escalated every strong deck. That is
+  the failure mode most likely to demoralize a team and it is not closed.
+- **No evidence on lead workload or member learning.** Unchanged. Neither has been measured
+  and neither will be until a pilot runs.
+
+Approving this means approving a small pilot with a named exit test, not adopting a validated
+system. We are not asking for that pilot yet, because we would rather fix the measurement
+first than run a pilot we cannot score.
 
 ---
 
@@ -347,22 +376,29 @@ and it did not tell me anything stupid. A second test they will apply without be
 does it stay quiet when the work is good. Show them the strong-deck case coming back with
 two small points rather than five invented ones.
 
-**The project lead** changes their mind on three numbers we do not have yet. First, a
+**The project lead** changes their mind on three numbers. **Updated 2026-08-07: one of the
+three now exists and it came back badly.** The stability result was measured on 2026-08-03:
+the finding list holds across runs and the verdict does not, which is why readiness is now
+theirs to set. The two still missing are the ones only a pilot produces. First, a
 false-positive log across two or three real projects: of everything the tool flagged, what
-share did the lead agree with. Second, a stability result: the same deck run three to five
-times, showing whether the verdict and the finding list hold. Third, their own before and
-after read time on a deck they would have reviewed anyway. The pilot exit condition already
-written into [09-roadmap.md](09-roadmap.md) is that leads say it saves time and the
-false-positive rate is acceptable, and neither half of that is knowable without their own
-projects in it.
+share did the lead agree with. The live tool was built to collect exactly this as a byproduct
+of a lead doing their normal triage ([17-override-log.md](17-override-log.md)), so it is
+cheap now in a way it was not before. Second, their own before and after read time on a deck
+they would have reviewed anyway. The pilot exit condition in
+[09-roadmap.md](09-roadmap.md) is that leads say it saves time and the false-positive rate is
+acceptable, and neither half of that is knowable without their own projects in it.
 
-**The VP or board member** changes their mind on the fourteen real past deliverables now
-sitting unlabeled in [eval-cases-real/](eval-cases-real/). The sequence is: humans write the
-answer keys blind, then the tool runs on the same decks, then we compare. That is the first
-result in this project that will not be self-graded, because the decks are real branch work
-with real extraction noise and the keys are written before anyone sees the output. Add to
-that a full project cycle run without a confidentiality breach or a disputed sign-off, and
-the case is made or broken on evidence rather than on design intent.
+**The VP or board member** changed their mind on the fourteen real past deliverables. **Updated
+2026-08-07: that sequence has run, and it produced a different lesson than the one this
+paragraph expected.** Humans wrote answer keys blind for 11 of the 14, the tool ran blind on
+the 9 that survived a consistency check, and the two were compared. The comparison is the part
+that failed: the software that decides whether a finding matches a key turned out to be
+barely better than guessing, so the first result in this project that was not self-graded is
+still not gradeable. What survived the sequence intact is worth more than the number would
+have been: across every run, the tool has never missed a blocking problem and has never
+invented a quote, and neither claim depends on the broken comparison. A board member should
+change their mind on those two, on a full project cycle run without a confidentiality breach
+or a disputed sign-off, and on a repaired measurement. Not on a percentage.
 
 ---
 
@@ -371,15 +407,31 @@ the case is made or broken on evidence rather than on design intent.
 Quotable by any of the three, in a client meeting, a team kickoff or a board update. It
 does not overclaim and it does not undersell.
 
+**Rewritten 2026-08-07.** This paragraph exists to be repeated verbatim, which makes it the
+single most dangerous sentence in this folder to leave stale. The version below is current.
+The version underneath it is what was quotable until today, kept so the change is visible.
+
 > We have built an AI reviewer that checks a consulting deliverable against a written
 > ten-point standard before it reaches a client, quotes the exact text behind every point it
 > raises, keeps its list short on purpose and hands the final judgment to a named human who
 > signs off. It is designed to coach rather than to rewrite: it will not produce slide text
-> for a team. It has been tested on five short scenarios we wrote ourselves, each built
-> around one deliberate flaw, where an independent scorer confirmed it found the intended
-> main issue in every case and stayed appropriately quiet on the one deck that was already
-> good. It has never been run on a real deliverable, we have not yet measured how much its
-> output varies between runs, and a set of fourteen real past decks is built but not yet
-> marked up by humans. So today it is a strong first-pass assistant for a project lead or an
-> experienced reviewer, and we are asking for a small pilot to find out whether it is more
-> than that.
+> for a team. It is live and a project lead can run the whole loop from a link. It has been
+> run blind on nine real past branch deliverables with human-written answer keys, and two
+> things have held every time: it has never missed a problem serious enough to block a
+> deliverable, and it has never invented a quote. What we cannot yet tell you is how good it
+> is as a number. We measured our own scoring method in August and it barely beats guessing,
+> so any percentage we could give you would be made up in a way that matters. We also know
+> its overall readiness verdict is not repeatable, which is why a human sets that and the
+> tool only suggests. So today it is a strong first-pass assistant for a project lead, we
+> are rebuilding the measurement before we ask for a pilot, and we would rather tell you
+> that than quote you a number we cannot stand behind.
+
+The 2026-07-22 version, no longer accurate and no longer quotable:
+
+> ...It has been tested on five short scenarios we wrote ourselves, each built around one
+> deliberate flaw, where an independent scorer confirmed it found the intended main issue in
+> every case and stayed appropriately quiet on the one deck that was already good. It has
+> never been run on a real deliverable, we have not yet measured how much its output varies
+> between runs, and a set of fourteen real past decks is built but not yet marked up by
+> humans. So today it is a strong first-pass assistant for a project lead or an experienced
+> reviewer, and we are asking for a small pilot to find out whether it is more than that.

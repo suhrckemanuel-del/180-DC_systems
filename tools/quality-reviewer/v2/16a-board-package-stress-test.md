@@ -1,5 +1,22 @@
 # 16a. Board package stress test
 
+<!-- check-docs: historical -->
+
+**This is a dated audit, run 2026-07-22 against the repo as it stood that day. It is a record,
+not a status report, and its verdicts are not re-checked as the repo moves.** Read it to see
+what was true then and what the package overclaimed. For current state read
+[STATUS.md](STATUS.md).
+
+**Note added 2026-08-07.** Most of the "not done" rows this audit VERIFIED have since been
+done, and section 0 of [16-board-package.md](16-board-package.md) now carries the corrections.
+Two of this audit's findings were never acted on until 2026-08-07 and are now folded into 16:
+the section D overclaims in C2 and C3, and the missing stop condition for a miss on real work
+in section B. One thing this audit could not have caught, because nobody suspected it: it
+traced every claim to the file that substantiates it, and took the scoring instrument behind
+those files as sound. It was not
+([21-scorer-refit-sprint.md](21-scorer-refit-sprint.md)). A citation audit cannot find a
+measurement error, which is worth knowing before the next one is commissioned.
+
 An adversarial verification of [16-board-package.md](16-board-package.md) against the actual
 repo state, not against its own text. Every substantive claim was traced to the file that
 would substantiate it. The package is unusually honest for a document of its kind. It is also

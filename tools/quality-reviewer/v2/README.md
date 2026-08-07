@@ -4,19 +4,30 @@ This folder holds v2 of the AI Quality Reviewer, for 180 Degrees Consulting
 Delft-Rotterdam: the build documents, the evaluation evidence and the renderer. The
 working v1 tool one level up in [../](../) stays untouched and shippable.
 
-**To see it, open [index.html](index.html) in a browser.** No server, no build step, no
-install. Pick one of the bundled live reviews and read it as a student, as a project lead
-or as a printable.
+**Start at [STATUS.md](STATUS.md).** It is the current state in one page and it is the only
+document maintained as current. Everything else here, this file included, is either a dated
+record or downstream of it.
+
+**To see the tool, open https://180dc-reviewer.pages.dev.** It is live. To run the renderer
+locally instead, open [index.html](index.html) in a browser: no server, no build step, no
+install.
 
 Running code here: [index.html](index.html) (the renderer),
+[run-reviews.js](run-reviews.js) (the run harness, with `--dry-run` and `--emit-packs`),
+[score-review.js](score-review.js) (scoring against a gold label),
+[scorecard.js](scorecard.js), [check-gold.js](check-gold.js) (gold-label contradictions),
 [check-review-v2.js](check-review-v2.js) (the contract validator),
-[check-stability.js](check-stability.js) (run-to-run variance) and
+[check-stability.js](check-stability.js) (run-to-run variance),
+[check-docs.js](check-docs.js) (documentation drift) and
 [bundle-reviews.js](bundle-reviews.js). The reviewer itself is a prompt, not a program:
-it runs in a Claude Project built from [04-prompt-templates.md](04-prompt-templates.md).
+it runs from section A of [04-prompt-templates.md](04-prompt-templates.md), read and hashed
+at run time so the harness cannot drift from the document.
 
-Status in one line: green on five synthetic cases, independently scored twice, with
-run-to-run stability now measured. It has never run on a real client deliverable, and it
-must not until human gold labels exist. See [progress.md](progress.md).
+Status in one line, 2026-08-07: live, run on nine real gold-backed cases twice, and the
+instrument that scores those runs was measured on 2026-08-05 and does not work, so no recall
+or coverage percentage from this project is quotable. The findings are trustworthy and the
+readiness level is not. See [STATUS.md](STATUS.md), and
+[18-evidence-base.md](18-evidence-base.md) for what is actually established.
 
 ## What v2 is
 
@@ -61,14 +72,35 @@ replace human judgment.
 | `09-roadmap.md` | 9 | pilot roadmap, next actions, open questions |
 | `10-source-register.md` | 2 | every source that justifies a design decision, with its limitation |
 | `11-decision-log.md` | 1 | one line per decision, appended every sprint |
+| `12-real-deck-intake.md` | - | the pipeline that turned past deliverables into real eval cases |
+| `13-usage-guide.md` | - | how to run it and read the output |
+| `14-value-proposition.md` | - | the case for the tool, written for a sceptical reader |
+| `15-implementation-plan.md` | - | the phased build plan |
+| `16-board-package.md` | - | the 2026-07-22 decision paper, with dated corrections in section 0 |
+| `16a-board-package-stress-test.md` | - | dated adversarial audit of 16 |
+| `17-override-log.md` | - | the lead override record and the Triage Desk design |
+| `18-evidence-base.md` | - | **what is actually established**, separated from what is hypothesis |
+| `19-prompt-change-2026-08-05.md` | - | the two-axis prompt change and its archive and revert record |
+| `20-running-it-free.md` | - | running the harness with no API spend |
+| `21-scorer-refit-sprint.md` | - | the sprint that measured the matcher and found it broken |
+| `STATUS.md` | - | **the entry point.** Current state, and the only file kept current |
+| `LIVE-URL.md` | - | the deployed URL and how to redeploy |
 | `index.html` | - | the renderer: student coaching view, project lead view, printable |
+| `run-reviews.js` | - | the run harness: dry run, cost estimate, packs, collect |
+| `score-review.js` | - | scores one review against a gold label. **Its matcher is known broken** |
+| `scorecard.js` | - | rolls scored reviews into a run scorecard |
+| `check-gold.js` | - | rejects internally contradictory gold labels |
 | `bundle-reviews.js` | - | inlines the eval-runs outputs into index.html so it works from file:// |
 | `check-review-v2.js` | - | the contract validator |
 | `check-stability.js` | - | run-to-run variance across repeated runs of one case |
+| `check-docs.js` | - | documentation drift: version strings and dead references |
 | `eval-cases/` | 4 | synthetic anonymized deliverables plus gold-label files |
-| `eval-cases-real/` | - | 14 anonymised real deliverables, awaiting human gold labels |
+| `eval-cases-real/` | - | 14 anonymised real deliverables. 11 have human golds, 9 are usable |
 | `eval-runs/` | - | live blind outputs, scoring sheets and the stability runs |
 | `expert-pack/` | 6 | the assembled pack and sample outputs |
+
+Build prompts (`BUILD-PROMPT-*.md`) and gate records (`GATE-STOP-*.md`) are dated working
+documents for one sprint each. They are not maintained after that sprint runs.
 
 ## Voice rules (apply to every file here)
 

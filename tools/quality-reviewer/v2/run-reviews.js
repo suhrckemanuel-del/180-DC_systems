@@ -23,6 +23,10 @@
  *   node run-reviews.js --cases 05,13             a subset
  *   node run-reviews.js --rescore <run-dir>       re-score an existing run, no API call
  *   node run-reviews.js --effort xhigh            override the effort level
+ *   node run-reviews.js --help                    print this list, spends nothing
+ *
+ * Unknown flags exit 2 rather than running. Do not guess a flag: an unrecognised one used
+ * to be treated as a plain live run over every case.
  *
  * Env: ANTHROPIC_API_KEY (or an `ant auth login` profile). Required only for the real run
  * above. The two modes below never touch the SDK and never need a key or spend anything:
@@ -52,7 +56,7 @@ const CONFIG = {
   thinking: 'adaptive',
   maxTokens: 64000,          // streamed, so no HTTP timeout risk
   mode: 'deep',
-  promptVersion: 'frozen-2026-07-26',   // the tag the labeling record pins the prompt to
+  promptVersion: 'frozen-2026-08-05c',   // the tag the labeling record pins the prompt to
   concurrency: 3,
   // Claude Opus 5, dollars per million tokens. Used only for the cost estimate line.
   price: { inputPerM: 5, outputPerM: 25 },
@@ -75,6 +79,52 @@ function loadFrozenPrompt() {
   const close = doc.indexOf('```', open + 3);
   if (open === -1 || close === -1) throw new Error('cannot find the section A code fence');
   const text = doc.slice(open + 3, close).replace(/^\r?\n/, '').replace(/\r?\n$/, '');
+  const hash = require('crypto').createHash('sha256').update(text).digest('hex').slice(0, 16);
+  return { text, hash };
+}
+
+/* Pull one "## X." section out of a markdown document, up to the next "## " heading. */
+function loadSection(file, heading) {
+  const doc = fs.readFileSync(path.join(V2, file), 'utf8');
+  const start = doc.indexOf(heading);
+  if (start === -1) throw new Error('cannot find "' + heading + '" in ' + file);
+  const after = doc.slice(start + heading.length);
+  const m = /\r?\n## /.exec(after);
+  const end = m ? start + heading.length + m.index : doc.length;
+  return doc.slice(start, end).trim();
+}
+
+/* The reference material the system prompt REFERS TO but does not contain.
+ *
+ * Found 2026-08-05 by a blind smoke-test reviewer, and it is longstanding: every pack back
+ * to the 07-29 baseline had this gap. Section A says "Cut to the noise budget for the mode
+ * (below)" and there was no below, because only section A was extracted. It says "see the
+ * scope matrix you were given" and nothing was given. And it says "matching the v2 output
+ * contract" while the contract lived only in a note inside run-manifest.json, which the
+ * reviewing subagent is never told to read.
+ *
+ * The practical effect was that the reviewer's noise budget, its artifact-type scope rules
+ * and its output shape all depended on how the human operator happened to word the subagent
+ * instruction. That is an uncontrolled variable sitting underneath every measurement the
+ * project has taken. Putting the material in the pack makes the pack self-contained, so the
+ * result depends on the frozen text and nothing else. */
+function loadReferenceBlocks() {
+  const text = [
+    '<!-- REFERENCE MATERIAL. The system prompt above refers to each of these. It is part of',
+    '     the frozen context and it is hashed with the prompt. -->',
+    '',
+    '# The three modes, and the noise budget the prompt tells you to cut to',
+    '',
+    loadSection('04-prompt-templates.md', '## C. The three modes'),
+    '',
+    '# The artifact-type scope matrix the prompt says you were given',
+    '',
+    loadSection('01-rubric-v1.md', '## C. Artifact-type scope matrix'),
+    '',
+    '# The v2 output contract your JSON must match exactly',
+    '',
+    fs.readFileSync(path.join(V2, '03-output-contract.md'), 'utf8').trim(),
+  ].join('\n');
   const hash = require('crypto').createHash('sha256').update(text).digest('hex').slice(0, 16);
   return { text, hash };
 }
@@ -370,7 +420,46 @@ async function pool(items, limit, worker) {
 }
 
 // ---- main -----------------------------------------------------------------
+const USAGE = [
+  'run-reviews.js — run the frozen reviewer over the gold-backed real cases and score it.',
+  '',
+  'Spends money:',
+  '  node run-reviews.js                    the real run (needs ANTHROPIC_API_KEY)',
+  '  node run-reviews.js --cases 05,13      a subset of the above',
+  '  node run-reviews.js --model <id>       override the pinned model',
+  '  node run-reviews.js --effort <level>   low | medium | high | xhigh | max',
+  '  node run-reviews.js --concurrency <n>  parallel cases',
+  '',
+  'Free (no API call, no key):',
+  '  node run-reviews.js --dry-run          build the packs and estimate cost',
+  '  node run-reviews.js --emit-packs       write per-case input packs for subagents',
+  '  node run-reviews.js --collect <dir>    score subagent-produced reviews in <dir>',
+  '  node run-reviews.js --rescore <dir>    re-score an existing run with the current matcher',
+  '  node run-reviews.js --help             this text',
+].join('\n');
+
+/* Flags that take the next argv entry as their value. Everything else is a boolean. */
+const VALUE_FLAGS = ['cases', 'rescore', 'collect', 'model', 'effort', 'concurrency'];
+const BOOL_FLAGS = ['dry-run', 'emit-packs', 'help', 'h'];
+
 async function main(argv) {
+  /* Flag guard. This file is the only one in the harness that spends money, and the
+   * no-flag invocation is the live run, so anything unrecognised used to fall straight
+   * through into a real pass over every case: `--help` once started one. Unknown flags
+   * and the --flag=value form (which arg() below cannot see) now exit instead of running. */
+  if (argv.includes('--help') || argv.includes('-h')) { console.log(USAGE); return 0; }
+  for (let i = 0; i < argv.length; i++) {
+    const token = argv[i];
+    const name = token.startsWith('-') ? token.replace(/^--?/, '') : null;
+    if (name !== null && VALUE_FLAGS.includes(name)) { i++; continue; }   // skip its value
+    if (name !== null && BOOL_FLAGS.includes(name)) continue;
+    const what = name === null ? 'unexpected argument' : 'unrecognised flag';
+    console.error('run-reviews.js: ' + what + ' ' + token);
+    console.error('Refusing to run. An argument this file does not understand is not a live run.\n');
+    console.error(USAGE);
+    return 2;
+  }
+
   const arg = (name, fallback) => {
     const i = argv.indexOf('--' + name);
     return i === -1 ? fallback : argv[i + 1];
@@ -466,6 +555,9 @@ async function main(argv) {
 
   // ---- build the input packs ----------------------------------------------
   const prompt = loadFrozenPrompt();
+  /* The material section A refers to but does not contain. Packs are self-contained so a
+   * run depends on the frozen text and not on how the operator worded the subagent brief. */
+  const refs = loadReferenceBlocks();
   const labels = loadInputTemplateLabels();
   const packs = [];
   for (const caseId of eligible) {
@@ -504,17 +596,23 @@ async function main(argv) {
     fs.mkdirSync(outDir, { recursive: true });
     for (const p of packs) {
       const combined = '<!-- SYSTEM PROMPT (frozen ' + cfg.promptVersion + ', sha256:' + prompt.hash +
-        ') -->\n\n' + prompt.text + '\n\n---\n\n<!-- USER INPUT for ' + p.caseId + ' -->\n\n' + p.pack;
+        ') -->\n\n' + prompt.text +
+        '\n\n---\n\n' + refs.text +
+        '\n\n---\n\n<!-- USER INPUT for ' + p.caseId + ' -->\n\n' + p.pack;
       fs.writeFileSync(path.join(outDir, p.caseId + '.input.md'), combined);
     }
     const manifest = {
       executionMode: 'claude-code-subagent',
-      note: 'No API call was made. For each *.input.md in this folder, have a Claude Code ' +
-        'subagent read it, act as the reviewer exactly as instructed by the system prompt ' +
-        'section at the top, and write ONLY the JSON object (matching 03-output-contract.md) ' +
-        'to <caseId>.review.json in this same folder -- no prose before or after the JSON. ' +
-        'Then run: node run-reviews.js --collect "' + outDir + '"',
+      note: 'No API call was made. Each *.input.md in this folder is SELF-CONTAINED: system ' +
+        'prompt, then the reference material it refers to (noise budget, scope matrix, output ' +
+        'contract), then the deliverable. Have a Claude Code subagent read one file, act as the ' +
+        'reviewer exactly as the system prompt instructs, and write ONLY the JSON object to ' +
+        '<caseId>.review.json in this same folder -- no prose before or after the JSON. The ' +
+        'subagent must read NOTHING else from this project: no gold, no worksheet, no other ' +
+        "case's review, no harness source. Then run: node run-reviews.js --collect \"" + outDir + '"',
       promptVersion: cfg.promptVersion, promptSha256: prompt.hash,
+      referenceSha256: refs.hash,
+      contextSha256: require('crypto').createHash('sha256').update(prompt.text + refs.text).digest('hex').slice(0, 16),
       matcherVersion: MATCHER_VERSION,
       cases: packs.map(p => ({ case: p.caseId, status: 'pending' })).concat(skipped),
     };

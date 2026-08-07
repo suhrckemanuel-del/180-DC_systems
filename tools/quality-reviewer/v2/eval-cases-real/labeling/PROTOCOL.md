@@ -1,71 +1,98 @@
-# Blind labeling protocol for real cases
+# Single-pass labeling protocol for real cases
 
-Two human labelers (the two builders for now, an expert later if one is available)
-produce the gold labels for every case in [../](../). Follow this exactly. The gold is
-only as good as the discipline here.
+The team labels every case in [../](../) once to produce the gold labels: one gold label
+per case, no second independent labeler, no reconciliation of two sheets. This replaces
+the earlier two-labeler blind-then-adjudicate design, which the team does not have the
+capacity to run. See the 2026-07-25 decision-log entry for the rationale and the trade.
 
-**The easy way to do this.** Open [labeling-workstation.html](labeling-workstation.html)
-in a browser (double-click it, no server needed). Open one case file, fill the worksheet
-beside it, and it will not let you download until every required part is filled and exactly
-one must-catch is marked. It exports the correctly named worksheet in the right shape and
-autosaves as you go. It loads only the case file you open, so it cannot show you an AI
-review or a triage band by accident. Filling the worksheet template by hand is still fine if
-you prefer, the shape is identical.
+What a single pass loses, and how this protocol compensates:
+
+- Lost: the inter-rater agreement number and the two-reader stop rule. Replaced by a team
+  calibration round up front (step 1) that surfaces rubric ambiguity the same way, and by
+  honesty in the record: the gold is single-pass team gold and the baseline readiness-match
+  must be read with that caveat.
+- Lost: a second independent judgment catching a first reader's slip. Compensated by an AI
+  mechanical consistency check on every finished gold (step 4) that never suggests a label,
+  only flags internal contradictions, and by an optional expert spot-check on a few cases
+  (step 5).
+
+Blindness is unchanged and still the whole point: a gold anchored to the reviewer's own
+output is worthless.
 
 ## Before you start
 
-1. Do not read the sealed selection memo, any AI review, any triage band or any
-   reviewer output for these cases. If you have accidentally seen one for a case, say
-   so in the worksheet header for that case.
+1. Do not read the sealed selection memo, any AI review, any triage band or any reviewer
+   output for these cases. If you have accidentally seen one, say so in that case's
+   worksheet header.
 2. Read [../../01-rubric-v1.md](../../01-rubric-v1.md) and
-   [../../05-eval-harness.md](../../05-eval-harness.md) section C once, fresh, before
-   your first case.
-3. Agree a time budget per case up front. Suggested: 30 to 40 minutes. The gold should
-   reflect a careful senior read, not an afternoon of forensics.
+   [../../05-eval-harness.md](../../05-eval-harness.md) section C once, fresh, before your
+   first case.
+3. Severity rule, same as the reviewer's calibration: an issue is critical or major only if
+   closing it could change the client's decision. Style and polish are minor.
 
-## Labeling (each labeler, independently)
+## Step 1. Team calibration round (do this first, together)
 
-1. Work alone. No discussing a case with the other labeler until both worksheets for
-   it exist.
-2. Read the case file top to bottom, including the extraction-notes footer, so you know
-   what the reviewer could not have seen.
-3. Fill one copy of [worksheet-template.md](worksheet-template.md) per case. Name it
-   `real-NN.worksheet.<initials>.md` and keep it out of the shared folder until both
-   are done (swap by another channel or commit both at the same sitting).
-4. Judge the deck as it stood, not what the project became. If you personally worked
-   on the project, flag it in the header and label anyway; the adjudication weighs it.
-5. Severity rule, same as the reviewer's calibration: an issue is critical or major
-   only if closing it could change the client's decision. Style and polish are minor.
+Label the four cases in [calibration-batch.md](calibration-batch.md) as a team in one
+sitting, discussing each to a shared standard. This aligns everyone on how to read the
+rubric and it is the safety valve the two-reader stop rule used to be:
 
-## Adjudication (both labelers together)
+- If the team reaches a stable shared readiness on all four without persistent unresolved
+  debate, your rubric reading is calibrated. Proceed to step 2.
+- If the team cannot settle two or more of the four (readiness keeps moving, or you split
+  and cannot argue to a resolution), stop. The rubric is not carrying trained readers to one
+  answer, so it cannot carry the reviewer either. Fix the rubric, then redo the four.
 
-**The easy way to do this.** Open [adjudication-workstation.html](adjudication-workstation.html)
-in a browser, open both worksheets for one case, and it does the mechanical parts: it computes
-the readiness delta, shows the two sheets side by side, writes the `real-NN.gold.md` in the
-section C shape once you fill the resolved label, generates the agreement-log row, and tracks
-the stop rule across the set for you. It never proposes a label. The resolved gold is yours,
-the `use A` / `use B` buttons only copy a labeler's own words in as a starting point. Doing
-this by hand against the template below is still fine.
+Write one gold label per calibration case as you agree it. These four count as done.
 
-1. Compare worksheets case by case. For each case record: readiness agreement
-   (exact / one level apart / worse), top-issue agreement (same must-catch or not).
-2. Where you disagree, argue to a resolution on the merits and write the resolved
-   label. If you cannot resolve, park the case as `contested` rather than averaging.
-   An averaged label is gold for nobody.
-3. Write the adjudicated result into `real-NN.gold.md` using the section C template in
-   [../../05-eval-harness.md](../../05-eval-harness.md). Keep both worksheets; they
-   are the audit trail.
-4. Log per-case agreement in [agreement-log.md](agreement-log.md).
+## Step 2. Label the remaining ten (single pass)
 
-## Stop rule
+Label real-01, real-03, real-04, real-05, real-06, real-07, real-09, real-10, real-11 and
+real-14, one gold label each. Split them among the team or do them together, your choice:
+the calibration round is what keeps split work consistent. Budget 30 to 40 minutes per
+case. Judge the deck as it stood, not what the project later became. If you worked on a
+project, flag it in that case's header and label it anyway.
 
-If a third or more of the set ends up with readiness disagreement of two levels or
-more, or contested, stop labeling. The rubric is not carrying two trained readers to
-the same answer, so it cannot carry the reviewer either. Fix the rubric, then relabel
-the contested cases fresh.
+## Step 3. Write each gold
 
-## After adjudication
+Use [labeling-workstation.html](labeling-workstation.html): open a case, fill the worksheet
+beside it, and it enforces the shape (every required part filled, exactly one must-catch or
+the restraint box) before it lets you export. For a single pass the completed worksheet is
+the gold: save it as `real-NN.gold.md`. Filling the section C template by hand is equally
+fine. The two-worksheet adjudication-workstation.html is not used in a single-pass run; it
+is kept for reference only.
 
-Only now open the sealed selection memo if you need it. Machine triage bands never
-override an adjudicated gold. If the memo's band and your gold differ wildly, note it
-in the agreement log; it is information about the triage, not about your label.
+## Step 4. AI consistency check (mechanical, never a label)
+
+Once a gold exists, run the mechanical check and resolve any internal contradictions it
+reports. From this directory:
+
+```
+node ../../check-gold.js real-NN.gold.md
+```
+
+It reports only internal contradictions for you to resolve: exactly one must-catch or a
+declared restraint case, a valid readiness level, readiness at or below any blocking rule
+you cite, a blocking rule present if readiness is R0 or R1, no critical issue sitting under
+an R3, valid severities, dimensions and issue types, every section filled. It never
+proposes or changes a label, you resolve every flag. It exits 0 when the sheet is
+internally consistent and 1 with a flag list otherwise, and it runs locally with no API
+cost. This is the compensating control for the missing second reader. It runs after a gold
+exists, so it does not block labeling from starting.
+
+The checker is exercised by two fabricated fixtures under [fixtures/](fixtures/) (fake case
+real-00, no real client): `real-00.gold.PASS.md` must read CONSISTENT and
+`real-00.gold.FAIL.md` must report contradictions. Run them any time to confirm the checker
+still works before trusting it on a real gold.
+
+## Step 5. Optional expert spot-check
+
+If the ex-consultant is available, have them independently label two or three cases as an
+external-validity signal. Log where their read and the team gold diverge in
+[agreement-log.md](agreement-log.md) as information about the gold, not to override it. This
+is the only place a second pass happens and it is optional.
+
+## After labeling
+
+Only now open the sealed selection memo if you need it. Machine triage bands never override
+a gold. Every case then has a `real-NN.gold.md` and the baseline run is unblocked, once the
+prompt is frozen.

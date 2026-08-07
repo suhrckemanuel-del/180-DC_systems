@@ -296,32 +296,47 @@ rewriting on reflex.
 
 Read this section before you tell anyone the tool works.
 
-- **It has not been piloted.** No real project has used it end to end. Everything in this
-  guide is a designed workflow, not an observed one. The first team to run it is doing a
-  pilot whether or not it is called one.
-- **It has been validated on synthetic cases only.** Five short single-flaw decks, written
-  in-house, with the gold labels written by the same people who built the tool, no
-  independent inter-rater check and no PDF extraction noise. The honest summary in
-  [effectiveness-review-2026-07-03.md](effectiveness-review-2026-07-03.md) is that this is
-  a smoke test and not a validation.
-- **It has never run on a real deliverable.** A 14-case set built from real past
-  deliverables exists in [eval-cases-real/](eval-cases-real/), with realistic extraction
-  noise and multiple overlapping flaws. It has no gold labels yet, human blind labeling is
-  the next step, and by rule the reviewer does not run on those cases until adjudicated
-  gold exists. So the tool's behavior on a long, messy, multi-flaw real deck is genuinely
-  unknown.
-- **Run-to-run stability is unmeasured.** Every case has been run once per prompt version.
-  The readiness level held on all five, but the finding set, the confidence and the
-  blocking-issue accounting have never been run twice under a frozen prompt. Do not assume
-  a re-run gives you the same five findings.
-- **The fitness verdict is companion, not oracle.** The effectiveness review's own
-  conclusion: use it as a first-pass triage for an expert or a project lead who owns
-  severity and readiness, before pointing it straight at a student team. If you are a
-  student team running it now, treat the output as a strong colleague's opinion, and take
+**Updated 2026-08-07.** Several of these limits have moved since this guide was written and
+two have got sharper. The list below is current.
+
+- **It has not been piloted.** Unchanged. No real project has used it end to end. Everything
+  in this guide is a designed workflow, not an observed one. The first team to run it is
+  doing a pilot whether or not it is called one.
+- **It has run on real deliverables, twice.** Nine anonymised past decks with human gold
+  labels, blind, on 2026-07-26 and 2026-08-03. The tool's behaviour on a long, messy,
+  multi-flaw real deck is no longer unknown. The synthetic five are no longer the evidence
+  base.
+- **Do not quote a percentage from this project to anyone.** Not recall, not coverage, not
+  must-catch. On 2026-08-05 the scoring instrument behind all of those numbers was measured
+  against 178 human-adjudicated pairs: at its best possible cut point it is three percentage
+  points better than a constant that ignores the input, and 46% of what it calls a catch is
+  not one ([21-scorer-refit-sprint.md](21-scorer-refit-sprint.md)). The findings are not
+  disproved by this. The percentages are not usable. If someone asks how good it is, the
+  honest answer is "we have not measured that reliably yet".
+- **The readiness level does not repeat, and you should not treat it as a verdict.** The same
+  deck, same prompt, byte-identical input returned R0, R0 and R2 across three runs
+  ([18-evidence-base.md](18-evidence-base.md) A4). A lead sets the readiness level. The
+  tool's answer is a suggestion beside it. A student never sees one.
+- **The findings do repeat, and they are the part to rely on.** One case repeated four of its
+  five findings across all three draws (A3). No blocking rule has ever been missed across
+  roughly thirty reviews (A1), and every quote is checked mechanically as a verbatim
+  substring of your deck (A2). Those three are the tool.
+- **It over-flags, worst on good work.** On the first real baseline it escalated every strong
+  deck, six of six, four of them by two full readiness levels (A5). If your deck is good and
+  the tool is harsh, that is the known failure mode and not a signal about your deck.
+- **It does not know when your input is damaged.** PDF extraction flattens tables. The tool
+  has built a headline blocking issue out of an extraction artifact and called it a
+  contradiction in the work (A7). If a finding rests on a number from a table, check the
+  table before you act on it.
+- **The fitness verdict is companion, not oracle.** Unchanged, and now enforced rather than
+  advised: the live tool gives a lead the triage and gives the student only what the lead
+  kept. If you are a student team, treat the output as a strong colleague's opinion and take
   the disagreements to your lead.
-- **There is no v2 renderer.** The coaching view, the lead view and the printable are
-  specified in [03-output-contract.md](03-output-contract.md) and are not built. The JSON
-  and the validator are what exist.
+- **The renderer exists.** Live at https://180dc-reviewer.pages.dev. The coaching view, the
+  lead view and the printable are built. This guide's section on reading raw JSON is now the
+  fallback rather than the normal path.
 
 If any of that changes, this file should change with it, and the change should get a line
-in [11-decision-log.md](11-decision-log.md).
+in [11-decision-log.md](11-decision-log.md). `node check-docs.js` catches version and
+reference drift but it cannot catch a stale claim of state, which is what most of this
+section is made of.

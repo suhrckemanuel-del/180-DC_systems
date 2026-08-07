@@ -173,3 +173,12 @@ and the expert pack. Out of scope now: building the API or SDK multi-agent
 orchestration, changing the v1 renderer or schema in `../`, and any run on real client
 material. The trigger to move to the API phase is a written condition in
 [09-roadmap.md](09-roadmap.md).
+
+**Note, 2026-08-07.** This section describes the design phase, which ended. Two of its three
+boundaries have since been crossed deliberately and with their gates honoured: the reviewer
+has run on anonymised real past deliverables, under the sanitisation policy in
+[12-real-deck-intake.md](12-real-deck-intake.md) section C and only after human gold labels
+existed, and a v2 renderer was built and deployed. Multi-agent orchestration remains
+unbuilt. Sections 1 to 11 above are not scoped to the design phase and still govern: where a
+later document contradicts them, this one wins until a line in
+[11-decision-log.md](11-decision-log.md) says otherwise.

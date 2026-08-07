@@ -1,5 +1,13 @@
 # Paste-ready prompt for the next chat (build phase)
 
+<!-- check-docs: historical -->
+
+**Dated record, not a status report. Spent 2026-07-22.** Its central premise, "there is no
+renderer, so nothing can be shown to anyone", was answered: a renderer was built that day and
+the live Triage Desk followed on 2026-08-05. Superseded by
+[BUILD-PROMPT-restrained-output.md](BUILD-PROMPT-restrained-output.md) and everything after
+it. For current state read [STATUS.md](STATUS.md).
+
 ---
 
 Working in c:\Users\User\Desktop\180dc-ai, branch idea/reviewer-v2. Read

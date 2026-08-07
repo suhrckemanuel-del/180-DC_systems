@@ -63,3 +63,13 @@ instructor feedback (AI suggestions delivered through teaching assistants, not d
 to students), revisions improved but durable learning scores did not move, so we treat
 the learning claim as a hypothesis we are testing, not a promise. All samples here are synthetic and
 anonymized. No real client material is used.
+
+**Added 2026-08-07, and please hold us to it.** Since this pack was assembled the tool has
+been run blind on nine real past deliverables with human-written answer keys, and we then
+measured the software that compares the two. It does not work: against 178 human judgements it
+is three percentage points better than a rule that ignores the input entirely, and 46% of what
+it calls a catch is not one. So if you ask us how much it catches, the answer is that we do not
+know yet and we are rebuilding the measurement. Two things we can stand behind, because neither
+depends on that comparison: across roughly thirty reviews it has never missed a problem serious
+enough to block a deliverable, and every quote it produces is checked mechanically as verbatim
+text from the deck. Its overall readiness verdict is not repeatable and a human sets it.

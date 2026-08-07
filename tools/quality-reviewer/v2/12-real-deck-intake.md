@@ -118,9 +118,20 @@ noise.
    found clean bodies everywhere; one fix applied (seven speaker-note source URLs in
    real-05 stripped, logged in that file's extraction notes). The generic 180DC org
    contact kept in real-02 is documented there and is not client PII.
-5. Human gold labeling: **next**. Both labelers work the kit in
-   [eval-cases-real/labeling/PROTOCOL.md](eval-cases-real/labeling/PROTOCOL.md).
-6. Baseline run: blocked until every case has adjudicated gold.
+5. Human gold labeling: **done, and it did not run as designed** (updated 2026-08-07). 11 of
+   the 14 cases have gold labels. real-06, real-07 and real-09 have none and are out of scope.
+   `check-gold.js` rejects real-10 and real-11 as internally contradictory (a critical
+   must-catch issue with the blocking-rule field left as `none`), so the usable set is **9**.
+   The protocol's two-labeler blind-then-adjudicate design was **not** followed: the labels are
+   single-pass, one person. That is the design's central safeguard against a gold that encodes
+   one reader's conventions, and it was dropped. Recorded as unresolved in
+   [18-evidence-base.md](18-evidence-base.md) section B rather than quietly absorbed.
+6. Baseline run: **done twice** (updated 2026-08-07), 2026-07-26 and 2026-08-03, nine cases
+   each, blind. The gate held: no run happened on a case before its gold existed. What was not
+   anticipated is that the comparison between run and gold is made by a matcher which was
+   itself measured on 2026-08-05 and found to be three percentage points better than ignoring
+   the input ([21-scorer-refit-sprint.md](21-scorer-refit-sprint.md)). The runs are sound. The
+   scoring of them is not, yet.
 
 ## F. What this pipeline refuses to do
 

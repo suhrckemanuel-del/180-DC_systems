@@ -12,6 +12,33 @@ tools/quality-reviewer/v2/eval-cases-real/intake-work/
 tools/quality-reviewer/v2/eval-cases-real/real-*.md
 tools/quality-reviewer/v2/eval-cases-real/real-*.gold.md
 
+# The gold labels and capture worksheets live in the labeling/ subdir and name findings
+# on real client deliverables — LOCAL ONLY, never pushed. The root rules above are anchored
+# to eval-cases-real/ and do NOT reach this subdir, so it is listed explicitly.
+# (Synthetic real-00.* fixtures are deliberately not matched and stay tracked.)
+tools/quality-reviewer/v2/eval-cases-real/labeling/real-*.gold.md
+tools/quality-reviewer/v2/eval-cases-real/labeling/real-*.worksheet.*
+# The session record names client findings in prose — local only.
+tools/quality-reviewer/v2/eval-cases-real/_LABELING-RECORD.md
+# Secure-transfer zips of the eval set carry full client content — never commit them.
+tools/quality-reviewer/v2/eval-cases-real/*.zip
+# Baseline runs on the real cases: the reviewer output quotes client decks verbatim, the
+# input packs are the decks themselves, and the scorecard reproduces the human gold labels.
+# The whole tree is local only. The harness code (run-reviews.js, score-review.js,
+# scorecard.js) and the fabricated real-00 fixtures stay tracked.
+tools/quality-reviewer/v2/eval-runs/real-baseline/
+
+# Override records embed finding text and evidence quotes from real deliverables,
+# so they are client-confidential by construction (17-override-log.md section 6).
+# The whole directory is ignored before the first record is written.
+tools/quality-reviewer/v2/eval-runs/override-log/
+
+# The deployable copy of the renderer, rebuilt by build-site.js. Generated, not
+# authored: index.html is the source of truth. Ignored so a build that somehow
+# bundled real-case reviews could not be committed from here. build-site.js
+# refuses to write it at all if it carries real-case markers.
+tools/quality-reviewer/v2/site/
+
 # Heavy binaries (decks, image dumps) are kept out to keep the repo lean.
 *.pptx
 slides_out/
@@ -24,6 +51,19 @@ branch-awards/
 # Website build secrets and reference material with unclear licensing
 website/.env
 website/moodboard/
+
+# Live reviewer-mockup builds render a REAL review over a REAL client deck: every quote in
+# them is verbatim client material. website/ is a deployed Cloudflare Pages tree, so a live
+# build committed here would publish that material to the open web. The whole directory is
+# ignored rather than a filename pattern, so the rule cannot be defeated by adding a new
+# file inside it. build-desk.js --live refuses to write unless its output path is ignored.
+# The fabricated build (website/reviewer-mockups/index.html) stays tracked and deployable.
+website/reviewer-mockups/live/
+
+# Browser-automation artifacts: accessibility snapshots and console logs capture whatever
+# was on the page. Now that a live reviewer build can render a real client deck, anything
+# dropped here can contain verbatim client text. Local only.
+.playwright-mcp/
 
 # Local tooling
 node_modules/
@@ -42,3 +82,6 @@ Thumbs.db
 
 # Generated consolidated site tree (rebuilt by website/variants/tools/build-dist.mjs)
 website/variants/dist/
+
+# Cloudflare Wrangler build/deploy cache. Generated, machine-local.
+.wrangler/

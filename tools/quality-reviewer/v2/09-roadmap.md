@@ -84,6 +84,27 @@ practitioner who will check.
 
 ## E. Immediate next 5 actions
 
+**Superseded 2026-08-07. All five have been done except the expert session in item 5, and the
+phase numbering above has been overtaken.** For what is actually next, read
+[STATUS.md](STATUS.md), which sequences it as: build a replacement matcher, then re-run the
+nine real cases, then resolve the two contradictory golds, then the expert session, then a
+small pilot. The list below is kept as the record of what the design phase thought came next.
+
+**Where the phases in section A actually stand, 2026-08-07.** Phase 1 is complete. Phase 1.5,
+real-case validation, is a whole phase this roadmap never named and it has now run
+([15-implementation-plan.md](15-implementation-plan.md) defines it). Phase 2, the expert
+session, is half done: an ex-consultant was consulted on 2026-08-05 and changed the prompt
+([19-prompt-change-2026-08-05.md](19-prompt-change-2026-08-05.md)), but he has never seen the
+tool's output on a real deck, which is the calibration Phase 2 means. Phase 3 has not started.
+Phase 5 tooling was built early and out of order: the renderer is live at
+https://180dc-reviewer.pages.dev, which the section A note "only if it earns its place" did
+not anticipate.
+
+**Open questions 2 and 3 in section C are resolved.** Labeling was done by one person rather
+than two, which is a known hole ([18-evidence-base.md](18-evidence-base.md) section B), and
+the sanitization ran under the policy in [12-real-deck-intake.md](12-real-deck-intake.md)
+section C.
+
 1. Paste the SYSTEM-PROMPT from [04-prompt-templates.md](04-prompt-templates.md) into a
    Claude Project, add case 01 as calibration knowledge, and run case 03 blind to confirm
    the live output matches the hand-built review.

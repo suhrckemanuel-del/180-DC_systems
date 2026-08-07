@@ -1,10 +1,10 @@
 # Calibration batch
 
-Both labelers start here, on these four cases, before the other ten. Per
-[PROTOCOL.md](PROTOCOL.md), label these four blind and independently, then adjudicate
-together and check the stop rule. Four is enough to see whether the rubric carries two
-readers to the same answer. Losing four to a rubric fix is survivable, losing fourteen is
-not.
+The team starts here, on these four cases, before the other ten. Per
+[PROTOCOL.md](PROTOCOL.md) step 1, the team labels these four together in one sitting as the
+calibration round, arguing each to a shared standard. Four is enough to see whether the
+rubric carries the team to one stable answer. Losing four to a rubric fix is survivable,
+losing fourteen is not.
 
 The four were picked for spread by stage, length and genre, chosen from the case metadata,
 not from anything the labelers can see.
@@ -16,11 +16,12 @@ not from anything the labelers can see.
 | 3 | real-13 packaging-financial-model | final | 617 | different genre, a financial model rather than a deck |
 | 4 | real-02 waste-tech-acquisition-report | final | 1405 | the long extraction-noisy report, the stress case |
 
-## The stop rule for this batch
+## The stop signal for this batch
 
-If two or more of these four land two readiness levels apart or contested, that is already
-half the batch and past the set-level trigger rate. Stop, fix the rubric, and relabel these
-four fresh before touching the other ten. The adjudication workstation tracks this for you.
+If the team cannot settle two or more of these four (the readiness keeps moving, or you
+split and cannot argue it to one answer), that is already half the batch. Stop, fix the
+rubric, and redo these four fresh before touching the other ten. A rubric that cannot carry
+the team to one answer cannot carry the reviewer either.
 
 ## After the batch is clean
 

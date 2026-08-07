@@ -22,7 +22,7 @@
     background:#EDEFF2; color:var(--ink); -webkit-font-smoothing:antialiased;
     font-size:15px; line-height:1.55;
   }
-  .wrap{max-width:1180px;margin:0 auto;padding:20px}
+  .wrap{max-width:1240px;margin:0 auto;padding:20px}
 
   /* ---------- top bar ---------- */
   .bar{
@@ -48,6 +48,8 @@
   .btn:hover{border-color:var(--muted-2)}
   .btn.primary{background:var(--green);border-color:var(--green);color:#fff}
   .btn.primary:disabled{background:var(--border);border-color:var(--border);color:var(--muted-2);cursor:not-allowed}
+  .btn.sm{font-size:12px;padding:5px 10px}
+  .btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
 
   /* ---------- cards ---------- */
   .card{
@@ -57,6 +59,7 @@
   .card h2{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 14px}
   .card h3{font-size:15px;margin:0 0 8px}
   .lead-in{font-size:13.5px;color:var(--muted);margin:-6px 0 14px}
+  .kicker{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
 
   /* ---------- start screen ---------- */
   .picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
@@ -78,22 +81,71 @@
   .invalid ul{margin:0;padding-left:20px;font-size:13.5px}
   .invalid li{margin-bottom:5px}
 
-  /* ---------- readiness ---------- */
-  .readiness{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
-  .rpill{
-    border-radius:11px;padding:12px 16px;font-weight:700;font-size:15px;
-    border:1.5px solid;white-space:nowrap;
+  /* ---------- the four tiles ---------- */
+  .tiles4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+  .t4{
+    background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    padding:14px 16px;box-shadow:var(--shadow);
   }
-  .r0{background:var(--red-soft);border-color:var(--red-border);color:#A3241C}
-  .r1{background:var(--red-soft);border-color:var(--red-border);color:#A3241C}
-  .r2{background:var(--amber-soft);border-color:var(--amber-border);color:#8A5502}
-  .r3{background:var(--green-soft);border-color:#9FDCC2;color:var(--green-deep)}
-  .rbody{flex:1;min-width:260px;font-size:14px}
-  .rbody p{margin:0 0 8px}
-  .rbody .lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
-  .facts{display:flex;gap:20px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border-soft)}
-  .fact{font-size:13px}
-  .fact b{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .t4 .kicker{display:block;margin-bottom:8px}
+  .t4 .val{font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.22}
+  .t4 .val.sm{font-size:15.5px}
+  .t4 .sub{font-size:11.5px;color:var(--muted-2);margin-top:5px}
+  .t4 .sub b{color:var(--muted);font-weight:600}
+  .t4.unset{border-style:dashed;border-color:var(--border)}
+  .t4.unset .val{color:var(--muted-2)}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:1px}
+  .dot.red{background:var(--red)} .dot.amber{background:var(--amber)} .dot.green{background:var(--green)}
+  .dot.grey{background:var(--muted-2)}
+  .stars{color:var(--green);font-size:13px;letter-spacing:2px;margin-left:5px}
+  .stars .off{color:var(--border)}
+
+  /* ---------- criteria strip: one row, never wraps ---------- */
+  .critrow{
+    display:flex;gap:7px;align-items:center;flex-wrap:nowrap;overflow-x:auto;
+    margin-bottom:14px;padding:2px 2px 6px;
+  }
+  .critrow.open{flex-wrap:wrap;overflow-x:visible}
+  .critrow .kicker{flex:none;margin-right:3px}
+  .crit{
+    flex:none;font-size:12px;font-weight:600;padding:5px 11px;border-radius:20px;white-space:nowrap;
+    border:1px solid var(--amber-border);background:var(--amber-soft);color:#8a5a08;
+  }
+  .crit.pass{border-color:#BFE6D3;background:var(--green-soft);color:var(--green-deep)}
+  .crit.fail{border-color:var(--red-border);background:var(--red-soft);color:#a33}
+  .crit.na{border-color:var(--border);background:var(--panel);color:var(--muted)}
+  .crit b{font-weight:700;opacity:.72;margin-left:4px;font-variant-numeric:tabular-nums}
+  button.crit{cursor:pointer;font-family:inherit}
+  button.crit:hover{filter:brightness(.97)}
+
+  /* ---------- deck timeline ---------- */
+  .tl-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+  .tl-head h3{margin:0;font-size:16px;letter-spacing:-.01em}
+  .legend{display:flex;gap:14px;font-size:12px;color:var(--muted)}
+  .callband{position:relative;min-height:34px}
+  .callout{
+    position:absolute;top:0;left:0;font-size:11px;font-weight:600;white-space:nowrap;
+    padding:3px 9px;border-radius:7px;border:1px solid var(--amber-border);
+    background:var(--amber-soft);color:#8a5a08;
+  }
+  .callout.critical{border-color:var(--red-border);background:var(--red-soft);color:#a33}
+  .callout .at{opacity:.65;margin-right:5px;font-variant-numeric:tabular-nums}
+  .calltick{position:absolute;width:1px;background:var(--amber-border)}
+  .calltick.critical{background:var(--red-border)}
+  .secband{display:flex;gap:4px;margin-bottom:5px}
+  .sec{
+    min-width:0;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--muted-2);border-top:1px solid var(--border);padding-top:4px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .strip{display:flex;gap:4px}
+  .sl-tile{
+    flex:1;min-width:0;height:32px;border-radius:7px;display:flex;align-items:center;
+    justify-content:center;font-size:11.5px;font-weight:700;color:#fff;background:var(--green);
+  }
+  .sl-tile.partial{background:var(--amber)} .sl-tile.critical{background:var(--red)}
+  .conns{margin-top:12px;display:flex;flex-direction:column;gap:5px}
+  .conn{font-size:12.5px;color:var(--muted)} .conn b{color:var(--ink-2);font-variant-numeric:tabular-nums}
 
   /* ---------- blocking issues ---------- */
   .block{border-left:3px solid var(--red);background:var(--red-soft);border-radius:0 10px 10px 0;padding:12px 15px;margin-bottom:10px}
@@ -107,7 +159,91 @@
   }
   .quote .sl{display:block;font-style:normal;font-size:11.5px;color:var(--muted);font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em}
 
-  /* ---------- findings ---------- */
+  /* ---------- the triage desk ---------- */
+  .desk{display:grid;grid-template-columns:1fr 396px;gap:16px;align-items:start}
+  .wl{background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+  .wl-head{padding:13px 18px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .wl-head .t{font-size:14px;font-weight:700}
+  .wl-head .s{font-size:12.5px;color:var(--muted);flex:1;min-width:150px}
+  .row{padding:15px 18px;border-bottom:1px solid var(--border-soft);outline:none;border-left:3px solid transparent}
+  .row:last-child{border-bottom:0}
+  .row.cut{opacity:.45}
+  .row.here{background:var(--green-tint);border-left-color:var(--green)}
+  .row-top{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
+  .sev{flex:none;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;margin-top:2px;white-space:nowrap;
+    background:var(--red-soft);color:var(--red);border:1px solid var(--red-border)}
+  .sev.major{background:var(--amber-soft);color:#8a5a08;border-color:var(--amber-border)}
+  .sev.minor{background:var(--panel);color:var(--muted);border-color:var(--border)}
+  .row-title{flex:1;font-size:14px;font-weight:650;letter-spacing:-.01em;line-height:1.35}
+  .state{flex:none;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;margin-top:2px;white-space:nowrap;
+    background:var(--panel);color:var(--muted-2);border:1px dashed var(--border)}
+  .state.keep{background:var(--green-soft);color:var(--green-deep);border:1px solid #BFE6D3}
+  .state.ask{background:var(--blue-soft);color:var(--blue);border:1px solid var(--blue-border)}
+  .state.cut{background:var(--red-soft);color:var(--red);border:1px solid var(--red-border)}
+  .row .quote{margin:0 0 10px}
+  .row details{margin:0 0 10px}
+  .row summary{font-size:12px;color:var(--muted);cursor:pointer;font-weight:600}
+  .row details .prose{font-size:13px;margin-top:7px}
+  .tri{display:flex;gap:4px;background:var(--panel);border-radius:9px;padding:3px;width:fit-content}
+  .tri button{border:0;background:transparent;font:inherit;font-size:12px;font-weight:600;
+    color:var(--muted);padding:5px 12px;border-radius:7px;cursor:pointer}
+  .tri button.on{background:#fff;box-shadow:0 1px 2px rgba(17,24,39,.1)}
+  .tri button.on[data-v="keep"]{color:var(--green-deep)}
+  .tri button.on[data-v="ask"]{color:var(--blue)}
+  .tri button.on[data-v="cut"]{color:var(--red)}
+  .rowfoot{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  .why{font-size:12px;color:var(--red);font-weight:600}
+  select.reason,select.sevsel{font:inherit;font-size:12px;border:1px solid var(--border);border-radius:8px;padding:5px 8px;background:#fff;color:var(--ink-2)}
+  select.reason.need{border-color:var(--red);background:var(--red-soft)}
+  label.mc{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;cursor:pointer}
+  label.mc.on{color:var(--ink-2);font-weight:650}
+  label.mc input{margin:0}
+  .addlist{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+  .additem{display:flex;gap:10px;align-items:flex-start;font-size:13px;background:var(--panel);border-radius:10px;padding:9px 12px}
+  .additem .x{margin-left:auto;flex:none}
+  .addform{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .addform input[type=text]{flex:1;min-width:210px;font:inherit;font-size:13px;border:1px solid var(--border);border-radius:9px;padding:8px 11px}
+  .addform input[type=number]{width:86px;font:inherit;font-size:13px;border:1px solid var(--border);border-radius:9px;padding:8px 11px}
+
+  /* ---------- the note panel ---------- */
+  .note{background:#fff;border:1px solid var(--border-soft);border-radius:var(--radius);
+    box-shadow:var(--shadow);position:sticky;top:16px;overflow:hidden}
+  .note-head{padding:13px 17px;border-bottom:1px solid var(--border-soft);background:var(--panel)}
+  .note-head .t{font-size:13px;font-weight:700}
+  .note-head .s{font-size:12px;color:var(--muted);margin-top:2px}
+  .note-body{padding:12px 15px}
+  textarea.notebox{
+    width:100%;height:236px;resize:vertical;border:1px solid var(--border);border-radius:10px;
+    padding:11px 12px;font-size:12.5px;line-height:1.55;
+    font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--ink-2);
+  }
+  textarea.notebox:focus{outline:2px solid var(--green);outline-offset:-1px;border-color:var(--green)}
+  .noterow{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+  .noterow .s{font-size:11.5px;color:var(--muted-2);flex:1;min-width:120px}
+  .verdictpick{padding:13px 17px;border-top:1px solid var(--border-soft);background:var(--green-tint)}
+  .verdictpick .kicker{display:block;margin-bottom:8px}
+  .vopts{display:flex;flex-direction:column;gap:5px}
+  .vopt{display:flex;align-items:center;gap:8px;font-size:12.5px;cursor:pointer;padding:6px 9px;
+    border-radius:8px;border:1px solid transparent;background:transparent}
+  .vopt:hover{background:#fff}
+  .vopt.on{background:#fff;border-color:#BFE6D3;font-weight:650}
+  .vopt .ai{margin-left:auto;font-size:10px;font-weight:700;color:var(--muted-2);
+    border:1px solid var(--border);background:#fff;padding:1px 7px;border-radius:20px;white-space:nowrap}
+  .reasonbox{width:100%;margin-top:9px;border:1px solid var(--border);border-radius:9px;padding:9px 11px;
+    font:inherit;font-size:12.5px;resize:vertical;min-height:58px}
+  .reasonbox.need{border-color:var(--red);background:var(--red-soft)}
+  .warn{margin:11px 17px 0;padding:9px 11px;border-radius:9px;background:var(--blue-soft);
+    border:1px solid var(--blue-border);font-size:11.5px;color:#274d96}
+  .warn.block{background:var(--amber-soft);border-color:var(--amber-border);color:#7a5209}
+  .warn.ok{background:var(--green-soft);border-color:#BFE6D3;color:var(--green-deep)}
+  .note-foot{padding:13px 17px;border-top:1px solid var(--border-soft);display:flex;gap:8px;flex-wrap:wrap}
+  .prov{padding:11px 17px;border-top:1px solid var(--border-soft)}
+  .prov summary{font-size:12px;color:var(--muted);cursor:pointer;font-weight:600}
+  .prov .pg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .prov label{font-size:11px;color:var(--muted);font-weight:600;display:block}
+  .prov input{width:100%;font:inherit;font-size:12px;border:1px solid var(--border);border-radius:8px;padding:6px 9px;margin-top:3px}
+
+  /* ---------- findings, student side ---------- */
   .flist{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
   .fitem{
     display:flex;align-items:center;gap:10px;border:1px solid var(--border-soft);
@@ -120,11 +256,7 @@
   }
   .fitem.done .num{background:var(--green);color:#fff}
   .fitem .txt{flex:1;font-size:13.5px;font-weight:600}
-  .sev{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
-  .sev.critical{background:var(--red-soft);color:#A3241C}
-  .sev.major{background:var(--amber-soft);color:#8A5502}
-  .sev.minor{background:var(--panel);color:var(--muted)}
-  .dc{font-size:11px;font-weight:700;color:var(--red);white-space:nowrap}
+  .fitem .sev{margin-top:0}
 
   .fcard .ftitle{font-size:19px;font-weight:700;line-height:1.4;margin:0 0 10px;letter-spacing:-.01em}
   .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
@@ -148,10 +280,6 @@
   .gate-note{font-size:12.5px;color:var(--muted);flex:1;min-width:200px}
   .gate-note.ok{color:var(--green-deep);font-weight:600}
   .gate-note.warn{color:var(--amber);font-weight:600}
-  .locked{
-    margin-top:12px;border:1.5px dashed var(--border);border-radius:12px;padding:16px;
-    color:var(--muted-2);font-size:13.5px;display:flex;align-items:center;gap:10px;
-  }
   .fix{
     margin-top:12px;border:1.5px solid var(--green);background:#fff;border-radius:12px;padding:14px 16px;
   }
@@ -171,27 +299,71 @@
   .res.fail{background:var(--red-soft);color:#A3241C}
   .res.na{background:var(--panel);color:var(--muted-2)}
 
-  /* ---------- timeline ---------- */
-  .tl{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap}
-  .tile{
-    width:38px;height:38px;border-radius:8px;display:grid;place-items:center;
-    font-size:12px;font-weight:700;border:1px solid;
+  /* ---------- banners and lists ---------- */
+  .banner{
+    border-radius:var(--radius);padding:13px 17px;margin-bottom:16px;font-size:13px;
+    background:var(--blue-soft);border:1px solid var(--blue-border);color:#274d96;
   }
-  .tile.pass{background:var(--green-soft);border-color:#9FDCC2;color:var(--green-deep)}
-  .tile.partial{background:var(--amber-soft);border-color:var(--amber-border);color:#8A5502}
-  .tile.critical{background:var(--red-soft);border-color:var(--red-border);color:#A3241C}
-  .callout{font-size:13px;margin-bottom:5px}
-  .callout b{font-variant-numeric:tabular-nums}
-
-  /* ---------- lists ---------- */
+  .banner b{font-weight:700}
+  .banner.warn{background:var(--amber-soft);border-color:var(--amber-border);color:#7a5209}
   ul.plain{margin:0;padding-left:20px;font-size:14px;line-height:1.6}
   ul.plain li{margin-bottom:7px}
   .na-note{font-size:13.5px;color:var(--muted);line-height:1.6}
+  .kbd{font-size:11.5px;color:var(--muted-2)}
+  .kbd b{background:var(--panel);border:1px solid var(--border);border-radius:5px;
+    padding:1px 6px;font-size:10.5px;color:var(--ink-2);font-weight:700}
 
   .grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
-  @media (max-width:900px){.grid2{grid-template-columns:1fr}}
-
   .foot{font-size:12.5px;color:var(--muted);text-align:center;padding:8px 0 24px}
+
+  /* ---------- the trust strip: 22-trust-boundary section 3 ----------
+     Two cells, deliberately unequal. The findings are evidenced and are stated
+     without hedging; the readiness level is not and is stated as unreliable.
+     Uniform caution across both would be a lie in one direction and a lie in
+     the other, and a banner that hedges everything gets read as noise. */
+  .trust{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+  .trust .tc{border-radius:var(--radius);padding:11px 14px;font-size:12.5px;line-height:1.5;border:1px solid}
+  .trust .tc b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+  .trust .ok{background:var(--green-soft);border-color:#BFE6D3;color:#0C6E46}
+  .trust .no{background:var(--amber-soft);border-color:var(--amber-border);color:#7a5209}
+  @media (max-width:900px){.trust{grid-template-columns:1fr}}
+  .t4 .sub .unstable{color:#8a5a08;font-weight:600}
+
+  /* ---------- the quote check: 22-trust-boundary section 2a ---------- */
+  .qc{margin-bottom:16px}
+  .qc .qcstate{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;margin-bottom:10px}
+  .qc .pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
+  .qc .pill.unverified{background:var(--amber-soft);color:#8A5502;border:1px solid var(--amber-border)}
+  .qc .pill.verified{background:var(--green-soft);color:var(--green-deep);border:1px solid #BFE6D3}
+  .qc .pill.failed{background:var(--red-soft);color:#A3241C;border:1px solid var(--red-border)}
+  .qc .pill.waived{background:var(--panel);color:var(--muted);border:1px solid var(--border)}
+  .qc textarea{width:100%;min-height:84px;border:1px solid var(--border);border-radius:10px;padding:10px 12px;
+    font:inherit;font-size:12.5px;font-family:ui-monospace,Menlo,Consolas,monospace;resize:vertical}
+  .qc .qcrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px}
+  .qc .missing{margin-top:11px;border:1px solid var(--red-border);background:var(--red-soft);border-radius:10px;padding:11px 13px}
+  .qc .missing .mh{font-size:12.5px;font-weight:700;color:#A3241C;margin-bottom:7px}
+  .qc .missing .mq{font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace;color:#7d1f19;
+    padding:5px 0;border-top:1px solid var(--red-border)}
+  .qc details{margin-top:12px}
+  .qc details summary{font-size:12px;color:var(--muted);cursor:pointer;font-weight:600}
+  .qc details textarea{min-height:52px;margin-top:9px;font-family:inherit;font-size:12.5px}
+
+  /* ---------- the loud failure, when a stop condition trips ---------- */
+  .tripped{
+    border:2px solid var(--red);background:var(--red-soft);border-radius:var(--radius);
+    padding:22px 24px;margin-bottom:16px;
+  }
+  .tripped h2{font-size:17px;color:#A3241C;margin:0 0 10px;text-transform:none;letter-spacing:0}
+  .tripped .prose{font-size:14px;color:#7d1f19;margin-bottom:9px;line-height:1.6}
+  .tripped code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;
+    background:#fff;border:1px solid var(--red-border);border-radius:6px;padding:1px 6px}
+  .stale{background:var(--amber-soft);border:1px solid var(--amber-border);color:#7a5209;
+    border-radius:var(--radius);padding:10px 14px;margin-bottom:16px;font-size:12.5px}
+  .vsrow{padding:11px 17px;border-top:1px solid var(--border-soft);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .vsrow .lab{font-size:11.5px;color:var(--muted);font-weight:600}
+  .vsrow button{border:1px solid var(--border);background:#fff;font:inherit;font-size:11.5px;font-weight:600;
+    color:var(--muted);padding:4px 10px;border-radius:20px;cursor:pointer}
+  .vsrow button.on{background:var(--ink);border-color:var(--ink);color:#fff}
 
   /* ---------- print ---------- */
   .paper{background:#fff;padding:34px 38px;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border-soft)}
@@ -199,6 +371,13 @@
   .paper .sub{font-size:13px;color:var(--muted);margin-bottom:20px}
   .pf{border-top:1px solid var(--border-soft);padding-top:14px;margin-top:14px}
   .pf-h{font-size:15px;font-weight:700;margin-bottom:6px}
+
+  @media (max-width:1080px){
+    .desk{grid-template-columns:1fr}
+    .note{position:static}
+    .tiles4{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:900px){.grid2{grid-template-columns:1fr}}
   @media print{
     body{background:#fff}
     .bar,.foot,.noprint{display:none !important}
@@ -216,12 +395,12 @@
     <div class="brand">180DC <span>AI Quality Reviewer</span> v2</div>
     <div class="bar-meta" id="barMeta">No review loaded</div>
     <div class="tabs" id="tabs">
-      <button class="tab on" data-view="coach" disabled>Student coaching</button>
-      <button class="tab" data-view="lead" disabled>Project lead</button>
+      <button class="tab on" data-view="lead" disabled>Lead triage</button>
+      <button class="tab" data-view="student" disabled>Student view</button>
       <button class="tab" data-view="print" disabled>Printable</button>
     </div>
-    <button class="btn" id="backBtn">Change review</button>
-    <button class="btn noprint" id="printBtn">Print</button>
+    <button class="btn hidden" id="backBtn">Change review</button>
+    <button class="btn noprint hidden" id="printBtn">Print</button>
   </div>
 
   <!-- ============ START ============ -->
@@ -233,7 +412,7 @@
     </div>
     <div class="card">
       <h2>Or bring your own</h2>
-      <p class="lead-in">Paste a v2 review JSON, or open a file. The renderer validates against the output contract and refuses to draw a broken review.</p>
+      <p class="lead-in">Paste a v2 review JSON, or open a file. The renderer validates against the output contract and refuses to draw a broken review. A student pack from your project lead opens here too.</p>
       <textarea class="paste" id="pasteBox" placeholder="Paste the review JSON here"></textarea>
       <div class="gate-row">
         <button class="btn primary" id="pasteBtn">Render pasted JSON</button>
@@ -246,8 +425,163 @@
     </div>
   </div>
 
-  <!-- ============ COACH (student) ============ -->
-  <div id="coachView" class="hidden">
+  <!-- ============ LEAD ============ -->
+  <div id="leadView" class="hidden">
+    <div class="tiles4" id="tiles4"></div>
+    <div class="trust" id="trust"></div>
+    <div class="critrow" id="critrow"></div>
+
+    <div class="card" id="tlCard">
+      <div class="tl-head">
+        <h3>Deck timeline</h3>
+        <div class="legend">
+          <span><span class="dot green"></span>Pass</span>
+          <span><span class="dot amber"></span>Partial issue</span>
+          <span><span class="dot red"></span>Critical issue</span>
+        </div>
+      </div>
+      <div class="callband" id="callband"></div>
+      <div class="secband" id="secband"></div>
+      <div class="strip" id="strip"></div>
+      <div class="conns" id="conns"></div>
+    </div>
+
+    <div class="card" id="blockCard">
+      <h2>Blocking issues the reviewer cites</h2>
+      <p class="lead-in">Each one carries a verbatim quote. The ceilings are the reviewer's arithmetic, not your call. Yours is the readiness picker.</p>
+      <div id="blocks"></div>
+    </div>
+
+    <div class="desk">
+      <div>
+        <div class="card qc" id="qcCard">
+          <h2>Check the quotes against the deck</h2>
+          <p class="lead-in">Every finding carries a quote the reviewer says is verbatim. The harness checks that mechanically; a browser cannot, because it does not have the deliverable. You do. Paste the deck text once and nothing goes out until every quote is found in it.</p>
+          <div class="qcstate" id="qcState"></div>
+          <textarea id="qcText" placeholder="Paste the full text of the deck here. It stays in this tab, is never stored and never leaves the machine."></textarea>
+          <div class="qcrow">
+            <button class="btn primary" id="qcRun">Check the quotes</button>
+            <input type="file" id="qcFile" accept=".txt,.md,.markdown,text/plain" style="font-size:12.5px" />
+            <button class="btn ghost" id="qcClear">Clear</button>
+          </div>
+          <div id="qcMissing"></div>
+          <details id="qcWaiveWrap">
+            <summary>I cannot supply the deck text</summary>
+            <p class="lead-in" style="margin-top:9px">Then the quotes go out unchecked. The waiver is recorded, and everything you send carries a visible line saying so. Say why here.</p>
+            <textarea id="qcWaiveReason" placeholder="Why the deck text cannot be supplied. Recorded in the override record."></textarea>
+            <div class="qcrow">
+              <button class="btn" id="qcWaive">Waive the check and mark everything unchecked</button>
+            </div>
+          </details>
+        </div>
+
+        <div class="wl">
+          <div class="wl-head">
+            <div class="t">Drafted findings</div>
+            <div class="s" id="wlCounts"></div>
+            <button class="btn sm" id="keepRest">Keep all remaining</button>
+          </div>
+          <div id="worklist"></div>
+        </div>
+
+        <div class="card">
+          <h2>Add what it missed</h2>
+          <p class="lead-in">Keep, ask and cut can only describe findings the reviewer produced. This is the only place the record can say what it did not see.</p>
+          <div class="addlist" id="addlist"></div>
+          <div class="addform">
+            <input type="text" id="addShort" placeholder="What the reviewer missed, in one line" />
+            <select class="sevsel" id="addSev">
+              <option value="critical">High impact</option>
+              <option value="major" selected>Moderate</option>
+              <option value="minor">Minor</option>
+            </select>
+            <input type="number" id="addSlide" min="1" placeholder="Slide" />
+            <button class="btn" id="addBtn">Add</button>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <h2>Rubric scorecard</h2>
+            <p class="lead-in" id="meanNote"></p>
+            <div id="dims"></div>
+          </div>
+          <div>
+            <div class="card" id="commentsCard">
+              <h2>Evidence-linked comments</h2>
+              <div id="comments"></div>
+            </div>
+            <div class="card">
+              <h2>What this review did not assess</h2>
+              <p class="lead-in">Where your judgment is still required.</p>
+              <ul class="plain" id="leadNotAssessed"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="note">
+          <div class="note-head">
+            <div class="t">Note back to the team</div>
+            <div class="s" id="noteSub">Writes itself as you triage. Editable before export.</div>
+          </div>
+          <div class="note-body">
+            <textarea class="notebox" id="noteBox" spellcheck="true"></textarea>
+            <div class="noterow">
+              <div class="s" id="noteState">Generated from your triage.</div>
+              <button class="btn sm" id="regenBtn">Regenerate</button>
+            </div>
+          </div>
+
+          <div class="verdictpick">
+            <span class="kicker">Your readiness call</span>
+            <div class="vopts" id="vopts"></div>
+            <textarea class="reasonbox hidden" id="reasonBox" placeholder="Required when you differ from the reviewer. Why does it sit at your level and not its?"></textarea>
+          </div>
+
+          <div id="deskWarn"></div>
+
+          <div class="vsrow" id="vsrow">
+            <span class="lab">Against reading it yourself, this was</span>
+            <button type="button" data-vs="faster">faster</button>
+            <button type="button" data-vs="same">about the same</button>
+            <button type="button" data-vs="slower">slower</button>
+          </div>
+
+          <div class="note-foot">
+            <button class="btn primary" id="releaseBtn" disabled>Release to the team</button>
+            <button class="btn" id="dlNote">Note (.md)</button>
+            <button class="btn" id="dlRecord" disabled>Record (.json)</button>
+            <button class="btn" id="dlPack" disabled>Student pack</button>
+            <button class="btn ghost" id="copyLink" disabled>Copy student link</button>
+          </div>
+
+          <details class="prov">
+            <summary>Run provenance and record fields</summary>
+            <div class="pg">
+              <div><label for="pvRef">Deliverable ref</label><input type="text" id="pvRef" placeholder="your own case ref" /></div>
+              <div><label for="pvStage">Stage</label><input type="text" id="pvStage" placeholder="final" /></div>
+              <div><label for="pvPrompt">Prompt version</label><input type="text" id="pvPrompt" placeholder="frozen-2026-08-03" /></div>
+              <div><label for="pvPromptSha">Prompt sha256</label><input type="text" id="pvPromptSha" placeholder="39c18fbca9e5d218" /></div>
+              <div><label for="pvInputSha">Input sha256</label><input type="text" id="pvInputSha" placeholder="sha256 of the deck text" /></div>
+              <div><label for="pvLead">Your initials</label><input type="text" id="pvLead" placeholder="ms" /></div>
+            </div>
+            <div class="noterow">
+              <div class="s">These persist in this browser and go into the record. All optional.</div>
+              <input type="file" id="recordInput" accept=".json,application/json" style="font-size:12px" />
+            </div>
+            <div class="s kbd" style="margin-top:6px">Load a record above to restore a triage you exported earlier.</div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STUDENT ============ -->
+  <div id="studentView" class="hidden">
+    <div id="studentBanner"></div>
+
     <div class="card">
       <h2>What this deliverable does well</h2>
       <p class="lead-in">Read this first. The findings below are worth acting on because the deck already has these foundations.</p>
@@ -264,6 +598,16 @@
           <div class="flist" id="flist"></div>
           <div class="na-note" id="coachProgress"></div>
         </div>
+        <div class="card hidden" id="askCard">
+          <h2>Questions from your project lead</h2>
+          <p class="lead-in">Your lead could not settle these from the deck alone. Answer them in the next working session.</p>
+          <ul class="plain" id="askList"></ul>
+        </div>
+        <div class="card hidden" id="addedCard">
+          <h2>Your lead added these</h2>
+          <p class="lead-in">The reviewer did not raise them. Your lead did, reading the same deck.</p>
+          <ul class="plain" id="addedList"></ul>
+        </div>
         <div class="card">
           <h2>Learning note</h2>
           <div id="learning"></div>
@@ -276,61 +620,12 @@
     </div>
   </div>
 
-  <!-- ============ LEAD ============ -->
-  <div id="leadView" class="hidden">
-    <div class="card">
-      <h2>Readiness</h2>
-      <div class="readiness" id="readiness"></div>
-    </div>
-    <div class="card" id="blockCard">
-      <h2>Blocking issues</h2>
-      <p class="lead-in">Readiness is set by these, never by the score mean. Each one carries a verbatim quote.</p>
-      <div id="blocks"></div>
-    </div>
-    <div class="card">
-      <h2>Delivery-critical findings</h2>
-      <p class="lead-in">The coaching gate is hidden here on purpose, so the fix is not handed to a lead to pass on as an answer.</p>
-      <div id="leadFindings"></div>
-    </div>
-    <div class="card" id="qCard">
-      <h2>Questions to ask the team</h2>
-      <ul class="plain" id="questions"></ul>
-    </div>
-    <div class="grid2">
-      <div class="card">
-        <h2>Rubric scorecard</h2>
-        <p class="lead-in" id="meanNote"></p>
-        <div id="dims"></div>
-      </div>
-      <div>
-        <div class="card" id="tlCard">
-          <h2>Slide strip</h2>
-          <div class="tl" id="tiles"></div>
-          <div id="callouts"></div>
-        </div>
-        <div class="card" id="commentsCard">
-          <h2>Evidence-linked comments</h2>
-          <div id="comments"></div>
-        </div>
-        <div class="card">
-          <h2>What this review did not assess</h2>
-          <p class="lead-in">Where your judgment is still required.</p>
-          <ul class="plain" id="leadNotAssessed"></ul>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <h2>Sign-off</h2>
-      <p class="prose">The AI advises. A named human decides. Record your call in the project log: sign off, send back, or escalate to a board reviewer. A readiness of Not ready or Needs substantial revision is a strong signal, not a veto.</p>
-    </div>
-  </div>
-
   <!-- ============ PRINT ============ -->
   <div id="printView" class="hidden">
     <div class="paper" id="paper"></div>
   </div>
 
-  <div class="foot">Runs locally. No deliverable text or review leaves this machine.</div>
+  <div class="foot">Runs in your browser. No deliverable text, review or triage record leaves this machine unless you download it.</div>
 </div>
 
 <script id="bundled-reviews" type="application/json">{"case-01":{"label":"Case 01. Vague recommendation","note":"Live blind run. Two blocking rules fired.","source":"eval-runs/case-01-review-v2-live.json","review":{"meta":{"title":"Client A regional strategy","client":"Client A","artifactType":"draft deck","mode":"deep","slideCount":10,"version":"Review v2"},"readiness":{"level":"Needs substantial revision","mainReason":"The core recommendation rests on the unsupported slide 8 assertion that Region B is the larger prize while the deck's own evidence shows unmet demand and strained capacity in Region A.","highestRiskIssue":"Slide 8 asserts the option comparison instead of showing it, so the client could commit to an expansion the deck has not justified.","confidence":"Medium","whatCouldChangeIt":"Source notes for the slide 5 figures and any comparative sizing of Region A unmet demand could confirm or overturn the slide 8 claim and move the level."},"blockingIssues":[{"rule":2,"label":"Core recommendation unsupported by the evidence","ceiling":"Needs substantial revision","evidence":[{"slide":8,"quote":"Region B is the larger prize. The unmet demand in Region A is real but bounded, while Region B offers a step change in reach."}]},{"rule":4,"label":"Ungrounded headline number drives the decision","ceiling":"Needs targeted revision","evidence":[{"slide":5,"quote":"Region B demand will grow 40% over the next three years."}]}],"scorecard":{"diagnosticMean":2.3,"confidence":"Medium","effort":"8-12 hrs","dimensions":[{"name":"Client decision usefulness","result":"partial","checksPassed":3,"checksTotal":4,"note":"The decision and the answer are clear but the reader cannot tell what concretely happens next."},{"name":"Problem framing","result":"fail","checksPassed":1,"checksTotal":4,"note":"The deck holds one question consistently but never states the problem, the scope or the criteria for choosing between the options."},{"name":"Storyline and pyramid logic","result":"fail","checksPassed":0,"checksTotal":4,"note":"The governing insight arrives on slide 8, titles are topic labels and the slide 4 evidence is never reconciled with the answer."},{"name":"Evidence quality","result":"fail","checksPassed":1,"checksTotal":4,"note":"No claim in the deck names a source; the financial-figure check passes only because no financial figure is present."},{"name":"Analysis and insight","result":"fail","checksPassed":1,"checksTotal":4,"note":"Slide 8 interprets, but the two options are never compared on any measure and the findings carry no implications."},{"name":"Recommendation specificity","result":"fail","checksPassed":1,"checksTotal":4,"note":"The action is specific but owner, timeframe and success measure are all absent."},{"name":"Feasibility and implementation","result":"fail","checksPassed":0,"checksTotal":2,"note":"Light touch for a draft deck: fit to the client's stated capacity and a concrete first step were judged and both fail."},{"name":"Risks, assumptions and uncertainty","result":"fail","checksPassed":1,"checksTotal":4,"note":"The Region A tradeoff is at least acknowledged, but no assumption is marked and the growth forecast carries false certainty."},{"name":"Slide-level communication","result":"partial","checksPassed":2,"checksTotal":4,"note":"Each slide carries one message and content matches its title, but the titles are topics rather than assertions."},{"name":"Professionalism, tone and confidentiality","result":"partial","checksPassed":3,"checksTotal":4,"note":"Clean, safe and client-fit in tone; certainty is overstated on slides 5 and 8."}]},"strengths":[{"point":"The deck commits to one clear answer instead of leaving the client a menu.","quote":"Expand to Region B.","slide":9},{"point":"It is candid about operational strain in the current region.","quote":"Volunteers report turning away partners in peak months.","slide":4},{"point":"The two options are concrete and genuinely distinct.","quote":"Add a second warehouse shift and recruit more volunteer drivers to meet unmet demand in the current region.","slide":6}],"findings":[{"short":"Unsupported option comparison","title":"The pivotal claim that Region B beats deepening Region A is asserted without any comparative analysis.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"thinking","owner":"team","principle":"The core recommendation must be carried by evidence shown in the deck, not by assertion.","diagnosis":"Slide 8 declares Region B the larger prize and Region A demand bounded, but no slide quantifies either side. Slide 4 reports demand exceeding supply in Region A and slide 5 counts 30 potential partners against the 40 partners already served, so on the deck's own numbers the comparison is at best open. No slide compares the options on reach, cost or impact, and no criteria for the choice are ever stated.","evidence":[{"slide":8,"quote":"Region B is the larger prize. The unmet demand in Region A is real but bounded, while Region B offers a step change in reach."},{"slide":4,"quote":"Partner demand in Region A frequently exceeds supply."}],"why":"The client is being asked to commit to an expansion on a claim the deck never demonstrates; if unmet demand in Region A is in fact the larger prize, this recommendation points them the wrong way.","reflect":"What evidence would prove that unmet demand in Region A is bounded, and what would you expect to see in your own slide 4 data if it were not?","fix":"Quantify unmet demand in Region A and reachable demand in Region B on comparable measures, state the criteria for the choice, and let the comparison carry slide 8. If the data does not exist yet, present the decision as open and name what would settle it.","tags":["option comparison","unsupported claim"]},{"short":"Ungrounded headline numbers","title":"The Region B figures that drive the recommendation have no stated source.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"evidence","owner":"team","principle":"Every headline number the decision depends on traces to a named source or is marked as an assumption.","diagnosis":"Slide 5 makes three load-bearing claims (30 potential partners, no comparable redistributor, 40% demand growth) with no source, and the evidence and source notes field of the input was left blank. The only sourcing language in the deck is early conversations, which names nothing.","evidence":[{"slide":5,"quote":"Region B demand will grow 40% over the next three years."},{"slide":5,"quote":"Region B has 30 potential partners and no comparable redistributor."}],"why":"An unsourced growth forecast reads as invented, and one challenged number can sink the client's trust in the whole deck.","reflect":"For each number on slide 5, where exactly did it come from and would you be comfortable showing that source to the client?","fix":"Cite each Region B figure to its source on the slide, or restate it as an assumption with its basis. Downgrade anything that came only from early conversations to what those conversations can actually support.","tags":["sourcing","headline numbers"]},{"short":"Capacity strain unaddressed","title":"The expansion recommendation never addresses the capacity strain the deck itself documents.","severity":"major","severityLabel":"Moderate","deliveryCritical":true,"issueType":"implementation","owner":"team","principle":"Recommendations must fit the client's stated capacity, and evidence that cuts against the answer must be reconciled, not ignored.","diagnosis":"Slide 3 describes one warehouse, two vans and a single full-time coordinator, slide 4 reports partners being turned away in peak months, yet slides 9 and 10 add a whole new region without saying what the satellite hub needs or where that capacity comes from. Slide 9 even leans on a strong volunteer base that slide 4 shows is already overstretched.","evidence":[{"slide":3,"quote":"It operates one warehouse and two vans. It relies on volunteer drivers and a single full-time coordinator."},{"slide":4,"quote":"Volunteers report turning away partners in peak months."}],"why":"A resource-strained non-profit that expands before it can serve current demand risks failing both regions, which is the costliest outcome this advice could produce.","reflect":"What does the Region B hub need in vehicles, drivers and coordination, and what does your own slide 3 say Client A has spare?","fix":"State the resource requirements of the Region B hub against current capacity, then either show how the gap closes or scope the expansion down to a pilot the current organization could carry.","tags":["feasibility","capacity"]},{"short":"Next steps not actionable","title":"The recommendation and next steps name no owner, no timeframe and no measure of success.","severity":"major","severityLabel":"Moderate","deliveryCritical":true,"issueType":"recommendation","owner":"team","principle":"A recommendation names the action, the owner, the timeframe and the signal that says it worked.","diagnosis":"Slide 9 falls back on vague verbs and slide 10 closes with an open-ended review, so a busy client finishes the deck without a first concrete step.","evidence":[{"slide":10,"quote":"Begin planning the Region B expansion. Engage stakeholders. Review progress in due course."},{"slide":9,"quote":"Scale up operations and improve partnerships to serve the new region."}],"why":"Advice without an owner and a deadline is a wish; the client cannot act on it and the project's value evaporates at handover.","reflect":"If the client said yes tomorrow, what is the first thing someone does on Monday and how would they know in three months that it worked?","fix":"Turn slide 10 into a sequenced first quarter: the action, who owns it, when it happens and the measure that says it worked. Replace review in due course with a dated checkpoint.","tags":["actionability","next steps"]},{"short":"No early governing insight","title":"The governing insight arrives on slide 8 and the titles are topic labels, so the argument is not readable from the top.","severity":"major","severityLabel":"Moderate","deliveryCritical":false,"issueType":"communication","owner":"team","principle":"One governing insight early, and action titles that reconstruct the argument in order.","diagnosis":"Slides 2 to 7 carry labels rather than assertions and the first statement of the answer is slide 8, so a reader skimming titles learns topics, not the argument for expansion.","evidence":[{"slide":5,"quote":"The opportunity in Region B"},{"slide":4,"quote":"Current operations"}],"why":"A board member reading titles in order cannot reconstruct why expansion wins, which weakens the deck exactly where it must persuade.","reflect":"If you kept only the ten titles, would they alone convince a reader that Region B is the right call?","fix":"State the governing insight by slide 2 or 3, then rewrite each content title as the sentence that slide proves, in an order that builds to the recommendation.","tags":["pyramid principle","action titles"]}],"comments":[{"location":"Slide 4","problem":"The 620 tonnes figure has no source.","why":"It does not drive the decision but an unsourced baseline invites the client to question the numbers that do.","fix":"Cite the internal record it comes from."}],"questionsForLead":["Where do the Region B figures (30 partners, 40% growth) come from and has anyone on the team seen the underlying data?","Has the team sized unmet demand in Region A, since the bounded claim on slide 8 currently rests on nothing?","What budget, staffing and timeline constraints has the client given for either option? The input left constraints blank.","Who is the audience for this deck, the board or the executive director, since that changes how the decision should be framed?"],"learningNote":{"lesson":"A recommendation is only as strong as the comparison behind it: quantify both options before declaring a winner.","weakHabit":"Settling on the preferred answer early and describing the alternative just enough to dismiss it.","exercise":"Write one quantified sentence per option (partners reachable, tonnes moved, resources required) and check whether slide 8 survives the numbers.","principle":"Compare before you conclude"},"notAssessed":["Accuracy of the Region B figures: no evidence or source notes were provided with the input.","Feasibility against the client's real budget, staffing and timeline: the known constraints field was left blank.","Audience fit: the intended audience and project stage were not stated.","Visual design and layout: only extracted slide text was reviewed."],"timeline":{"sections":[{"label":"Context","span":4},{"label":"Options","span":3},{"label":"Recommendation","span":3}],"tiles":[{"slide":1,"state":"pass"},{"slide":2,"state":"pass"},{"slide":3,"state":"pass"},{"slide":4,"state":"partial"},{"slide":5,"state":"critical"},{"slide":6,"state":"partial"},{"slide":7,"state":"partial"},{"slide":8,"state":"critical"},{"slide":9,"state":"critical"},{"slide":10,"state":"partial"}],"callouts":[{"at":5,"state":"critical","label":"Headline numbers unsourced"},{"at":8,"state":"critical","label":"Comparison asserted not shown"},{"at":10,"state":"partial","label":"Next steps not actionable"}],"connectors":[{"from":4,"to":8,"label":"Region A strain never reconciled with the bounded claim"},{"from":5,"to":9,"label":"Recommendation leans on the unsourced growth figure"}]}}},"case-02":{"label":"Case 02. Problem framing drift","note":"Live blind run under the revised prompt.","source":"eval-runs/case-02-review-v2-live-r2.json","review":{"meta":{"title":"Client B growth plan","client":"Client B (anonymized)","artifactType":"draft deck","mode":"deep","slideCount":9,"version":"Review v2"},"readiness":{"level":"Needs substantial revision","mainReason":"The deck answers a programme efficiency question the client did not ask, so the board's individual giving question is left unanswered.","highestRiskIssue":"Slides 5 to 9 pivot to closing the mentoring scheme on unsourced performance claims while the donation question set on slide 2 never gets an answer.","confidence":"Medium","whatCouldChangeIt":"A client brief that explicitly widens the question to programme mix, plus sources for the slide 6 performance claims, could move this toward targeted revision. Blank evidence notes and constraints keep confidence at Medium."},"blockingIssues":[{"rule":2,"label":"Unsupported core recommendation","ceiling":"Needs substantial revision","evidence":[{"slide":6,"quote":"Mentoring runs at a loss and attendance is falling."},{"slide":7,"quote":"tutoring, which delivers the best outcomes per pound"}]},{"rule":3,"label":"Answers the wrong problem","ceiling":"Needs substantial revision","evidence":[{"slide":2,"quote":"The board has asked how to grow individual giving."},{"slide":8,"quote":"Close the mentoring scheme. Reinvest the freed budget in tutoring."}]}],"scorecard":{"diagnosticMean":2.2,"confidence":"Medium","effort":"6-8 hrs","dimensions":[{"name":"Client decision usefulness","result":"fail","checksPassed":1,"checksTotal":4,"note":"The board's question is named on slide 2 but the deck answers a different one and the next steps serve that other answer."},{"name":"Problem framing","result":"partial","checksPassed":2,"checksTotal":4,"note":"The problem opens specific and quantified, then drifts from donations to programme mix at slide 5."},{"name":"Storyline and pyramid logic","result":"fail","checksPassed":0,"checksTotal":4,"note":"No governing insight early, titles are labels and the path from problem to recommendation breaks at slide 5."},{"name":"Evidence quality","result":"fail","checksPassed":1,"checksTotal":4,"note":"The survey is identified as primary but the loss, attendance and outcome claims carry no source, number or method."},{"name":"Analysis and insight","result":"fail","checksPassed":1,"checksTotal":4,"note":"The programme half interprets, but the donor evidence gets no implication and no donation growth options are compared."},{"name":"Recommendation specificity","result":"fail","checksPassed":1,"checksTotal":4,"note":"The closure action is specific but has no owner, timeframe or success measure."},{"name":"Feasibility and implementation","result":"partial","checksPassed":2,"checksTotal":4,"note":"A first step and a rough sequence exist. No constraints were provided so fit was judged lightly."},{"name":"Risks, assumptions and uncertainty","result":"fail","checksPassed":0,"checksTotal":4,"note":"No assumption, risk or tradeoff is named anywhere despite an irreversible programme closure."},{"name":"Slide-level communication","result":"fail","checksPassed":1,"checksTotal":4,"note":"Slides carry one message each but every title is a topic label."},{"name":"Professionalism, tone and confidentiality","result":"partial","checksPassed":3,"checksTotal":4,"note":"Tone is professional and there is no confidentiality issue, but unsourced claims are stated with flat certainty."}]},"strengths":[{"point":"The problem is opened with a quantified gap and a concrete trend rather than a vague topic.","quote":"Client B faces a 25% funding gap next year. Individual donations have been flat for three years.","slide":2},{"point":"The team collected primary donor evidence that speaks directly to the client's question.","quote":"donors said they value Client B's tutoring results and would give more if they saw impact updates","slide":4}],"findings":[{"short":"Answers the wrong question","title":"The deck pivots from the board's donation question to a programme efficiency recommendation and never returns to individual giving.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"thinking","owner":"team","principle":"Problem framing: answer the question the client asked and hold it to the end.","diagnosis":"Slide 2 sets the question as growing individual giving. Slides 5 to 9 review programmes and recommend closing mentoring, and slide 8 reinvests the freed budget in tutoring rather than aiming it at donations or the gap, so the deck ends without answering the question it opens with. Slide 4 already holds the strongest lead on the real question, donors who would give more if they saw impact updates, and the deck never uses it.","evidence":[{"slide":2,"quote":"The board has asked how to grow individual giving."},{"slide":8,"quote":"Close the mentoring scheme. Reinvest the freed budget in tutoring. This improves overall programme efficiency."},{"slide":4,"quote":"would give more if they saw impact updates"}],"why":"The board asked one question and receives an answer to another, so the deck moves no decision the client actually faces and spends its credibility on an unasked one.","reflect":"State in one sentence how closing the mentoring scheme grows individual donations. If you cannot, which question is this deck answering.","fix":"Re-anchor the deck on the donation question and build the argument from the donor evidence you already have, for example impact updates and a regular giving route. If the team believes programme mix is the real issue, raise that reframing with the client explicitly instead of answering it unasked.","tags":["Problem Framing","Client Decision"]},{"short":"Unsourced closure evidence","title":"The recommendation to close the mentoring scheme rests on performance claims with no source, number or method.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"evidence","owner":"team","principle":"Evidence Grounding: a claim that drives a decision must be sourced.","diagnosis":"The closure case is carried entirely by slides 6 and 7. The loss, the falling attendance and the outcomes per pound comparison arrive with no figures, no sources and blank evidence notes, so an irreversible programme closure hangs on assertion.","evidence":[{"slide":6,"quote":"Mentoring runs at a loss and attendance is falling."},{"slide":7,"quote":"tutoring, which delivers the best outcomes per pound"}],"why":"A board asked to approve closing a youth programme will ask for the loss figure and the outcome data, and the deck has neither, so the recommendation collapses under the first question.","reflect":"What data would you show the board to prove mentoring loses money and tutoring converts a pound into more outcomes, and do you have it.","fix":"Put numbers and named sources under the loss, attendance and outcome claims, or mark them as untested hypotheses. If the data does not exist, say so and downgrade the closure from recommendation to option pending analysis.","tags":["Evidence Grounding","ERIP Performance"]},{"short":"No risks named","title":"The deck recommends closing a live youth programme without naming a single risk, assumption or tradeoff.","severity":"major","severityLabel":"Moderate","deliveryCritical":true,"issueType":"thinking","owner":"team","principle":"Assumptions and uncertainty: name the load-bearing assumptions so the client can stress-test the advice.","diagnosis":"The recommendation and next steps assume staff transfer cleanly to tutoring, families accept the closure and no funder or donor reacts badly, yet none of this is stated as an assumption and no downside of closure appears anywhere on slides 7 to 9.","evidence":[{"slide":8,"quote":"Close the mentoring scheme. Reinvest the freed budget in tutoring. This improves overall programme efficiency."},{"slide":9,"quote":"Plan the mentoring wind-down. Communicate to families. Reallocate staff to tutoring."}],"why":"Closing a programme is hard to reverse, and a board that discovers the unstated risks itself will distrust the rest of the advice.","reflect":"What is the worst realistic outcome of closing the mentoring scheme, and what must be true for the closure to be safe.","fix":"List the load-bearing assumptions behind the closure and the two or three biggest risks with a mitigation each. Whatever recommendation survives the reframing, give it the same treatment, plus an owner, a date and a measure.","tags":["Assumptions","ERIP"]},{"short":"Titles carry no argument","title":"Every title is a topic label and no governing insight appears early, so the argument is not readable from the titles.","severity":"major","severityLabel":"Moderate","deliveryCritical":false,"issueType":"communication","owner":"team","principle":"Pyramid Principle: answer first, and titles carry the message.","diagnosis":"Titles such as The problem, Donation landscape and Our view are labels, and the deck's view first appears on slide 7. A reader skimming the titles cannot reconstruct any argument, least of all one about donations.","evidence":[{"slide":3,"quote":"Donation landscape"},{"slide":7,"quote":"Client B should cut the mentoring scheme and redirect its budget to tutoring, which delivers the best outcomes per pound."}],"why":"A busy board member reading only the titles takes away nothing, and the one message they need, the answer to their question, is nowhere in the title layer.","reflect":"If a reader saw only your nine titles, what would they say your recommendation is and why.","fix":"Once the deck is re-anchored, state the governing insight by slide 2 or 3 and rewrite each content title as the full-sentence assertion its slide proves.","tags":["Pyramid Principle","Minto"]}],"comments":[{"location":"Slide 4","problem":"The survey behind the donor claims has no sample size, method or date (\"In a short survey, donors said they value Client B's tutoring results\").","why":"This evidence should become the backbone of the donations answer, so its weight must be checkable.","fix":"State who was surveyed, how many and when, and mark the finding as directional if the base is small."},{"location":"Slide 2","problem":"The 25% funding gap has no stated source.","why":"The gap sizes the whole problem. It does not drive the closure decision, so it is not a blocker, but one line on where it comes from makes the opening credible.","fix":"Name the source of the 25% figure, for example next year's budget."}],"questionsForLead":["Did the client or the board ever ask for a programme review, or did the team introduce the programme mix question itself.","Where do the mentoring loss and attendance claims come from, and has anyone seen the underlying data.","Was the freed mentoring budget ever meant to close the funding gap, and if so why does slide 8 reinvest it in tutoring instead.","How large was the donor survey and who ran it.","What constraints on staff, budget and timeline should recommendations fit. None were provided in the input."],"learningNote":{"lesson":"The first duty of a deck is to answer the question the client asked. A better question found along the way is raised with the client, not substituted silently.","weakHabit":"Following the most interesting analysis away from the brief instead of checking every slide against the client's question.","exercise":"Write the client's question at the top of a page. For each slide, write one line on how it moves that question forward. Any slide with no line either earns its place explicitly or goes.","principle":"Problem Framing"},"notAssessed":["Whether the mentoring loss, attendance and outcome claims are factually true. No sources or evidence notes were provided.","Feasibility against real constraints. The constraints field was blank, so staff, budget and timeline fit could not be judged.","Audience fit and depth. The intended audience and project stage fields were blank, so a generic board audience was assumed for tone only.","Visual design, layout and charts. Only slide text was provided.","Whether closing the mentoring scheme is the right call for Client B. This review judges support and fit to the question, not the underlying decision."],"timeline":{"sections":[{"label":"Problem and donor evidence","span":4},{"label":"Programme review","span":3},{"label":"Recommendation and next steps","span":2}],"tiles":[{"slide":1,"state":"partial"},{"slide":2,"state":"pass"},{"slide":3,"state":"pass"},{"slide":4,"state":"partial"},{"slide":5,"state":"critical"},{"slide":6,"state":"critical"},{"slide":7,"state":"critical"},{"slide":8,"state":"critical"},{"slide":9,"state":"partial"}],"callouts":[{"at":5,"state":"critical","label":"Pivot away from the donation question"},{"at":8,"state":"critical","label":"Recommendation does not answer slide 2"}],"connectors":[{"from":2,"to":8,"label":"Question asked here is not the one answered"},{"from":4,"to":8,"label":"Donor evidence never reaches the recommendation"}]}}},"case-03":{"label":"Case 03. Weak storyline","note":"Live blind run. No governing insight.","source":"eval-runs/case-03-review-v2-live.json","review":{"meta":{"title":"Client C service expansion","client":"Client C (anonymized)","artifactType":"draft deck","mode":"deep","slideCount":10,"version":"Review v2"},"readiness":{"level":"Needs substantial revision","mainReason":"The client asked which service to launch first and the deck presents findings without ever stating an answer.","highestRiskIssue":"Slide 9 closes the argument with benefits and costs language and a call for further analysis instead of an answer.","confidence":"Medium","whatCouldChangeIt":"If the team holds a recommendation that was left out of the deck and the blank input fields, reviewing that answer with its evidence could move the level. Evidence and source notes were not provided so High confidence is not available."},"blockingIssues":[{"rule":2,"label":"Deck does not answer the client's question","ceiling":"Needs substantial revision","evidence":[{"slide":9,"quote":"Each option has benefits and costs. Capacity, funding and staffing all matter. Further analysis may be useful."},{"slide":2,"quote":"Background. Methodology. Findings. Appendix."}]}],"scorecard":{"diagnosticMean":2.3,"confidence":"Medium","effort":"6-8 hrs","dimensions":[{"name":"Client decision usefulness","result":"fail","checksPassed":1,"checksTotal":4,"note":"The choice is set up on slide 3 but no answer or next step follows."},{"name":"Problem framing","result":"partial","checksPassed":3,"checksTotal":4,"note":"One bounded choice held consistently, success criteria are missing."},{"name":"Storyline and pyramid logic","result":"fail","checksPassed":0,"checksTotal":4,"note":"No governing insight anywhere and the titles are topic labels."},{"name":"Evidence quality","result":"partial","checksPassed":2,"checksTotal":4,"note":"Primary and secondary are distinguished, sources stay generic and limitations are unstated."},{"name":"Analysis and insight","result":"fail","checksPassed":0,"checksTotal":4,"note":"Findings are reported without implications and the options are never compared."},{"name":"Recommendation specificity","result":"fail","checksPassed":0,"checksTotal":4,"note":"There is no recommendation to assess."},{"name":"Feasibility and implementation","result":"fail","checksPassed":0,"checksTotal":4,"note":"No execution content. Judged lightly for a draft deck but the capacity question demands at least a first step."},{"name":"Risks, assumptions and uncertainty","result":"partial","checksPassed":2,"checksTotal":4,"note":"Option costs are acknowledged and uncertainty is not hidden, load-bearing assumptions and the risks of any choice are unstated."},{"name":"Slide-level communication","result":"fail","checksPassed":1,"checksTotal":4,"note":"Every title is a label. Content matches its label but carries no message."},{"name":"Professionalism, tone and confidentiality","result":"pass","checksPassed":4,"checksTotal":4,"note":"Professional throughout, no confidentiality issue, no overclaiming."}]},"strengths":[{"point":"The research base is real primary work with a stated method.","quote":"We interviewed staff, surveyed 120 patients and reviewed local health data.","slide":4},{"point":"The survey produces a decision-relevant ranking of patient need.","quote":"40% of surveyed patients said mental health was their top unmet need, 30% said diabetes, 20% physiotherapy, 10% other.","slide":8},{"point":"The problem is framed tightly around a single bounded choice.","quote":"It has capacity to add one new service.","slide":3}],"findings":[{"short":"No answer given","title":"The deck never answers which service Client C should launch first.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"recommendation","owner":"team","principle":"Answer First: a client deck states the answer to the client's question, not only the research behind it.","diagnosis":"The client asked which of three services to launch first. Slide 1 frames the deck as research findings, the slide 2 agenda contains no recommendation section and slide 9 ends the argument by deferring to further analysis. No slide states a choice.","evidence":[{"slide":1,"quote":"Client C service expansion. Research findings."},{"slide":9,"quote":"Each option has benefits and costs. Capacity, funding and staffing all matter. Further analysis may be useful."}],"why":"Client C gets a summary of its own situation instead of advice. The decision it asked for help with is left exactly where it started.","reflect":"Using only the evidence on slides 5 to 8, which service would you launch first, and what one sentence defends that pick.","fix":"State the team's answer early and let the findings defend it. If the evidence cannot yet carry an answer, replace the general call for further analysis with the specific analysis that would close the gap and a date for it.","tags":["Answer First","Pyramid Principle"]},{"short":"Options never compared","title":"The three options are described separately and never compared on a common basis.","severity":"major","severityLabel":"Moderate","deliveryCritical":true,"issueType":"thinking","owner":"team","principle":"So What: evidence earns its place by the implication it carries for the decision.","diagnosis":"Slides 5 to 7 give each option one demand signal, and two of the three carry a cost or staffing hurdle while mental health carries none. Slide 8 ranks patient need but slide 9 draws no implication from it, so demand, cost and staffing are never laid side by side.","evidence":[{"slide":6,"quote":"Physiotherapy referrals often go unfilled locally. Equipment cost is high."},{"slide":8,"quote":"40% of surveyed patients said mental health was their top unmet need, 30% said diabetes, 20% physiotherapy, 10% other."}],"why":"A which question is a comparison. Until the options sit on one basis the survey ranking does no work and the launch decision stays with the client.","reflect":"If you drew a table of demand, cost and staffing for the three options, which cells could you fill today from your own slides and which are empty.","fix":"Put the three options on one comparison basis (demand, cost to launch, staffing need) using the evidence already collected, mark the cells you cannot fill as open questions, and let the comparison drive the answer.","tags":["So What","ERIP Performance"]},{"short":"Titles are labels","title":"There is no governing insight and every title is a topic label.","severity":"major","severityLabel":"Moderate","deliveryCritical":false,"issueType":"communication","owner":"team","principle":"Pyramid Principle: the titles alone carry the argument.","diagnosis":"The agenda on slide 2 promises topics, and every title from slide 3 to slide 9 is a label such as Methodology or Considerations. A reader skimming the titles learns the subjects covered, not what the team concluded.","evidence":[{"slide":2,"quote":"Background. Methodology. Findings. Appendix."}],"why":"A busy clinic director reading the titles takes away nothing, so the findings never add up to a message in the reader's head.","reflect":"Write your ten titles as full sentences in order. Do they tell a story that ends in an answer.","fix":"Once the answer exists, rewrite the content titles as full-sentence assertions so each carries one step of the argument toward it.","tags":["Pyramid Principle","Minto"]}],"comments":[{"location":"Slide 8","problem":"The survey ranking gives no sampling method and no note that 120 respondents stand in for 2,000 annual patients.","why":"Once an answer exists this ranking becomes its load-bearing number and a funder will ask who was surveyed and how.","fix":"State how respondents were selected and the limits of the sample where the number appears."},{"location":"Slide 3","problem":"Capacity to add one new service is never defined in terms of budget, staff or space.","why":"The client question turns on limited capacity, and an undefined constraint cannot discriminate between the options.","fix":"Define the binding constraint concretely and test each option against it."},{"location":"Slide 5","problem":"Staff see demand is unquantified and unattributed.","why":"Part of the case for the option patients ranked first rests on an impression a reader cannot weigh.","fix":"Say how many staff reported it and what they actually said."}],"questionsForLead":["Is this deck meant to answer the launch question or is it an interim findings pack, and if the latter, when does the answer come.","What is the binding capacity constraint at Client C (budget, staff or space) and did the team gather cost and staffing estimates for each option.","How were the 120 survey respondents selected and are they representative of the 2,000 patients a year.","Has the team agreed decision criteria with Client C for choosing among the three services."],"learningNote":{"lesson":"Research becomes consulting only when it converges on an answer. A which question is answered with a choice and the reasoning that carries it, not with a set of findings.","weakHabit":"Stopping at description and handing the synthesis back to the client as further analysis.","exercise":"Using only slides 5 to 8, force-rank the three options and write one sentence defending the top pick. Then list the evidence that would change the ranking.","principle":"Answer First"},"notAssessed":["Whether the local health data, the unfilled referral claim and the wait time reports are accurate. No evidence and source notes were provided.","Fit to audience and project stage. The intended audience and project stage fields were left blank.","Client C's actual budget, staffing and space constraints. The deck names none and the known constraints field was blank.","Visual design, layout and charts. Only slide text was provided."],"timeline":{"sections":[{"label":"Setup","span":3},{"label":"Methodology","span":1},{"label":"Findings","span":4},{"label":"Close","span":2}],"tiles":[{"slide":1,"state":"partial"},{"slide":2,"state":"partial"},{"slide":3,"state":"pass"},{"slide":4,"state":"pass"},{"slide":5,"state":"partial"},{"slide":6,"state":"partial"},{"slide":7,"state":"partial"},{"slide":8,"state":"pass"},{"slide":9,"state":"critical"},{"slide":10,"state":"partial"}],"callouts":[{"at":2,"state":"partial","label":"Agenda has no recommendation section"},{"at":9,"state":"critical","label":"Deck stops at findings, no answer"}],"connectors":[{"from":8,"to":9,"label":"Survey ranking is never carried into the considerations"}]}}},"case-04":{"label":"Case 04. Internal contradiction","note":"Live blind run. The only R0 in the set.","source":"eval-runs/case-04-review-v2-live-r2.json","review":{"meta":{"title":"Client D path to self-sustainability","client":"Client D (anonymized)","artifactType":"final recommendation deck","mode":"deep","slideCount":9,"version":"Review v2"},"readiness":{"level":"Not ready for client review","mainReason":"The recommendation to sign a lease and hire three staff walks straight into the deck's own statement that Client D cannot take on new fixed costs and cannot hire until revenue grows.","highestRiskIssue":"Slide 6 recommends new fixed costs that slide 3 rules out, so the deck could mislead the client into a commitment it cannot fund.","confidence":"Medium","whatCouldChangeIt":"Evidence that the board's position has changed or that funding for the shopfront exists would remove the contradiction. Source notes for the slide 5 and slide 7 figures would also be needed to lift the level."},"blockingIssues":[{"rule":1,"label":"Contradiction the recommendation walks into","ceiling":"Not ready for client review","evidence":[{"slide":3,"quote":"Client D has no cash reserves and cannot take on new fixed costs without new income first."},{"slide":3,"quote":"The board has been clear that hiring is not possible until revenue grows."},{"slide":6,"quote":"Open a retail shopfront within six months and hire three paid repair staff to meet demand."}]},{"rule":4,"label":"Ungrounded headline numbers the decision depends on","ceiling":"Needs targeted revision","evidence":[{"slide":7,"quote":"Revenue will double in year one. The shop pays for itself by month nine."}]}],"scorecard":{"diagnosticMean":2.5,"confidence":"Medium","effort":"1-2 days","dimensions":[{"name":"Client decision usefulness","result":"partial","checksPassed":3,"checksTotal":4,"note":"The decision is named and answered but the answer conflicts with the client's stated constraint."},{"name":"Problem framing","result":"partial","checksPassed":2,"checksTotal":4,"note":"One problem held throughout, but scope and a definition of self-sustaining are missing."},{"name":"Storyline and pyramid logic","result":"fail","checksPassed":1,"checksTotal":4,"note":"The path breaks at slide 3: the constraint is never reconciled with the recommendation."},{"name":"Evidence quality","result":"fail","checksPassed":0,"checksTotal":4,"note":"No claim or financial figure traces to a source and no limitation is stated."},{"name":"Analysis and insight","result":"fail","checksPassed":1,"checksTotal":4,"note":"No alternatives compared and the slide 3 constraint has no implication drawn."},{"name":"Recommendation specificity","result":"partial","checksPassed":2,"checksTotal":4,"note":"Action and timeframe are specific, owner and success measure are missing."},{"name":"Feasibility and implementation","result":"fail","checksPassed":1,"checksTotal":4,"note":"The plan violates the stated constraints and names no funding dependency."},{"name":"Risks, assumptions and uncertainty","result":"fail","checksPassed":0,"checksTotal":4,"note":"No assumption, risk or tradeoff is named anywhere and certainty is absolute."},{"name":"Slide-level communication","result":"partial","checksPassed":2,"checksTotal":4,"note":"One message per slide but titles are topic labels."},{"name":"Professionalism, tone and confidentiality","result":"partial","checksPassed":3,"checksTotal":4,"note":"Tone and confidentiality are clean, certainty is not appropriate."}]},"strengths":[{"point":"The situation is quantified with a clear baseline for the sustainability gap.","quote":"Client D covers 60% of its costs from bicycle sales and relies on grants for the rest.","slide":2},{"point":"Demand evidence includes a concrete observable signal, not only assertion.","quote":"Client D turns away repair work it cannot staff.","slide":4}],"findings":[{"short":"Contradicts own constraint","title":"The recommendation adds a lease and three hires that the deck itself says Client D cannot afford.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"thinking","owner":"team","principle":"Internal Consistency: a recommendation must survive every constraint the deck states.","diagnosis":"Slide 3 states that Client D has no cash reserves, that new fixed costs need new income first and that the board rules out hiring until revenue grows. Slide 6 then recommends a leased shopfront within six months plus three paid repair staff, both new fixed costs, with no explanation of how the constraint is lifted or funded.","evidence":[{"slide":3,"quote":"Client D has no cash reserves and cannot take on new fixed costs without new income first."},{"slide":6,"quote":"Open a retail shopfront within six months and hire three paid repair staff to meet demand."}],"why":"A board that already said no to hiring will reject the plan on sight, or worse the client signs a lease it cannot cover and the advice causes real financial harm.","reflect":"What would have to be true about funding for slide 6 to be possible under slide 3, and is any of it true today.","fix":"Reconcile the recommendation with the stated constraint. Either show a funding bridge that lifts it and address the board's position directly, or restage the plan so revenue grows before fixed costs are added, for example by first capturing the repair work Client D already turns away. State explicitly what changes the board's position.","tags":["Internal Consistency","Feasibility"]},{"short":"Ungrounded financial projections","title":"The headline financial numbers have no source, no cost side and no method.","severity":"critical","severityLabel":"High impact","deliveryCritical":true,"issueType":"evidence","owner":"team","principle":"Evidence Grounding: a number that drives a decision must trace to a source and a method.","diagnosis":"Slide 7 asserts that revenue doubles in year one and the shop pays for itself by month nine. No source, baseline or cost model appears anywhere, and the only support is the unsourced peer claim on slide 5. Lease and salary costs are never quantified, so payback by month nine cannot be checked.","evidence":[{"slide":7,"quote":"Revenue will double in year one. The shop pays for itself by month nine."},{"slide":5,"quote":"Comparable social enterprises have doubled revenue after opening a shop."}],"why":"The client would bet its solvency on a payback date the deck cannot defend, and one challenged number collapses trust in the whole plan.","reflect":"Which comparables sit behind the doubling claim, and what are the actual lease and salary costs per month.","fix":"Build the numbers from the ground up: named comparables, expected sales, lease and salary costs and a break-even month with the assumptions marked. If the data does not exist, present a range and say what would validate it.","tags":["Evidence Grounding","ERIP Performance"]},{"short":"False certainty throughout","title":"A bet-the-organization move is presented as certain and low risk with no assumption or downside named.","severity":"major","severityLabel":"Moderate","deliveryCritical":true,"issueType":"thinking","owner":"team","principle":"Honest Uncertainty: state assumptions and risks so the client can stress-test the advice.","diagnosis":"Slide 8 calls the plan low-risk and slide 6 promises self-sustainability as a certainty. For an organization with no cash reserves, a lease plus three salaries is the opposite of low risk, and no risk, assumption or tradeoff appears anywhere in the deck.","evidence":[{"slide":8,"quote":"The plan is low-risk. Demand is proven and the model is tested by peers."},{"slide":6,"quote":"This will make Client D self-sustaining."}],"why":"A client reassured the plan is low risk will build no contingency, and if sales lag there are no reserves to absorb the miss.","reflect":"What is the worst plausible quarter after signing the lease, and what happens to Client D in it.","fix":"Name the load-bearing assumptions (footfall, conversion and hiring speed), state the key risks with a mitigation each and replace absolute claims with claims the evidence supports.","tags":["Honest Uncertainty","Risk Disclosure"]}],"comments":[{"location":"Slides 2 to 9","problem":"Titles are topic labels (Situation, The market, Financial impact) so the argument is not readable from the titles alone.","why":"A busy board member skimming titles cannot see the claim or why it holds.","fix":"Rewrite content titles as full-sentence assertions that carry the argument."},{"location":"Slides 1 and 2","problem":"Self-sustaining is never defined against the 40% grant gap, so the two-year target has no measurable finish line.","why":"Without a defined target the client cannot tell whether this plan, or any plan, gets there.","fix":"Define self-sustaining as a cost-coverage percentage and date, then size the revenue gap the plan must close."}],"questionsForLead":["Has the board seen this recommendation, given its stated position that hiring waits on revenue growth.","Where do the doubled-revenue and month-nine payback figures come from, and did anyone build a cost model for the lease and three salaries.","Which comparable social enterprises doubled revenue after opening a shop, and how comparable are they in size and funding.","Was a lower fixed-cost path, such as monetizing the repair work Client D already turns away, considered and rejected, and why.","What capital would the shopfront need before break-even and where would it come from with no cash reserves."],"learningNote":{"lesson":"A recommendation must survive the constraints your own deck states. When slide 3 rules out new fixed costs, slide 6 cannot add them without showing what changed.","weakHabit":"Building the case for a preferred answer while ignoring disconfirming facts already collected and written down.","exercise":"Before finalizing, read only the constraint statements in the deck, then read only the recommendation, and write one sentence per constraint on how it is satisfied or lifted. Any constraint without a sentence is a contradiction to resolve.","principle":"Internal Consistency"},"notAssessed":["Whether the peer doubling claim on slide 5 is factually true. No source or evidence notes were provided.","Whether external funding for the shopfront exists or could be raised. The deck does not say.","Audience fit. Intended audience and project stage were left blank in the input, so fit was judged only from the deck itself.","Visual design, layout and charts. Only slide text was provided."],"timeline":{"sections":[{"label":"Situation and constraint","span":3},{"label":"Market case","span":2},{"label":"Recommendation and plan","span":4}],"tiles":[{"slide":1,"state":"partial"},{"slide":2,"state":"pass"},{"slide":3,"state":"pass"},{"slide":4,"state":"partial"},{"slide":5,"state":"partial"},{"slide":6,"state":"critical"},{"slide":7,"state":"critical"},{"slide":8,"state":"partial"},{"slide":9,"state":"partial"}],"callouts":[{"at":6,"state":"critical","label":"Recommendation contradicts the slide 3 constraint"},{"at":7,"state":"critical","label":"Headline numbers have no source or cost model"},{"at":8,"state":"partial","label":"Low-risk claim with no risks named"}],"connectors":[{"from":3,"to":6,"label":"stated constraint versus recommended fixed costs"}]}}},"case-05":{"label":"Case 05. Good but not perfect","note":"The restraint case. Nearly ready, minor findings only.","source":"eval-runs/case-05-review-v2-live-r2.json","review":{"meta":{"title":"Client E paid membership scheme","client":"Client E (anonymized)","artifactType":"final recommendation deck","mode":"deep","slideCount":10,"version":"Review v2"},"readiness":{"level":"Nearly ready with minor edits","mainReason":"No blocking rule fired: the decision is clear, the core recommendation is supported and actionable, the headline number is presented as an assumption to test rather than a fact, and the only open points strengthen an already-sound deck.","highestRiskIssue":"Slide 8 sizes year-one revenue at about 5,000 pounds but the deck never sizes the grant gap it is meant to close, so the reader cannot judge how much this diversifies income.","confidence":"Medium","whatCouldChangeIt":"The grant income at risk in pounds (the two grants not expected to renew) would let the reader judge whether 5,000 pounds is a meaningful start, and could turn the sizing note into a targeted gap.","confidenceNote":"Confidence is Medium because no evidence and source notes field was filled in the input, so sourcing rests on the in-slide attributions alone."},"blockingIssues":[],"scorecard":{"diagnosticMean":4.7,"confidence":"Medium","effort":"4-6 hrs","dimensions":[{"name":"Client decision usefulness","result":"pass","checksPassed":4,"checksTotal":4,"note":"The decision, the answer and the first step are stated plainly on slides 1, 2 and 10."},{"name":"Problem framing","result":"partial","checksPassed":3,"checksTotal":4,"note":"The problem is specific and held throughout, success criteria are implied by the 8% and 5% triggers but never stated as the target for diversification itself."},{"name":"Storyline and pyramid logic","result":"pass","checksPassed":4,"checksTotal":4,"note":"The answer leads on slide 1 and the titles read as an argument from problem to evidence to recommendation."},{"name":"Evidence quality","result":"pass","checksPassed":4,"checksTotal":4,"note":"Each headline claim carries an in-slide source and the 8% is honestly marked as an assumption to test."},{"name":"Analysis and insight","result":"partial","checksPassed":3,"checksTotal":4,"note":"Findings are interpreted and feed the recommendation, but the year-one revenue is never compared against the size of the grant gap it addresses."},{"name":"Recommendation specificity","result":"pass","checksPassed":4,"checksTotal":4,"note":"Action, owner, timeframe and measurable triggers are all present on slide 10."},{"name":"Feasibility and implementation","result":"pass","checksPassed":4,"checksTotal":4,"note":"The single-tier soft-launch path fits the client and sequences a first step with a pilot."},{"name":"Risks, assumptions and uncertainty","result":"pass","checksPassed":4,"checksTotal":4,"note":"The load-bearing assumptions and the main risk are named and the soft launch is set up to test them."},{"name":"Slide-level communication","result":"partial","checksPassed":3,"checksTotal":4,"note":"Most titles assert a message, but a few (The decision, The numbers) are topic labels rather than the takeaway."},{"name":"Professionalism, tone and confidentiality","result":"pass","checksPassed":4,"checksTotal":4,"note":"Professional throughout, no confidentiality issue, individuals referred to by role."}]},"strengths":[{"point":"The team marks its own key number as the thing to test rather than presenting it as fact, which is exactly the honesty a client needs.","quote":"The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.","slide":8},{"point":"The recommendation is specific and gated: it names an owner, a sequence and a numeric trigger for going to full launch.","quote":"Month three: full launch if the soft launch clears 5%.","slide":10},{"point":"The single-tier start is tied directly to the client's constraints, so the advice fits an organization that has run no membership before.","quote":"Launching one tier at 45 pounds, rather than three tiers at once, keeps admin low and lets Client E learn before it scales.","slide":6}],"findings":[{"short":"Revenue not sized to gap","title":"The year-one revenue is never compared against the size of the grant gap it is meant to help close.","severity":"minor","severityLabel":"Minor","deliveryCritical":false,"issueType":"thinking","owner":"team","principle":"Analysis: a number is only meaningful next to the number it is compared against.","diagnosis":"Slide 3 says grants are 80% of income and two of five will not renew. Slide 8 puts year-one membership at about 5,000 pounds. The deck never states the grant income at risk in pounds, so the reader cannot see whether 5,000 pounds is a meaningful dent in the gap or a token start.","evidence":[{"slide":3,"quote":"Two of five grants are not expected to renew, per the funder letters on file."},{"slide":8,"quote":"that is about 5,000 pounds in year one"}],"why":"A board member weighing whether to back the scheme wants to know how much of the shortfall it covers. Without the gap in pounds the case for effort is harder to judge.","reflect":"How large is the income the two non-renewing grants represent, and what share of it does 5,000 pounds in year one cover.","fix":"Add the pounds at risk from the non-renewing grants next to the year-one figure so the reader can see the scheme as a first step against a sized gap. Do not overstate: frame it as a start that scales, which the deck already argues.","tags":["Analysis and insight","SCR"]},{"short":"Two topic-label titles","title":"A couple of slide titles state the topic rather than the takeaway.","severity":"minor","severityLabel":"Minor","deliveryCritical":false,"issueType":"communication","owner":"team","principle":"Minto action titles: the title should carry the message, not name the subject.","diagnosis":"Most titles in the deck assert a point. Two, The decision and The numbers, are topic labels, so a reader skimming titles skips the actual takeaway on those slides.","evidence":[{"slide":2,"quote":"The decision"},{"slide":8,"quote":"The numbers"}],"why":"A busy reader who scans only titles loses the answer on slide 2 and the revenue signal on slide 8, which are two of the most load-bearing slides.","reflect":"If a reader saw only the title of slide 2 and slide 8, would they get the point the slide makes.","fix":"Rewrite the two label titles as full-sentence assertions carrying the slide's takeaway, matching the assertive titles the rest of the deck already uses.","tags":["Minto action titles","Slide-level communication"]}],"comments":[{"location":"Slide 8","problem":"The year-one figure rests on the full 1,400 mailing list being reachable, and slide 9 flags list accuracy as an assumption, but the two are not linked.","why":"If the reachable list is smaller than 1,400 the 8% target and the 5,000 pounds move together, so the reader should see them connected.","fix":"Note on slide 8 that the figure scales with the usable list size the soft launch will reveal."}],"questionsForLead":["How large in pounds is the income from the two grants not expected to renew, and does the team have that figure to sit next to the 5,000 pounds.","Has the team confirmed the coordinator has capacity to own the launch on top of current duties.","Did the team check how current the 1,400 mailing list is, since the year-one number rests on it."],"learningNote":{"lesson":"A revenue number lands only when the reader can see it against the gap it is meant to close. Size the problem in the same unit as the solution.","weakHabit":"Reporting a projected figure without placing it next to the shortfall or benchmark that makes it meaningful.","exercise":"For the headline number in this deck, write the one comparison figure that tells the reader whether it is big or small, and put the two side by side.","principle":"Analysis and insight"},"notAssessed":["Whether the in-slide sources (2024 accounts, box-office data, funder letters, comparator websites) say what the deck reports. No evidence and source notes field was filled and the underlying documents were not provided.","Whether the coordinator actually has capacity to own the launch. The deck assigns ownership but the input states no capacity constraints.","How current or accurate the 1,400 mailing list is. The deck marks this as an assumption and it was not verifiable here.","Visual design, layout and charts. Only slide text was provided."],"timeline":{"sections":[{"label":"Decision","span":2},{"label":"Case","span":3},{"label":"Design","span":2},{"label":"Numbers and risk","span":2},{"label":"First steps","span":1}],"tiles":[{"slide":1,"state":"pass"},{"slide":2,"state":"partial"},{"slide":3,"state":"pass"},{"slide":4,"state":"pass"},{"slide":5,"state":"pass"},{"slide":6,"state":"pass"},{"slide":7,"state":"pass"},{"slide":8,"state":"partial"},{"slide":9,"state":"pass"},{"slide":10,"state":"pass"}],"callouts":[{"at":8,"state":"partial","label":"Revenue not sized against the grant gap"},{"at":2,"state":"partial","label":"Topic-label title"}],"connectors":[{"from":3,"to":8,"label":"gap should meet the revenue figure"}]}}},"case-05-drift":{"label":"Case 05, a second run","note":"Same deck, same frozen prompt, another run. Fails the contract check, so the renderer refuses to draw it. Kept as the demo of that refusal.","source":"eval-runs/stability/case-05-run-a.json","review":{"meta":{"title":"Client E paid membership recommendation","client":"Client E (anonymized)","artifactType":"final recommendation deck","mode":"deep","slideCount":10,"version":"Review v2"},"readiness":{"level":"Needs targeted revision","mainReason":"The deck is sound and well sourced, but it never sizes the roughly 5,000 pounds of membership income against the grant income it is meant to diversify away from, so the board cannot tell whether this answers their funding problem or only starts to.","highestRiskIssue":"Slide 3 names a grant cliff and slide 8 gives a year-one membership figure, and no slide connects the two.","confidence":"Medium","whatCouldChangeIt":"A stated total income figure and the value of the two grants at risk, set beside the membership estimate, would close the gap and move this to Nearly ready.","confidenceNote":"The input pack left the evidence and source notes, the client constraints and the intended audience blank, so confidence is capped at Medium."},"blockingIssues":[],"scorecard":{"diagnosticMean":4.3,"confidence":"Medium","effort":"2-3 hrs","dimensions":[{"name":"Client decision usefulness","result":"pass","checksPassed":4,"checksTotal":4,"note":"The decision, the answer and the first step are all stated in the first two slides and on slide 10."},{"name":"Problem framing","result":"partial","checksPassed":3,"checksTotal":4,"note":"The question is specific and held throughout, but what is out of scope (other income routes) is never stated."},{"name":"Storyline and pyramid logic","result":"partial","checksPassed":3,"checksTotal":4,"note":"Answer first on slide 1 and an unbroken chain, but three middle titles are labels so the titles alone do not carry it."},{"name":"Evidence quality","result":"partial","checksPassed":3,"checksTotal":4,"note":"Every figure carries a named source. Primary and secondary evidence are not explicitly distinguished."},{"name":"Analysis and insight","result":"partial","checksPassed":3,"checksTotal":4,"note":"Findings are interpreted and feed the recommendation. The revenue is not compared to the income at risk."},{"name":"Recommendation specificity","result":"pass","checksPassed":4,"checksTotal":4,"note":"Action, price, owner, month-by-month timing and a conversion measure are all present."},{"name":"Feasibility and implementation","result":"pass","checksPassed":4,"checksTotal":4,"note":"Sized to existing capacity, sequenced over three months, with a soft launch as the first step."},{"name":"Risks, assumptions and uncertainty","result":"partial","checksPassed":3,"checksTotal":4,"note":"Assumptions and the conversion risk are named. The cost of delivering member benefits is not treated as a risk."},{"name":"Slide-level communication","result":"partial","checksPassed":3,"checksTotal":4,"note":"Most titles assert. Slides 5, 7 and 8 are topic labels."},{"name":"Professionalism, tone and confidentiality","result":"pass","checksPassed":4,"checksTotal":4,"note":"Professional throughout. No named individual is judged and no personal data is exposed."}]},"strengths":[{"point":"The deck answers the client's question in its first two slides instead of building to it.","quote":"Client E asked whether a paid membership could diversify income away from project grants. Our answer is yes, with a deliberately small start.","slide":2},{"point":"The load-bearing number is labelled as an assumption and given a test, which is rare in a student deck.","quote":"The 8% assumption is conservative against the 32% attendance rate and is the main thing to test.","slide":8},{"point":"The plan names an owner, a sequence and a go signal, so someone can start on Monday.","quote":"The Client E coordinator owns the launch. Month one: soft launch to 200 contacts.","slide":10}],"findings":[{"short":"Revenue never sized","title":"The membership estimate is never set against the grant income it is meant to replace.","severity":"major","severityLabel":"Moderate","deliveryCritical":true,"issueType":"analysis","owner":"team","principle":"Client Decision Usefulness: an income answer must be sized against the income problem it answers.","diagnosis":"Slide 3 establishes the problem as an 80% grant dependency with two of five grants not expected to renew. Slide 8 gives the membership answer as roughly 5,000 pounds in year one. No slide states Client E's total income or the value of the two grants at risk, so the reader cannot tell whether 5,000 pounds is a meaningful diversification or a rounding error against the gap.","evidence":[{"slide":3,"quote":"Two of five grants are not expected to renew, per the funder letters on file."},{"slide":8,"quote":"If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one."}],"why":"A board that approves this could reasonably believe the grant loss is being addressed. If the two grants are worth many times 5,000 pounds, the board needs to know that membership is one part of the response and not the response, and it would ask for the rest at the same meeting.","reflect":"What share of the income Client E is about to lose does 5,000 pounds actually cover, and does your recommendation still read the same way once that share is on the slide.","fix":"Put the size of the gap and the size of the answer on the same slide, then say explicitly what membership is and is not solving. This is the one gap holding the deck at Needs targeted revision rather than Nearly ready.","tags":["Client Decision Usefulness","So What"]},{"short":"Cost side absent","title":"The year-one figure is gross revenue with no cost of delivering the member benefits.","severity":"minor","severityLabel":"Minor","deliveryCritical":false,"issueType":"evidence","owner":"team","principle":"Evidence Grounding: a financial figure the client will quote should be net of what it costs to earn.","diagnosis":"Slide 7 asserts the benefits use spare capacity and slide 8 reports the 5,000 pounds without any offsetting cost for the two members-only events, the booking admin or the partner discounts. The claim about spare capacity is plausible but it is asserted rather than shown.","evidence":[{"slide":7,"quote":"These use capacity Client E already has."},{"slide":8,"quote":"If 8% of the mailing list joins at 45 pounds, that is about 5,000 pounds in year one."}],"why":"The client will read 5,000 pounds as money available to spend. A short cost line protects the team when the coordinator's actual hours turn up later.","reflect":"What does one members-only event cost Client E in staff hours and cash, and what is left of the 5,000 pounds after two of them.","fix":"Add a cost line under the revenue estimate, even a rough one, and label the result as net. Where you cannot cost something, say so rather than leaving it out.","tags":["Evidence Grounding","Financial Hygiene"]},{"short":"Two different thresholds","title":"The go decision uses a 5% threshold while the business case is built on 8%.","severity":"minor","severityLabel":"Minor","deliveryCritical":false,"issueType":"implementation","owner":"team","principle":"Decision Rules: the trigger to proceed should tie back to the number the case rests on.","diagnosis":"Slide 8 builds the case on an 8% conversion. Slide 10 lets the full launch proceed at 5%. The deck does not say what a 5% to 8% result means for the revenue estimate or why the lower bar is acceptable.","evidence":[{"slide":8,"quote":"The 8% assumption is conservative against the 32% attendance rate and is the main thing to test."},{"slide":10,"quote":"Month three: full launch if the soft launch clears 5%."}],"why":"The coordinator running the review in month two has two numbers and no rule for the space between them, so the go decision falls back to instinct.","reflect":"If the soft launch converts at 6%, what does your year-one estimate become and would you still launch.","fix":"State why the go bar sits below the planning assumption and what a result between the two implies for the revenue estimate. One sentence closes it.","tags":["Decision Rules","Actionability"]},{"short":"Price set off list price","title":"The 45 pound price is anchored on what comparable groups charge without what they offer.","severity":"minor","severityLabel":"Minor","deliveryCritical":false,"issueType":"evidence","owner":"team","principle":"Comparability: a benchmark only holds when the things compared are alike.","diagnosis":"Slide 5 takes a 40 to 60 pound range from three public websites and slide 6 lands at 45 pounds inside it. The deck does not say what those memberships include or how they convert, so the benchmark supports the range but not the choice of point within it.","evidence":[{"slide":5,"quote":"Three comparable local arts non-profits run membership at 40 to 60 pounds a year (their public websites, 2025)."},{"slide":6,"quote":"Launching one tier at 45 pounds, rather than three tiers at once, keeps admin low and lets Client E learn before it scales."}],"why":"If the comparators offer more for the money, 45 pounds is a harder sell than the 8% assumption implies, and price is the easiest thing to change before launch.","reflect":"What do those three memberships include, and does Client E's benefit set justify sitting at the low end or the middle of that range.","fix":"Add one line on what the comparators include so the reader can see the price is a judgment against value, not just a midpoint. Keep it to a line: this is a caveat, not a new workstream.","tags":["Comparability","Evidence Grounding"]}],"comments":[{"location":"Slides 5, 7 and 8","problem":"Three middle titles are topic labels (\"What comparable groups charge\", \"What members get\", \"The numbers\") while the rest of the deck asserts.","why":"A board member who skims titles loses the middle of the argument, which is where the pricing and the revenue case sit.","fix":"Turn each into the assertion the slide already proves."},{"location":"Slide 4","problem":"The 1,400 mailing list is called an engaged base to convert, and slide 9 assumes the list is accurate.","why":"List decay is the quiet driver of the 8% assumption, so the size of the usable base matters more than the headline count.","fix":"State when the list was last cleaned or what share opened a recent mailing."},{"location":"Slide 7","problem":"The local partner discount is presented as a benefit without saying whether any partner has agreed.","why":"A benefit advertised at launch that is not yet secured is the sort of thing members notice first.","fix":"Mark which benefits are confirmed and which are still to be arranged."}],"questionsForLead":["What is Client E's total annual income, and what are the two non-renewing grants worth against the 5,000 pounds this scheme raises.","Did the team cost the two members-only events and the booking admin, or is the spare capacity claim on slide 7 the client's own view.","Why does the go bar on slide 10 sit at 5% when the case is built on 8%.","Has anyone confirmed the local partner discounts, or are they still an intention.","Does the client have a view on the 45 pound price point, given three comparators sit between 40 and 60."],"learningNote":{"lesson":"Sizing is part of the answer. When a client's problem is a number, your recommendation has to be measured against that number on the same page, or the client is left doing the arithmetic that decides whether your advice is enough.","weakHabit":"Building a well-evidenced solution and never turning back to measure it against the problem that opened the deck.","exercise":"Take the problem slide and the answer slide of this deck. Write one sentence that contains both magnitudes. If you cannot, you are missing a number the client needs.","principle":"Client Decision Usefulness"},"notAssessed":["Whether 5,000 pounds is material to Client E. Total income and the value of the grants at risk were not provided.","Whether the comparator memberships are genuinely comparable. Only their prices were given.","The cost of running the scheme. No cost figures were in the deck or the input pack.","The client's constraints and the intended audience. Both fields were left blank in the input pack, so feasibility was judged only against constraints the deck itself states.","Visual design, layout and charts. Only slide text was provided."],"timeline":{"sections":[{"label":"Answer","span":2},{"label":"Why now","span":3},{"label":"The scheme","span":3},{"label":"Case and launch","span":2}],"tiles":[{"slide":1,"state":"pass"},{"slide":2,"state":"pass"},{"slide":3,"state":"partial"},{"slide":4,"state":"pass"},{"slide":5,"state":"partial"},{"slide":6,"state":"pass"},{"slide":7,"state":"partial"},{"slide":8,"state":"partial"},{"slide":9,"state":"pass"},{"slide":10,"state":"partial"}],"callouts":[{"at":8,"state":"partial","label":"Revenue not sized against the gap"},{"at":10,"state":"partial","label":"Go bar differs from the planning assumption"}],"connectors":[{"from":3,"to":8,"label":"Problem size never meets answer size"}]}}}}</script>
@@ -338,10 +633,42 @@
 'use strict';
 
 /* ============================================================
+   THE KILL SWITCH. 22-trust-boundary.md section 4.
+
+   If A1 or A2 is falsified the tool has to stop being used
+   within the hour. There is no backend and there will not be
+   one: this page makes no network request of any kind and that
+   property is worth more than a remote kill would be. So the
+   switch is a committed constant plus a redeploy.
+
+       node kill-switch.js on "one line on why"
+       node build-site.js && npx wrangler pages deploy site ...
+
+   What this reaches: the hosted URL, on the next page load, for
+   everyone. What it does not reach: a tab already open, a saved
+   copy on a laptop, a student pack already sent. Those are
+   covered by BUILD.staleAfterDays below and by telling people.
+   ============================================================ */
+
+var KILL = { active:false, since:'', reason:'', contact:'' };
+
+/* Stamped by build-site.js on every build. A copy saved to a laptop cannot be
+   killed remotely, so it is made to say how old it is instead. */
+var BUILD = { date:'2026-08-07', staleAfterDays:90 };
+
+/* ============================================================
    The contract validator, ported from check-review-v2.js.
    The renderer refuses to draw a review that fails it, exactly
    as v1 does. The one check that cannot run in the browser is
-   the verbatim-quote check, which needs the deliverable text.
+   the verbatim-quote check, which needs the deliverable text,
+   so the lead supplies it: see the quote check below.
+
+   opts.redacted is the one documented exception. A student pack
+   carries the review with readiness and blocking ceilings
+   removed, because those are level strings and a student must
+   never receive one. Redaction is declared in the payload and
+   checked for, so it is an explicit state rather than a silent
+   absence, and every other rule still runs.
    ============================================================ */
 
 var LEVELS = ['Not ready for client review','Needs substantial revision','Needs targeted revision','Nearly ready with minor edits'];
@@ -353,8 +680,8 @@ var BUDGET = { short:3, deep:5, lead:5 };
 
 function isStr(v){ return typeof v === 'string' && v.trim().length > 0; }
 
-function validate(r){
-  var e = [];
+function validate(r, opts){
+  var e = [], redacted = !!(opts && opts.redacted);
   if(!r || typeof r !== 'object'){ return ['not a JSON object']; }
 
   var m = r.meta;
@@ -366,7 +693,14 @@ function validate(r){
   }
 
   var rd = r.readiness;
-  if(!rd || typeof rd !== 'object') e.push('readiness missing');
+  if(redacted){
+    /* A redacted pack must say so. An absent readiness block is a bug; a
+       declared redaction is the design. The two must not look alike. */
+    if(!rd || rd.redacted !== true) e.push('this pack is marked redacted but readiness is not');
+    if(!Array.isArray(r.blockingIssues) || r.blockingIssues.length)
+      e.push('this pack is marked redacted but still carries blocking issues, which name ceilings');
+  }
+  else if(!rd || typeof rd !== 'object') e.push('readiness missing');
   else {
     if(LEVELS.indexOf(rd.level) < 0) e.push('readiness.level is not one of the four levels');
     ['mainReason','highestRiskIssue','whatCouldChangeIt'].forEach(function(k){
@@ -425,12 +759,12 @@ function validate(r){
        delivery-critical finding on a no-blocker R2 deck, the validator allows none.
        The validator is the enforced contract, so the renderer follows it. */
     f.forEach(function(x,i){
-      if(!bi.length && x.deliveryCritical)
+      if(!redacted && !bi.length && x.deliveryCritical)
         e.push('finding ' + (i+1) + ' is deliveryCritical but no blocking issue is listed');
       if(x.severity === 'minor' && x.deliveryCritical)
         e.push('finding ' + (i+1) + ' is severity minor but marked deliveryCritical');
     });
-    if(rd && !bi.length && f.length && f.every(function(x){ return x.severity === 'minor'; })
+    if(!redacted && rd && !bi.length && f.length && f.every(function(x){ return x.severity === 'minor'; })
        && rd.level !== 'Nearly ready with minor edits')
       e.push('no blocking issue and every finding minor, so readiness should be Nearly ready with minor edits');
   }
@@ -460,11 +794,130 @@ function validate(r){
 }
 
 /* ============================================================
+   sha256, written out rather than taken from crypto.subtle so
+   the fid derivation is synchronous and works from file:// in
+   every browser. Matches 17-override-log section 2.
+   ============================================================ */
+
+var SHA_K = [
+  0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+  0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+  0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+  0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+  0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+  0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+  0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+  0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+
+function utf8Bytes(str){
+  var b = [], i, c, c2, cp;
+  for(i = 0; i < str.length; i++){
+    c = str.charCodeAt(i);
+    if(c < 0x80) b.push(c);
+    else if(c < 0x800) b.push(0xc0 | (c >> 6), 0x80 | (c & 63));
+    else if(c >= 0xd800 && c < 0xdc00 && i + 1 < str.length){
+      c2 = str.charCodeAt(i + 1); i++;
+      cp = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+      b.push(0xf0 | (cp >> 18), 0x80 | ((cp >> 12) & 63), 0x80 | ((cp >> 6) & 63), 0x80 | (cp & 63));
+    }
+    else b.push(0xe0 | (c >> 12), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+  }
+  return b;
+}
+
+function sha256hex(str){
+  function rotr(x, n){ return (x >>> n) | (x << (32 - n)); }
+  var b = utf8Bytes(str), bits = b.length * 8;
+  var H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  b.push(0x80);
+  while(b.length % 64 !== 56) b.push(0);
+  var hi = Math.floor(bits / 4294967296), lo = bits >>> 0;
+  b.push((hi>>>24)&255,(hi>>>16)&255,(hi>>>8)&255,hi&255,(lo>>>24)&255,(lo>>>16)&255,(lo>>>8)&255,lo&255);
+
+  var w = new Array(64), i, t, a, c, d, e, f, g, h, s0, s1, ch, mj, t1, t2;
+  for(i = 0; i < b.length; i += 64){
+    for(t = 0; t < 16; t++)
+      w[t] = (b[i+4*t] << 24) | (b[i+4*t+1] << 16) | (b[i+4*t+2] << 8) | b[i+4*t+3];
+    for(t = 16; t < 64; t++){
+      s0 = rotr(w[t-15],7) ^ rotr(w[t-15],18) ^ (w[t-15] >>> 3);
+      s1 = rotr(w[t-2],17) ^ rotr(w[t-2],19) ^ (w[t-2] >>> 10);
+      w[t] = (w[t-16] + s0 + w[t-7] + s1) | 0;
+    }
+    a = H[0]; var bb = H[1]; c = H[2]; d = H[3]; e = H[4]; f = H[5]; g = H[6]; h = H[7];
+    for(t = 0; t < 64; t++){
+      s1 = rotr(e,6) ^ rotr(e,11) ^ rotr(e,25);
+      ch = (e & f) ^ (~e & g);
+      t1 = (h + s1 + ch + SHA_K[t] + w[t]) | 0;
+      s0 = rotr(a,2) ^ rotr(a,13) ^ rotr(a,22);
+      mj = (a & bb) ^ (a & c) ^ (bb & c);
+      t2 = (s0 + mj) | 0;
+      h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = bb; bb = a; a = (t1 + t2) | 0;
+    }
+    H[0]=(H[0]+a)|0; H[1]=(H[1]+bb)|0; H[2]=(H[2]+c)|0; H[3]=(H[3]+d)|0;
+    H[4]=(H[4]+e)|0; H[5]=(H[5]+f)|0; H[6]=(H[6]+g)|0; H[7]=(H[7]+h)|0;
+  }
+  return H.map(function(x){ return ('00000000' + (x >>> 0).toString(16)).slice(-8); }).join('');
+}
+
+/* fid, exactly as 17-override-log specifies it. Derived, never stored in the
+   review, so the frozen output contract needs no change. */
+function fidOf(f){
+  var q = (f.evidence || [])[0];
+  return sha256hex((f.short || f.title || '') + '|' + ((q && q.quote) || '')).slice(0, 6);
+}
+
+/* ============================================================
    state
    ============================================================ */
 
-var REVIEW = null, VIEW = 'coach', current = 0, coach = [], skipStreak = 0;
+var REVIEW = null, VIEW = 'lead', REVIEW_KEY = '';
+var STUDENT_ONLY = false;          /* set when opened from a student pack or link */
+var REDACTED = false;              /* the pack arrived with readiness stripped */
+var LEAK_TRIPPED = false;          /* the readiness assertion has fired */
+var RELEASE = null;                /* the lead's decisions, when they came in a pack */
+var current = 0, COACH = {}, skipStreak = 0, deskIdx = 0;
 var ATTEMPT_MIN = 40, REWRITE_MIN = 20, REVEAL_CAP = 2;
+var CUT_REASONS = [
+  ['wrong','wrong, not true of this deck'],
+  ['not-an-issue','true, but not a problem here'],
+  ['too-minor','true, below the bar for the team time'],
+  ['duplicate','already covered by another finding'],
+  ['out-of-scope','true, but the brief never asked']
+];
+var DIM_SHORT = {
+  'Client decision usefulness':'Decision usefulness',
+  'Problem framing':'Framing',
+  'Storyline and pyramid logic':'Storyline',
+  'Evidence quality':'Evidence',
+  'Analysis and insight':'Analysis',
+  'Recommendation specificity':'Recommendation',
+  'Feasibility and implementation':'Feasibility',
+  'Risks, assumptions and uncertainty':'Risk',
+  'Slide-level communication':'Communication',
+  'Professionalism, tone and confidentiality':'Professionalism'
+};
+var DIM_NAMES = Object.keys(DIM_SHORT);
+
+/* T is the triage state. It starts fully undecided on purpose: see
+   17-override-log section 4.1. A record that was never touched must never
+   be mistakable for an endorsement. */
+var T = null;
+function blankTriage(){
+  return { decisions:{}, added:[], mustCatch:null, leadLevel:null, reason:'',
+           noteEdit:null, startedAt:null, seconds:0, sent:false, critOpen:false,
+           /* The quote-check verdict, not the deck text. The deck is
+              client-confidential and never touches localStorage. */
+           qc: blankQc(),
+           /* Stop condition 4, asked once at the point the lead would know. */
+           vsByHand: null };
+}
+function blankQc(){
+  return { status:'unverified', checkedAt:null, quotes:0, missing:[],
+           deckSha:null, deckChars:0, waived:false, waiveReason:'' };
+}
+var PROV_KEYS = ['pvRef','pvStage','pvPrompt','pvPromptSha','pvInputSha','pvLead'];
+var PROV = {};
+
 var BUNDLE = {};
 try { BUNDLE = JSON.parse(document.getElementById('bundled-reviews').textContent) || {}; } catch(ex){ BUNDLE = {}; }
 
@@ -477,8 +930,241 @@ function normWords(s){
   return String(s || '').toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(function(w){ return w.length > 2; });
 }
 function levelClass(l){ var i = LEVELS.indexOf(l); return i < 0 ? 'r2' : 'r' + i; }
+function levelDot(i){ return i >= 3 ? 'green' : i >= 2 ? 'amber' : 'red'; }
+function slideLabel(q){ return q && q.slide ? 'Slide ' + q.slide : 'Slide not stated'; }
 function quoteHtml(q){
-  return '<div class="quote"><span class="sl">' + (q.slide ? 'Slide ' + esc(q.slide) : 'Evidence') + '</span>' + esc(q.quote) + '</div>';
+  return '<div class="quote"><span class="sl">' + esc(slideLabel(q)) + '</span>' + esc(q.quote) + '</div>';
+}
+function store(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(ex){} }
+function recall(k){ try { return JSON.parse(localStorage.getItem(k)); } catch(ex){ return null; } }
+
+function saveTriage(){ if(REVIEW_KEY) store('180dc-rv2-triage:' + REVIEW_KEY, T); }
+function loadProv(){
+  PROV = recall('180dc-rv2-prov') || {};
+  PROV_KEYS.forEach(function(k){ if($(k)) $(k).value = PROV[k] || ''; });
+}
+function saveProv(){
+  PROV_KEYS.forEach(function(k){ PROV[k] = $(k) ? $(k).value.trim() : ''; });
+  store('180dc-rv2-prov', PROV);
+}
+function touchClock(){
+  if(!T.startedAt) T.startedAt = Date.now();
+  T.seconds = Math.round((Date.now() - T.startedAt) / 1000);
+}
+
+/* ---------- derived triage views ---------- */
+
+function decisionOf(i){ return T.decisions[fidOf(REVIEW.findings[i])] || null; }
+function actionOf(i){ var d = decisionOf(i); return d ? d.action : null; }
+function findingsWith(action){
+  return REVIEW.findings.filter(function(f, i){ return actionOf(i) === action; });
+}
+function undecidedCount(){
+  return REVIEW.findings.filter(function(f, i){
+    var d = decisionOf(i);
+    return !d || !d.action || (d.action === 'cut' && !d.cutReason);
+  }).length;
+}
+function aiLevel(){ return LEVELS.indexOf(REVIEW.readiness.level); }
+function delta(){ return T.leadLevel === null ? 0 : T.leadLevel - aiLevel(); }
+function reasonNeeded(){ return delta() !== 0 && !T.reason.trim(); }
+function triageComplete(){
+  return REVIEW && undecidedCount() === 0 && T.leadLevel !== null && !reasonNeeded();
+}
+/* Everything that leaves this tab for a student passes both gates: the quotes
+   are checked (or the check is explicitly waived on the record), and nothing
+   in the payload names a readiness level. */
+function releasable(){
+  return triageComplete() && qcOk() && outboundLeaks().length === 0;
+}
+function hasTriage(){
+  return T && (Object.keys(T.decisions).length > 0 || T.leadLevel !== null);
+}
+/* What a student is allowed to see. Null means no lead has triaged, which is
+   a labelled fallback rather than a silent one: see the student banner. */
+function releaseView(){
+  if(RELEASE) return RELEASE;
+  if(!hasTriage()) return null;
+  return {
+    keptFids: findingsWith('keep').map(fidOf),
+    asks: findingsWith('ask').map(function(f){ return f.reflect; }),
+    added: T.added.slice(),
+    note: noteText(),
+    sent: T.sent
+  };
+}
+function studentFindings(){
+  var rel = releaseView();
+  if(!rel) return REVIEW.findings.slice();
+  return REVIEW.findings.filter(function(f){ return rel.keptFids.indexOf(fidOf(f)) >= 0; });
+}
+/* Coaching progress is keyed by fid, not by position, so a lead changing their
+   mind about one finding does not shuffle a student's typed attempts. */
+function coachOf(f){
+  var fid = fidOf(f);
+  if(!COACH[fid]) COACH[fid] = { attempt:'', rewrite:'', revealed:false };
+  return COACH[fid];
+}
+
+/* ============================================================
+   STOP CONDITION 2, INSTRUMENTED.
+   "A fabricated or altered quote reaching a student."
+
+   check-review-v2.js has verified quotes mechanically since the
+   beginning, and it is the reason A2 can be stated at high
+   confidence. It has never run in the live product, because the
+   browser does not have the deliverable. That gap is the whole
+   distance between "no fabricated quote has ever survived to a
+   scored result" and "no fabricated quote can reach a student".
+
+   The lead has the deck. So the lead supplies it, once, and
+   nothing outbound unlocks until every quote is found in it.
+   Same normalisation as check-review-v2.js section 3, so the
+   two agree on what verbatim means.
+   ============================================================ */
+
+function qcNorm(s){ return String(s || '').replace(/ /g, ' ').replace(/\s+/g, ' ').trim(); }
+
+/* Everything the reviewer claims is a verbatim quote, in one list. */
+function allQuotes(){
+  var out = [];
+  (REVIEW.findings || []).forEach(function(f, i){
+    (f.evidence || []).forEach(function(q){ out.push({ where:'finding ' + (i+1), quote:q.quote, slide:q.slide }); });
+  });
+  (REVIEW.blockingIssues || []).forEach(function(b, i){
+    (b.evidence || []).forEach(function(q){ out.push({ where:'blocking issue ' + (i+1), quote:q.quote, slide:q.slide }); });
+  });
+  (REVIEW.strengths || []).forEach(function(s, i){
+    if(s.quote) out.push({ where:'strength ' + (i+1), quote:s.quote, slide:s.slide });
+  });
+  return out;
+}
+
+function runQuoteCheck(deckText){
+  var hay = qcNorm(deckText);
+  if(!hay){
+    T.qc = blankQc();
+    T.qc.status = 'unverified';
+    renderQc(); renderNotePanel(); saveTriage();
+    return;
+  }
+  var qs = allQuotes(), missing = [];
+  qs.forEach(function(q){
+    if(hay.indexOf(qcNorm(q.quote)) < 0) missing.push(q);
+  });
+  T.qc = {
+    status: missing.length ? 'failed' : 'verified',
+    checkedAt: nowStamp(),
+    quotes: qs.length,
+    missing: missing.map(function(q){ return { where:q.where, slide:q.slide || null, quote:q.quote }; }),
+    /* The sha ties the verdict to the exact bytes checked. The bytes
+       themselves are client-confidential and are not kept. */
+    deckSha: sha256hex(hay).slice(0, 16),
+    deckChars: hay.length,
+    waived: false,
+    waiveReason: ''
+  };
+  touchClock();
+  renderQc(); renderNotePanel(); saveTriage();
+}
+
+function qcOk(){ return T && T.qc && (T.qc.status === 'verified' || T.qc.waived); }
+function qcStamp(){
+  if(!T || !T.qc) return '';
+  if(T.qc.status === 'verified') return 'Quotes machine-checked verbatim against the deck on ' + T.qc.checkedAt + '.';
+  if(T.qc.waived) return 'QUOTES NOT CHECKED. Your lead could not supply the deck text, so no quote in this note has been verified against the source. Treat every quote as unconfirmed.';
+  return '';
+}
+
+function renderQc(){
+  var q = T.qc, st = q.waived ? 'waived' : q.status;
+  var label = { unverified:'not checked yet', verified:'all quotes found', failed:'quotes not found in the deck', waived:'check waived' }[st];
+  $('qcState').innerHTML = '<span class="pill ' + st + '">' + esc(st) + '</span>' +
+    '<span>' + esc(label) + '</span>' +
+    (q.checkedAt && st !== 'unverified'
+      ? '<span class="kbd">' + q.quotes + ' quote' + (q.quotes === 1 ? '' : 's') + ' &middot; ' + q.deckChars + ' chars &middot; deck ' + esc(q.deckSha) + '</span>'
+      : '');
+
+  $('qcMissing').innerHTML = (q.missing && q.missing.length)
+    ? '<div class="missing"><div class="mh">' + q.missing.length + ' quote' + (q.missing.length === 1 ? '' : 's') +
+      ' could not be found in the text you supplied. Do not send this. Re-run the review; a quote is never hand-patched.</div>' +
+      q.missing.map(function(m){
+        return '<div class="mq">' + esc(m.where) + (m.slide ? ', slide ' + esc(m.slide) : '') + ': "' + esc(m.quote) + '"</div>';
+      }).join('') + '</div>'
+    : '';
+
+  $('qcWaiveWrap').classList.toggle('hidden', q.status === 'verified');
+  $('qcCard').classList.toggle('hidden', STUDENT_ONLY);
+}
+
+/* ============================================================
+   STOP CONDITION 3, INSTRUMENTED.
+   "A student seeing a readiness level."
+
+   The student and print views are built so this cannot happen.
+   Built-so-it-cannot is a claim about today's code, and this
+   sprint exists because claims like that go unenforced. So it
+   is asserted instead, in two places: over the payload before
+   anything is sent, and over the rendered DOM by observer, so
+   any future code path that puts a level in front of a student
+   fails loudly instead of quietly working.
+
+   It has already caught one. See 22-trust-boundary.md.
+   ============================================================ */
+
+function levelHitsIn(text){
+  var t = String(text || '').toLowerCase(), hits = [];
+  LEVELS.forEach(function(L){ if(t.indexOf(L.toLowerCase()) >= 0) hits.push(L); });
+  return hits;
+}
+
+/* The payload scan: every field that can reach a student, before it goes. */
+function outboundLeaks(){
+  var out = [];
+  function chk(where, s){
+    levelHitsIn(s).forEach(function(L){ out.push({ where:where, level:L, sample:String(s).slice(0, 160) }); });
+  }
+  studentFindings().forEach(function(f, i){
+    ['title','short','diagnosis','why','reflect','fix','principle'].forEach(function(k){ chk('finding ' + (i+1) + '.' + k, f[k]); });
+    (f.evidence || []).forEach(function(q){ chk('finding ' + (i+1) + ' quote', q.quote); });
+  });
+  (REVIEW.strengths || []).forEach(function(s, i){ chk('strength ' + (i+1), s.point); chk('strength ' + (i+1) + ' quote', s.quote); });
+  var ln = REVIEW.learningNote || {};
+  ['lesson','weakHabit','exercise','principle'].forEach(function(k){ chk('learningNote.' + k, ln[k]); });
+  (REVIEW.notAssessed || []).forEach(function(s, i){ chk('notAssessed ' + (i+1), s); });
+  T.added.forEach(function(a, i){ chk('added ' + (i+1), a.short); });
+  findingsWith('ask').forEach(function(f, i){ chk('question ' + (i+1), f.reflect); });
+  chk('the note back to the team', noteText());
+  return out;
+}
+
+/* The DOM assertion, and its response. Disconnects first, so replacing the
+   container cannot re-enter. */
+var leakObs = null;
+function tripLeak(container, hits){
+  if(LEAK_TRIPPED) return;
+  LEAK_TRIPPED = true;
+  if(leakObs) leakObs.disconnect();
+  container.innerHTML =
+    '<div class="tripped"><h2>Stopped: this view was about to show a student a readiness level</h2>' +
+    '<div class="prose">The reviewer\'s readiness level must never reach a student, because on byte-identical input it has returned two different levels. This view was rendering one anyway, so it has been replaced with this message rather than shown.</div>' +
+    '<div class="prose">Found: ' + hits.map(function(h){ return '<code>' + esc(h) + '</code>'; }).join(', ') + '</div>' +
+    '<div class="prose">This is stop condition 3 in <b>STATUS.md</b>. It means something is wrong with the build or with the review text, not with a person. Re-run the review rather than editing it, and tell whoever owns the tool. Nothing here is safe to send until it renders clean.</div></div>';
+}
+function guardRendered(container){
+  if(!container || LEAK_TRIPPED) return;
+  var hits = levelHitsIn(container.textContent || '');
+  if(hits.length) tripLeak(container, hits);
+}
+function watchForLeaks(){
+  if(typeof MutationObserver !== 'function') return;
+  leakObs = new MutationObserver(function(){
+    guardRendered($('studentView'));
+    guardRendered($('printView'));
+  });
+  [$('studentView'), $('printView')].forEach(function(el){
+    if(el) leakObs.observe(el, { childList:true, subtree:true, characterData:true });
+  });
 }
 
 /* ============================================================
@@ -510,30 +1196,55 @@ function showStartError(errs){
    load and render
    ============================================================ */
 
-function load(obj){
-  var errs = validate(obj);
+function load(obj, opts){
+  opts = opts || {};
+  REDACTED = !!opts.redacted;
+  var errs = validate(obj, { redacted: REDACTED });
   if(errs.length){ showStartError(errs); return; }
   $('startErr').classList.add('hidden');
 
   REVIEW = obj;
-  current = 0;
-  skipStreak = 0;
-  coach = (obj.findings || []).map(function(){ return { attempt:'', rewrite:'', revealed:false }; });
+  REVIEW_KEY = sha256hex(JSON.stringify(obj)).slice(0, 16);
+  STUDENT_ONLY = !!opts.studentOnly;
+  RELEASE = opts.release || null;
+  current = 0; deskIdx = 0; skipStreak = 0; COACH = {};
+
+  T = (!STUDENT_ONLY && recall('180dc-rv2-triage:' + REVIEW_KEY)) || blankTriage();
+  if(!T.decisions) T = blankTriage();
+  /* A triage saved before the quote check existed has no verdict, and no
+     verdict must mean unverified rather than fine. */
+  if(!T.qc) T.qc = blankQc();
+  if(T.vsByHand === undefined) T.vsByHand = null;
+  /* A pack carries its lead's quote-check verdict, so a waiver travels with
+     the thing it is a warning about. */
+  if(opts.quoteCheck){
+    T.qc.status = opts.quoteCheck.status === 'waived' ? 'unverified' : (opts.quoteCheck.status || 'unverified');
+    T.qc.waived = opts.quoteCheck.status === 'waived';
+    T.qc.checkedAt = opts.quoteCheck.checkedAt || null;
+    T.qc.deckSha = opts.quoteCheck.deckSha256 || null;
+  }
+  LEAK_TRIPPED = false;
 
   var m = obj.meta;
   $('barMeta').innerHTML = '<b>' + esc(m.title) + '</b> &middot; ' + esc(m.artifactType) +
-    (m.slideCount ? ' &middot; ' + m.slideCount + ' slides' : '') + ' &middot; ' + esc(m.mode) + ' mode';
-  Array.prototype.forEach.call($('tabs').querySelectorAll('.tab'), function(t){ t.disabled = false; });
+    (m.slideCount ? ' &middot; ' + m.slideCount + ' slides' : '') + ' &middot; ' + esc(m.mode) + ' mode' +
+    (STUDENT_ONLY ? ' &middot; student pack' : '');
 
-  renderCoach();
-  renderLead();
+  Array.prototype.forEach.call($('tabs').querySelectorAll('.tab'), function(t){
+    var leadish = t.dataset.view === 'lead';
+    t.disabled = STUDENT_ONLY && leadish;
+    t.classList.toggle('hidden', STUDENT_ONLY && leadish);
+  });
+
+  if(!STUDENT_ONLY) renderLead();
+  renderStudent();
   renderPrint();
-  setView('coach');
+  setView(STUDENT_ONLY ? 'student' : 'lead');
 }
 
 function setView(v){
   VIEW = v;
-  ['start','coach','lead','print'].forEach(function(k){
+  ['start','lead','student','print'].forEach(function(k){
     $(k + 'View').classList.toggle('hidden', k !== v);
   });
   Array.prototype.forEach.call($('tabs').querySelectorAll('.tab'), function(t){
@@ -541,19 +1252,721 @@ function setView(v){
   });
   $('backBtn').classList.toggle('hidden', v === 'start');
   $('printBtn').classList.toggle('hidden', v !== 'print');
-  window.scrollTo(0,0);
+  if(v === 'student') renderStudent();
+  if(v === 'print') renderPrint();
+  if(v === 'lead') requestAnimationFrame(layoutCallouts);
+  window.scrollTo(0, 0);
 }
 
-/* ---------- coach view: findings one at a time, gate enforced ---------- */
+/* ============================================================
+   LEAD. Direction A above the fold, the triage desk below it.
+   ============================================================ */
 
-function renderCoach(){
-  var r = REVIEW;
+function renderLead(){
+  renderTiles();
+  renderTrust();
+  renderQc();
+  renderCriteria();
+  renderTimeline();
+  renderBlocks();
+  renderWorklist();
+  renderAdded();
+  renderScorecard();
+  renderNotePanel();
+  saveTriage();
+}
+
+/* ---------- the four tiles ---------- */
+
+function renderTiles(){
+  var r = REVIEW, sc = r.scorecard, ai = aiLevel();
+  var score = sc.diagnosticMean, full = Math.round(score), stars = '';
+  for(var i = 1; i <= 5; i++) stars += (i <= full ? '<span>&#9733;</span>' : '<span class="off">&#9733;</span>');
+  var set = T.leadLevel !== null;
+
+  $('tiles4').innerHTML =
+    '<div class="t4' + (set ? '' : ' unset') + '"><span class="kicker">Verdict, your call</span>' +
+      '<div class="val sm"><span class="dot ' + (set ? levelDot(T.leadLevel) : 'grey') + '"></span>' +
+      (set ? esc(LEVELS[T.leadLevel]) : 'Not set yet') + '</div>' +
+      '<div class="sub"><b>AI guess</b> ' + esc(r.readiness.level) +
+      '. <span class="unstable">Unstable: it has returned two different levels on identical input.</span>' +
+      (set && T.leadLevel !== ai ? ' You moved it ' + Math.abs(delta()) + ' level' + (Math.abs(delta()) === 1 ? '' : 's') +
+        (delta() > 0 ? ' up' : ' down') + '.' : '') + '</div></div>' +
+
+    '<div class="t4"><span class="kicker">Score</span><div class="val">' + score.toFixed(1) +
+      ' / 5<span class="stars">' + stars + '</span></div>' +
+      '<div class="sub">Diagnostic mean. It never sets the verdict.</div></div>' +
+
+    '<div class="t4"><span class="kicker">Estimated effort</span><div class="val">' +
+      esc(sc.effort || 'not stated') + '</div>' +
+      '<div class="sub">' + (r.blockingIssues || []).length + ' blocking rule' +
+      ((r.blockingIssues || []).length === 1 ? '' : 's') + ' fired</div></div>' +
+
+    '<div class="t4"><span class="kicker">Confidence</span><div class="val"><span class="dot ' +
+      (r.readiness.confidence === 'High' ? 'green' : r.readiness.confidence === 'Medium' ? 'amber' : 'red') +
+      '"></span>' + esc(r.readiness.confidence) + '</div>' +
+      '<div class="sub">' + esc(r.readiness.whatCouldChangeIt.slice(0, 96)) +
+      (r.readiness.whatCouldChangeIt.length > 96 ? '...' : '') + '</div></div>';
+}
+
+/* ---------- the trust strip ----------
+   The dose problem, stated in 22-trust-boundary section 3: a banner nobody
+   reads, or so much hedging that the tool looks broken and gets abandoned.
+   The answer is not a middle setting, it is an asymmetry. The findings have
+   evidence behind them and are stated flat. The readiness level does not and
+   is stated as unreliable. Two cells, one row, no caveat on the good half. */
+
+function renderTrust(){
+  var q = T.qc, checked = q.status === 'verified';
+  $('trust').innerHTML =
+    '<div class="tc ok"><b>The findings: work from these</b>' +
+      'Every one carries a quote you can check against the deck, and ' +
+      (checked ? 'this review\'s quotes have been machine-checked as verbatim.'
+               : q.waived ? 'this review\'s quotes are going out unchecked, on your waiver.'
+                          : 'this review\'s quotes are waiting to be machine-checked below.') +
+      ' Across roughly thirty reviews the reviewer has not once missed a problem a human rated blocking.</div>' +
+    '<div class="tc no"><b>The AI grade: do not pass it on</b>' +
+      'The same deck, the same bytes, has come back at two different grades. It is worth reading as one opinion and it is not worth quoting. ' +
+      'Your call is the one that counts, and it is the only one a student or a client ever sees.</div>';
+}
+
+/* ---------- the criteria strip ----------
+   v1 had five criteria and one tidy row. v2 has ten, which wrapped to a ragged
+   second line in the port. Two changes hold it to one line: short labels, and a
+   cap of CRIT_MAX chips ranked worst first, with the rest summarised. A deck
+   where nine of ten criteria sit below pass is exactly the case that overflowed
+   before, and it is also the case where the five worst are the whole story.
+   Click any summary chip to open the full ten as a deliberate grid. */
+
+var CRIT_MAX = 5;
+var CRIT_RANK = { fail:0, partial:1, pass:2, na:3 };
+
+function renderCriteria(){
+  var dims = REVIEW.scorecard.dimensions || [];
+  var open = !!T.critOpen;
+  function chip(d){
+    var cls = d.result === 'pass' ? 'pass' : d.result === 'fail' ? 'fail' : d.result === 'na' ? 'na' : '';
+    var count = d.result === 'na' ? '' : '<b>' + d.checksPassed + '/' + d.checksTotal + '</b>';
+    return '<span class="crit ' + cls + '" title="' + esc(d.name) + ': ' + esc(d.note || d.result) + '">' +
+      esc(DIM_SHORT[d.name] || d.name) + count + '</span>';
+  }
+  var h = '<span class="kicker">Ten criteria</span>';
+  if(open){
+    h += dims.map(chip).join('') +
+      '<button class="crit na" data-toggle="1" type="button">Show the worst five</button>';
+  } else {
+    var ranked = dims.slice().sort(function(a, b){ return CRIT_RANK[a.result] - CRIT_RANK[b.result]; });
+    var show = ranked.slice(0, CRIT_MAX), rest = ranked.slice(CRIT_MAX);
+    h += show.map(chip).join('');
+    if(rest.length){
+      var allPass = rest.every(function(d){ return d.result === 'pass' || d.result === 'na'; });
+      h += '<button class="crit ' + (allPass ? 'pass' : '') + '" data-toggle="1" type="button">' +
+        rest.length + ' more' + (allPass ? ', all passing or out of scope' : '') + '</button>';
+    }
+  }
+  $('critrow').innerHTML = h;
+  $('critrow').classList.toggle('open', open);
+  Array.prototype.forEach.call($('critrow').querySelectorAll('[data-toggle]'), function(b){
+    b.onclick = function(){ T.critOpen = !T.critOpen; renderCriteria(); saveTriage(); };
+  });
+}
+
+/* ---------- the deck timeline ----------
+   Callouts are pinned above the page they belong to. The port staggered them by
+   index parity, which still collided on short decks, so rows are assigned by
+   measured overlap instead and the band grows to fit. Each callout keeps a tick
+   at the true page position, so a callout clamped away from the edge still
+   points at the right tile. */
+
+function renderTimeline(){
+  var tl = REVIEW.timeline;
+  $('tlCard').classList.toggle('hidden', !tl || !(tl.tiles || []).length);
+  if(!tl || !(tl.tiles || []).length) return;
+  var n = REVIEW.meta.slideCount || tl.tiles.length;
+
+  var cs = (tl.callouts || []).slice().sort(function(a, b){ return a.at - b.at; });
+  $('callband').innerHTML = cs.map(function(c){
+    var pct = ((c.at - 0.5) / n) * 100;
+    return '<div class="callout ' + (c.state === 'critical' ? 'critical' : '') + '" data-cx="' + pct.toFixed(3) + '">' +
+      '<span class="at">' + esc(c.at) + '</span>' + esc(c.label) + '</div>';
+  }).join('') + cs.map(function(c){
+    var pct = ((c.at - 0.5) / n) * 100;
+    return '<div class="calltick ' + (c.state === 'critical' ? 'critical' : '') + '" data-cx="' + pct.toFixed(3) + '"></div>';
+  }).join('');
+
+  var secs = tl.sections || [];
+  $('secband').innerHTML = secs.length
+    ? secs.map(function(s){ return '<div class="sec" style="flex:' + s.span + '" title="' + esc(s.label) + '">' + esc(s.label) + '</div>'; }).join('')
+    : '';
+
+  $('strip').innerHTML = tl.tiles.map(function(t){
+    return '<div class="sl-tile ' + esc(t.state) + '" title="Slide ' + esc(t.slide) + ', ' + esc(t.state) + '">' + esc(t.slide) + '</div>';
+  }).join('');
+
+  $('conns').innerHTML = (tl.connectors || []).map(function(c){
+    return '<div class="conn"><b>' + esc(c.from) + ' to ' + esc(c.to) + '.</b> ' + esc(c.label) + '</div>';
+  }).join('');
+
+  requestAnimationFrame(layoutCallouts);
+}
+
+var ROW_H = 25;
+function layoutCallouts(){
+  var band = $('callband');
+  if(!band || band.offsetParent === null) return;
+  var w = band.clientWidth;
+  if(!w) return;
+  var boxes = Array.prototype.slice.call(band.querySelectorAll('.callout'));
+  var ticks = Array.prototype.slice.call(band.querySelectorAll('.calltick'));
+  var rowEnd = [];
+
+  boxes.forEach(function(el, i){
+    el.style.left = '0px'; el.style.top = '0px';
+    var bw = el.offsetWidth;
+    var cx = (parseFloat(el.dataset.cx) / 100) * w;
+    var left = Math.max(0, Math.min(w - bw, cx - bw / 2));
+    var row = 0;
+    while(rowEnd[row] !== undefined && left < rowEnd[row] + 8) row++;
+    rowEnd[row] = left + bw;
+    el.style.left = left + 'px';
+    el.style.top = (row * ROW_H) + 'px';
+    el.dataset.row = row;
+  });
+
+  var h = Math.max(1, rowEnd.length) * ROW_H + 8;
+  band.style.height = h + 'px';
+  ticks.forEach(function(tk, i){
+    var row = boxes[i] ? +boxes[i].dataset.row : 0;
+    var top = row * ROW_H + 20;
+    tk.style.left = ((parseFloat(tk.dataset.cx) / 100) * w).toFixed(1) + 'px';
+    tk.style.top = top + 'px';
+    tk.style.height = Math.max(0, h - top) + 'px';
+  });
+}
+window.addEventListener('resize', layoutCallouts);
+
+/* ---------- blocking issues and scorecard ---------- */
+
+function renderBlocks(){
+  var bi = REVIEW.blockingIssues || [];
+  $('blockCard').classList.toggle('hidden', !bi.length);
+  $('blocks').innerHTML = bi.map(function(b){
+    return '<div class="block"><div class="bh">Rule ' + esc(b.rule) + '. ' + esc(b.label) + '</div>' +
+      '<div class="bc">The reviewer caps itself at: ' + esc(b.ceiling) + '</div>' +
+      (b.evidence || []).map(quoteHtml).join('') + '</div>';
+  }).join('');
+}
+
+function renderScorecard(){
+  var r = REVIEW, dims = r.scorecard.dimensions || [];
+  var scoped = dims.filter(function(d){ return d.result !== 'na'; }).length;
+  $('meanNote').textContent = 'Diagnostic, not a verdict. Mean of ' + scoped + ' in-scope dimensions.';
+  $('dims').innerHTML = dims.map(function(d){
+    return '<div class="dim"><div class="dn">' + esc(d.name) + '</div>' +
+      '<div class="dct">' + (d.result === 'na' ? 'out of scope' : esc(d.checksPassed) + ' / ' + esc(d.checksTotal)) + '</div>' +
+      '<span class="res ' + esc(d.result) + '">' + (d.result === 'na' ? 'n/a' : esc(d.result)) + '</span>' +
+      (d.note ? '<div class="dnote">' + esc(d.note) + '</div>' : '') +
+    '</div>';
+  }).join('');
+
+  var cm = r.comments || [];
+  $('commentsCard').classList.toggle('hidden', !cm.length);
+  $('comments').innerHTML = cm.map(function(c){
+    return '<div style="padding:9px 0;border-bottom:1px solid var(--border-soft)">' +
+      '<div style="font-weight:600;font-size:13.5px">' + esc(c.location) + '. ' + esc(c.problem) + '</div>' +
+      '<div class="na-note">' + esc(c.why) + ' <b>Fix:</b> ' + esc(c.fix) + '</div></div>';
+  }).join('');
+
+  $('leadNotAssessed').innerHTML = (r.notAssessed || []).map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('');
+}
+
+/* ---------- the worklist ---------- */
+
+function setAction(i, action, bulk){
+  var f = REVIEW.findings[i], fid = fidOf(f);
+  var d = T.decisions[fid] || { action:null, cutReason:null, note:'', touched:false };
+  d.action = action;
+  d.touched = true;
+  d.bulk = !!bulk;
+  if(action !== 'cut') d.cutReason = null;
+  T.decisions[fid] = d;
+  if(action !== 'keep' && T.mustCatch === fid) T.mustCatch = null;
+  touchClock();
+  if(T.noteEdit === null) $('noteBox').value = noteText();
+  renderTiles(); renderWorklist(); renderNotePanel(); saveTriage();
+}
+
+function renderWorklist(){
+  var kept = findingsWith('keep').length, asked = findingsWith('ask').length;
+  var cutN = findingsWith('cut').length, undec = undecidedCount();
+  $('wlCounts').innerHTML = kept + ' keep &middot; ' + asked + ' ask &middot; ' + cutN + ' cut' +
+    (undec ? ' &middot; <b style="color:var(--amber)">' + undec + ' still open</b>' : ' &middot; all decided');
+  $('keepRest').classList.toggle('hidden', undec === 0);
+
+  $('worklist').innerHTML = REVIEW.findings.map(function(f, i){
+    var fid = fidOf(f), d = T.decisions[fid], act = d && d.action;
+    var q = (f.evidence || [])[0] || {};
+    var needReason = act === 'cut' && !(d && d.cutReason);
+    return '<div class="row ' + (act === 'cut' ? 'cut ' : '') + (i === deskIdx ? 'here' : '') +
+      '" data-i="' + i + '" tabindex="0">' +
+      '<div class="row-top">' +
+        '<span class="sev ' + esc(f.severity) + '">' + esc(f.severityLabel) + '</span>' +
+        '<div class="row-title">' + esc(f.title) + '</div>' +
+        '<span class="state ' + (act || '') + '">' + (act ? (act === 'keep' ? 'Keep' : act === 'ask' ? 'Ask' : 'Cut') : 'Undecided') + '</span>' +
+      '</div>' +
+      quoteHtml(q) +
+      '<details><summary>What the reviewer says, and why it matters</summary>' +
+        '<div class="prose">' + esc(f.diagnosis) + '</div>' +
+        '<div class="prose" style="margin-top:7px"><b>Why it matters.</b> ' + esc(f.why) + '</div>' +
+        '<div class="chips" style="margin-top:9px"><span class="chip">' + esc(f.issueType) + '</span>' +
+        '<span class="chip">owner: ' + esc(f.owner) + '</span>' +
+        (f.deliveryCritical ? '<span class="chip" style="background:var(--red-soft);color:#A3241C">delivery critical</span>' : '') +
+        '<span class="chip">fid ' + esc(fid) + '</span></div>' +
+      '</details>' +
+      '<div class="tri" data-i="' + i + '">' +
+        ['keep','ask','cut'].map(function(v){
+          var lab = v === 'keep' ? 'Keep' : v === 'ask' ? 'Turn into a question' : 'Cut';
+          return '<button type="button" data-v="' + v + '" class="' + (act === v ? 'on' : '') + '">' + lab + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="rowfoot">' +
+        (act === 'cut'
+          ? '<select class="reason' + (needReason ? ' need' : '') + '" data-i="' + i + '">' +
+              '<option value="">Why cut? Required</option>' +
+              CUT_REASONS.map(function(c){
+                return '<option value="' + c[0] + '"' + (d && d.cutReason === c[0] ? ' selected' : '') + '>' + esc(c[1]) + '</option>';
+              }).join('') + '</select>'
+          : '') +
+        (act === 'keep'
+          ? '<label class="mc' + (T.mustCatch === fid ? ' on' : '') + '">' +
+              '<input type="radio" name="mustcatch" data-i="' + i + '"' + (T.mustCatch === fid ? ' checked' : '') + ' /> ' +
+              'The one it had to catch</label>'
+          : '') +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  Array.prototype.forEach.call($('worklist').querySelectorAll('.tri button'), function(b){
+    b.onclick = function(){ deskIdx = +b.parentNode.dataset.i; setAction(deskIdx, b.dataset.v, false); };
+  });
+  Array.prototype.forEach.call($('worklist').querySelectorAll('select.reason'), function(s){
+    s.onchange = function(){
+      var f = REVIEW.findings[+s.dataset.i];
+      T.decisions[fidOf(f)].cutReason = s.value || null;
+      touchClock(); renderWorklist(); renderNotePanel(); saveTriage();
+    };
+  });
+  Array.prototype.forEach.call($('worklist').querySelectorAll('input[name=mustcatch]'), function(x){
+    x.onchange = function(){
+      T.mustCatch = fidOf(REVIEW.findings[+x.dataset.i]);
+      touchClock(); renderWorklist(); saveTriage();
+    };
+  });
+  Array.prototype.forEach.call($('worklist').querySelectorAll('.row'), function(el){
+    el.onfocus = function(){ deskIdx = +el.dataset.i; markHere(); };
+    el.onclick = function(){ deskIdx = +el.dataset.i; markHere(); };
+  });
+}
+
+function markHere(){
+  Array.prototype.forEach.call($('worklist').querySelectorAll('.row'), function(el){
+    el.classList.toggle('here', +el.dataset.i === deskIdx);
+  });
+}
+
+function focusRow(i){
+  var rows = $('worklist').querySelectorAll('.row');
+  if(!rows.length) return;
+  deskIdx = Math.max(0, Math.min(rows.length - 1, i));
+  rows[deskIdx].focus({ preventScroll:false });
+  markHere();
+}
+
+/* ---------- what it missed ---------- */
+
+function renderAdded(){
+  $('addlist').innerHTML = T.added.length
+    ? T.added.map(function(a, i){
+        return '<div class="additem"><span class="sev ' + esc(a.severity) + '" style="margin-top:0">' +
+          esc(SEV_LABEL[a.severity]) + '</span><div>' + esc(a.short) +
+          (a.slides && a.slides.length ? ' <span class="kbd">slide ' + esc(a.slides[0]) + '</span>' : '') + '</div>' +
+          '<button class="btn sm x" data-rm="' + i + '" type="button">Remove</button></div>';
+      }).join('')
+    : '<div class="na-note">Nothing added. An empty list from a lead who was asked still means something, so leave it empty if it is empty.</div>';
+  Array.prototype.forEach.call($('addlist').querySelectorAll('[data-rm]'), function(b){
+    b.onclick = function(){ T.added.splice(+b.dataset.rm, 1); renderAdded(); renderNotePanel(); saveTriage(); };
+  });
+}
+
+/* ---------- the note ---------- */
+
+function noteText(){
+  if(T.noteEdit !== null) return T.noteEdit;
+  return noteMarkdown();
+}
+
+function noteMarkdown(){
+  var r = REVIEW, kept = findingsWith('keep'), asks = findingsWith('ask');
+  var L = [];
+  L.push('# Review notes: ' + r.meta.title);
+  L.push('');
+  L.push('Team, I have read the ' + r.meta.artifactType + '. Here is where I would put the next block of work.');
+  L.push('');
+
+  if((r.strengths || []).length){
+    L.push('## What already works');
+    L.push('');
+    r.strengths.forEach(function(s){
+      L.push('- ' + s.point + (s.slide ? ' (slide ' + s.slide + ')' : ''));
+    });
+    L.push('');
+  }
+
+  L.push('## What to fix');
+  L.push('');
+  if(!kept.length && !T.added.length){
+    L.push('_Nothing kept yet. Work through the findings on the left._');
+    L.push('');
+  }
+  var n = 0;
+  kept.forEach(function(f){
+    n++;
+    var q = (f.evidence || [])[0];
+    L.push(n + '. **' + f.title + '**');
+    if(q) L.push('   ' + slideLabel(q) + ': "' + q.quote + '"');
+    if(f.why) L.push('   ' + f.why);
+    L.push('');
+  });
+  T.added.forEach(function(a){
+    n++;
+    L.push(n + '. **' + a.short + '** (added by your lead' +
+      (a.slides && a.slides.length ? ', slide ' + a.slides[0] : '') + ')');
+    L.push('');
+  });
+
+  if(asks.length){
+    L.push('## Questions before I sign off');
+    L.push('');
+    asks.forEach(function(f, i){ L.push((i + 1) + '. ' + f.reflect); });
+    L.push('');
+  }
+
+  if((r.notAssessed || []).length){
+    L.push('## What this review did not assess');
+    L.push('');
+    r.notAssessed.forEach(function(s){ L.push('- ' + s); });
+    L.push('');
+  }
+
+  L.push('The fix for each point is deliberately not written here. Open the student view and answer the reviewer question in your own words, and it unlocks.');
+  if(T.qc.waived){
+    L.push('');
+    L.push('> **' + qcStamp() + '**');
+  }
+  return L.join('\n');
+}
+
+function renderNotePanel(){
+  var kept = findingsWith('keep').length, asks = findingsWith('ask').length;
+  $('noteSub').innerHTML = kept + ' finding' + (kept === 1 ? '' : 's') + ' kept' +
+    (T.added.length ? ' &middot; ' + T.added.length + ' added' : '') +
+    (asks ? ' &middot; ' + asks + ' question' + (asks === 1 ? '' : 's') : '');
+  if(T.noteEdit === null && document.activeElement !== $('noteBox')) $('noteBox').value = noteMarkdown();
+  $('noteState').textContent = T.noteEdit === null
+    ? 'Generated from your triage. Type to take it over.'
+    : 'Edited by you. Regenerate discards your edits.';
+
+  var ai = aiLevel();
+  $('vopts').innerHTML = LEVELS.map(function(l, i){
+    return '<div class="vopt ' + (T.leadLevel === i ? 'on' : '') + '" data-l="' + i + '" role="button" tabindex="0">' +
+      '<span class="dot ' + levelDot(i) + '"></span>' + esc(l) +
+      (i === ai ? '<span class="ai" title="A guess, not a verdict. On byte-identical input this reviewer has returned two different levels.">AI guess</span>' : '') + '</div>';
+  }).join('');
+  Array.prototype.forEach.call($('vopts').querySelectorAll('.vopt'), function(x){
+    x.onclick = function(){
+      T.leadLevel = +x.dataset.l; touchClock();
+      renderTiles(); renderNotePanel(); saveTriage();
+    };
+  });
+
+  var d = delta();
+  $('reasonBox').classList.toggle('hidden', d === 0);
+  $('reasonBox').classList.toggle('need', reasonNeeded());
+  if(document.activeElement !== $('reasonBox')) $('reasonBox').value = T.reason;
+
+  var undec = undecidedCount(), msgs = [];
+  if(undec) msgs.push('<div class="warn block">' + undec + ' finding' + (undec === 1 ? ' is' : 's are') +
+    ' still undecided. Nothing is kept by default, so the record cannot be mistaken for agreement you did not give.</div>');
+  if(T.leadLevel === null) msgs.push('<div class="warn block">Set your own readiness call. The reviewer\'s level is a guess, and on identical input it has returned two different levels.</div>');
+  else if(d !== 0) msgs.push('<div class="warn">You put this ' + Math.abs(d) + ' level' + (Math.abs(d) === 1 ? '' : 's') +
+    (d > 0 ? ' above' : ' below') + ' the reviewer. Say why, and the record carries the disagreement.</div>');
+
+  /* The two hard gates, each said in the words of the thing it protects. */
+  if(!qcOk()) msgs.push('<div class="warn block">' + (T.qc.status === 'failed'
+    ? 'The quote check failed. Nothing goes out until the review is re-run against the real deck.'
+    : 'The quotes have not been checked against the deck yet. Paste the deck text into the quote check, or waive it on the record.') + '</div>');
+  var leaks = REVIEW ? outboundLeaks() : [];
+  if(leaks.length) msgs.push('<div class="warn block"><b>Blocked.</b> ' + leaks.length + ' place' + (leaks.length === 1 ? '' : 's') +
+    ' in what you are about to send names a readiness level, starting with ' + esc(leaks[0].where) +
+    '. A student must never receive one. Re-run the review rather than editing it.</div>');
+  if(T.qc.waived) msgs.push('<div class="warn block">Quote check waived. Everything you send carries a line saying the quotes are unverified.</div>');
+
+  if(releasable() && !T.sent) msgs.push('<div class="warn ok">Ready. Release puts the kept findings in front of the team and nothing else.</div>');
+  if(T.sent) msgs.push('<div class="warn ok">Released. The student view is showing your kept set.</div>');
+  $('deskWarn').innerHTML = msgs.join('');
+
+  /* Stop condition 4 is a question nobody will remember to ask, so it is asked
+     here, once, at the only moment the lead knows the answer. */
+  $('vsrow').classList.toggle('hidden', !hasTriage());
+  Array.prototype.forEach.call($('vsrow').querySelectorAll('[data-vs]'), function(b){
+    b.classList.toggle('on', T.vsByHand === b.dataset.vs);
+    b.onclick = function(){
+      T.vsByHand = (T.vsByHand === b.dataset.vs) ? null : b.dataset.vs;
+      renderNotePanel(); saveTriage();
+    };
+  });
+
+  var out = releasable();
+  $('releaseBtn').disabled = !out;
+  $('dlNote').disabled = !out;
+  $('dlPack').disabled = !out;
+  $('copyLink').disabled = !out;
+  /* The record is the audit artifact. It is never gated, because a triage that
+     failed a gate is exactly the one worth having on file. */
+  $('dlRecord').disabled = !triageComplete();
+}
+
+/* ---------- the record ---------- */
+
+function dimensionOf(f){
+  var tags = f.tags || [];
+  for(var i = 0; i < tags.length; i++)
+    if(DIM_NAMES.indexOf(tags[i]) >= 0) return tags[i];
+  return null;
+}
+function slidesOf(f){
+  var out = [];
+  (f.evidence || []).forEach(function(e){ if(e.slide && out.indexOf(e.slide) < 0) out.push(e.slide); });
+  return out;
+}
+function nowStamp(){ return new Date().toISOString().replace(/\.\d+Z$/, 'Z'); }
+
+function buildRecord(){
+  var r = REVIEW, ai = aiLevel();
+  saveProv();
+  var ref = PROV.pvRef || (r.meta.client || r.meta.title || 'deliverable').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  var stamp = nowStamp();
+  return {
+    /* override-log-2 adds two fields and removes none, so every override-log-1
+       consumer still reads it. See 17-override-log.md section 2. */
+    recordVersion: 'override-log-2',
+    id: stamp.replace(/:/g, '-') + '--' + (PROV.pvLead || 'lead') + '--' + ref,
+    capturedAt: stamp,
+
+    /* The control record. A triage that went out with unchecked quotes is
+       exactly the one that has to be findable afterwards. */
+    quoteCheck: {
+      status: T.qc.waived ? 'waived' : T.qc.status,
+      checkedAt: T.qc.checkedAt,
+      quotesChecked: T.qc.quotes,
+      quotesMissing: (T.qc.missing || []).length,
+      deckSha256: T.qc.deckSha,
+      deckChars: T.qc.deckChars,
+      waiveReason: T.qc.waiveReason || ''
+    },
+
+    reviewer: {
+      promptVersion: PROV.pvPrompt || r.meta.version || null,
+      promptSha256: PROV.pvPromptSha || null,
+      mode: r.meta.mode,
+      executionMode: 'claude-code-subagent',
+      reviewSha256: REVIEW_KEY
+    },
+
+    deliverable: {
+      ref: ref,
+      client: r.meta.client || null,
+      artifactType: r.meta.artifactType,
+      slideCount: r.meta.slideCount || null,
+      stage: PROV.pvStage || null,
+      inputSha256: PROV.pvInputSha || null
+    },
+
+    lead: {
+      id: PROV.pvLead || null,
+      role: 'project lead',
+      ownsTheTeam: true,
+      secondsOnTask: T.seconds,
+      /* Stop condition 4. secondsOnTask has always been here; what was missing
+         was the counterfactual, which only the lead has. */
+      vsByHand: T.vsByHand || null
+    },
+
+    ai: {
+      readiness: r.readiness.level,
+      blockingRules: (r.blockingIssues || []).map(function(b){ return b.rule; }),
+      findings: r.findings.map(function(f){
+        return {
+          fid: fidOf(f), short: f.short || f.title, severity: f.severity,
+          dimension: dimensionOf(f), issueType: f.issueType, slides: slidesOf(f)
+        };
+      })
+    },
+
+    decisions: r.findings.map(function(f){
+      var d = T.decisions[fidOf(f)] || {};
+      return {
+        fid: fidOf(f), action: d.action || null, cutReason: d.cutReason || null,
+        note: d.note || '', touched: !!d.touched, bulk: !!d.bulk
+      };
+    }),
+
+    added: T.added.map(function(a){
+      return { short:a.short, severity:a.severity, dimension:a.dimension || null, slides:a.slides || [], note:a.note || '' };
+    }),
+
+    mustCatch: T.mustCatch,
+
+    readinessCall: {
+      ai: r.readiness.level,
+      lead: T.leadLevel === null ? null : LEVELS[T.leadLevel],
+      delta: T.leadLevel === null ? null : T.leadLevel - ai,
+      reason: T.reason.trim()
+    },
+
+    sent: !!T.sent
+  };
+}
+
+function applyRecord(rec){
+  if(!rec || ['override-log-1','override-log-2'].indexOf(rec.recordVersion) < 0)
+    return ['not an override-log-1 or override-log-2 record'];
+  var mine = REVIEW.findings.map(fidOf).sort().join(',');
+  var theirs = (rec.decisions || []).map(function(d){ return d.fid; }).sort().join(',');
+  if(mine !== theirs) return ['this record was written against a different review, its finding ids do not match the one loaded'];
+
+  T = blankTriage();
+  (rec.decisions || []).forEach(function(d){
+    if(!d.action) return;
+    T.decisions[d.fid] = { action:d.action, cutReason:d.cutReason || null, note:d.note || '', touched:!!d.touched, bulk:!!d.bulk };
+  });
+  T.added = (rec.added || []).map(function(a){
+    return { short:a.short, severity:a.severity, dimension:a.dimension || null, slides:a.slides || [], note:a.note || '' };
+  });
+  T.mustCatch = rec.mustCatch || null;
+  var rc = rec.readinessCall || {};
+  T.leadLevel = rc.lead ? LEVELS.indexOf(rc.lead) : null;
+  if(T.leadLevel < 0) T.leadLevel = null;
+  T.reason = rc.reason || '';
+  T.sent = !!rec.sent;
+  T.seconds = (rec.lead && rec.lead.secondsOnTask) || 0;
+  T.startedAt = Date.now() - T.seconds * 1000;
+  T.noteEdit = null;
+  T.vsByHand = (rec.lead && rec.lead.vsByHand) || null;
+  /* A restored record does not restore a pass. The verdict was about a deck
+     text this tab does not have, so the check runs again. */
+  T.qc = blankQc();
+  var l = rec.lead || {}, dv = rec.deliverable || {}, rv = rec.reviewer || {};
+  PROV.pvLead = l.id || PROV.pvLead || '';
+  PROV.pvRef = dv.ref || PROV.pvRef || '';
+  PROV.pvStage = dv.stage || PROV.pvStage || '';
+  PROV.pvInputSha = dv.inputSha256 || PROV.pvInputSha || '';
+  PROV.pvPrompt = rv.promptVersion || PROV.pvPrompt || '';
+  PROV.pvPromptSha = rv.promptSha256 || PROV.pvPromptSha || '';
+  PROV_KEYS.forEach(function(k){ if($(k)) $(k).value = PROV[k] || ''; });
+  store('180dc-rv2-prov', PROV);
+  return [];
+}
+
+/* ---------- downloads ---------- */
+
+function download(name, text, mime){
+  var blob = new Blob([text], { type: mime || 'text/plain;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 0);
+}
+function slug(s){ return String(s || 'review').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0, 40); }
+function stampName(){ return nowStamp().replace(/[:]/g, '-'); }
+
+/* The pack is the one thing a lead hands to a student, so the level comes out
+   of the payload and not only out of the view. Redacting readiness alone is not
+   enough: a blocking issue names its ceiling, and a ceiling is a level string.
+   Both go. Neither is rendered anywhere a student can reach, so nothing is lost.
+   The redaction is declared, and validate() checks that it was actually done. */
+function studentPack(){
+  var redacted = JSON.parse(JSON.stringify(REVIEW));
+  redacted.readiness = { redacted:true };
+  redacted.blockingIssues = [];
+  return {
+    kind: '180dc-student-pack-1',
+    capturedAt: nowStamp(),
+    redactions: ['readiness','blockingIssues'],
+    quoteCheck: { status: T.qc.waived ? 'waived' : T.qc.status, checkedAt: T.qc.checkedAt, deckSha256: T.qc.deckSha },
+    review: redacted,
+    release: {
+      keptFids: findingsWith('keep').map(fidOf),
+      asks: findingsWith('ask').map(function(f){ return f.reflect; }),
+      added: T.added.slice(),
+      note: noteText(),
+      sent: !!T.sent
+    }
+  };
+}
+function b64(str){
+  var bytes = utf8Bytes(str), s = '', i;
+  for(i = 0; i < bytes.length; i += 4096)
+    s += String.fromCharCode.apply(null, bytes.slice(i, i + 4096));
+  return btoa(s);
+}
+function unb64(s){
+  var bin = atob(s), bytes = [], i;
+  for(i = 0; i < bin.length; i++) bytes.push(bin.charCodeAt(i));
+  var out = '', j = 0, c;
+  while(j < bytes.length){
+    c = bytes[j++];
+    if(c < 0x80) out += String.fromCharCode(c);
+    else if(c < 0xe0) out += String.fromCharCode(((c & 31) << 6) | (bytes[j++] & 63));
+    else if(c < 0xf0) out += String.fromCharCode(((c & 15) << 12) | ((bytes[j++] & 63) << 6) | (bytes[j++] & 63));
+    else {
+      var cp = ((c & 7) << 18) | ((bytes[j++] & 63) << 12) | ((bytes[j++] & 63) << 6) | (bytes[j++] & 63);
+      cp -= 0x10000;
+      out += String.fromCharCode(0xd800 + (cp >> 10), 0xdc00 + (cp & 1023));
+    }
+  }
+  return out;
+}
+
+/* ============================================================
+   STUDENT. Only what the lead kept, and never a readiness level.
+   ============================================================ */
+
+function renderStudent(){
+  if(!REVIEW || LEAK_TRIPPED) return;
+  var r = REVIEW, rel = releaseView(), shown = studentFindings();
+
+  var unchecked = !!(T && T.qc && T.qc.waived);
+  $('studentBanner').innerHTML = (unchecked
+    ? '<div class="banner warn"><b>The quotes in this review have not been checked against the deck.</b> ' +
+      'Normally every quote is machine-checked as a verbatim match before anything is sent. That did not happen here, so read each quote against your own slides before you act on it.</div>'
+    : '') + (rel
+    ? '<div class="banner"><b>Your project lead worked through this review.</b> ' +
+      'You are seeing the ' + shown.length + ' finding' + (shown.length === 1 ? '' : 's') + ' they kept' +
+      ((rel.asks || []).length ? ', plus ' + rel.asks.length + ' question' + (rel.asks.length === 1 ? '' : 's') + ' for you' : '') +
+      '. Anything they cut is not here.</div>'
+    : '<div class="banner warn"><b>Not yet triaged by your project lead.</b> ' +
+      'This is the raw reviewer draft, all ' + shown.length + ' findings, nothing filtered. ' +
+      'Some of it may not survive your lead\'s read. Work it anyway, and treat the list as a starting point rather than a verdict.</div>');
+
+  if(current >= shown.length) current = 0;
 
   $('strengths').innerHTML = (r.strengths || []).length
     ? r.strengths.map(function(s){
         return '<div style="margin-bottom:12px"><div class="prose" style="font-weight:600">' + esc(s.point) + '</div>' + quoteHtml({ slide:s.slide, quote:s.quote }) + '</div>';
       }).join('')
-    : '<div class="na-note">This review lists no strengths. On anything above Not ready that is itself worth a question to your project lead.</div>';
+    : '<div class="na-note">This review lists no strengths. That is itself worth a question to your project lead.</div>';
 
   var ln = r.learningNote || {};
   $('learning').innerHTML =
@@ -562,17 +1975,30 @@ function renderCoach(){
     '<div class="block-label">Practice</div><div class="prose">' + esc(ln.exercise) + '</div>' +
     (ln.principle ? '<div class="chips" style="margin-top:12px"><span class="chip">' + esc(ln.principle) + '</span></div>' : '');
 
+  var asks = (rel && rel.asks) || [];
+  $('askCard').classList.toggle('hidden', !asks.length);
+  $('askList').innerHTML = asks.map(function(q){ return '<li>' + esc(q) + '</li>'; }).join('');
+
+  var added = (rel && rel.added) || [];
+  $('addedCard').classList.toggle('hidden', !added.length);
+  $('addedList').innerHTML = added.map(function(a){
+    return '<li>' + esc(a.short) + (a.slides && a.slides.length ? ' <span class="kbd">slide ' + esc(a.slides[0]) + '</span>' : '') + '</li>';
+  }).join('');
+
   $('coachNotAssessed').innerHTML = (r.notAssessed || []).map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('');
-  $('flistHead').textContent = r.findings.length + ' findings to work through';
+  $('flistHead').textContent = shown.length ? shown.length + ' findings to work through' : 'Nothing to work through';
 
   renderFindingList();
   renderFinding();
+  guardRendered($('studentView'));
 }
 
 function renderFindingList(){
-  $('flist').innerHTML = REVIEW.findings.map(function(f,i){
-    return '<button class="fitem' + (i === current ? ' on' : '') + (coach[i].revealed ? ' done' : '') + '" data-i="' + i + '">' +
-      '<span class="num">' + (coach[i].revealed ? '&#10003;' : (i+1)) + '</span>' +
+  var shown = studentFindings();
+  $('flist').innerHTML = shown.map(function(f, i){
+    var done = coachOf(f).revealed;
+    return '<button class="fitem' + (i === current ? ' on' : '') + (done ? ' done' : '') + '" data-i="' + i + '">' +
+      '<span class="num">' + (done ? '&#10003;' : (i+1)) + '</span>' +
       '<span class="txt">' + esc(f.short || f.title) + '</span>' +
       '<span class="sev ' + esc(f.severity) + '">' + esc(f.severityLabel) + '</span>' +
     '</button>';
@@ -580,20 +2006,26 @@ function renderFindingList(){
   Array.prototype.forEach.call($('flist').querySelectorAll('.fitem'), function(el){
     el.onclick = function(){ current = +el.dataset.i; renderFindingList(); renderFinding(); };
   });
-  var done = coach.filter(function(c){ return c.revealed; }).length;
-  $('coachProgress').textContent = done + ' of ' + coach.length + ' worked through.';
+  var n = shown.filter(function(f){ return coachOf(f).revealed; }).length;
+  $('coachProgress').textContent = n + ' of ' + shown.length + ' worked through.';
 }
 
 function renderFinding(){
-  var f = REVIEW.findings[current], st = coach[current];
+  var shown = studentFindings();
+  if(!shown.length){
+    $('fcard').innerHTML = '<h2>Nothing to work through</h2>' +
+      '<div class="na-note">Your project lead read this review and kept none of its findings. ' +
+      'That is a decision, not an omission. Ask them what they want from the next draft.</div>';
+    return;
+  }
+  var f = shown[current], st = coachOf(f);
 
   /* The fix is not written into the DOM until the gate opens. */
   $('fcard').innerHTML =
-    '<h2>Finding ' + (current+1) + ' of ' + REVIEW.findings.length + '</h2>' +
+    '<h2>Finding ' + (current+1) + ' of ' + shown.length + '</h2>' +
     '<div class="ftitle">' + esc(f.title) + '</div>' +
     '<div class="chips">' +
       '<span class="sev ' + esc(f.severity) + '">' + esc(f.severityLabel) + '</span>' +
-      (f.deliveryCritical ? '<span class="chip" style="background:var(--red-soft);color:#A3241C">Delivery critical</span>' : '') +
       '<span class="chip">' + esc(f.issueType) + '</span>' +
       '<span class="chip">owner: ' + esc(f.owner) + '</span>' +
     '</div>' +
@@ -622,9 +2054,9 @@ function renderFinding(){
   $('rewriteBox').oninput = function(){ st.rewrite = this.value; updateGate(); };
   $('revealBtn').onclick = reveal;
   $('prevBtn').onclick = function(){ if(current > 0){ current--; renderFindingList(); renderFinding(); } };
-  $('nextBtn').onclick = function(){ if(current < REVIEW.findings.length - 1){ current++; renderFindingList(); renderFinding(); } };
+  $('nextBtn').onclick = function(){ if(current < shown.length - 1){ current++; renderFindingList(); renderFinding(); } };
   $('prevBtn').disabled = current === 0;
-  $('nextBtn').disabled = current === REVIEW.findings.length - 1;
+  $('nextBtn').disabled = current === shown.length - 1;
 
   if(st.revealed) showFix(); else updateGate();
 }
@@ -642,7 +2074,7 @@ function attemptValid(ans, question){
 function rewriteRequired(){ return skipStreak >= REVEAL_CAP; }
 
 function updateGate(){
-  var f = REVIEW.findings[current], st = coach[current];
+  var f = studentFindings()[current], st = coachOf(f);
   var v = attemptValid(st.attempt, f.reflect);
   var reqRw = rewriteRequired();
   var rwOk = !reqRw || st.rewrite.trim().length >= REWRITE_MIN;
@@ -668,7 +2100,7 @@ function updateGate(){
 }
 
 function reveal(){
-  var f = REVIEW.findings[current], st = coach[current];
+  var f = studentFindings()[current], st = coachOf(f);
   if(!attemptValid(st.attempt, f.reflect).ok) return;
   if(rewriteRequired() && st.rewrite.trim().length < REWRITE_MIN) return;
   if(st.rewrite.trim().length >= REWRITE_MIN) skipStreak = 0; else skipStreak++;
@@ -678,7 +2110,7 @@ function reveal(){
 }
 
 function showFix(){
-  var f = REVIEW.findings[current];
+  var f = studentFindings()[current];
   $('fixSlot').innerHTML = '<div class="fix"><div class="fl">The reviewer fix, a direction not a rewrite</div><div class="ft">' + esc(f.fix) + '</div></div>';
   $('revealBtn').disabled = true;
   $('revealBtn').textContent = 'Revealed';
@@ -686,119 +2118,46 @@ function showFix(){
   $('gateNote').className = 'gate-note ok';
 }
 
-/* ---------- lead view ---------- */
-
-function renderLead(){
-  var r = REVIEW, rd = r.readiness;
-
-  $('readiness').innerHTML =
-    '<div class="rpill ' + levelClass(rd.level) + '">' + esc(rd.level) + '</div>' +
-    '<div class="rbody">' +
-      '<div class="lbl">Why it sits here</div><p>' + esc(rd.mainReason) + '</p>' +
-      '<div class="lbl">Highest risk</div><p>' + esc(rd.highestRiskIssue) + '</p>' +
-      '<div class="lbl">What could change it</div><p>' + esc(rd.whatCouldChangeIt) + '</p>' +
-      '<div class="facts">' +
-        '<div class="fact"><b>Reviewer confidence</b>' + esc(rd.confidence) + '</div>' +
-        '<div class="fact"><b>Diagnostic mean</b>' + esc(r.scorecard.diagnosticMean) + ' / 5</div>' +
-        '<div class="fact"><b>Estimated effort</b>' + esc(r.scorecard.effort || 'not stated') + '</div>' +
-        '<div class="fact"><b>Blocking rules fired</b>' + (r.blockingIssues || []).length + '</div>' +
-      '</div>' +
-    '</div>';
-
-  var bi = r.blockingIssues || [];
-  $('blockCard').classList.toggle('hidden', !bi.length);
-  $('blocks').innerHTML = bi.map(function(b){
-    return '<div class="block"><div class="bh">Rule ' + esc(b.rule) + '. ' + esc(b.label) + '</div>' +
-      '<div class="bc">Caps readiness at: ' + esc(b.ceiling) + '</div>' +
-      (b.evidence || []).map(quoteHtml).join('') + '</div>';
-  }).join('');
-
-  var dcs = r.findings.filter(function(f){ return f.deliveryCritical; });
-  var shown = dcs.length ? dcs : r.findings;
-  $('leadFindings').innerHTML =
-    (dcs.length ? '' : '<div class="na-note" style="margin-bottom:12px">No finding is marked delivery critical. All findings are shown.</div>') +
-    shown.map(function(f){
-      return '<div style="padding:14px 0;border-bottom:1px solid var(--border-soft)">' +
-        '<div class="chips"><span class="sev ' + esc(f.severity) + '">' + esc(f.severityLabel) + '</span>' +
-        '<span class="chip">' + esc(f.issueType) + '</span><span class="chip">owner: ' + esc(f.owner) + '</span></div>' +
-        '<h3>' + esc(f.title) + '</h3>' +
-        '<div class="prose">' + esc(f.diagnosis) + '</div>' +
-        (f.evidence || []).map(quoteHtml).join('') +
-        '<div class="block-label">Why it matters</div><div class="prose">' + esc(f.why) + '</div>' +
-      '</div>';
-    }).join('');
-
-  var qs = r.questionsForLead || [];
-  $('qCard').classList.toggle('hidden', !qs.length);
-  $('questions').innerHTML = qs.map(function(q){ return '<li>' + esc(q) + '</li>'; }).join('');
-
-  var dims = r.scorecard.dimensions || [];
-  var scoped = dims.filter(function(d){ return d.result !== 'na'; }).length;
-  $('meanNote').textContent = 'Diagnostic, not a verdict. Mean of ' + scoped + ' in-scope dimensions. Readiness above is set by the blocking rules, not by this number.';
-  $('dims').innerHTML = dims.map(function(d){
-    return '<div class="dim"><div class="dn">' + esc(d.name) + '</div>' +
-      '<div class="dct">' + (d.result === 'na' ? 'out of scope' : esc(d.checksPassed) + ' / ' + esc(d.checksTotal)) + '</div>' +
-      '<span class="res ' + esc(d.result) + '">' + (d.result === 'na' ? 'n/a' : esc(d.result)) + '</span>' +
-      (d.note ? '<div class="dnote">' + esc(d.note) + '</div>' : '') +
-    '</div>';
-  }).join('');
-
-  var tl = r.timeline;
-  $('tlCard').classList.toggle('hidden', !tl || !(tl.tiles || []).length);
-  if(tl && (tl.tiles || []).length){
-    $('tiles').innerHTML = tl.tiles.map(function(t){
-      return '<div class="tile ' + esc(t.state) + '" title="Slide ' + esc(t.slide) + ': ' + esc(t.state) + '">' + esc(t.slide) + '</div>';
-    }).join('');
-    $('callouts').innerHTML =
-      (tl.callouts || []).map(function(c){ return '<div class="callout"><b>Slide ' + esc(c.at) + '.</b> ' + esc(c.label) + '</div>'; }).join('') +
-      (tl.connectors || []).map(function(c){ return '<div class="callout" style="color:var(--muted)"><b>' + esc(c.from) + ' to ' + esc(c.to) + '.</b> ' + esc(c.label) + '</div>'; }).join('');
-  }
-
-  var cm = r.comments || [];
-  $('commentsCard').classList.toggle('hidden', !cm.length);
-  $('comments').innerHTML = cm.map(function(c){
-    return '<div style="padding:9px 0;border-bottom:1px solid var(--border-soft)">' +
-      '<div style="font-weight:600;font-size:13.5px">' + esc(c.location) + '. ' + esc(c.problem) + '</div>' +
-      '<div class="na-note">' + esc(c.why) + ' <b>Fix:</b> ' + esc(c.fix) + '</div></div>';
-  }).join('');
-
-  $('leadNotAssessed').innerHTML = (r.notAssessed || []).map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('');
-}
-
-/* ---------- printable: strengths first, gated fixes stay off paper ---------- */
+/* ============================================================
+   PRINT. The team note when one exists, the raw draft otherwise.
+   Readiness never reaches paper, because paper reaches students.
+   ============================================================ */
 
 function renderPrint(){
-  var r = REVIEW, rd = r.readiness, ln = r.learningNote || {};
+  if(!REVIEW || LEAK_TRIPPED) return;
+  var r = REVIEW, rel = releaseView(), ln = r.learningNote || {}, shown = studentFindings();
+
   $('paper').innerHTML =
     '<h1>' + esc(r.meta.title) + '</h1>' +
     '<div class="sub">' + esc(r.meta.artifactType) + (r.meta.slideCount ? ', ' + r.meta.slideCount + ' slides' : '') +
-      ' &middot; ' + esc(r.meta.version || 'Review v2') + ' &middot; ' + esc(r.meta.mode) + ' mode</div>' +
-
-    '<div class="pf"><div class="pf-h">Readiness: ' + esc(rd.level) + '</div>' +
-      '<div class="prose">' + esc(rd.mainReason) + '</div>' +
-      '<div class="prose" style="margin-top:6px"><b>Highest risk.</b> ' + esc(rd.highestRiskIssue) + '</div>' +
-      '<div class="prose" style="margin-top:6px"><b>Confidence.</b> ' + esc(rd.confidence) + '. ' + esc(rd.whatCouldChangeIt) + '</div></div>' +
+      ' &middot; ' + esc(r.meta.version || 'Review v2') + ' &middot; ' +
+      (rel ? 'triaged by the project lead' : 'raw reviewer draft, not yet triaged') + '</div>' +
 
     '<div class="pf"><div class="pf-h">What the deliverable does well</div>' +
       ((r.strengths || []).length
         ? (r.strengths || []).map(function(s){ return '<div class="prose" style="margin-bottom:6px">' + esc(s.point) + '</div>'; }).join('')
         : '<div class="na-note">None recorded.</div>') + '</div>' +
 
-    '<div class="pf"><div class="pf-h">Findings</div>' +
-      r.findings.map(function(f,i){
+    '<div class="pf"><div class="pf-h">What to fix</div>' +
+      (shown.length ? shown.map(function(f, i){
         return '<div style="margin-bottom:14px">' +
-          '<div style="font-weight:700">' + (i+1) + '. ' + esc(f.title) + ' (' + esc(f.severityLabel) + (f.deliveryCritical ? ', delivery critical' : '') + ')</div>' +
+          '<div style="font-weight:700">' + (i+1) + '. ' + esc(f.title) + ' (' + esc(f.severityLabel) + ')</div>' +
           '<div class="prose">' + esc(f.diagnosis) + '</div>' +
           (f.evidence || []).map(quoteHtml).join('') +
           '<div class="prose"><b>Why it matters.</b> ' + esc(f.why) + '</div>' +
           '<div class="prose"><b>Answer before the fix.</b> ' + esc(f.reflect) + '</div>' +
         '</div>';
-      }).join('') +
-      '<div class="na-note">The reviewer fix for each finding is deliberately not printed. It unlocks in the coaching view after the consultant answers the reflect question, so the printable cannot become ghostwriting.</div></div>' +
+      }).join('') : '<div class="na-note">The project lead kept none of the reviewer findings.</div>') +
+      ((rel && (rel.added || []).length)
+        ? rel.added.map(function(a, i){
+            return '<div style="margin-bottom:10px"><div style="font-weight:700">' + (shown.length + i + 1) + '. ' +
+              esc(a.short) + ' (added by your lead)</div></div>';
+          }).join('') : '') +
+      '<div class="na-note">The reviewer fix for each point is deliberately not printed. It unlocks in the student view after the consultant answers the reflect question, so the printable cannot become ghostwriting.</div></div>' +
 
-    ((r.questionsForLead || []).length
-      ? '<div class="pf"><div class="pf-h">Questions for the project lead</div><ul class="plain">' +
-        r.questionsForLead.map(function(q){ return '<li>' + esc(q) + '</li>'; }).join('') + '</ul></div>'
+    ((rel && (rel.asks || []).length)
+      ? '<div class="pf"><div class="pf-h">Questions from your project lead</div><ul class="plain">' +
+        rel.asks.map(function(q){ return '<li>' + esc(q) + '</li>'; }).join('') + '</ul></div>'
       : '') +
 
     '<div class="pf"><div class="pf-h">Learning note</div>' +
@@ -809,7 +2168,16 @@ function renderPrint(){
     '<div class="pf"><div class="pf-h">What this review did not assess</div><ul class="plain">' +
       (r.notAssessed || []).map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('') + '</ul></div>' +
 
-    '<div class="pf"><div class="na-note">The AI advises. A named human signs off. No deliverable goes to a client on this review alone.</div></div>';
+    '<div class="pf"><div class="na-note">The AI advises. A named human decides. No deliverable goes to a client on this review alone. ' +
+      'The AI grade is a lead-facing judgment and is deliberately absent from this sheet.</div>' +
+      ((T && T.qc && T.qc.waived)
+        ? '<div class="na-note" style="margin-top:8px;font-weight:700;color:#A3241C">' + esc(qcStamp()) + '</div>'
+        : (T && T.qc && T.qc.status === 'verified')
+          ? '<div class="na-note" style="margin-top:8px">' + esc(qcStamp()) + '</div>'
+          : '') +
+    '</div>';
+
+  guardRendered($('printView'));
 }
 
 /* ============================================================
@@ -819,12 +2187,18 @@ function renderPrint(){
 Array.prototype.forEach.call($('tabs').querySelectorAll('.tab'), function(t){
   t.onclick = function(){ if(REVIEW) setView(t.dataset.view); };
 });
-$('backBtn').onclick = function(){ setView('start'); };
+$('backBtn').onclick = function(){
+  if(STUDENT_ONLY && !confirm('This will drop the pack your lead sent you. Continue?')) return;
+  STUDENT_ONLY = false; RELEASE = null;
+  if(location.hash) history.replaceState(null, '', location.pathname + location.search);
+  setView('start');
+};
 $('printBtn').onclick = function(){ window.print(); };
+
 $('pasteBtn').onclick = function(){
   var raw = $('pasteBox').value.trim();
   if(!raw) return;
-  try { load(JSON.parse(raw)); }
+  try { loadAny(JSON.parse(raw)); }
   catch(ex){ showStartError(['the pasted text is not valid JSON: ' + ex.message]); }
 };
 $('fileInput').onchange = function(){
@@ -832,14 +2206,175 @@ $('fileInput').onchange = function(){
   if(!f) return;
   var fr = new FileReader();
   fr.onload = function(){
-    try { load(JSON.parse(fr.result)); }
+    try { loadAny(JSON.parse(fr.result)); }
     catch(ex){ showStartError(['that file is not valid JSON: ' + ex.message]); }
   };
   fr.readAsText(f);
 };
 
-renderPicker();
-setView('start');
+/* A student pack and a bare review both arrive through the same door.
+   A pack written before the redaction existed still opens: it declares no
+   redactions, so it validates the old way and the DOM guard covers it. */
+function loadAny(obj){
+  if(obj && obj.kind === '180dc-student-pack-1' && obj.review)
+    load(obj.review, {
+      studentOnly: true,
+      release: obj.release,
+      redacted: (obj.redactions || []).indexOf('readiness') >= 0,
+      quoteCheck: obj.quoteCheck || null
+    });
+  else load(obj);
+}
+
+/* ---------- the quote check ---------- */
+$('qcRun').onclick = function(){ runQuoteCheck($('qcText').value); };
+$('qcClear').onclick = function(){
+  $('qcText').value = '';
+  T.qc = blankQc();
+  renderQc(); renderTrust(); renderNotePanel(); saveTriage();
+};
+$('qcFile').onchange = function(){
+  var f = this.files && this.files[0];
+  if(!f) return;
+  var fr = new FileReader();
+  fr.onload = function(){ $('qcText').value = fr.result; runQuoteCheck(fr.result); };
+  fr.readAsText(f);
+  this.value = '';
+};
+$('qcWaive').onclick = function(){
+  var why = $('qcWaiveReason').value.trim();
+  if(why.length < 15){ alert('Say why in a sentence. The waiver goes on the record and an empty reason makes the record useless.'); return; }
+  T.qc.waived = true;
+  T.qc.waiveReason = why;
+  touchClock();
+  renderQc(); renderTrust(); renderNotePanel(); renderStudent(); renderPrint(); saveTriage();
+};
+
+$('keepRest').onclick = function(){
+  REVIEW.findings.forEach(function(f, i){ if(!actionOf(i)) setAction(i, 'keep', true); });
+};
+$('addBtn').onclick = function(){
+  var s = $('addShort').value.trim();
+  if(!s) return;
+  var n = parseInt($('addSlide').value, 10);
+  T.added.push({ short:s, severity:$('addSev').value, dimension:null, slides:isNaN(n) ? [] : [n], note:'' });
+  $('addShort').value = ''; $('addSlide').value = '';
+  touchClock(); renderAdded(); renderNotePanel(); saveTriage();
+};
+$('addShort').onkeydown = function(e){ if(e.key === 'Enter'){ e.preventDefault(); $('addBtn').click(); } };
+
+$('noteBox').oninput = function(){ T.noteEdit = this.value; touchClock(); renderNotePanel(); saveTriage(); };
+$('regenBtn').onclick = function(){ T.noteEdit = null; $('noteBox').value = noteMarkdown(); renderNotePanel(); saveTriage(); };
+$('reasonBox').oninput = function(){ T.reason = this.value; touchClock(); renderNotePanel(); saveTriage(); };
+
+$('releaseBtn').onclick = function(){
+  T.sent = true; touchClock(); saveTriage();
+  renderNotePanel(); renderStudent(); renderPrint();
+  setView('student');
+};
+$('dlNote').onclick = function(){
+  download(slug(REVIEW.meta.title) + '-notes-' + stampName() + '.md', noteText(), 'text/markdown;charset=utf-8');
+};
+$('dlRecord').onclick = function(){
+  var rec = buildRecord();
+  download(slug(rec.deliverable.ref) + '-override-' + stampName() + '.json', JSON.stringify(rec, null, 2), 'application/json');
+};
+$('dlPack').onclick = function(){
+  download(slug(REVIEW.meta.title) + '-student-pack-' + stampName() + '.json', JSON.stringify(studentPack(), null, 2), 'application/json');
+};
+$('copyLink').onclick = function(){
+  var enc = b64(JSON.stringify(studentPack()));
+  var url = location.origin + location.pathname + location.search + '#pack=' + enc;
+  if(url.length > 120000){
+    alert('This review is too large to travel in a link. Use the student pack file instead.');
+    return;
+  }
+  var done = function(){ $('copyLink').textContent = 'Link copied'; setTimeout(function(){ $('copyLink').textContent = 'Copy student link'; }, 2200); };
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, function(){ prompt('Copy this link', url); });
+  else prompt('Copy this link', url);
+};
+$('recordInput').onchange = function(){
+  var f = this.files && this.files[0];
+  if(!f) return;
+  var fr = new FileReader();
+  fr.onload = function(){
+    var errs;
+    try { errs = applyRecord(JSON.parse(fr.result)); }
+    catch(ex){ errs = ['that file is not valid JSON: ' + ex.message]; }
+    if(errs.length){ alert(errs.join('\n')); return; }
+    renderLead();
+    $('noteBox').value = noteText();
+  };
+  fr.readAsText(f);
+  this.value = '';
+};
+PROV_KEYS.forEach(function(k){ if($(k)) $(k).oninput = saveProv; });
+
+/* Keyboard. Four minutes a deck means never reaching for the mouse. */
+document.addEventListener('keydown', function(e){
+  if(VIEW !== 'lead' || !REVIEW || STUDENT_ONLY) return;
+  var tag = (e.target.tagName || '').toLowerCase();
+  if(tag === 'input' || tag === 'textarea' || tag === 'select' || e.metaKey || e.ctrlKey || e.altKey) return;
+  var k = e.key;
+  if(k === 'ArrowDown' || k === 'j'){ e.preventDefault(); focusRow(deskIdx + 1); }
+  else if(k === 'ArrowUp' || k === 'k'){ e.preventDefault(); focusRow(deskIdx - 1); }
+  else if(k === '1'){ e.preventDefault(); setAction(deskIdx, 'keep', false); focusRow(deskIdx); }
+  else if(k === '2'){ e.preventDefault(); setAction(deskIdx, 'ask', false); focusRow(deskIdx); }
+  else if(k === '3'){ e.preventDefault(); setAction(deskIdx, 'cut', false); focusRow(deskIdx); }
+  else if(k === 'm'){
+    e.preventDefault();
+    if(actionOf(deskIdx) === 'keep'){ T.mustCatch = fidOf(REVIEW.findings[deskIdx]); renderWorklist(); focusRow(deskIdx); saveTriage(); }
+  }
+});
+
+/* A student link carries its pack in the fragment, which never reaches a server. */
+function bootFromHash(){
+  var m = /[#&]pack=([^&]+)/.exec(location.hash || '');
+  if(!m) return false;
+  try {
+    var obj = JSON.parse(unb64(decodeURIComponent(m[1])));
+    if(obj && obj.kind === '180dc-student-pack-1' && obj.review){
+      load(obj.review, { studentOnly:true, release:obj.release });
+      return true;
+    }
+  } catch(ex){}
+  return false;
+}
+
+/* ============================================================
+   boot, and the two things that gate it
+   ============================================================ */
+
+function renderKillScreen(){
+  document.querySelector('.wrap').innerHTML =
+    '<div class="tripped"><h2>The AI Quality Reviewer is switched off</h2>' +
+    '<div class="prose">' + esc(KILL.reason || 'A property this tool depends on has been shown to be false, and it has been withdrawn until that is resolved.') + '</div>' +
+    '<div class="prose">Off since ' + esc(KILL.since || 'today') + '. Do not use a saved copy of this page in the meantime, and do not act on a review it produced after that date without reading the deck yourself.</div>' +
+    (KILL.contact ? '<div class="prose">Who to ask: ' + esc(KILL.contact) + '</div>' : '') +
+    '<div class="prose">Reviews already triaged, and the notes written from them, are not withdrawn by this. A named human made every call in them.</div></div>';
+}
+
+function renderStaleNotice(){
+  var built = Date.parse(BUILD.date + 'T00:00:00Z');
+  if(isNaN(built)) return;
+  var days = Math.floor((Date.now() - built) / 86400000);
+  if(days <= BUILD.staleAfterDays) return;
+  var d = document.createElement('div');
+  d.className = 'stale';
+  d.innerHTML = '<b>This copy is ' + days + ' days old.</b> It was built on ' + esc(BUILD.date) +
+    '. A copy saved to a machine cannot be updated or withdrawn remotely, so check <b>180dc-reviewer.pages.dev</b> before you rely on it.';
+  document.querySelector('.wrap').insertBefore(d, document.querySelector('.wrap').firstChild);
+}
+
+if(KILL.active){
+  renderKillScreen();
+} else {
+  renderStaleNotice();
+  watchForLeaks();
+  renderPicker();
+  loadProv();
+  if(!bootFromHash()) setView('start');
+}
 </script>
 </body>
 </html>

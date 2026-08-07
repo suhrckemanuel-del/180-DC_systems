@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case reader — real-01 / 03 / 04 / 05 (labeling aid)</title>
+<style>
+  :root{--ink:#1a2130;--soft:#5b6472;--line:#e4e7ee;--bg:#f4f6fa;--paper:#fff;--accent:#2f6d5b;--warn:#9a6b00;--warnbg:#fff6e0;--flag:#eef1f6;--sans:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--sans);color:var(--ink);background:var(--bg);height:100vh;overflow:hidden}
+  .app{display:grid;grid-template-columns:270px 1fr;grid-template-rows:auto 1fr;height:100vh}
+  header{grid-column:1/3;background:var(--paper);border-bottom:1px solid var(--line);padding:.55rem .9rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+  header .decks{display:flex;gap:.4rem;flex-wrap:wrap}
+  header button.deck{font:inherit;font-size:.8rem;font-weight:700;border:1.5px solid var(--line);background:var(--paper);color:var(--soft);border-radius:999px;padding:.3rem .75rem;cursor:pointer}
+  header button.deck.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .note{font-size:.72rem;color:var(--warn);background:var(--warnbg);border:1px solid #f0dfa8;border-radius:6px;padding:.3rem .55rem;line-height:1.35;flex:1;min-width:240px}
+  aside{border-right:1px solid var(--line);background:var(--paper);overflow-y:auto}
+  aside ol{list-style:none}
+  aside li{border-bottom:1px solid var(--line)}
+  aside a{display:block;padding:.45rem .8rem;text-decoration:none;color:var(--ink);font-size:.78rem;line-height:1.3}
+  aside a:hover{background:var(--bg)}
+  aside a.on{background:#eaf3ef;border-left:3px solid var(--accent);padding-left:calc(.8rem - 3px)}
+  aside a .n{color:var(--soft);font-weight:700;font-size:.7rem;margin-right:.35rem}
+  aside a.img::after{content:"🖼";float:right;opacity:.6}
+  main{overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;align-items:center}
+  .stage{width:100%;max-width:840px}
+  .metabar{font-size:.8rem;color:var(--soft);margin-bottom:.7rem}
+  .metabar details{display:inline}
+  .metabar summary{cursor:pointer;color:var(--accent);font-weight:600}
+  .metabar .exnotes{margin-top:.5rem;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:.7rem .9rem;font-size:.8rem;color:var(--soft);white-space:pre-wrap;line-height:1.5}
+  .navbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+  .navbar button{font:inherit;font-weight:700;border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:.45rem .9rem;cursor:pointer;color:var(--ink)}
+  .navbar button:disabled{opacity:.35;cursor:default}
+  .counter{font-size:.85rem;color:var(--soft);font-variant-numeric:tabular-nums}
+  .slide{background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:0 1px 2px rgba(20,30,50,.04),0 12px 30px rgba(20,30,50,.06);min-height:58vh;padding:1.8rem 2rem;display:flex;flex-direction:column}
+  .slide .kicker{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+  .slide h1{font-size:1.5rem;line-height:1.18;letter-spacing:-.01em;margin:.45rem 0 .2rem}
+  .flags{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 .3rem}
+  .flag{font-size:.68rem;font-weight:700;border-radius:999px;padding:.2rem .6rem;background:var(--flag);color:var(--soft)}
+  .flag.warn{background:var(--warnbg);color:var(--warn)}
+  .body{margin-top:.7rem}
+  .body p{padding-left:1rem;position:relative;font-size:.99rem;line-height:1.5;color:#222a38;margin-bottom:.35rem}
+  .body p::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:#c4ccd8}
+  .intnote{margin-top:1rem;font-size:.82rem;color:var(--warn);background:var(--warnbg);border:1px dashed #e6cf8f;border-radius:8px;padding:.6rem .8rem;line-height:1.45;white-space:pre-wrap}
+  .intnote b{text-transform:uppercase;font-size:.66rem;letter-spacing:.08em;display:block;margin-bottom:.25rem}
+  .imgbox{margin-top:1.1rem;border:1px solid var(--line);border-radius:8px;background:#fafbfc}
+  .imgbox>summary{cursor:pointer;padding:.55rem .8rem;font-size:.8rem;font-weight:700;color:var(--soft);list-style:none}
+  .imgbox>summary::-webkit-details-marker{display:none}
+  .imgbox>summary::before{content:"▸ ";color:var(--accent)}
+  .imgbox[open]>summary::before{content:"▾ "}
+  .imgbox .imgwrap{padding:.2rem .8rem .8rem}
+  .imgbox img{max-width:100%;border-radius:6px;border:1px solid var(--line);display:block;margin-bottom:.7rem}
+  .imgbox .prompt{font-size:.78rem;color:var(--warn);background:var(--warnbg);border:1px dashed #e6cf8f;border-radius:6px;padding:.5rem .6rem;margin-bottom:.6rem}
+  .imgbox .filelbl{font-size:.76rem;color:var(--soft)}
+  .imgbox button.rm{font:inherit;font-size:.72rem;margin-left:.6rem;border:1px solid var(--line);background:#fff;border-radius:5px;padding:.15rem .5rem;cursor:pointer}
+  .hint{font-size:.75rem;color:var(--soft);margin-top:1rem;text-align:center}
+  kbd{font:inherit;font-size:.72rem;background:#eef1f6;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 .35rem}
+  .loading{padding:2rem;color:var(--soft)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="decks" id="decks"></div>
+    <div class="note"><b>Auto-parsed from the raw extracted text — not the original slide design.</b> Repeated headers / footers / nav are stripped. Slides that came through as image-only are flagged; open <b>🖼 Diagram / screenshot</b> to attach your own. Judge the deck as it stood.</div>
+  </header>
+  <aside><ol id="outline"></ol></aside>
+  <main>
+    <div class="stage" id="stage"><div class="loading">Loading decks…</div></div>
+  </main>
+</div>
+
+<script>
+const MANIFEST = [
+  {id:"real-01", file:"real-01-consumer-goods-market-entry.md",  label:"real-01 · Consumer goods (D1) · R2"},
+  {id:"real-02", file:"real-02-waste-tech-acquisition-report.md", label:"real-02 · Waste tech (Final) · R2"},
+  {id:"real-03", file:"real-03-child-welfare-funding.md",        label:"real-03 · Child welfare (D1) · R2"},
+  {id:"real-04", file:"real-04-senior-living-business-plan.md",  label:"real-04 · Senior living (D2) · R0"},
+  {id:"real-05", file:"real-05-conservation-microfinance.md",    label:"real-05 · Microfinance (Final) · R2"},
+  {id:"real-08", file:"real-08-mobility-aid-research.md",        label:"real-08 · Mobility aid (D2) · R0"},
+  {id:"real-12", file:"real-12-donation-platform-analysis.md",   label:"real-12 · Donation platform (D1) · R1"},
+  {id:"real-13", file:"real-13-packaging-financial-model.md",    label:"real-13 · Packaging CO2 (Final) · R2"}
+];
+const DECKS = {};
+let curDeck = MANIFEST[0].id, curIdx = 0;
+const el = (id)=>document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+function fm(text, label){ var m = text.match(new RegExp("\\*\\*"+label+"[^:]*:\\*\\*\\s*([^\\n]*)")); return m?m[1].replace(/\*\*/g,"").trim():""; }
+
+function parseDeck(text, entry){
+  var exIdx = text.indexOf("## Extraction notes");
+  var notes = exIdx>=0 ? text.slice(exIdx).replace(/^## Extraction notes[^\n]*\n/,"").replace(/\(for labelers[^\n]*\n/,"") : "";
+  var body = exIdx>=0 ? text.slice(0,exIdx) : text;
+  var client = fm(text,"Client"), artifact = fm(text,"Artifact type"), stage = fm(text,"Deliverable stage"), question = fm(text,"Client question");
+  var markerRe = /\*\*(?:Slide|Page)\s+(\d+)\.\s*([^\n]*?)\*\*/g, marks = [], m;
+  while((m = markerRe.exec(body))){ marks.push({num:m[1], title:m[2].trim(), start:m.index, end:markerRe.lastIndex}); }
+  var slides = [];
+  for(var i=0;i<marks.length;i++){
+    var seg = body.slice(marks[i].end, i+1<marks.length ? marks[i+1].start : body.length);
+    var raw = seg.split("\n").map(function(x){return x.trim();}).filter(function(x){return x.length;});
+    slides.push({num:marks[i].num, title:marks[i].title, raw:raw});
+  }
+  // frequency of lines across slides -> strip repeated chrome
+  var freq = {};
+  slides.forEach(function(s){ var seen={}; s.raw.forEach(function(l){ if(seen[l])return; seen[l]=1; freq[l]=(freq[l]||0)+1; }); });
+  slides.forEach(function(s){
+    var note=null, keep=[];
+    for(var i=0;i<s.raw.length;i++){
+      if(/^\[Speaker notes\]/.test(s.raw[i])){ note = s.raw.slice(i).join("\n").replace(/^\[Speaker notes\]\s*/,""); break; }
+      keep.push(s.raw[i]);
+    }
+    s.note = note;
+    s.body = keep.filter(function(l){
+      if(/^180 DEGREES CONSULTING$/i.test(l)) return false;
+      if(/^\d+$/.test(l)) return false;
+      var pipes = (l.split("|").length-1);
+      if(freq[l] >= 4 && (l.length < 70 || pipes >= 3)) return false;
+      return true;
+    });
+    s.isImg = s.body.length <= 1;
+  });
+  return { label: entry.label, client:client, artifact:artifact, stage:stage, question:question, notes:notes.trim(), slides:slides };
+}
+
+function renderDeckButtons(){
+  var box = el("decks"); box.innerHTML="";
+  MANIFEST.forEach(function(e){
+    var b=document.createElement("button");
+    b.className="deck"+(e.id===curDeck?" on":""); b.textContent=DECKS[e.id]?DECKS[e.id].label:e.label;
+    b.onclick=function(){ curDeck=e.id; curIdx=0; renderAll(); };
+    box.appendChild(b);
+  });
+}
+function renderOutline(){
+  var d=DECKS[curDeck], ol=el("outline"); ol.innerHTML="";
+  if(!d) return;
+  d.slides.forEach(function(s,i){
+    var li=document.createElement("li"), a=document.createElement("a");
+    a.href="#"; a.className=(i===curIdx?"on":"")+(s.isImg?" img":"");
+    a.innerHTML='<span class="n">'+s.num+'</span>'+esc(s.title||"(untitled)");
+    a.onclick=function(e){ e.preventDefault(); curIdx=i; renderAll(); };
+    li.appendChild(a); ol.appendChild(li);
+  });
+}
+function renderStage(){
+  var d=DECKS[curDeck]; if(!d){ el("stage").innerHTML='<div class="loading">Loading…</div>'; return; }
+  var s=d.slides[curIdx];
+  var meta='<div class="metabar">'+esc(d.client)+' · '+esc(d.artifact)+' · '+esc(d.stage)+
+    ' &nbsp;·&nbsp; <details><summary>question &amp; extraction notes</summary><div class="exnotes"><b>Client question:</b> '+esc(d.question)+'\n\n<b>Extraction notes:</b>\n'+esc(d.notes)+'</div></details></div>';
+  var nav='<div class="navbar"><button id="prev">‹ Prev</button><span class="counter">Slide '+s.num+' — '+(curIdx+1)+' / '+d.slides.length+'</span><button id="next">Next ›</button></div>';
+  var imgKey="img:"+curDeck+":"+curIdx, stored=localStorage.getItem(imgKey);
+  var h='<div class="slide"><div class="kicker">Slide '+s.num+'</div><h1>'+esc(s.title||"(untitled slide)")+'</h1>';
+  var flags=[]; if(s.isImg) flags.push({t:"image-only / minimal text",w:true}); if(s.note) flags.push({t:"speaker note present",w:false});
+  if(flags.length) h+='<div class="flags">'+flags.map(function(f){return '<span class="flag'+(f.w?" warn":"")+'">'+f.t+'</span>';}).join("")+'</div>';
+  if(s.body.length){ h+='<div class="body">'+s.body.map(function(l){return '<p>'+esc(l)+'</p>';}).join("")+'</div>'; }
+  if(s.note){ h+='<div class="intnote"><b>Speaker note / internal comment left in the deck</b>'+esc(s.note)+'</div>'; }
+  h+='<details class="imgbox"'+((s.isImg&&!stored)?" open":"")+'><summary>🖼 Diagram / screenshot'+(stored?" — attached":"")+'</summary><div class="imgwrap">';
+  if(s.isImg&&!stored) h+='<div class="prompt">This slide came through as image-only. Attach your screenshot so you are not guessing.</div>';
+  if(stored) h+='<img src="'+stored+'" alt="attached screenshot">';
+  h+='<label class="filelbl">Attach screenshot: <input type="file" accept="image/*" id="imgin"></label>'+(stored?'<button class="rm" id="imgrm">Remove</button>':"")+'</div></details>';
+  h+='</div><p class="hint">Use <kbd>←</kbd> <kbd>→</kbd> to move · click a slide in the sidebar to jump · 🖼 marks image-only slides</p>';
+  el("stage").innerHTML=meta+nav+h;
+  el("prev").disabled=curIdx===0; el("next").disabled=curIdx===d.slides.length-1;
+  el("prev").onclick=function(){ if(curIdx>0){curIdx--;renderAll();} };
+  el("next").onclick=function(){ if(curIdx<d.slides.length-1){curIdx++;renderAll();} };
+  var inp=document.getElementById("imgin");
+  if(inp) inp.onchange=function(e){ var f=e.target.files&&e.target.files[0]; if(!f)return; var r=new FileReader(); r.onload=function(){ try{localStorage.setItem(imgKey,r.result);}catch(err){alert("Image too large to store locally — try a smaller screenshot.");} renderAll(); }; r.readAsDataURL(f); };
+  var rm=document.getElementById("imgrm");
+  if(rm) rm.onclick=function(){ localStorage.removeItem(imgKey); renderAll(); };
+  var on=document.querySelector("aside a.on"); if(on) on.scrollIntoView({block:"nearest"});
+}
+function renderAll(){ renderDeckButtons(); renderOutline(); renderStage(); }
+document.addEventListener("keydown",function(e){
+  var d=DECKS[curDeck]; if(!d) return;
+  if(e.key==="ArrowLeft"&&curIdx>0){curIdx--;renderAll();}
+  if(e.key==="ArrowRight"&&curIdx<d.slides.length-1){curIdx++;renderAll();}
+});
+Promise.all(MANIFEST.map(function(e){
+  return fetch(e.file).then(function(r){return r.text();}).then(function(t){ DECKS[e.id]=parseDeck(t,e); }).catch(function(err){ DECKS[e.id]={label:e.label,client:"(load failed)",artifact:"",stage:"",question:"",notes:String(err),slides:[{num:"-",title:"Could not load "+e.file,raw:[],body:[String(err)],isImg:false,note:null}]}; });
+})).then(function(){ renderAll(); });
+</script>
+</body>
+</html>

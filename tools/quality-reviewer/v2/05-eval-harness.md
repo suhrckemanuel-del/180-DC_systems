@@ -20,6 +20,22 @@ acceptance threshold in section E.
 
 ## B. The seven metrics
 
+**Warning added 2026-08-07. Precision and recall below are computed by a matcher that has
+been measured and does not work.** It decides whether a finding matches a gold issue by
+vocabulary overlap. On 2026-08-05, 178 gold-issue and finding pairs were adjudicated blind by
+two independent agents agreeing at kappa 0.971, and the matcher agreed with them at AUC 0.718:
+at its best possible cut point it classifies 88% of pairs correctly against 85% for a constant
+that ignores the input entirely. Precision at the re-fitted `T_HIT` is 46%. Full method in
+[21-scorer-refit-sprint.md](21-scorer-refit-sprint.md).
+
+Consequences for anyone using this harness. Precision, recall and anything derived from them
+carry error bars far wider than they have ever been reported, and no figure from them belongs
+in an external communication. The five metrics that do **not** route through the matcher
+(prioritization by rank, actionability, learning value, restraint against the noise budget,
+and safety) are unaffected. Safety in particular is a mechanical check against source text and
+it is the most reliable number in the table. Replacing the matcher is the current top priority
+([STATUS.md](STATUS.md)).
+
 Each is scored 0 to 3 per case (0 fail, 1 weak, 2 good, 3 strong) unless noted. Keep the
 scale coarse on purpose. Precision and recall are also tracked as raw counts.
 
@@ -82,6 +98,15 @@ with worked reviews (01, 03, 05), then on the full five once cases 02 and 04 hav
 
 Below the threshold, the fix is to the prompt or the rubric, then re-run the whole set.
 Never tune the reviewer to a single case, that is overfitting and it hides drift.
+
+**Note added 2026-08-07.** Criteria 2 and 6 are decided by the matcher, so this threshold
+cannot currently be evaluated honestly. Criteria 1, 4 and 5 can: readiness is an exact level
+match that never touches the matcher, restraint is counted against the noise budget, and
+safety is checked mechanically against source text. Two further points a reader of this
+section needs. First, criterion 1 is unreliable for a different reason: readiness returns
+different levels on byte-identical input ([18-evidence-base.md](18-evidence-base.md) A4), so a
+readiness match on one draw is one sample. Second, every metric produced before 2026-08-03 is
+a single draw. Future runs use N draws per case (A9).
 
 ## F. Worked expectation for the three sample reviews
 

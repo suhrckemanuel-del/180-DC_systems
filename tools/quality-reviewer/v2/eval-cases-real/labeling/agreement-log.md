@@ -1,8 +1,10 @@
-# Labeler agreement log
+# Gold log (single pass)
 
-One row per adjudicated case. This is the health metric for the gold itself. Stop rule
-per [PROTOCOL.md](PROTOCOL.md): a third or more of the set at two-plus levels apart or
-contested means fix the rubric, not the reviewer.
+One row per labeled case, tracking the gold as it is built and recording any optional
+expert spot-check divergence. Under the single-pass protocol there is no second labeler and
+so no inter-rater agreement column: the calibration round ([PROTOCOL.md](PROTOCOL.md) step
+1) is the rubric-health check, and the AI consistency check (step 4) is the per-case
+integrity check.
 
-| Case | Readiness A | Readiness B | Agreement (exact / 1 off / 2+ off) | Same must-catch (y/n) | Resolution | Notes |
+| Case | Readiness (gold) | Must-catch | Labeled by | Consistency check (clean / flags resolved) | Expert spot-check (if any) | Notes |
 |---|---|---|---|---|---|---|

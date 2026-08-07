@@ -1,5 +1,9 @@
 # Effectiveness review: v2 as a system (2026-07-03)
 
+<!-- check-docs: historical -->
+
+**Dated record, not a status report. A dated internal review. Its fitness verdict still stands. Most of its named gaps have since been measured.** For current state read [STATUS.md](STATUS.md).
+
 A critical functionality-and-effectiveness review of the v2 reviewer, written to be read
 without the session that produced it. It is deliberately not congratulatory. Where v2 is
 good it gets one line, the words go to the weaknesses.

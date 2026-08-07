@@ -9,6 +9,60 @@ Voice rules apply. No Oxford commas. No em or en dashes.
 
 ---
 
+## 0. Read this before anything below it
+
+**Written 2026-07-22. Corrected 2026-08-07. The body below is the paper as it was put to the
+board and it has been left in that shape on purpose, with dated corrections inserted where it
+is now wrong. It is not a current status report.** For current state read
+[STATUS.md](STATUS.md), and for what is actually established read
+[18-evidence-base.md](18-evidence-base.md).
+
+Four things changed after this paper was written and a board reader needs all four.
+
+**1. The work this paper asks for has been done.** Gold labeling ran, the stability
+measurement ran, and the reviewer has been run on real anonymised deliverables twice. Section
+A asks the board to approve a work package that no longer needs approving. Section E's "what
+is NOT done" table is largely out of date and is corrected in place below.
+
+**2. A stop condition in section I fired.** "Stability measurement shows the finding set or
+blocking rules swinging enough to flip readiness between runs" was named in advance as a
+pause. On 2026-08-03 the same deck, same prompt, byte-identical input returned R0, R0 and R2
+with blocking rules firing 1,4 then 1,2 then none
+([18-evidence-base.md](18-evidence-base.md) A4). It fired. What followed was not a pause but a
+design change: readiness is now human-set and AI-suggested, it never reaches a student, and it
+is not shipped as a verdict. That is a defensible answer to the condition and it is a
+different answer from the one the board was promised. Section I records this now.
+
+**3. Every performance number this project has ever published rests on a measuring instrument
+that has since been measured and does not work.** On 2026-08-05, 178 gold-issue and finding
+pairs were adjudicated blind by two independent agents who agreed at kappa 0.971. The matcher
+agreed with them at AUC 0.718. At its single best possible cut point it classifies 88% of
+pairs correctly, and calling every pair not-caught with no model at all gets 85%. **The whole
+discriminative power of the instrument is three points over a constant that ignores the
+input.** Precision at the re-fitted threshold is 46%, so more than half of what it calls a
+catch is not one. Full method in [21-scorer-refit-sprint.md](21-scorer-refit-sprint.md).
+
+The consequence for this document: **no recall, coverage or must-catch percentage anywhere in
+this project should be quoted to anyone outside it**, in this paper or in a successor. The
+numbers are not fabricated and the directions they show have survived re-scoring, but the
+error bars are far wider than they have ever been reported. The honest sentence is "we have
+not yet measured this reliably". The next build is a replacement matcher.
+
+This paper is fortunate here rather than careful: it was written before the real baseline ran,
+so it quotes no recall figure and there was none to correct. A successor written today would
+have quoted one.
+
+**4. Two claims in section D and section J are still overclaimed, and they were overclaimed
+when the board read them.** The adversarial audit in
+[16a-board-package-stress-test.md](16a-board-package-stress-test.md) found them on 2026-07-22
+and its replacement wordings were never folded back into this file. They are marked below.
+
+What has **not** changed: the product shape, the non-objectives, the sign-off gate, the
+confidentiality policy and the honest verdict that this is a lead companion rather than a
+student-facing tool. Sections B, C, F and the confidentiality risk stand as written.
+
+---
+
 ## A. The ask, up front
 
 **Decision requested.** Approve the pre-pilot work package: human gold labeling of the
@@ -27,6 +81,13 @@ Today there is none. The reviewer has never been run on a real deliverable.
 
 **What is NOT being asked.** Not a student-facing rollout. Not a pilot with live client
 projects. Not budget. Those decisions come after the baseline run produces evidence.
+
+> **Correction, 2026-08-07.** The whole of section A is now historical. The package was
+> executed: 11 golds labeled, 9 of them runnable, two baseline runs on real anonymised
+> decks (07-26 and 08-03) and a stability measurement. The reviewer has been run on real
+> deliverables. The ask no longer stands as an ask. What it did not unblock is the honest
+> number, for the reason in section 0 point 3: the run happened, the instrument that scores
+> it does not work, so the number is still owed.
 
 ---
 
@@ -112,6 +173,16 @@ confirmed the set green, but **no scoring artifact for that re-score exists in
 prose note, not on a recorded score. Re-scoring the post-fix set and committing the
 sheet is a small task and it should be done before this figure is quoted anywhere.
 
+> **Correction, 2026-08-07, on the two overclaims 16a caught.** The audit's replacement
+> wordings, never applied until now. First: "all five have live blind runs" should not imply
+> one prompt version across the set. Cases 01 to 04 ran under the revised prompt and case 05
+> under the revised prompt plus the later severity fix, so no single independent scoring pass
+> covers the green set. Second: the sentence below correctly records that the confirming
+> re-score has no artifact, and that gap was never closed. It should not be closed by finding
+> the sheet now. The synthetic five have been superseded as an evidence base by the nine real
+> gold-backed cases, and re-scoring them under a matcher known not to work would produce
+> another number nobody can use.
+
 **The real-deck case set, built. The gold labels are not.** The distinction is load
 bearing: what exists is 14 anonymised real deliverables ready to be labeled, not 14
 labeled cases. 181 past deliverable candidates triaged into a sealed
@@ -127,16 +198,24 @@ One fix was applied and logged. Files are `eval-cases-real/real-01` through `rea
 
 ## E. What is NOT done
 
-| Gap | State |
-|---|---|
-| Gold labels for the 14 real cases | None exist. Blind labeling has not started ([12-real-deck-intake.md](12-real-deck-intake.md) E2 gate 5). |
-| Any run on a real deck | Zero. Blocked by design until adjudicated gold exists (gate 6). |
-| Expert calibration session | Not held. No ex-consultant is lined up ([09-roadmap.md](09-roadmap.md) phase 2 and open question 2). |
-| Project-lead pilot | Not started ([09-roadmap.md](09-roadmap.md) phase 3). |
-| Run-to-run stability | Unmeasured. One run per case per prompt version ([progress.md](progress.md) Next actions item 1). |
-| Full-set re-run under the revised prompt | Cases 01 to 04 were not re-run. Their green rests on a static regression argument, not a fresh run ([progress.md](progress.md) Green caveats). |
-| Inter-rater check on the synthetic gold | Required by rubric section F. Does not exist ([effectiveness-review-2026-07-03.md](effectiveness-review-2026-07-03.md) section 4). |
-| Renderer for the v2 output | Not built. Phase 5, only if it earns its place. |
+**Corrected 2026-08-07.** The middle column is the state as at 2026-07-22, kept so the board
+can see what it was told. The right column is the state today. Read the right column.
+
+| Gap | State at 2026-07-22 | State at 2026-08-07 |
+|---|---|---|
+| Gold labels for the 14 real cases | None exist. Blind labeling has not started ([12-real-deck-intake.md](12-real-deck-intake.md) E2 gate 5). | **Done, and smaller than planned.** 11 golds written. `check-gold.js` rejects real-10 and real-11 as internally contradictory, so the usable set is **9**, not 14. real-06, real-07 and real-09 have no gold and are out of scope. |
+| Any run on a real deck | Zero. Blocked by design until adjudicated gold exists (gate 6). | **Done twice**, 07-26 and 08-03, nine cases each, blind. The gate was honoured. |
+| Expert calibration session | Not held. No ex-consultant is lined up ([09-roadmap.md](09-roadmap.md) phase 2 and open question 2). | **Partly.** An ex-McKinsey consultant was consulted on 2026-08-05 and his answer drove a prompt change ([19-prompt-change-2026-08-05.md](19-prompt-change-2026-08-05.md)). He has **not** reviewed the tool's actual output against a real deck, which is the calibration this row meant. Still open. |
+| Project-lead pilot | Not started ([09-roadmap.md](09-roadmap.md) phase 3). | **Still not started**, and now gated on the matcher rather than on the baseline. |
+| Run-to-run stability | Unmeasured. One run per case per prompt version ([progress.md](progress.md) Next actions item 1). | **Measured 2026-08-03, and it failed.** Findings repeat, the readiness verdict does not: R0, R0, R2 on byte-identical input ([18-evidence-base.md](18-evidence-base.md) A3 and A4). This fired a section I stop condition. See section 0 point 2. |
+| Full-set re-run under the revised prompt | Cases 01 to 04 were not re-run. Their green rests on a static regression argument, not a fresh run ([progress.md](progress.md) Green caveats). | Unchanged and now moot. The synthetic five are no longer the evidence base. |
+| Inter-rater check on the synthetic gold | Required by rubric section F. Does not exist ([effectiveness-review-2026-07-03.md](effectiveness-review-2026-07-03.md) section 4). | Still does not exist for the synthetic gold. The real golds are single-labeler, which is the same hole in a more load-bearing place ([18-evidence-base.md](18-evidence-base.md) section B). |
+| Renderer for the v2 output | Not built. Phase 5, only if it earns its place. | **Built and live** at https://180dc-reviewer.pages.dev since 2026-08-05. A lead can triage findings, set their own readiness level and release a note. |
+
+**One gap this table did not have, added 2026-08-07.** The scoring instrument. It was assumed
+sound throughout and it is not ([21-scorer-refit-sprint.md](21-scorer-refit-sprint.md)). It is
+now the only thing on the critical path, and it invalidates the precision of every number in
+the rows above rather than their direction.
 
 ---
 
@@ -197,6 +276,11 @@ lead sign-off gate is designed in ([07-workflow.md](07-workflow.md) section C).
 *Residual.* This is the verdict as of 2026-07-03 and nothing since has changed it. The
 verdict stands until the stability measurement and the real-deck baseline exist.
 
+> **Update, 2026-08-07.** Both now exist and the verdict is unchanged, on stronger evidence
+> than it had. The tool is a lead companion. What the live product adds is that the
+> separation is now enforced rather than promised: the student view shows only the findings a
+> named lead chose to keep, and no readiness level at all.
+
 **2. Run-to-run stability is unmeasured.**
 The same deck may not get the same review twice and nobody has measured how much it
 varies. There is exactly one run per case per prompt version, so finding sets,
@@ -211,6 +295,23 @@ reported as a number.
 *Residual.* Everything. "Readiness matched gold on 5 of 5" is the most robust output by
 construction, because the synthetic cases are unambiguous. It is masking the instability
 underneath it and should not be quoted as a stability result.
+
+> **Update, 2026-08-07. This risk was measured and it landed on the bad side.** The planned
+> fix ran on 2026-08-03. The same deck, same prompt, byte-identical input returned R0, R0 and
+> R2, with blocking rules firing 1,4 then 1,2 then none. Findings, by contrast, repeat well:
+> one case repeated four of its five across all three draws. The reviewer reads consistently
+> and grades inconsistently ([18-evidence-base.md](18-evidence-base.md) A3 and A4).
+>
+> This is the stop condition in section I, and it fired. The response was a design change
+> rather than a pause: readiness is now human-set with the AI's answer shown as a suggestion
+> that is never preselected, and it never reaches a student. The board should know that a
+> named stop condition was met and answered by changing the product rather than by stopping,
+> because that is a substitution the board did not agree to in advance.
+>
+> One further consequence the paragraph above did not anticipate: every metric produced
+> before 2026-08-03 is a single draw from a distribution now known to span two readiness
+> levels. Single-draw evaluation is invalid, and every future experiment costs roughly three
+> times as much ([18-evidence-base.md](18-evidence-base.md) A9).
 
 **3. False positives waste team time. False negatives create false confidence.**
 The designed test for false positives is case 05, the strong deck, and the tool failed
@@ -259,6 +360,14 @@ extraction noise ([12-real-deck-intake.md](12-real-deck-intake.md) section D).
 *Residual.* The real set has no labels and has never been run. Until it is, every
 performance claim about this tool comes from the smoke test.
 
+> **Update, 2026-08-07.** The real set has labels for 9 cases and has been run twice. The
+> smoke test is no longer the source of performance claims. The residual has moved rather
+> than closed: performance claims now come from real cases scored by an instrument with three
+> points of discriminative power over a constant (section 0 point 3). Two properties survived
+> the move intact and are the strongest things this tool has: no blocking rule has ever been
+> missed across roughly thirty reviews, and no fabricated quote has ever survived to a scored
+> result, checked mechanically. Neither depends on the matcher.
+
 **6. Over-reliance and deskilling.**
 Consultants stop thinking and copy directions. Red team failure mode 11, Medium
 likelihood and Medium severity ([08-red-team.md](08-red-team.md)).
@@ -300,20 +409,70 @@ Named in advance so the exit is not a judgment call made under sunk cost. The fi
 three are cross-cutting and pull the tool from any real use immediately
 ([08-red-team.md](08-red-team.md)).
 
-| Condition | Action |
-|---|---|
-| Any real client identifier found in the tool or the repo | Pull and scrub immediately. |
-| Any judgment of a named individual in a review | Automatic case fail and a prompt fix before further use. |
-| Any invented source or client fact in a review | Automatic case fail. |
-| Labeler readiness disagreement of two levels or more, or contested, on a third or more of the 14 cases | Stop labeling. The rubric cannot carry two trained readers to the same answer, so it cannot carry the reviewer ([12-real-deck-intake.md](12-real-deck-intake.md) kill criterion). |
-| Stability measurement shows the finding set or blocking rules swinging enough to flip readiness between runs | Pause. A tool that changes its verdict on re-run has no authority with a team. |
-| Systematic expert disagreement on priorities across the samples | Do not pilot until calibrated ([08-red-team.md](08-red-team.md) mode 13). |
-| Baseline run on real cases falls materially short of the acceptance threshold in [05-eval-harness.md](05-eval-harness.md) section E | Stop, revise heavily or kill. The decision after the baseline is explicitly one of continue, revise heavily or stop. |
-| Leads report the false-positive rate is not acceptable in a pilot | Pause the pilot ([09-roadmap.md](09-roadmap.md) phase 3 exit). |
+**Status column added 2026-08-07.** A stop condition that fires and is not recorded is worse
+than no stop condition, because the exit it was meant to force becomes a judgment call after
+all. One has fired.
+
+| Condition | Action | Status |
+|---|---|---|
+| Any real client identifier found in the tool or the repo | Pull and scrub immediately. | Not fired. |
+| Any judgment of a named individual in a review | Automatic case fail and a prompt fix before further use. | Not fired. |
+| Any invented source or client fact in a review | Automatic case fail. | Not fired, and checked mechanically on every review since. |
+| Labeler readiness disagreement of two levels or more, or contested, on a third or more of the 14 cases | Stop labeling. The rubric cannot carry two trained readers to the same answer, so it cannot carry the reviewer ([12-real-deck-intake.md](12-real-deck-intake.md) kill criterion). | Not fired as specified. Labeling ended up single-labeler, so the condition could not be tested. That is a hole, not a pass ([18-evidence-base.md](18-evidence-base.md) section B). |
+| Stability measurement shows the finding set or blocking rules swinging enough to flip readiness between runs | Pause. A tool that changes its verdict on re-run has no authority with a team. | **FIRED, 2026-08-03.** R0, R0, R2 on byte-identical input. Not paused. Answered instead by making readiness human-set and keeping it away from students. See section 0 point 2 and risk 2. |
+| Systematic expert disagreement on priorities across the samples | Do not pilot until calibrated ([08-red-team.md](08-red-team.md) mode 13). | Untested. No expert has reviewed the tool's output on a real deck. |
+| Baseline run on real cases falls materially short of the acceptance threshold in [05-eval-harness.md](05-eval-harness.md) section E | Stop, revise heavily or kill. The decision after the baseline is explicitly one of continue, revise heavily or stop. | The call was taken on 2026-08-05: **iterate**. It rests on numbers the scorer cannot support, so it is a decision made on a broken measurement and should be revisited once the matcher lands. |
+| Leads report the false-positive rate is not acceptable in a pilot | Pause the pilot ([09-roadmap.md](09-roadmap.md) phase 3 exit). | No pilot has run. |
+
+**Missing stop condition, named 2026-07-22 by [16a](16a-board-package-stress-test.md) and
+added here 2026-08-07.** There was no stop condition for a miss on real work. There is now,
+carried in [STATUS.md](STATUS.md): a confirmed case of the reviewer missing a real blocking
+problem pauses lead-companion use pending review. It matters more than any over-flagging
+result, because it breaks the asymmetry that makes an imperfect tool worth using at all.
 
 ---
 
 ## J. One-slide summary
+
+**Two slides, as of 2026-08-07.** The first is the slide the board saw on 2026-07-22, kept
+because a paper that quietly rewrites its own summary teaches nobody anything. The second is
+the slide today. If only one gets read, read the second.
+
+### J2. The slide today, 2026-08-07
+
+> **AI Quality Reviewer v2, status**
+>
+> **What.** Unchanged. A reviewer that finds the top 3 to 5 risks in a student deliverable
+> before it reaches a nonprofit client. It never approves anything. A named project lead signs
+> off. It does not write slides and does not evaluate members.
+>
+> **Live.** https://180dc-reviewer.pages.dev since 2026-08-05. A lead triages each finding,
+> sets their own readiness level and releases a note. About four minutes on a five-finding
+> deck. That is a measured time, not a measured saving: nobody has measured what this costs a
+> lead today.
+>
+> **What we trust.** The findings, as a list of things worth looking at. No blocking rule
+> missed across roughly thirty reviews. No fabricated quote has ever survived to a scored
+> result, checked mechanically. Every quote is a verified verbatim substring of the input.
+>
+> **What we do not trust.** The readiness level. It returned R0 and R2 on byte-identical
+> input, so it is a suggestion a human overrides and it never reaches a student.
+>
+> **The number we owe you, and do not have.** No recall, coverage or must-catch percentage
+> from this project should be quoted anywhere outside it. On 2026-08-05 we measured the
+> instrument that produces those numbers: at its best possible cut point it is three
+> percentage points better than a constant that ignores the input entirely, and 46% of what
+> it calls a catch is not one. The findings are not disproved by this. The percentages are
+> unusable. The next build is the replacement.
+>
+> **Stop condition fired.** Readiness flipping between runs was named in advance as a pause.
+> It happened on 2026-08-03. We did not pause. We made readiness human-set and kept it away
+> from students. The board should decide whether it accepts that substitution.
+>
+> **Ask.** Nothing to approve. Next is a replacement matcher, then a re-run, then a small
+> pilot. No pilot until the measurement works.
+
+### J1. The slide as put to the board, 2026-07-22
 
 > **AI Quality Reviewer v2, board decision**
 >
