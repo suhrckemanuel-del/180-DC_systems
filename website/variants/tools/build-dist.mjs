@@ -46,6 +46,13 @@ for (const v of variants) {
   }
 }
 
+// Standalone case-study viewer. This is intentionally separate from the design
+// variants so a selected-deliverable gallery can be linked from any client page.
+const caseStudiesSrc = join(root, "case-studies");
+if (existsSync(caseStudiesSrc)) {
+  cpSync(caseStudiesSrc, join(dist, "case-studies"), { recursive: true });
+}
+
 // gallery
 const gallerySrc = join(root, "gallery");
 if (existsSync(gallerySrc)) {

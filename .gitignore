@@ -85,3 +85,10 @@ website/variants/dist/
 
 # Cloudflare Wrangler build/deploy cache. Generated, machine-local.
 .wrangler/
+
+# Portfolio workbench: raw client material, rendered inspection images and
+# selection records all carry client names, visuals or unapproved claims.
+# Only the public-safe operating documents in portfolio-workbench/ are tracked.
+portfolio-workbench/private/
+portfolio-workbench/qa/
+portfolio-workbench/candidates/

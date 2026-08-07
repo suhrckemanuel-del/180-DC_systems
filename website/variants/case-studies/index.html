@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Selected deliverables | 180 Degrees Consulting Delft-Rotterdam</title>
+  <meta name="description" content="A selection of 180 Degrees Consulting Delft-Rotterdam deliverables, presented as selected key slides.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#cases">Skip to selected deliverables</a>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <a class="back-link" href="/v15-vantage/for-clients">Back to client page</a>
+        <p class="eyebrow">OUR WORK</p>
+        <h1>Selected deliverables,<br><em>made explorable.</em></h1>
+        <p class="lede">Each case opens a focused selection of the original project slides: the question, the method, the analysis and the recommendation or action plan.</p>
+      </div>
+    </section>
+
+    <section class="gallery" id="cases" aria-labelledby="gallery-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Five engagements</p>
+            <h2 id="gallery-title">Open a case to see the work.</h2>
+          </div>
+          <p>Three to four key pages per case. This is a selected view, not a full project archive.</p>
+        </div>
+        <div class="case-grid" id="case-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="viewer" id="viewer" aria-labelledby="viewer-title">
+    <div class="viewer-shell">
+      <header class="viewer-head">
+        <div>
+          <p class="viewer-client" id="viewer-client"></p>
+          <h2 id="viewer-title"></h2>
+        </div>
+        <button class="icon-button" type="button" data-close aria-label="Close case viewer">Close</button>
+      </header>
+      <div class="viewer-layout">
+        <aside class="viewer-aside">
+          <p class="viewer-summary" id="viewer-summary"></p>
+          <ol class="slide-list" id="slide-list" aria-label="Selected slides"></ol>
+        </aside>
+        <section class="slide-stage" aria-live="polite">
+          <img id="stage-image" alt="">
+          <div class="stage-footer">
+            <p id="stage-label"></p>
+            <div class="stage-controls">
+              <button class="stage-button" type="button" data-previous>Previous</button>
+              <span id="stage-count"></span>
+              <button class="stage-button" type="button" data-next>Next</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
