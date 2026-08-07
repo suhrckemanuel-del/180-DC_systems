@@ -979,6 +979,32 @@ a { color: var(--green-deep); }
 .field textarea { min-height: 110px; resize: vertical; }
 .form-note { font-size: 0.82rem; color: var(--muted); margin: 0; }
 
+/* The client page has no form. The route to the branch is an email, so the
+   right-hand column names the people behind that address instead of asking the
+   visitor to fill anything in. It borrows .intake-form's surface deliberately,
+   so it reads as the same piece of furniture rather than a bolted-on box. */
+.contact-panel {
+  background: #fff; border: 1px solid var(--line); border-radius: 14px;
+  padding: 1.8rem; display: grid; gap: 1rem; align-content: start;
+}
+.contact-panel h3 { font-size: 1.05rem; margin: 0; }
+.contact-panel p { font-size: 0.92rem; color: var(--muted); margin: 0; }
+
+/* A list, not a card grid: four people with the same title do not need four
+   identical boxes, and the visitor is explicitly told not to choose between
+   them. The rule between rows carries the separation instead. */
+.people-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.people-list li {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  gap: 0.15rem 0.7rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--line);
+}
+.people-list li:last-child { border-bottom: 1px solid var(--line); }
+.people-list__name { font-weight: 600; font-size: 0.96rem; color: var(--ink); }
+.people-list__role { font-size: 0.82rem; color: var(--muted); }
+.contact-panel .button { justify-self: start; }
+
 .cta-panel { display: grid; grid-template-columns: 1.6fr auto; gap: 2.5rem; align-items: center; }
 .testimonial blockquote { margin: 0 0 0.9rem; }
 .testimonial footer { font-size: 0.82rem; color: var(--muted); }
