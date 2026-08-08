@@ -69,3 +69,9 @@ website/variants/tools/raw-video/
 # leading underscore means "scratch, delete when done" — this keeps a
 # half-finished probe from being committed by an `git add -A`.
 website/variants/tools/_*
+
+# Candidate case-study slide renders. These are real client deliverable pages
+# (client names, client criticism, named third parties) and NONE has a completed
+# PUBLIC-OK record. Local-only until the publication gate is cleared, and kept
+# outside website/variants/v*/ so build-dist.mjs cannot sweep them into a deploy.
+website/variants/_case-candidates/
