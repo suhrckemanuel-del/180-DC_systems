@@ -1080,6 +1080,29 @@ html:not(.no-js) .case-details { display: none; }
 .because li { font-size: 0.88rem; color: var(--muted); }
 .because strong { color: var(--green-deep); font-weight: 700; }
 
+/* An original deliverable page, shown as-is. Kept visually distinct from the
+   rebuilt panels so a reader can tell which treatment they are looking at, and
+   given an escape hatch to full size because a page designed for A4 will not be
+   readable inline on a phone no matter what we do to the container. */
+.slide-figure { margin: 0 0 1.9rem; }
+.slide-figure figcaption {
+  font-size: 0.76rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600; margin-bottom: 0.7rem;
+}
+.slide-figure img {
+  width: 100%; height: auto; display: block;
+  border: 1px solid var(--line); border-radius: 10px; background: #fff;
+}
+.slide-figure__foot {
+  display: flex; flex-wrap: wrap; gap: 0.55rem 0.9rem; align-items: center;
+  margin-top: 0.6rem; font-size: 0.8rem; color: var(--muted);
+}
+.slide-figure__full {
+  font-weight: 600; color: var(--green-deep); text-decoration: none;
+  border: 1px solid var(--line); border-radius: 999px; padding: 0.28rem 0.75rem;
+}
+.slide-figure__full:hover { border-color: var(--green-deep); }
+
 .exhibit { margin: 0 0 1.9rem; }
 .exhibit figcaption {
   font-size: 0.76rem; letter-spacing: 0.06em; text-transform: uppercase;
