@@ -1024,7 +1024,7 @@ a { color: var(--green-deep); }
    template. */
 .case-grid {
   list-style: none; margin: 0; padding: 0;
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(288px, 100%), 1fr));
   gap: 1.1rem;
 }
 .case-card {
@@ -1122,7 +1122,7 @@ html:not(.no-js) .case-details { display: none; }
 }
 .exhibit__note { font-size: 0.83rem; color: var(--muted); margin: 0.75rem 0 0; max-width: 62ch; }
 
-.lens-row { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.6rem; }
+.lens-row { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: 0.6rem; }
 .lens-row li { display: grid; gap: 0.25rem; align-content: start; padding: 0.85rem; background: var(--paper); border-radius: 11px; }
 .lens-row__n { font-size: 0.7rem; font-weight: 700; color: var(--green-deep); letter-spacing: 0.08em; }
 .lens-row strong { font-size: 0.94rem; }
@@ -1151,7 +1151,7 @@ html:not(.no-js) .case-details { display: none; }
 .pillar-set strong { font-size: 0.98rem; }
 .pillar-set li > span:last-child { font-size: 0.87rem; color: var(--muted); line-height: 1.5; }
 
-.phase-track { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.6rem; }
+.phase-track { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); gap: 0.6rem; }
 .phase-track li { display: grid; gap: 0.22rem; align-content: start; padding: 0.9rem; border-top: 2px solid var(--green); background: var(--paper); border-radius: 0 0 11px 11px; }
 .phase-track__k { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--green-deep); }
 .phase-track strong { font-size: 0.95rem; }
@@ -1373,3 +1373,43 @@ html:not(.no-js) .case-details { display: none; }
   .liquid-glass { border: 1px solid ButtonBorder; }
   .hero__blur { display: none; }
 }
+
+/* ------------------------------------------------------ applying (students) */
+/* Two columns that answer the two questions an applicant actually has: what do
+   I have to hand over, and what happens to me afterwards. The selection stages
+   are published rather than left to whoever knows a board member, which is the
+   fairness argument as much as the reassurance one. */
+.apply-layout {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 2.4rem 3rem; margin-top: 2.4rem;
+}
+.apply-h { font-size: 1.1rem; margin: 0 0 0.5rem; }
+.apply-note { font-size: 0.9rem; color: var(--muted); margin: 0 0 1.1rem; max-width: 52ch; }
+.apply-note:last-child { margin-bottom: 0; margin-top: 1.1rem; }
+
+.need-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
+.need-list li {
+  display: grid; gap: 0.12rem;
+  padding: 0.8rem 1rem; background: #fff;
+  border: 1px solid var(--line); border-radius: 11px;
+}
+.need-list strong { font-size: 0.94rem; }
+.need-list span { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+
+/* Numbered by position rather than by a hand-typed digit, so inserting or
+   removing a stage cannot leave the sequence lying about itself. */
+.stage-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; counter-reset: stage; }
+.stage-list li {
+  display: grid; gap: 0.12rem;
+  padding: 0.85rem 1rem 0.85rem 1.1rem;
+  background: #fff; border: 1px solid var(--line); border-radius: 11px;
+  border-left: 1px solid var(--line);
+}
+.stage-list__k {
+  font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+  font-weight: 700; color: var(--green-deep);
+}
+.stage-list strong { font-size: 0.96rem; }
+.stage-list li > span:last-child { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+
+.apply-cta { margin: 2.2rem 0 0; }
