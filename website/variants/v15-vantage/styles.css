@@ -943,6 +943,7 @@ a { color: var(--green-deep); }
 
 .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.15rem; }
 .person { text-align: center; }
+.person__known { font-weight: 400; color: var(--muted); }
 .person h3 { font-size: 0.97rem; margin-bottom: 0.25rem; }
 .person p { font-size: 0.82rem; color: var(--muted); }
 .person a { font-size: 0.8rem; word-break: break-word; }
@@ -1001,6 +1002,8 @@ a { color: var(--green-deep); }
   border-top: 1px solid var(--line);
 }
 .people-list li:last-child { border-bottom: 1px solid var(--line); }
+a.people-list__name { color: var(--green-deep); text-decoration: none; }
+a.people-list__name:hover { text-decoration: underline; }
 .people-list__name { font-weight: 600; font-size: 0.96rem; color: var(--ink); }
 .people-list__role { font-size: 0.82rem; color: var(--muted); }
 .contact-panel .button { justify-self: start; }
