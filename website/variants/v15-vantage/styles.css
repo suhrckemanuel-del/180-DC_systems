@@ -537,10 +537,17 @@ a { color: var(--green-deep); }
   position: absolute;
   inset: 0;
   z-index: 2;
-  -webkit-backdrop-filter: blur(26px);
-  backdrop-filter: blur(26px);
-  -webkit-mask-image: linear-gradient(to top, black 0%, transparent 45%);
-  mask-image: linear-gradient(to top, black 0%, transparent 45%);
+  -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
+  /* The ramp used to fade out at 45% from the bottom, which left the lede in
+     the weakest part of it: only 20 to 40 per cent of the blur reached the line
+     that sits on the lit quayside, so the copy passed contrast while still
+     reading as cluttered. Full blur now holds to 42% and does not clear until
+     66%, which covers everything from the lede down. The top third, where the
+     sky, the skyline tops and the bridge are, stays completely sharp: this is
+     still blur, never a scrim, and the photograph is not tinted anywhere. */
+  -webkit-mask-image: linear-gradient(to top, black 0%, black 42%, transparent 66%);
+  mask-image: linear-gradient(to top, black 0%, black 42%, transparent 66%);
   pointer-events: none;
 }
 
@@ -996,16 +1003,18 @@ a { color: var(--green-deep); }
    them. The rule between rows carries the separation instead. */
 .people-list { list-style: none; margin: 0; padding: 0; display: grid; }
 .people-list li {
-  display: flex; flex-wrap: wrap; align-items: baseline;
-  gap: 0.15rem 0.7rem;
-  padding: 0.6rem 0;
+  display: grid; gap: 0.1rem;
+  padding: 0.62rem 0;
   border-top: 1px solid var(--line);
 }
 .people-list li:last-child { border-bottom: 1px solid var(--line); }
-a.people-list__name { color: var(--green-deep); text-decoration: none; }
-a.people-list__name:hover { text-decoration: underline; }
-.people-list__name { font-weight: 600; font-size: 0.96rem; color: var(--ink); }
+.people-list__name { font-weight: 600; font-size: 0.95rem; color: var(--ink); }
+/* The address is shown as text, not hidden behind the name. Someone who wants
+   to copy it into their own mail client should not have to hover to find it. */
+.people-list__mail { font-size: 0.86rem; color: var(--green-deep); text-decoration: none; word-break: break-word; }
+.people-list__mail:hover { text-decoration: underline; }
 .people-list__role { font-size: 0.82rem; color: var(--muted); }
+.people-list__all { font-size: 0.86rem; color: var(--muted); margin: 0; }
 .contact-panel .button { justify-self: start; }
 
 /* ============================================================ case exhibits */
