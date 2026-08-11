@@ -1458,3 +1458,4 @@ html:not(.no-js) .case-details { display: none; }
   padding-top: 1.4rem; border-top: 1px solid var(--line);
 }
 .orig-note { font-size: 0.86rem; color: var(--muted); margin: 0 0 1.3rem; max-width: 58ch; }
+.nowrap { white-space: nowrap; }
