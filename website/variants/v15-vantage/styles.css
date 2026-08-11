@@ -1429,3 +1429,12 @@ html:not(.no-js) .case-details { display: none; }
 .stage-list li > span:last-child { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
 
 .apply-cta { margin: 2.2rem 0 0; }
+
+/* Divider between the rebuilt exhibit and the original deliverable pages, so a
+   reader is never unsure which one they are looking at. */
+.orig-head {
+  font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+  font-weight: 700; color: var(--ink); margin: 2.4rem 0 0.3rem;
+  padding-top: 1.4rem; border-top: 1px solid var(--line);
+}
+.orig-note { font-size: 0.86rem; color: var(--muted); margin: 0 0 1.3rem; max-width: 58ch; }
