@@ -230,9 +230,23 @@
           </div>
         </div>
 
-        <p class="apply-cta">
-          <a class="button button--deep" href="mailto:delft.rotterdam@180dc.org?subject=Student%20recruitment">Ask about recruitment</a>
-        </p>
+        <div class="apply-cta">
+          <!-- The application form exists but does not open until September.
+               A link would be a lie and a greyed-out button tells you nothing,
+               so this is a <details>: clicking it says why. Native element, so
+               it works with JavaScript off, is keyboard operable and announces
+               its own expanded state without any script. When the window opens
+               this becomes an ordinary link to the form. -->
+          <details class="gate">
+            <summary class="button button--deep">Apply for the next cycle</summary>
+            <div class="gate__body">
+              <p><strong>Applications open in September.</strong> The form is written and waiting; we are not collecting applications before the window opens, because an application sent in August would sit unread for a month.</p>
+              <p>Cycle 1 recruits in September and runs October to January. Cycle 2 recruits in January or February and runs March to June.</p>
+              <p><a href="mailto:delft.rotterdam@180dc.org?subject=Tell%20me%20when%20recruitment%20opens&amp;body=Please%20let%20me%20know%20when%20applications%20open.%0A%0AName%3A%20%0AUniversity%3A%20%0AProgramme%3A%20%0A">Ask us to tell you when it opens</a> and we will email you on the day.</p>
+            </div>
+          </details>
+          <a class="button button--outline" href="mailto:delft.rotterdam@180dc.org?subject=Student%20recruitment">Ask about recruitment</a>
+        </div>
       </div>
     </section>
 

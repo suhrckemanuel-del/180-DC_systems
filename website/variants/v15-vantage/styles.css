@@ -1428,7 +1428,27 @@ html:not(.no-js) .case-details { display: none; }
 .stage-list strong { font-size: 0.96rem; }
 .stage-list li > span:last-child { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
 
-.apply-cta { margin: 2.2rem 0 0; }
+.apply-cta { margin: 2.2rem 0 0; display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: start; }
+
+/* A control that is honest about not being ready. <summary> is a button here,
+   so the marker has to go: ::-webkit-details-marker for Safari, list-style for
+   everyone else. */
+.gate { max-width: 46rem; }
+.gate summary { list-style: none; cursor: pointer; user-select: none; }
+.gate summary::-webkit-details-marker { display: none; }
+.gate summary::after {
+  content: ""; width: 8px; height: 8px; margin-left: 0.15rem;
+  border-right: 1.8px solid currentColor; border-bottom: 1.8px solid currentColor;
+  transform: rotate(45deg) translate(-2px, -2px);
+  transition: transform 0.25s var(--ease-out);
+}
+.gate[open] summary::after { transform: rotate(-135deg) translate(-1px, -1px); }
+.gate__body {
+  margin-top: 0.9rem; padding: 1.1rem 1.3rem;
+  background: var(--paper-2); border-radius: 12px;
+}
+.gate__body p { font-size: 0.9rem; margin: 0 0 0.7rem; max-width: 60ch; }
+.gate__body p:last-child { margin-bottom: 0; }
 
 /* Divider between the rebuilt exhibit and the original deliverable pages, so a
    reader is never unsure which one they are looking at. */
