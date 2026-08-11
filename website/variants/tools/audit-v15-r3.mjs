@@ -143,7 +143,12 @@ console.log("\n=== content parity ===");
   // for-clients dropped from 3 to 2 when the demo intake form was removed. That
   // placeholder disclosed a form that did not submit anywhere; there is no form
   // now, so there is nothing left to disclose. Email was always the real route.
-  const expectPlaceholders = { index: 5, "for-clients": 2, mission: 2, "for-students": 5, guide: 1 };
+  //
+  // for-students dropped from 5 to 3 when the member-stories section was cut.
+  // Two of those placeholders were reserved testimonial cards. Reserving space
+  // for quotes that nobody has offered is not the same promise as reserving
+  // space for case studies that exist and await consent, and the owner cut it.
+  const expectPlaceholders = { index: 5, "for-clients": 2, mission: 2, "for-students": 3, guide: 1 };
   for (const p of PAGES) {
     await page.goto(url(p), { waitUntil: "networkidle" });
     const n = await page.evaluate(() => document.querySelectorAll(".placeholder").length);

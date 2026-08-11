@@ -537,17 +537,18 @@ a { color: var(--green-deep); }
   position: absolute;
   inset: 0;
   z-index: 2;
-  -webkit-backdrop-filter: blur(30px);
-  backdrop-filter: blur(30px);
-  /* The ramp used to fade out at 45% from the bottom, which left the lede in
-     the weakest part of it: only 20 to 40 per cent of the blur reached the line
-     that sits on the lit quayside, so the copy passed contrast while still
-     reading as cluttered. Full blur now holds to 42% and does not clear until
-     66%, which covers everything from the lede down. The top third, where the
-     sky, the skyline tops and the bridge are, stays completely sharp: this is
-     still blur, never a scrim, and the photograph is not tinted anywhere. */
-  -webkit-mask-image: linear-gradient(to top, black 0%, black 42%, transparent 66%);
-  mask-image: linear-gradient(to top, black 0%, black 42%, transparent 66%);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  /* Held deliberately low. An earlier pass pushed full blur to 42% and cleared
+     at 66% to calm the lede, which worked on the numbers and lost the
+     photograph: two thirds of the frame went soft and the city stopped being
+     legible as a place. The frame is what the hero is for. Full blur now stops
+     at 14% and clears by 38%, so it sits under the controls and the bottom of
+     the copy and nothing else. The lede is carried by its own text-shadow and
+     by choosing frames that are dark where the copy lands, not by softening the
+     picture until the problem goes away. */
+  -webkit-mask-image: linear-gradient(to top, black 0%, black 14%, transparent 38%);
+  mask-image: linear-gradient(to top, black 0%, black 14%, transparent 38%);
   pointer-events: none;
 }
 
@@ -617,7 +618,15 @@ a { color: var(--green-deep); }
 }
 .btn--solid { background: #fff; color: #0d1210; }
 .btn--solid:hover { background: #eef2ea; transform: translateY(-1px); }
-.btn--glass { color: #fff; }
+/* The secondary hero action used to be a dark glass pill, which went muddy
+   against a night frame and read as disabled rather than secondary. It is now
+   the same white pill outlined instead of filled: unmistakably the same family
+   as the primary, still clearly second. */
+.btn--glass {
+  color: #fff;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.85);
+}
+.btn--glass:hover { background: rgba(255, 255, 255, 0.16); transform: translateY(-1px); }
 
 /* Hero-scoped legibility floor. The reusable .liquid-glass fill is
    rgba(255,255,255,0.01) by design, which reads as nothing when the frame
@@ -926,9 +935,16 @@ a { color: var(--green-deep); }
   transition: transform 0.25s var(--ease-out), background 0.25s var(--ease-out);
   border: none; cursor: pointer;
 }
-.button--deep { background: var(--green-deep); color: #fff; }
-.button--deep:hover { background: var(--green-darkest); transform: translateY(-1px); }
-.button--outline { border: 1px solid var(--line); color: var(--ink); background: #fff; }
+/* Matches the hero's white pill so a visitor meets one button shape across the
+   site. On the near-white page background a plain white fill would vanish, so
+   the definition comes from a 1.5px ink ring rather than from a colour fill:
+   still a white button, still obviously a button. */
+.button--deep {
+  background: #fff; color: var(--ink);
+  box-shadow: inset 0 0 0 1.5px rgba(14, 20, 17, 0.85);
+}
+.button--deep:hover { background: var(--paper-2); transform: translateY(-1px); }
+.button--outline { color: var(--ink); background: #fff; box-shadow: inset 0 0 0 1px var(--line); }
 .button--outline:hover { background: var(--paper-2); }
 .button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 .button-row { display: flex; flex-wrap: wrap; gap: 0.7rem; }
