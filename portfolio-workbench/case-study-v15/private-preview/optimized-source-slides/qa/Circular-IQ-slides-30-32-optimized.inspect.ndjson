@@ -1,0 +1,71 @@
+{"kind":"deck","id":"pr/8xjy5l","name":"Deck"}
+{"kind":"layout","layoutId":"/ppt/slideMasters/slideMaster1.xml","name":"","type":"master"}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout1.xml","name":"Blank Page","type":"blank"}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout2.xml","name":"Title & Content","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout3.xml","name":"Section Break Page","placeholders":[{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout4.xml","name":"Portfolio Left Half Page Picture","placeholders":[{"name":"picture","type":"picture"},{"name":"body","type":"body"},{"name":"body","type":"body"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout5.xml","name":"Our Creative Force 2","placeholders":[{"name":"picture","type":"picture"},{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout6.xml","name":"Simple Portfolio Single Show","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout7.xml","name":"Mini Portfolio in Browser","placeholders":[{"name":"picture","type":"picture"},{"name":"body","type":"body"},{"name":"body","type":"body"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout8.xml","name":"Full Portfolio in Browser","placeholders":[{"name":"picture","type":"picture"},{"name":"body","type":"body"},{"name":"body","type":"body"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout9.xml","name":"Various Project Show Case","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout10.xml","name":"Laptop Portfolio Showcase","placeholders":[{"name":"picture","type":"picture"},{"name":"body","type":"body"},{"name":"body","type":"body"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout11.xml","name":"LCD Portfolio Showcase","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout12.xml","name":"iPhone Portfolio Showcase at Center","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout13.xml","name":"iPad Portfolio Showcase at right","placeholders":[{"name":"picture","type":"picture"},{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout14.xml","name":"iPhone Portfolio Showcase at Left","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout15.xml","name":"Featured Services Page","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout16.xml","name":"Content"}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout17.xml","name":"Customer Testimonials","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout18.xml","name":"Meet Our Team Page","placeholders":[{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"body","type":"body"},{"name":"body","type":"body"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout19.xml","name":"Our Creative Force 1","placeholders":[{"name":"picture","type":"picture"},{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout20.xml","name":"Right Half Pictgure in Page","placeholders":[{"name":"picture","type":"picture"},{"name":"body","type":"body"},{"name":"body","type":"body"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout21.xml","name":"Mini Right Pictgure in Page","placeholders":[{"name":"picture","type":"picture"},{"name":"body","type":"body"},{"name":"body","type":"body"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout22.xml","name":"Small Picture at Left Side","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout23.xml","name":"Company History Page 1","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout24.xml","name":"Company History Page 2","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout25.xml","name":"Portfolio Section Break","placeholders":[{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout26.xml","name":"Full Background"}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout27.xml","name":"Welcome Message","placeholders":[{"name":"picture","type":"picture"}]}
+{"kind":"slide","id":"sl/y90nupkv","slide":1,"title":"Circular IQ could be the expert partner for circularity.","textShapes":6}
+{"kind":"textbox","id":"sh/547294r6","slide":1,"name":"Text Placeholder 1","placeholder":"body","text":"Circular IQ could be the expert partner for circularity.","textPreview":"Circular IQ could be the expert partner for circularity.","textChars":56,"textLines":1,"bbox":[61.33,60.46,736.2,36.85]}
+{"kind":"textbox","id":"sh/k3yl0zql","slide":1,"name":"Text Placeholder 2","placeholder":"body","text":"Two proposed partnership routes to broaden access to CIQ's circularity expertise.","textPreview":"Two proposed partnership routes to broaden access to CIQ's circularity expertise.","textChars":81,"textLines":1,"bbox":[61.91,103.86,835,14.84]}
+{"kind":"shape","id":"sh/hofulsf2","slide":1,"name":"Google Shape;691;p12","bbox":[337.55,173.51,248.93,248.93]}
+{"kind":"shape","id":"sh/ipovexwn","slide":1,"name":"Google Shape;3688;p59","bbox":[459.37,265.98,31.34,30.58]}
+{"kind":"shape","id":"sh/3qxwn2x8","slide":1,"name":"Google Shape;3689;p59","bbox":[466.54,311.09,9.82,39.52]}
+{"kind":"shape","id":"sh/sfqdkrep","slide":1,"name":"Google Shape;3690;p59","bbox":[446.91,311.09,9.82,39.52]}
+{"kind":"shape","id":"sh/dgzetcfa","slide":1,"name":"Google Shape;3691;p59","bbox":[449.55,311.47,25.3,5.22]}
+{"kind":"shape","id":"sh/1cvuxc7e","slide":1,"name":"Google Shape;3692;p59","bbox":[459.37,219.74,4.53,26.85]}
+{"kind":"shape","id":"sh/0bmd476t","slide":1,"name":"Google Shape;3693;p59","bbox":[485.42,229.44,16.23,24.24]}
+{"kind":"shape","id":"sh/zadcv2p8","slide":1,"name":"Google Shape;3694;p59","bbox":[504.68,256.65,24.54,15.66]}
+{"kind":"shape","id":"sh/e94v2hon","slide":1,"name":"Google Shape;3695;p59","bbox":[511.85,293.94,27.94,4.47]}
+{"kind":"shape","id":"sh/90ve1w7q","slide":1,"name":"Google Shape;3696;p59","bbox":[504.68,319.3,24.54,16.03]}
+{"kind":"shape","id":"sh/ozmd8r65","slide":1,"name":"Google Shape;3697;p59","bbox":[421.62,229.44,16.23,24.24]}
+{"kind":"shape","id":"sh/nydczmpk","slide":1,"name":"Google Shape;3698;p59","bbox":[394.05,256.65,24.92,15.66]}
+{"kind":"shape","id":"sh/mx4v6hoz","slide":1,"name":"Google Shape;3699;p59","bbox":[384.24,293.94,27.18,4.47]}
+{"kind":"shape","id":"sh/p4bu5s76","slide":1,"name":"Google Shape;3700;p59","bbox":[394.05,319.3,24.92,16.03]}
+{"kind":"shape","id":"sh/432dwn6l","slide":1,"name":"Google Shape;3701;p59","bbox":[420.11,253.3,83.44,98.06]}
+{"kind":"shape","id":"sh/uxgjq907","slide":1,"name":"Google Shape;3702;p59","bbox":[440.12,352.46,43.42,7.08]}
+{"kind":"shape","id":"sh/vyp0je1s","slide":1,"name":"Google Shape;3703;p59","bbox":[442.76,361.58,38.13,7.08]}
+{"kind":"shape","id":"sh/wzy1szid","slide":1,"name":"Google Shape;3704;p59","bbox":[447.29,369.99,29.07,7.08]}
+{"kind":"textbox","id":"sh/h072l4jy","slide":1,"name":"Google Shape;4502;p88","text":"Partner with sustainability consultancies to embed CIQ expertise in their client work.\n\nCo-develop circular-economy tools for specific sectors and regions.","textPreview":"Partner with sustainability consultancies to embed CIQ expertise in their client work. |  | Co-develop circular-economy tools for specifi...","textChars":155,"textLines":3,"bbox":[73.82,243.67,230.75,199.31]}
+{"kind":"textbox","id":"sh/i1gje90j","slide":1,"name":"Google Shape;4503;p88","text":"STRATEGIC ALLIANCES","textPreview":"STRATEGIC ALLIANCES","textChars":19,"textLines":1,"bbox":[66.74,173.8,228.27,38.96]}
+{"kind":"shape","id":"sh/ilw3etgr","slide":1,"name":"Google Shape;4505;p88","bbox":[71.34,226.56,230.75,0]}
+{"kind":"textbox","id":"sh/e1oz61c3","slide":1,"name":"Google Shape;4502;p88","text":"Partner with technology providers to strengthen material transparency and compliance.\n\nCo-develop capabilities for material tracking, lifecycle management and decision support.","textPreview":"Partner with technology providers to strengthen material transparency and compliance. |  | Co-develop capabilities for material tracking,...","textChars":176,"textLines":3,"bbox":[619.74,242.23,236.54,209.98]}
+{"kind":"textbox","id":"sh/14fyhgbe","slide":1,"name":"Google Shape;4503;p88","text":"TECHNOLOGICAL COLLABORATION","textPreview":"TECHNOLOGICAL COLLABORATION","textChars":27,"textLines":1,"bbox":[616.99,173.51,236.54,41.04]}
+{"kind":"shape","id":"sh/6psjmpwj","slide":1,"name":"Google Shape;4505;p88","bbox":[619.6,224.2,230.75,0]}
+{"kind":"image","id":"im/8rul8fu1","slide":1,"name":"Picture 3","bbox":[819.73,53.2,78.94,78.94]}
+{"kind":"notes","id":"nt/y90nupkv","slide":1,"text":""}
+{"kind":"slide","id":"sl/hwbqtkby","slide":2,"title":"Circular IQ could expand beyond ESRS E5.","textShapes":6}
+{"kind":"textbox","id":"sh/9072xkry","slide":2,"name":"Text Placeholder 1","placeholder":"body","text":"Circular IQ could expand beyond ESRS E5.","textPreview":"Circular IQ could expand beyond ESRS E5.","textChars":40,"textLines":1,"bbox":[61.33,60.46,736.2,42.01]}
+{"kind":"textbox","id":"sh/ozy1ofad","slide":2,"name":"Text Placeholder 2","placeholder":"body","text":"Two proposed routes for broader sustainability and circularity support.","textPreview":"Two proposed routes for broader sustainability and circularity support.","textChars":71,"textLines":1,"bbox":[61.33,105.75,835,14.84]}
+{"kind":"shape","id":"sh/x4r21kru","slide":2,"name":"Google Shape;691;p12","bbox":[336.68,173.92,248.93,248.93]}
+{"kind":"textbox","id":"sh/xk7qlczu","slide":2,"name":"Google Shape;4502;p88","text":"Extend the tool to additional sustainability frameworks after current legal review.\n\nAdd metrics such as carbon footprint, green finance and supply-chain reporting.","textPreview":"Extend the tool to additional sustainability frameworks after current legal review. |  | Add metrics such as carbon footprint, green fina...","textChars":164,"textLines":3,"bbox":[70.01,243.61,236.91,202.49]}
+{"kind":"textbox","id":"sh/ahwrqhgj","slide":2,"name":"Google Shape;4503;p88","text":"SUSTAINABILITY FRAMEWORKS","textPreview":"SUSTAINABILITY FRAMEWORKS","textChars":25,"textLines":1,"bbox":[70.01,175.94,234.36,39.58]}
+{"kind":"shape","id":"sh/4zmxwzmp","slide":2,"name":"Google Shape;4505;p88","bbox":[67.46,226.23,236.91,0]}
+{"kind":"textbox","id":"sh/t8byxkn2","slide":2,"name":"Google Shape;4502;p88","text":"Extend the tool to additional circularity frameworks after current legal review.\n\nAdd metrics for waste reduction, resource recovery and circular product design.","textPreview":"Extend the tool to additional circularity frameworks after current legal review. |  | Add metrics for waste reduction, resource recovery ...","textChars":161,"textLines":3,"bbox":[613.8,244.11,243.37,203.54]}
+{"kind":"textbox","id":"sh/s72xofmh","slide":2,"name":"Google Shape;4503;p88","text":"CIRCULARITY FRAMEWORKS","textPreview":"CIRCULARITY FRAMEWORKS","textChars":22,"textLines":1,"bbox":[605.08,178.12,249.47,39.78]}
+{"kind":"shape","id":"sh/onydsbmd","slide":2,"name":"Google Shape;4505;p88","bbox":[611.18,226.64,243.37,0]}
+{"kind":"shape","id":"sh/w3i1sfa9","slide":2,"name":"Google Shape;360;p3","bbox":[389.35,235.73,143.58,125.31]}
+{"kind":"image","id":"im/algza9on","slide":2,"name":"Picture 3","bbox":[819.73,53.2,78.94,78.94]}
+{"kind":"notes","id":"nt/hwbqtkby","slide":2,"text":""}

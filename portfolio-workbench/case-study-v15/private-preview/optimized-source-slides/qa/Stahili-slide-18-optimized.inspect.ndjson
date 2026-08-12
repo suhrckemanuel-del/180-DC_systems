@@ -1,0 +1,25 @@
+{"kind":"deck","id":"pr/rf8e7p","name":"Deck"}
+{"kind":"layout","layoutId":"/ppt/slideMasters/slideMaster1.xml","name":"","type":"master"}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout1.xml","name":"BLANK","type":"blank"}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout2.xml","name":"Title & Content","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout3.xml","name":"Section Break Page","placeholders":[{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout4.xml","name":"Various Project Show Case","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout5.xml","name":"Full Background"}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout6.xml","name":"Welcome Message","placeholders":[{"name":"picture","type":"picture"}]}
+{"kind":"slide","id":"sl/y90nupkv","slide":1,"title":"Stakeholder Analysis Matrix","textShapes":9}
+{"kind":"textbox","id":"sh/547294r6","slide":1,"name":"Text Placeholder 1","placeholder":"body","text":"Stakeholder Analysis Matrix","textPreview":"Stakeholder Analysis Matrix","textChars":27,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/k3yl0zql","slide":1,"name":"Text Placeholder 2","placeholder":"body","text":"Prioritise engagement by stakeholder interest and influence.","textPreview":"Prioritise engagement by stakeholder interest and influence.","textChars":60,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/7qp4be9c","slide":1,"name":"Rounded Rectangle 3","text":"Keep satisfied\nMedia\nGeneral public","textPreview":"Keep satisfied | Media | General public","textChars":35,"textLines":3,"bbox":[78.89,125.88,145.43,145.43]}
+{"kind":"textbox","id":"sh/65g3298r","slide":1,"name":"Rounded Rectangle 4","text":"\n\nManage closely\nGov. Agencies\nDonors\n\n","textPreview":"|  | Manage closely | Gov. Agencies | Donors |  |","textChars":39,"textLines":7,"bbox":[259.48,125.88,145.43,145.43]}
+{"kind":"textbox","id":"sh/ts7md4r2","slide":1,"name":"Rounded Rectangle 5","text":"\nMonitoring\nAcademic institutions\n","textPreview":"| Monitoring | Academic institutions |","textChars":34,"textLines":4,"bbox":[78.89,304.57,145.43,145.43]}
+{"kind":"textbox","id":"sh/sryl4zqx","slide":1,"name":"Rounded Rectangle 6","text":"Keep informed\nBeneficiaries\nCommunities","textPreview":"Keep informed | Beneficiaries | Communities","textChars":39,"textLines":3,"bbox":[259.48,304.57,145.43,145.43]}
+{"kind":"shape","id":"sh/mx4v6hoz","slide":1,"name":"Straight Arrow Connector 7","bbox":[62.33,463.31,337.4,0.53]}
+{"kind":"shape","id":"sh/p4bu5s76","slide":1,"name":"Straight Arrow Connector 8","bbox":[62.33,139.71,0,324.12]}
+{"kind":"textbox","id":"sh/4r6dg7et","slide":1,"name":"TextBox 13","text":"STAKEHOLDER GROUPS\n\n1. Major donors\n2. Partner organisations\n3. Government agencies\n4. Beneficiaries","textPreview":"STAKEHOLDER GROUPS |  | 1. Major donors | 2. Partner organisations | 3. Government agencies | 4. Beneficiaries","textChars":100,"textLines":6,"bbox":[427.72,286.62,260.44,187.41]}
+{"kind":"textbox","id":"sh/5sfepcfe","slide":1,"name":"TextBox 14","text":"\n\n5. Local communities\n6. Media outlets\n7. General public\n8. Academic institutions","textPreview":"|  | 5. Local communities | 6. Media outlets | 7. General public | 8. Academic institutions","textChars":82,"textLines":6,"bbox":[688.16,286.8,208.18,138.94]}
+{"kind":"textbox","id":"sh/ipovexwn","slide":1,"name":"TextBox 15","text":"ENGAGEMENT RULE\nManage high-interest, high-influence groups closely: maintain relationships, request feedback and address concerns.\nBuild the influence of high-interest, low-influence groups through advocacy or capacity-building.","textPreview":"ENGAGEMENT RULE | Manage high-interest, high-influence groups closely: maintain relationships, request feedback and address concerns. | B...","textChars":229,"textLines":3,"bbox":[417.27,139.71,480.07,106.63]}
+{"kind":"image","id":"im/nmxgjixc","slide":1,"name":"Graphic 9","bbox":[172,223.33,37.33,39.33]}
+{"kind":"image","id":"im/xgzi9wzu","slide":1,"name":"Graphic 10","bbox":[348,221.33,46,41.33]}
+{"kind":"image","id":"im/wfqhgri9","slide":1,"name":"Graphic 11","bbox":[167.33,404.67,46.67,48]}
+{"kind":"image","id":"im/veh07mho","slide":1,"name":"Graphic 12","bbox":[348.67,408,45.33,41.33]}
+{"kind":"notes","id":"nt/y90nupkv","slide":1,"text":""}

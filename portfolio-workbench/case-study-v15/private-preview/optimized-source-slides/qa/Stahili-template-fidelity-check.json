@@ -1,0 +1,13 @@
+{
+  "status": "pass",
+  "checkedAt": "2026-08-12T17:44:08.767Z",
+  "workspace": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\tmp\\slide-optimization\\stahili",
+  "finalPptx": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\portfolio-workbench\\case-study-v15\\private-preview\\optimized-source-slides\\Stahili-slide-18-optimized.pptx",
+  "starterPptx": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\tmp\\slide-optimization\\stahili\\template-starter.pptx",
+  "mapPath": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\tmp\\slide-optimization\\stahili\\template-frame-map.json",
+  "starterLayoutDir": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\tmp\\slide-optimization\\stahili\\starter-layout",
+  "finalLayoutDir": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\tmp\\slide-optimization\\stahili\\final-layout",
+  "editDir": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\tmp\\slide-optimization",
+  "issueCount": 0,
+  "issues": []
+}
