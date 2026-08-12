@@ -1,0 +1,22 @@
+{
+  "generated_iso": "2026-08-12T18:58:47.736344+02:00",
+  "source_root": "C:\\Users\\User\\Desktop\\180 deliverables",
+  "total_files": 201,
+  "pdf_files": 153,
+  "pptx_files": 48,
+  "total_pages_slides": 6899,
+  "categories": {
+    "consulting deliverable": 140,
+    "contract/agreement": 13,
+    "proposal/brief": 26,
+    "reference/source": 6,
+    "unclear/review": 16
+  },
+  "sensitivity": {
+    "high": 90,
+    "low/unknown": 7,
+    "medium": 104
+  },
+  "duplicate_groups": 7,
+  "count_errors": []
+}
