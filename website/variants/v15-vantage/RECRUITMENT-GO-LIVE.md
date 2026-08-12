@@ -102,8 +102,8 @@ believes they have applied.
   motivation letter, grade transcript and LinkedIn URL, read off the live form on
   2026-08-11. If fields change, the page is wrong.
 - **Position options in form field 7** should match the role names on the page.
-  Note the terminology conflict: `_brand/BRAND.md` says the official 180DC table
-  bans "Team Leader" in favour of **Project Manager**, and uses **Junior** and
-  **Senior Consultant**. The site currently says "Consultant / Team Leader".
-  Whatever the form offers and the page says must agree, and both should match
-  the official table.
+  Not a blocker: "Team Leader" is what this branch calls the role, ruled by the
+  owner on 2026-08-12. `_brand/BRAND.md` records that the global 180DC
+  terminology table prefers "Project Manager"; the branch's own usage wins here
+  and the site is correct as it stands. Only check that the form's options and
+  the page agree with each other.

@@ -56,6 +56,11 @@ The `monday` MCP server requires OAuth in an interactive session (`/mcp` or `cla
 
 Per the terminology doc: "President" → **"Branch President"**, "Vice President" → **"Branch Vice-President"** in any copy. The other four director titles aren't explicitly covered by the Yes/No list; treat them as acceptable "Branch Executive" role titles unless the client corrects them.
 
+**Branch ruling, 2026-08-12.** The owner confirmed that **"Team Leader" is this
+branch's own name for the role**, not a slip against the table below. The site
+uses it deliberately and it is not to be "corrected" to Project Manager. The rest
+of the table stands.
+
 ## Terminology — full Yes/No table (from `branch-awards/Terminology Requirement.pdf`)
 
 | ✅ Use | ❌ Don't use |
