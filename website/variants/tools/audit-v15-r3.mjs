@@ -148,7 +148,12 @@ console.log("\n=== content parity ===");
   // Two of those placeholders were reserved testimonial cards. Reserving space
   // for quotes that nobody has offered is not the same promise as reserving
   // space for case studies that exist and await consent, and the owner cut it.
-  const expectPlaceholders = { index: 5, "for-clients": 2, mission: 2, "for-students": 3, guide: 1 };
+  //
+  // index dropped from 5 to 3 when the reserved case tiles were replaced. They
+  // reserved space for case studies that now exist on the client page, so
+  // leaving them would have been a page promising work it was already showing
+  // one click away. Team photos, partners and the member area still reserve.
+  const expectPlaceholders = { index: 3, "for-clients": 2, mission: 2, "for-students": 3, guide: 1 };
   for (const p of PAGES) {
     await page.goto(url(p), { waitUntil: "networkidle" });
     const n = await page.evaluate(() => document.querySelectorAll(".placeholder").length);

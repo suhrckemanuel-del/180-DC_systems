@@ -77,7 +77,7 @@
     <h2 id="member-area-title">Member area</h2>
     <p class="panel__note"><span class="placeholder">Placeholder — no member accounts exist yet</span></p>
     <p class="panel__note">This branch has no login. The control is here to show where a member area would sit, not to imply one is running. Current members are reached by email.</p>
-    <a class="panel__mail" href="mailto:delft.rotterdam@180dc.org">delft.rotterdam@180dc.org</a>
+    <a class="panel__mail" data-mail href="mailto:delft.rotterdam@180dc.org">delft.rotterdam@180dc.org</a>
   </div>
 
   <main id="main">
@@ -153,23 +153,23 @@
           <ul class="people-list">
             <li>
               <span class="people-list__name">Theo Annendijck</span>
-              <a class="people-list__mail" href="mailto:t.annendijck@180dc.org?subject=Organisation%20challenge&amp;body=Organisation%3A%20%0AThe%20challenge%3A%20%0AWhat%20a%20useful%20answer%20would%20let%20us%20decide%3A%20%0A">t.annendijck@180dc.org</a>
+              <a class="people-list__mail" data-mail href="mailto:t.annendijck@180dc.org?subject=Organisation%20challenge&amp;body=Organisation%3A%20%0AThe%20challenge%3A%20%0AWhat%20a%20useful%20answer%20would%20let%20us%20decide%3A%20%0A">t.annendijck@180dc.org</a>
             </li>
             <li>
               <span class="people-list__name">Ahaan Roy</span>
-              <a class="people-list__mail" href="mailto:ahaan.roy@180dc.org?subject=Organisation%20challenge&amp;body=Organisation%3A%20%0AThe%20challenge%3A%20%0AWhat%20a%20useful%20answer%20would%20let%20us%20decide%3A%20%0A">ahaan.roy@180dc.org</a>
+              <a class="people-list__mail" data-mail href="mailto:ahaan.roy@180dc.org?subject=Organisation%20challenge&amp;body=Organisation%3A%20%0AThe%20challenge%3A%20%0AWhat%20a%20useful%20answer%20would%20let%20us%20decide%3A%20%0A">ahaan.roy@180dc.org</a>
             </li>
             <li>
               <span class="people-list__name">Paul Avato</span>
-              <a class="people-list__mail" href="mailto:p.avato@180dc.org?subject=Organisation%20challenge&amp;body=Organisation%3A%20%0AThe%20challenge%3A%20%0AWhat%20a%20useful%20answer%20would%20let%20us%20decide%3A%20%0A">p.avato@180dc.org</a>
+              <a class="people-list__mail" data-mail href="mailto:p.avato@180dc.org?subject=Organisation%20challenge&amp;body=Organisation%3A%20%0AThe%20challenge%3A%20%0AWhat%20a%20useful%20answer%20would%20let%20us%20decide%3A%20%0A">p.avato@180dc.org</a>
             </li>
             <li>
               <span class="people-list__name">Mats Ulrich</span>
-              <a class="people-list__mail" href="mailto:m.ulrich@180dc.org?subject=Organisation%20challenge&amp;body=Organisation%3A%20%0AThe%20challenge%3A%20%0AWhat%20a%20useful%20answer%20would%20let%20us%20decide%3A%20%0A">m.ulrich@180dc.org</a>
+              <a class="people-list__mail" data-mail href="mailto:m.ulrich@180dc.org?subject=Organisation%20challenge&amp;body=Organisation%3A%20%0AThe%20challenge%3A%20%0AWhat%20a%20useful%20answer%20would%20let%20us%20decide%3A%20%0A">m.ulrich@180dc.org</a>
             </li>
           </ul>
-          <p class="people-list__all">Or write to the whole board at <a href="mailto:delft.rotterdam@180dc.org?subject=Organisation%20challenge&amp;body=Organisation%3A%20%0AThe%20challenge%3A%20%0AWhat%20a%20useful%20answer%20would%20let%20us%20decide%3A%20%0A">delft.rotterdam@180dc.org</a>.</p>
-          <p class="form-note">Each link opens a blank email with three prompts already in it. Delete whatever does not apply.</p>
+          <p class="people-list__all">Or write to the whole board at <a data-mail href="mailto:delft.rotterdam@180dc.org?subject=Organisation%20challenge&amp;body=Organisation%3A%20%0AThe%20challenge%3A%20%0AWhat%20a%20useful%20answer%20would%20let%20us%20decide%3A%20%0A">delft.rotterdam@180dc.org</a>.</p>
+          <p class="form-note">Clicking an address gives you a copy button and a one-click draft in Gmail, Outlook or your mail app, with three prompts already filled in. Delete whatever does not apply.</p>
         </aside>
       </div>
     </section>
@@ -435,7 +435,7 @@
         <div>
           <h2>Contact</h2>
           <div class="footer-links">
-            <a href="mailto:delft.rotterdam@180dc.org">delft.rotterdam@180dc.org</a>
+            <a data-mail href="mailto:delft.rotterdam@180dc.org">delft.rotterdam@180dc.org</a>
             <a href="https://www.instagram.com/180dc_delftrotterdam/">Instagram</a>
             <a href="https://www.linkedin.com/company/180-degrees-consulting-delft/">LinkedIn</a>
           </div>
@@ -457,5 +457,6 @@
   <script src="hero-controller.js" defer></script>
   <script src="hero-depth.js" defer></script>
   <script src="case-gallery.js" defer></script>
+  <script src="mailto-pop.js" defer></script>
 </body>
 </html>
