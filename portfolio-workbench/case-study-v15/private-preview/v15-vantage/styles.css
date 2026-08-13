@@ -1510,13 +1510,36 @@ html:not(.no-js) .case-details { display: none; }
 .work-teaser__cta { margin: 1.6rem 0 0; }
 @media (max-width: 620px) { .work-teaser li { grid-template-columns: 1fr; } }
 
-/* Source-slide case studies use the site's existing card and modal language. */
+/* Private, consent-gated source-slide review. The image is the exhibit; these
+   styles only frame it and keep the unresolved publication condition visible. */
+.case-preview .case-card { height: 100%; }
+.preview-warning {
+  max-width: 72ch; padding: 0.9rem 1rem; border-left: 3px solid #b56a00;
+  border-radius: 0 10px 10px 0; background: #fff6e8; color: #5a3900;
+}
+.preview-warning--edit {
+  border-left-color: var(--green-deep); background: #eef7e8; color: #274b0c;
+}
 .slide-figure > a { display: block; cursor: zoom-in; }
 .slide-figure__foot { justify-content: space-between; }
+.slide-figure--edited img { border-color: rgba(52, 116, 34, 0.45); }
+.slide-figure--edited figcaption::after {
+  content: "Edited copy"; display: inline-flex; margin-left: 0.55rem;
+  padding: 0.2rem 0.48rem; border-radius: 999px; background: #e8f4dc;
+  color: #274b0c; letter-spacing: 0; text-transform: none;
+}
+.slide-figure--benchmark img { border-color: rgba(181, 106, 0, 0.5); }
+.risk {
+  display: inline-flex; align-items: center; min-height: 1.8rem;
+  padding: 0.24rem 0.62rem; border-radius: 999px; font-weight: 700;
+}
+.risk--green { background: #e8f4dc; color: #274b0c; }
+.risk--amber { background: #fff0d4; color: #6b4100; }
 .case-dialog { width: min(100% - 2rem, 72rem); }
 
 @media (max-width: 620px) {
   .case-dialog { width: calc(100% - 0.75rem); max-height: 96vh; border-radius: 12px; }
   .case-dialog__body { max-height: calc(96vh - 57px); padding-inline: 0.75rem; }
   .slide-figure__foot { display: grid; }
+  .risk { width: fit-content; border-radius: 8px; }
 }

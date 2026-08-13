@@ -1,0 +1,13 @@
+{
+  "status": "pass",
+  "checkedAt": "2026-08-12T17:44:21.060Z",
+  "workspace": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\tmp\\slide-optimization\\circular",
+  "finalPptx": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\portfolio-workbench\\case-study-v15\\private-preview\\optimized-source-slides\\Circular-IQ-slides-30-32-optimized.pptx",
+  "starterPptx": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\tmp\\slide-optimization\\circular\\template-starter.pptx",
+  "mapPath": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\tmp\\slide-optimization\\circular\\template-frame-map.json",
+  "starterLayoutDir": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\tmp\\slide-optimization\\circular\\starter-layout",
+  "finalLayoutDir": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\tmp\\slide-optimization\\circular\\final-layout",
+  "editDir": "C:\\Users\\User\\Desktop\\180dc-ai-v15-preview\\tmp\\slide-optimization",
+  "issueCount": 0,
+  "issues": []
+}

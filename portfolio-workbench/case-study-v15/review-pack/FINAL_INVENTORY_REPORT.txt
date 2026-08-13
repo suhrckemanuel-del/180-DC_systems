@@ -1,0 +1,68 @@
+180DC DELIVERABLE INVENTORY AND PRIVATE SOURCE RENDER REPORT
+Generated: 2026-08-12 (Europe/Berlin)
+
+SCOPE AND SOURCE SAFETY
+- Read-only source root: C:\Users\User\Desktop\180 deliverables
+- Work/output root: C:\Users\User\Desktop\180dc-ai\portfolio-workbench\case-study-v15\inventory-render
+- No original was edited, renamed, moved, or overwritten.
+- No website production file was touched. Nothing was deployed or pushed.
+
+COMPLETE INVENTORY
+- 201 source files: 153 PDF and 48 PPTX.
+- 6,899 total pages/slides; every source has a non-zero verified count.
+- 140 classified as consulting deliverables.
+- 13 contracts/agreements.
+- 26 proposals/project briefs.
+- 6 reference/source documents.
+- 16 unclear/manual-review items.
+- 7 exact duplicate groups, determined by SHA-256.
+- Risk screen: 90 high, 104 medium, 7 low/unknown.
+
+Inventory classifications are conservative heuristics based on filename, embedded metadata,
+and extracted text from the first five pages/slides. Likely client and service-area fields are
+useful routing signals, not a substitute for a human clearance decision.
+
+RENDER COVERAGE
+- 4,479 high-resolution JPG source renders, approximately 838 MB.
+- All 201 documents have at least one identification render.
+- 111 of 140 consulting deliverables are fully rendered page-by-page/slide-by-slide.
+- 29 consulting deliverables have partial coverage (usually an identification cover only).
+- 165 documents satisfy the applied render policy; 36 are partial against full-source coverage.
+- PPTX renders were exported directly by Microsoft PowerPoint at 1,920 px width.
+- PDF renders were rasterized directly from the source at approximately 1,920 px on the long edge.
+- Contracts, proposals, and third-party reference material were generally limited to covers to
+  reduce unnecessary replication of sensitive/legal/copyrighted content.
+
+FINALIST SET
+- 53 shortlisted source assets across 10 candidate documents.
+- The shortlist spans sustainability strategy, market analysis, implementation planning,
+  fundraising, partnership strategy, marketing, digital growth, and competitor analysis.
+- Every finalist asset is mapped to its exact absolute source path, SHA-256, and page/slide number.
+- The multi-page private contact sheet has 5 pages and was visually checked after rendering.
+
+PRIMARY OUTPUTS
+- source-inventory.csv / source-inventory.json: complete file-level manifest.
+- inventory-summary.json: archive totals and category/risk counts.
+- finalist-assets.csv: exact finalist source-to-render mapping.
+- private-finalist-contact-sheet.pdf: 5-page private visual shortlist.
+- contact-sheets\finalist-contact-sheet-01.jpg through -05.jpg: image versions.
+- finalist-thumbnail-index.html: browser-based finalist index with exact paths and locators.
+- rendered-asset-index.csv: exact mapping for all 4,479 rendered assets.
+- private-thumbnail-index.html: private visual browser for all rendered assets.
+- render-coverage.csv: per-document source count, render count, and completion status.
+- render-summary.json: final render totals.
+- renders\DOC-xxx\page-###.jpg or slide-###.jpg: source-derived images.
+
+LIMITATIONS AND PUBLICATION RISK
+- Every rendered item must be treated as private. No client permission or publication clearance
+  was established here.
+- Contract/signature, contact, commercial, pricing, financial, and client-analysis signals were
+  flagged heuristically. Manual review and redaction are mandatory before public use.
+- PowerPoint export can substitute unavailable fonts and does not reproduce animation, video,
+  or interactive behavior. Static slide appearance was sampled and rendered correctly.
+- Several PDFs contain malformed cross-reference pointers or numeric values. The readers repaired
+  them sufficiently for counting/text extraction/rendering, but this should be noted for archival QA.
+- The 16 unclear items require manual categorization.
+- Exact duplicates remain separate inventory rows because they are distinct filesystem entries.
+- HTML indexes are intentionally marked noindex/nofollow but remain local files; this is not an
+  access-control mechanism.

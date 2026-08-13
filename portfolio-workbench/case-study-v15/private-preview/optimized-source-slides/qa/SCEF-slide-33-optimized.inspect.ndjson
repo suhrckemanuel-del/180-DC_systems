@@ -1,0 +1,56 @@
+{"kind":"deck","id":"pr/xyhc6d","name":"Deck"}
+{"kind":"layout","layoutId":"/ppt/slideMasters/slideMaster1.xml","name":"","type":"master"}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout1.xml","name":"Title & Content","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout2.xml","name":"Title and Content","type":"obj","placeholders":[{"name":"title","type":"title","textPreview":"Click to edit Master title style"},{"name":"content placeholder 2","textPreview":"Click to edit Master text styles | Second level | Third level | Fourth level | Fifth level"},{"name":"dateTime","type":"dateTime","textPreview":"04.02.21"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout3.xml","name":"Meet Our Team Page","placeholders":[{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"body","type":"body"},{"name":"body","type":"body"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout4.xml","name":"Simple Portfolio Single Show","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout5.xml","name":"Various Project Show Case","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"},{"name":"picture","type":"picture"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout6.xml","name":"Small Picture at Left Side","placeholders":[{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"picture","type":"picture"}]}
+{"kind":"slide","id":"sl/y90nupkv","slide":1,"title":"Measurement","textShapes":21}
+{"kind":"textbox","id":"sh/sryl4zqx","slide":1,"name":"Google Shape;4575;p89","text":"Measurement","textPreview":"Measurement","textChars":11,"textLines":1,"bbox":[67.93,189.53,166.51,32.96]}
+{"kind":"shape","id":"sh/ihc3u9cr","slide":1,"name":"Google Shape;4577;p89","bbox":[62.33,221.93,166.51,0]}
+{"kind":"textbox","id":"sh/xsfy5grm","slide":1,"name":"Google Shape;4782;p95","text":"Idea","textPreview":"Idea","textChars":4,"textLines":1,"bbox":[26.57,264.72,28.37,14.54]}
+{"kind":"textbox","id":"sh/65g3298r","slide":1,"name":"Dodecagon 4","text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[80.51,124.16,38.45,37.98]}
+{"kind":"textbox","id":"sh/ts7md4r2","slide":1,"name":"Google Shape;4598;p90","text":"Track partnership\nprogress","textPreview":"Track partnership | progress","textChars":26,"textLines":2,"bbox":[67.93,225.57,142.07,63.21]}
+{"kind":"textbox","id":"sh/wn6dc7eh","slide":1,"name":"Google Shape;4782;p95","text":"Content","textPreview":"Content","textChars":7,"textLines":1,"bbox":[14.55,334.69,52.41,14.54]}
+{"kind":"shape","id":"sh/4r6dg7et","slide":1,"name":"Google Shape;4610;p90","bbox":[295.84,449.54,242.67,31.56]}
+{"kind":"textbox","id":"sh/5sfepcfe","slide":1,"name":"Google Shape;4611;p90","text":"Measuring Impact Form","textPreview":"Measuring Impact Form","textChars":21,"textLines":1,"bbox":[282.37,448.82,278.99,29.08]}
+{"kind":"textbox","id":"sh/ipovexwn","slide":1,"name":"Google Shape;4598;p90","text":"Use a short form with\nprogress prompts","textPreview":"Use a short form with | progress prompts","textChars":38,"textLines":2,"bbox":[71.24,290.88,142.07,63.21]}
+{"kind":"shape","id":"sh/f6x0zu58","slide":1,"name":"Google Shape;4577;p89","bbox":[61.42,288.78,166.51,0]}
+{"kind":"textbox","id":"sh/zadcv2p8","slide":1,"name":"Google Shape;4782;p95","text":"  Handling","textPreview":"Handling","textChars":10,"textLines":1,"bbox":[12.82,396.6,52.41,29.08]}
+{"kind":"shape","id":"sh/sf6h4v2h","slide":1,"name":"Google Shape;4577;p89","bbox":[59.02,358.95,166.51,0]}
+{"kind":"textbox","id":"sh/uxgjq907","slide":1,"name":"Google Shape;4598;p90","text":"SCEF owner reviews it\nat agreed intervals","textPreview":"SCEF owner reviews it | at agreed intervals","textChars":41,"textLines":2,"bbox":[80.51,365,102.7,73.16]}
+{"kind":"textbox","id":"sh/h072l4jy","slide":1,"name":"Google Shape;4575;p89","text":"Inputs ","textPreview":"Inputs","textChars":7,"textLines":1,"bbox":[704.56,148.88,89.4,32.96]}
+{"kind":"textbox","id":"sh/i1gje90j","slide":1,"name":"Google Shape;4575;p89","text":"Activities","textPreview":"Activities","textChars":10,"textLines":1,"bbox":[704.56,202.66,89.4,32.96]}
+{"kind":"textbox","id":"sh/43y1gji9","slide":1,"name":"Google Shape;4575;p89","text":"Outputs ","textPreview":"Outputs","textChars":8,"textLines":1,"bbox":[705.03,256.14,89.4,32.96]}
+{"kind":"textbox","id":"sh/e1oz61c3","slide":1,"name":"Google Shape;4575;p89","text":"Outcomes","textPreview":"Outcomes","textChars":8,"textLines":1,"bbox":[704.2,310.53,89.4,32.96]}
+{"kind":"textbox","id":"sh/036h8but","slide":1,"name":"Google Shape;4575;p89","text":"Impact","textPreview":"Impact","textChars":6,"textLines":1,"bbox":[704.18,363.4,89.4,32.96]}
+{"kind":"textbox","id":"sh/y5wjip0z","slide":1,"name":"Text Placeholder 1","text":"Evaluation & Continuation: Our Four-Step Framework","textPreview":"Evaluation & Continuation: Our Four-Step Framework","textChars":50,"textLines":1,"bbox":[61.33,60.46,835,40.24]}
+{"kind":"shape","id":"sh/54r2poju","slide":1,"name":"Rechteck 4","bbox":[219.86,499.08,608.5,5.67]}
+{"kind":"textbox","id":"sh/wr6xwbq1","slide":1,"name":"Textfeld 5","text":"Our Team","textPreview":"Our Team","textChars":8,"textLines":1,"bbox":[222.44,506.57,58.6,20.2]}
+{"kind":"shape","id":"sh/cby5k3yt","slide":1,"name":"Oval 60","bbox":[248.95,497.45,8.69,8.92]}
+{"kind":"textbox","id":"sh/lwzy90ry","slide":1,"name":"Textfeld 6","text":"Recap: Problem Definition","textPreview":"Recap: Problem Definition","textChars":25,"textLines":1,"bbox":[277.24,506.57,122.72,20.2]}
+{"kind":"shape","id":"sh/yt8fyl87","slide":1,"name":"Oval 55","bbox":[334.55,497.45,8.69,8.92]}
+{"kind":"textbox","id":"sh/7yhgbq9o","slide":1,"name":"Textfeld 7","text":"Partnership Strategy","textPreview":"Partnership Strategy","textChars":20,"textLines":1,"bbox":[396.16,506.57,101.01,20.2]}
+{"kind":"shape","id":"sh/kvqx0vqd","slide":1,"name":"Oval 53","bbox":[442.43,497.45,8.69,8.69]}
+{"kind":"textbox","id":"sh/t0jyd0ru","slide":1,"name":"Textfeld 33","text":"Implementation Frameworks","textPreview":"Implementation Frameworks","textChars":25,"textLines":1,"bbox":[493.37,506.57,133.32,20.2]}
+{"kind":"shape","id":"sh/6x8f2583","slide":1,"name":"Oval 51","bbox":[555.8,497.45,8.69,8.69]}
+{"kind":"textbox","id":"sh/at8zelcb","slide":1,"name":"Textfeld 33","text":"Project Timeline","textPreview":"Project Timeline","textChars":16,"textLines":1,"bbox":[742.49,506.57,84.01,20.2]}
+{"kind":"shape","id":"sh/8zqx4vq9","slide":1,"name":"Oval 49","bbox":[780.26,497.45,8.69,8.69]}
+{"kind":"textbox","id":"sh/or6hcvu5","slide":1,"name":"Textfeld 33","text":"Implementation First Steps","textPreview":"Implementation First Steps","textChars":26,"textLines":1,"bbox":[621.97,506.57,125.24,20.2]}
+{"kind":"shape","id":"sh/buh0nqtg","slide":1,"name":"Oval 47","bbox":[680.35,497.45,8.69,8.69]}
+{"kind":"image","id":"im/mxobmp8f","slide":1,"name":"Graphic 60","bbox":[19.18,223.42,43.15,40.78]}
+{"kind":"image","id":"im/9kzahk7q","slide":1,"name":"Graphic 75","bbox":[21.67,295.26,38.92,38.92]}
+{"kind":"image","id":"im/8z6tofq5","slide":1,"name":"Graphic 35","bbox":[16.41,368.53,40.75,40.75]}
+{"kind":"image","id":"im/ru1crep4","slide":1,"name":"Graphic 50","bbox":[163.47,152.84,30.17,30.17]}
+{"kind":"image","id":"im/6tsby9oj","slide":1,"name":"Graphic 29","bbox":[138.71,148.4,26.33,29.65]}
+{"kind":"image","id":"im/3ylkn65k","slide":1,"name":"Graphic 22","bbox":[110.1,121.93,83.54,83.54]}
+{"kind":"image","id":"im/ixc3u14z","slide":1,"name":"Picture 7","bbox":[181.05,383.96,44.48,44.25]}
+{"kind":"image","id":"im/p032pgnq","slide":1,"name":"Graphic 12","bbox":[652.42,188.98,61.06,61.06]}
+{"kind":"image","id":"im/4zulwbm5","slide":1,"name":"Graphic 16","bbox":[794.48,358.52,45.82,45.82]}
+{"kind":"image","id":"im/r25krqlw","slide":1,"name":"Graphic 19","bbox":[792.28,253.67,45.82,45.82]}
+{"kind":"image","id":"im/q1w3yl4b","slide":1,"name":"Graphic 20","bbox":[788,136.22,59.6,59.6]}
+{"kind":"image","id":"im/d4nmtg3m","slide":1,"name":"Graphic 22","bbox":[649.82,295.3,61.06,61.06]}
+{"kind":"image","id":"im/c3el0vm1","slide":1,"name":"Picture 28","bbox":[235.7,220.96,372.34,225.01]}
+{"kind":"image","id":"im/761kfm5c","slide":1,"name":"Picture 24","bbox":[320.89,112.56,331.17,209.39]}
+{"kind":"notes","id":"nt/y90nupkv","slide":1,"text":""}
