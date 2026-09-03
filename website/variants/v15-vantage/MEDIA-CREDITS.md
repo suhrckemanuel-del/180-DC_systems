@@ -11,9 +11,9 @@ AI-generated. An earlier build of this variant did use generated imagery and
 disclosed it; that was replaced on 2026-08-01 after board feedback.
 
 No photograph here depicts an 180 Degrees Consulting project, client, team or
-event, and no photographer endorses 180DC Delft–Rotterdam. Each public page names
-the photographer and licence of the frame on screen, and the credit changes as the
-visitor browses the pool.
+event, and no photographer endorses 180DC Delft–Rotterdam. The public footer links
+to the on-site credit ledger, which records the photographer and licence for every
+frame in the pool.
 
 The pool is **5 frames** — 3 Rotterdam, 2 Delft. Sources: Pexels and Wikimedia Commons.
 

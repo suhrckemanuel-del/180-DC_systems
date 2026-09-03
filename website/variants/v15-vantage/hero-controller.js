@@ -34,11 +34,10 @@
      mean the licence string genuinely varies per frame, so it is carried per
      frame rather than assumed.
 
-     `credit` is rendered in the hero beside the city label and changes with the
-     frame. A static footer line cannot honestly credit five different
-     photographers, and this variant is full-bleed with no <figcaption> slot.
-     The long form — work, source URL, licence URL, edits — lives in
-     MEDIA-CREDITS.md and the ledger in guide.html#images.               */
+     The public hero stays visually quiet: full credit details live in the
+     linked photography ledger at guide.html#images and MEDIA-CREDITS.md.
+     This keeps legally required CC attribution available without crowding the
+     photograph or repeating changing city labels beside the controls.      */
 
   const POOL = [
     {
@@ -105,9 +104,6 @@
     const baseImg = hero.querySelector(".hero__img");
     const prevBtn = hero.querySelector("[data-city-prev]");
     const nextBtn = hero.querySelector("[data-city-next]");
-    const nowLabel = hero.querySelector("[data-city-label]");
-    const nowCount = hero.querySelector("[data-city-count]");
-    const nowCredit = hero.querySelector("[data-city-credit]");
 
     let index = Number(hero.dataset.heroStart || 0);
     if (!Number.isInteger(index) || index < 0 || index >= POOL.length) index = 0;
@@ -151,7 +147,6 @@
     // instead of tracking the wheel one-to-one, which reads as cheap.
     const staged = hero.classList.contains("hero--stage");
     const fill = hero.querySelector("[data-progress-fill]");
-    const pct = hero.querySelector("[data-progress-pct]");
     let progress = 0;
     let progressTarget = 0;
 
@@ -172,7 +167,6 @@
       hero.style.setProperty("--hero-p", progress.toFixed(4));
       hero.heroProgress = progress;               // hero-depth.js reads this
       if (fill) fill.style.transform = `scaleX(${progress.toFixed(4)})`;
-      if (pct) pct.textContent = `${Math.round(progress * 100)}%`;
 
       // keep easing until it has settled, even after scrolling has stopped
       if (progress !== progressTarget) stageRaf = requestAnimationFrame(stageTick);
@@ -253,11 +247,8 @@
     /* --- cycling -------------------------------------------------------- */
 
     const paint = (item) => {
-      if (nowLabel) nowLabel.textContent = item.label;
-      if (nowCount) nowCount.textContent = `${index + 1} / ${POOL.length}`;
-      // NOTE: data-tone is deliberately NOT set here. The label and count are
-      // safe to update instantly because they read the same either way, but the
-      // tone flip repaints the copy near-black for a light frame — and it used
+      // NOTE: data-tone is deliberately NOT set here. The tone flip repaints
+      // the copy near-black for a light frame — and it used
       // to fire at click time, a decode plus a 620ms crossfade before that photo
       // was actually on screen. Clicking into a light frame from a night one put
       // near-black type over a dark photograph for the whole window. It moves to
@@ -269,16 +260,10 @@
     };
 
     // Light frames flip the hero to dark type rather than relying on a scrim,
-    // which the blur-only rule rules out. The credit moves with it: both belong
-    // to the photograph, so both are applied at the moment that photograph
-    // becomes the visible layer, not when the button is clicked.
-    //
-    // The credit deliberately lives outside .city-switch__now, which is
-    // aria-live — otherwise every cycle would announce the photographer and
-    // licence on top of the place name.
+    // which the blur-only rule rules out. The visible controls do not repeat
+    // the location or credit; the linked ledger carries the legal details.
     const applyTone = (item) => {
       hero.dataset.tone = item.tone || "dark";
-      if (nowCredit && item.credit) nowCredit.textContent = `Photo: ${item.credit}`;
     };
 
     // hero-depth.js needs the pool to preload and to resolve depth maps

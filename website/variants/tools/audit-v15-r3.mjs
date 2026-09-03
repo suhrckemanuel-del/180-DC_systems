@@ -101,13 +101,9 @@ console.log("\n=== content parity ===");
     const r = await page.evaluate(() => {
       const t = document.body.innerText;
       const footer = document.querySelector(".footer-legal")?.innerText || "";
-      const credit = document.querySelector("[data-city-credit]")?.textContent || "";
       return {
         footerCredits: /photograph|credit/i.test(footer),
         footerLinks: !!document.querySelector('.footer-legal a[href*="images"], .footer-legal a[href*="guide"]'),
-        // the hero names the photographer of the frame on screen
-        heroCredit: credit.trim(),
-        hasHero: !!document.querySelector("[data-hero]"),
         // No page may CLAIM the imagery is generated. Present tense only: the
         // guide legitimately records that an earlier build used AI renders and
         // why they were replaced, and flagging that would push the page toward
@@ -118,7 +114,6 @@ console.log("\n=== content parity ===");
     if (!r.footerCredits) note(p, "footer does not credit the photography");
     if (!r.footerLinks) note(p, "footer credit does not link to the ledger");
     if (r.claimsAI) note(p, "page still claims the backgrounds are AI-generated");
-    if (r.hasHero && !r.heroCredit) note(p, "hero shows no photographer credit for the current frame");
   }
 
   // every pooled frame must carry a credit in the controller
@@ -218,12 +213,9 @@ console.log("\n=== content parity ===");
   for (const p of PAGES.filter((x) => x !== "guide")) {
     await page.goto(url(p), { waitUntil: "networkidle" });
     await page.waitForTimeout(300);
-    const r = await page.evaluate(() => ({
-      count: document.querySelector("[data-city-count]")?.textContent,
-      start: document.querySelector("[data-hero]")?.dataset.heroStart,
-    }));
-    if (!new RegExp(`/ ${POOL_SIZE}$`).test(r.count || "")) {
-      note(p, `counter reads "${r.count}", pool has ${POOL_SIZE} frames`);
+    const start = await page.evaluate(() => document.querySelector("[data-hero]")?.dataset.heroStart);
+    if (!Number.isInteger(Number(start)) || Number(start) < 0 || Number(start) >= POOL_SIZE) {
+      note(p, `hero starts at invalid pool index "${start}"`);
     }
   }
 

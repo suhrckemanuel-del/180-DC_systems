@@ -73,6 +73,15 @@ L.push("event, and no photographer endorses 180DC Delft–Rotterdam. Each public
 L.push("the photographer and licence of the frame on screen, and the credit changes as the");
 L.push("visitor browses the pool.");
 L.push("");
+// Keep the public credit record complete without repeating a changing
+// photographer/location label over the hero artwork itself.
+L.splice(-5, 5,
+  "No photograph here depicts an 180 Degrees Consulting project, client, team or",
+  "event, and no photographer endorses 180DC Delft–Rotterdam. The public footer links",
+  "to the on-site credit ledger, which records the photographer and licence for every",
+  "frame in the pool.",
+  ""
+);
 L.push(`The pool is **${pool.length} frames** — ` +
   Object.entries(cityCount).map(([c, n]) => `${n} ${c}`).join(", ") +
   `. Sources: ${origins.join(" and ")}.`);

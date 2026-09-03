@@ -432,7 +432,7 @@ a { color: var(--green-deep); }
   .hero--stage:not(.is-webgl) .hero__img { animation: none; }
 }
 
-/* scroll indicator — SCROLL, a progress rail, and a percentage */
+/* scroll indicator — SCROLL and a quiet progress rail */
 .hero__scroll {
   position: absolute;
   left: 0; right: 0; bottom: 1.5rem;
@@ -464,7 +464,6 @@ a { color: var(--green-deep); }
   transform: scaleX(0);
   transform-origin: left center;
 }
-.hero__scroll-count { font-variant-numeric: tabular-nums; min-width: 3.2em; }
 .hero[data-tone="light"] .hero__scroll {
   color: #2c352f;
   text-shadow: 0 1px 10px rgba(255, 255, 255, 0.8);
@@ -675,8 +674,6 @@ a { color: var(--green-deep); }
 }
 .hero[data-tone="light"] .btn--solid { background: #10160f; color: #fff; }
 .hero[data-tone="light"] .btn--solid:hover { background: #232b26; }
-.hero[data-tone="light"] .city-switch__now { color: #10160f; text-shadow: 0 1px 10px rgba(255, 255, 255, 0.8); }
-.hero[data-tone="light"] .city-switch__now strong { color: #10160f; }
 /* the glass tint that reads over a night frame lands at mid-grey over a
    white one, which drops white labels under AA — deepen it here */
 .hero[data-tone="light"] .btn--glass,
@@ -702,34 +699,6 @@ a { color: var(--green-deep); }
 }
 .city-switch__btn:hover:not(:disabled) { color: #fff; background: rgba(255, 255, 255, 0.09); }
 .city-switch__btn:disabled { opacity: 0.45; cursor: default; }
-
-.city-switch__now {
-  display: flex; flex-direction: column; gap: 0.1rem;
-  font-size: 0.74rem; line-height: 1.3;
-  color: rgba(255, 255, 255, 0.8);
-  letter-spacing: 0.055em;
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.65);
-}
-.city-switch__now strong {
-  font-size: 0.8rem; font-weight: 500; color: #fff;
-  letter-spacing: 0.02em;
-}
-.city-switch__count { font-variant-numeric: tabular-nums; }
-
-/* Photographer + licence for the frame on screen. Tertiary by design: it must
-   be legible and findable, not compete with the place name above it. Sits
-   outside the aria-live region so cycling does not announce it. */
-.city-switch__credit {
-  margin: 0.15rem 0 0;
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.78);
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
-}
-.hero[data-tone="light"] .city-switch__credit {
-  color: #1c2420;
-  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.8);
-}
 
 /* JS-only affordances stay hidden until JS confirms it is running */
 .no-js .city-switch,
@@ -1331,7 +1300,6 @@ html:not(.no-js) .case-details { display: none; }
   .hero__inner { padding-block: 2.2rem 2.6rem; }
   .hero h1 { max-width: 100%; }
   .city-switch { gap: 0.5rem; }
-  .city-switch__now { order: 3; width: 100%; }
   .btn { flex: 1 1 auto; justify-content: center; }
   .footer-legal { flex-direction: column; }
 }
