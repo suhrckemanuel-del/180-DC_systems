@@ -153,7 +153,7 @@ console.log("\n=== content parity ===");
   // reserved space for case studies that now exist on the client page, so
   // leaving them would have been a page promising work it was already showing
   // one click away. Team photos, partners and the member area still reserve.
-  const expectPlaceholders = { index: 3, "for-clients": 2, mission: 2, "for-students": 3, guide: 1 };
+  const expectPlaceholders = { index: 2, "for-clients": 2, mission: 2, "for-students": 3, guide: 1 };
   for (const p of PAGES) {
     await page.goto(url(p), { waitUntil: "networkidle" });
     const n = await page.evaluate(() => document.querySelectorAll(".placeholder").length);

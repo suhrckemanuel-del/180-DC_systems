@@ -970,15 +970,11 @@ a { color: var(--green-deep); }
 .person h3 { font-size: 0.97rem; margin-bottom: 0.25rem; }
 .person p { font-size: 0.82rem; color: var(--muted); }
 .person a { font-size: 0.8rem; word-break: break-word; }
-.portrait-slot {
-  aspect-ratio: 1; border-radius: 14px;
-  background: repeating-linear-gradient(-45deg, #f4f6f2 0 8px, #ecefe8 8px 16px);
-  border: 1px dashed #c3cbbd;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 0.85rem;
+.portrait {
+  display: block; width: 100%; aspect-ratio: 1; object-fit: cover;
+  object-position: center; border-radius: 14px; margin-bottom: 0.85rem;
+  background: #f4f3ef;
 }
-.portrait-slot span { font-size: 1.25rem; font-weight: 600; color: #9aa695; letter-spacing: 0.05em; }
-
 .timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.15rem; }
 .timeline-step { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 1.5rem; }
 .timeline-step span { font-size: 0.73rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green-deep); font-weight: 600; }
