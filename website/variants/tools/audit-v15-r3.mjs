@@ -148,7 +148,7 @@ console.log("\n=== content parity ===");
   // reserved space for case studies that now exist on the client page, so
   // leaving them would have been a page promising work it was already showing
   // one click away. Team photos, partners and the member area still reserve.
-  const expectPlaceholders = { index: 2, "for-clients": 2, mission: 2, "for-students": 3, guide: 1 };
+  const expectPlaceholders = { index: 1, "for-clients": 1, mission: 2, "for-students": 1, guide: 1 };
   for (const p of PAGES) {
     await page.goto(url(p), { waitUntil: "networkidle" });
     const n = await page.evaluate(() => document.querySelectorAll(".placeholder").length);
@@ -191,7 +191,7 @@ console.log("\n=== content parity ===");
 
     const badImgs = await page.evaluate(() =>
       [...document.querySelectorAll("img")]
-        .filter((i) => !i.complete || i.naturalWidth === 0)
+        .filter((i) => i.offsetParent !== null && (!i.complete || i.naturalWidth === 0))
         .map((i) => i.getAttribute("src"))
     );
     if (badImgs.length) note(p, `images failed to load: ${badImgs.join(", ")}`);

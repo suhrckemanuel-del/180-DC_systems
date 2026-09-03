@@ -24,6 +24,7 @@
 
   const dialog = document.createElement("dialog");
   dialog.className = "case-dialog";
+  dialog.setAttribute("aria-label", "Case study");
   dialog.innerHTML =
     '<div class="case-dialog__bar">' +
       '<div class="case-dialog__nav">' +
@@ -60,6 +61,12 @@
     home = document.createComment("case-detail placeholder");
     node.replaceWith(home);
     slot.appendChild(node);
+    const titleId = node.getAttribute("aria-labelledby");
+    if (titleId) {
+      dialog.removeAttribute("aria-label");
+      dialog.setAttribute("aria-labelledby", titleId);
+      slot.setAttribute("aria-labelledby", titleId);
+    }
     count.textContent = `${current + 1} of ${ids.length}`;
     slot.scrollTop = 0;
     slot.focus();
@@ -83,6 +90,7 @@
   dialog.addEventListener("close", park);
 
   dialog.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { e.preventDefault(); dialog.close(); return; }
     if (e.key === "ArrowLeft") { e.preventDefault(); show(current - 1); }
     if (e.key === "ArrowRight") { e.preventDefault(); show(current + 1); }
   });

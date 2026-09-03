@@ -34,10 +34,11 @@
      mean the licence string genuinely varies per frame, so it is carried per
      frame rather than assumed.
 
-     The public hero stays visually quiet: full credit details live in the
-     linked photography ledger at guide.html#images and MEDIA-CREDITS.md.
-     This keeps legally required CC attribution available without crowding the
-     photograph or repeating changing city labels beside the controls.      */
+     `credit` is rendered in the hero beside the city label and changes with the
+     frame. A static footer line cannot honestly credit five different
+     photographers, and this variant is full-bleed with no <figcaption> slot.
+     The long form — work, source URL, licence URL, edits — lives in
+     MEDIA-CREDITS.md and the ledger in guide.html#images.               */
 
   const POOL = [
     {
@@ -247,25 +248,15 @@
     /* --- cycling -------------------------------------------------------- */
 
     const paint = (item) => {
-      // NOTE: data-tone is deliberately NOT set here. The tone flip repaints
-      // the copy near-black for a light frame — and it used
-      // to fire at click time, a decode plus a 620ms crossfade before that photo
-      // was actually on screen. Clicking into a light frame from a night one put
-      // near-black type over a dark photograph for the whole window. It moves to
-      // applyTone(), called with the opacity swap.
-      //
       // hero-depth.js listens for this to crossfade its own textures; if that
       // layer never mounted, nothing is listening and the <img> path stands
       hero.dispatchEvent(new CustomEvent("hero:frame", { detail: { item, index } }));
     };
 
-    // Light frames flip the hero to dark type rather than relying on a scrim,
-    // which the blur-only rule rules out. The visible controls do not repeat
-    // the location or credit; the linked ledger carries the legal details.
-    const applyTone = (item) => {
-      hero.dataset.tone = item.tone || "dark";
-    };
-
+    // The credit deliberately lives outside .city-switch__now, which is
+    // aria-live — otherwise every cycle would announce the photographer and
+    // licence on top of the place name. It updates at the same opacity swap as
+    // the photograph, so attribution never gets ahead of the visible frame.
     // hero-depth.js needs the pool to preload and to resolve depth maps
     hero.heroPool = POOL;
 
@@ -330,7 +321,6 @@
         incoming.style.animation = "";
       }
 
-      applyTone(item);
       incoming.style.opacity = "1";
       outgoing.style.opacity = "0";
 
@@ -358,7 +348,6 @@
     // must be applied immediately rather than waiting for a swap that will
     // never come
     paint(POOL[index]);
-    applyTone(POOL[index]);
     setMotion();
     preloadNeighbours();
   }
@@ -413,7 +402,7 @@
     toggle.addEventListener("click", () => setOpen(!open));
 
     menu.addEventListener("click", (e) => {
-      if (e.target.closest("a")) setOpen(false, false);
+      if (e.target.closest("a, [data-panel-open]")) setOpen(false, false);
     });
 
     document.addEventListener("keydown", (e) => {
@@ -449,16 +438,36 @@
   /* ------------------------------------------------------------- panels -- */
 
   const panels = document.querySelectorAll("[data-panel]");
+  let panelOpener = null;
 
-  const closePanels = (except) => {
+  const closePanels = (except, returnFocus = false) => {
+    let didClose = false;
     panels.forEach((p) => {
       if (p !== except) {
+        didClose ||= p.classList.contains("is-open");
         p.classList.remove("is-open");
         document
           .querySelectorAll(`[data-panel-open="${p.id}"]`)
           .forEach((b) => b.setAttribute("aria-expanded", "false"));
       }
     });
+
+    if (!except) {
+      const panelId = panelOpener?.dataset.panelOpen;
+      const visible = (el) => {
+        if (!el || !el.getClientRects().length) return false;
+        for (let node = el; node; node = node.parentElement) {
+          const style = getComputedStyle(node);
+          if (style.display === "none" || style.visibility === "hidden" || style.opacity === "0") return false;
+        }
+        return true;
+      };
+      const returnTarget = panelId
+        ? [...document.querySelectorAll(`[data-panel-open="${panelId}"]`)].find(visible)
+        : null;
+      panelOpener = null;
+      if (returnFocus && didClose) (returnTarget || (visible(toggle) ? toggle : null))?.focus();
+    }
   };
 
   document.querySelectorAll("[data-panel-open]").forEach((btn) => {
@@ -471,34 +480,44 @@
       document
         .querySelectorAll(`[data-panel-open="${panel.id}"]`)
         .forEach((b) => b.setAttribute("aria-expanded", String(willOpen)));
-      if (willOpen) panel.querySelector("input, a, button")?.focus();
+      if (willOpen) {
+        panelOpener = btn;
+        panel.querySelector("input, a, button")?.focus();
+      }
     });
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closePanels(null);
+    if (e.key === "Escape" && [...panels].some((p) => p.classList.contains("is-open"))) {
+      e.preventDefault();
+      closePanels(null, true);
+    }
   });
 
   document.addEventListener("click", (e) => {
+    if (e.target.closest("[data-panel] a")) { closePanels(null); return; }
     if (e.target.closest("[data-panel]") || e.target.closest("[data-panel-open]")) return;
     closePanels(null);
   });
 
   /* --- site search ------------------------------------------------------
-     A real index of real destinations. It searches the six pages and their
+     A real index of real destinations. It searches the six public pages and their
      named sections — nothing here pretends to search content that does not
      exist yet.                                                             */
 
   const INDEX = [
     { title: "Home", href: "index.html", hint: "Branch overview" },
     { title: "What we do — six service areas", href: "index.html#services", hint: "Home" },
-    { title: "Our work", href: "index.html#work", hint: "Home · case studies reserved" },
+    { title: "Our work — five case studies", href: "for-clients.html#work", hint: "Published client exhibits" },
     { title: "The branch team", href: "index.html#committee", hint: "Home" },
     { title: "Mission", href: "mission.html", hint: "Founded 2019 · first multi-city branch" },
     { title: "For clients", href: "for-clients.html", hint: "Bring a challenge" },
     { title: "Start a conversation", href: "for-clients.html#intake", hint: "For clients" },
     { title: "For students", href: "for-students.html", hint: "Consultant · Team Leader" },
     { title: "The two roles", href: "for-students.html#roles", hint: "For students" },
+    { title: "Applications and selection", href: "for-students.html#apply", hint: "For students" },
+    { title: "Upcoming student events", href: "for-students.html#events", hint: "September–December · recruitment · in-house days" },
+    { title: "Privacy and legal information", href: "legal.html", hint: "Privacy · applications · copyright" },
     { title: "How this site was made", href: "guide.html", hint: "Build notes and photography credits" },
     { title: "Photography credits — photographer, source and licence per image", href: "guide.html#images", hint: "Guide" }
   ];
